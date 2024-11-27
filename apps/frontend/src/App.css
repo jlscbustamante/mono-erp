@@ -1,0 +1,52 @@
+/* @tailwind base; */
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html,
+body {
+  font-family: 'Inter Variable', 'Poppins', 'Segoe UI', Roboto, 'Helvetica Neue',
+    Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+img {
+  max-width: 100%;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* === REQUESTS-LAYOUT*/
+
+.requests-layout {
+  display: grid;
+  grid-template-rows: 60px 1fr;
+  grid-template-columns: auto 1fr;
+  grid-template-areas: 'menu menu' 'navigation content';
+}
+.requests-layout__menu {
+  grid-area: menu;
+}
+.requests-layout__navigation {
+  grid-area: navigation;
+}
+.requests-layout__content {
+  grid-area: content;
+}
+
+._menu-layout {
+  /* height: 100%; */
+  /* height: calc(100vh - 60px); */
+  /* position: relative; */
+}
+._menu-layout > li:last-of-type {
+  position: absolute !important;
+  bottom: 10px;
+  left: 0;
+}

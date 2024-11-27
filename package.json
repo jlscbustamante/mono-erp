@@ -1,0 +1,19 @@
+{
+  "name": "mono-erp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:backend": "cd apps/backend && pnpm run dev",
+    "dev:frontend": "cd apps/frontend && pnpm run dev",
+    "dbbuild": "cd packages/pizzadb && pnpm run build",
+    "dev": "concurrently \"pnpm:dev:*\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.10.0"
+  }
+}

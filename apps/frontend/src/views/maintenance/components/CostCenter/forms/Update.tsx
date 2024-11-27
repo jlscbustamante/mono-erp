@@ -1,0 +1,182 @@
+import { Button, Form, Input, Select } from 'antd'
+import React, { useEffect, useState } from 'react'
+import { Dispatch, SetStateAction } from 'react'
+import { toast } from 'react-toastify'
+
+import { NOTIFICATION } from '@/const/notification'
+import * as sdk from '@/data/cashAccount/sdk'
+import { CostCenterIs_cash } from '@/data/maintenance/CostCenter/is_cash/is_cash'
+import { updateCostCenter } from '@/data/maintenance/CostCenter/sdk'
+import { CostCenterStatus } from '@/data/maintenance/CostCenter/status/status'
+import {
+  ICostCenter,
+  ICreateCostCenter,
+} from '@/data/maintenance/CostCenter/type/CostCenter'
+import { Account } from '@/data/types'
+const { Option } = Select
+
+export const UpdateForm: React.FC<{
+  onClose: () => void
+  reload: () => void
+  costCenter: ICreateCostCenter | null
+  setCostCenter: Dispatch<SetStateAction<ICostCenter | null>>
+}> = ({ setCostCenter, costCenter, onClose, reload }) => {
+  const [form] = Form.useForm()
+  const [cashAccount, setCashAccount] = useState<Account[]>([])
+  const onFinish = async (values: ICreateCostCenter) => {
+    try {
+      await updateCostCenter(costCenter?.id, values)
+      const idNot = toast.loading(
+        'Actualizando centro de costo ...',
+        NOTIFICATION.loading,
+      )
+      toast.update(idNot, {
+        render: 'Centro de costo actualizado',
+        ...NOTIFICATION.updateLoading,
+      })
+      setCostCenter(null)
+      form.resetFields()
+      reload()
+      onClose()
+    } catch (err: any) {
+      toast.error(err.message, NOTIFICATION.error)
+    }
+  }
+
+  useEffect(() => {
+    async function fetchTyeCategory() {
+      try {
+        const response = await sdk.getAccount()
+
+        setCashAccount(response)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    fetchTyeCategory()
+  }, [])
+
+  return (
+    <Form
+      form={form}
+      name="updateCostCenter"
+      onFinish={onFinish}
+      labelCol={{ span: 11 }}
+      wrapperCol={{ span: 150 }}
+    >
+      <Form.Item
+        name="id"
+        label="ID"
+        initialValue={costCenter ? costCenter.id : ''}
+      >
+        <Input disabled />
+      </Form.Item>
+
+      <Form.Item
+        name="origin"
+        label="Centro de costo"
+        initialValue={costCenter ? costCenter.origin : ''}
+        rules={[
+          {
+            required: true,
+            message: 'Por favor, ingresa el origen del Centro de Costos',
+          },
+          {
+            max: 150,
+            message: 'El Origen debe tener como máximo 150 caracteres',
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item
+        initialValue={costCenter ? costCenter.account_caja : ''}
+        name="account_caja"
+        label="Cuenta de tienda"
+      >
+        <Select>
+          {cashAccount
+            .filter((tipoCategory) => String(tipoCategory.id).startsWith('102'))
+            .map((tipoCategory) => (
+              <Select.Option key={tipoCategory.id} value={tipoCategory.id}>
+                {tipoCategory.account}
+              </Select.Option>
+            ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        initialValue={costCenter ? costCenter.account_ajuste : ''}
+        name="account_ajuste"
+        label="Cuenta de ajuste"
+      >
+        <Select>
+          {cashAccount
+            .filter((tipoCategory) => String(tipoCategory.id).startsWith('103'))
+            .map((tipoCategory) => (
+              <Select.Option key={tipoCategory.id} value={tipoCategory.id}>
+                {tipoCategory.account}
+              </Select.Option>
+            ))}
+        </Select>
+      </Form.Item>
+      <Form.Item
+        initialValue={costCenter ? costCenter.account_merca : ''}
+        name="account_merca"
+        label="Cuenta de mercaderia"
+      >
+        <Select>
+          {cashAccount
+            .filter((tipoCategory) => String(tipoCategory.id).startsWith('106'))
+            .map((tipoCategory) => (
+              <Select.Option key={tipoCategory.id} value={tipoCategory.id}>
+                {tipoCategory.account}
+              </Select.Option>
+            ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="is_cash"
+        label="¿Es tienda?"
+        initialValue={costCenter ? costCenter.is_cash : ''}
+      >
+        <Select>
+          <Option key={CostCenterIs_cash.Si} value={CostCenterIs_cash.Si}>
+            Si
+          </Option>
+          <Option key={CostCenterIs_cash.No} value={CostCenterIs_cash.No}>
+            No
+          </Option>
+        </Select>
+      </Form.Item>
+      <Form.Item
+        name="status"
+        label="Estado"
+        initialValue={costCenter ? costCenter.status : ''}
+      >
+        <Select>
+          <Select.Option
+            key={CostCenterStatus.Active}
+            value={CostCenterStatus.Active}
+          >
+            Activo
+          </Select.Option>
+          <Select.Option
+            key={CostCenterStatus.Inactive}
+            value={CostCenterStatus.Inactive}
+          >
+            Inactivo
+          </Select.Option>
+        </Select>
+      </Form.Item>
+      <Form.Item className="text-right">
+        <Button type="primary" htmlType="submit">
+          Guardar
+        </Button>
+      </Form.Item>
+    </Form>
+  )
+}

@@ -1,0 +1,5 @@
+@media print {
+  .table-items-to-print .ant-table-tbody {
+    padding: 0 !important;
+  }
+}

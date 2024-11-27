@@ -1,0 +1,11 @@
+.stockNewItem {
+  display: grid;
+  grid-template-columns: 1fr 76px repeat(3, 100px) 140px;
+  gap: 10px;
+}
+
+.shipmentNewItem {
+  display: grid;
+  grid-template-columns: 30px 1fr repeat(3, 100px) 140px;
+  gap: 9px;
+}

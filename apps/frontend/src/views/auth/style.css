@@ -1,0 +1,12 @@
+.invalid {
+  color: red;
+}
+
+.valid {
+  color: green;
+}
+@media screen and (max-width: 768px) {
+  .responsive-container {
+    width: 80%;
+  }
+}

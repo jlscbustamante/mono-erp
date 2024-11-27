@@ -1,0 +1,29 @@
+import { AxiosInstance } from 'axios'
+import type { Carrier } from 'pizzadb'
+import type { IFilterResponse, IUserFilter3 } from 'shared'
+import client from '../client'
+
+export class InventoryApi {
+  constructor(private readonly client: AxiosInstance) {}
+
+  async filterCarrier(filters: IUserFilter3<Carrier>) {
+    try {
+      const parsed = JSON.stringify(filters)
+      const result = await this.client.get('driver/filter', {
+        params: {
+          filters: parsed,
+        },
+      })
+      return result.data.data as IFilterResponse<Carrier>
+    } catch (err: any) {
+      this.manageError(err)
+    }
+  }
+
+  private manageError(error: any) {
+    const message = (error as any).response?.data?.message
+    if (message) throw new Error(message)
+    throw error
+  }
+}
+export const inventoryApi = new InventoryApi(client)

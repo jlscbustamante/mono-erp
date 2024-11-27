@@ -1,0 +1,4 @@
+#tabla-route td:hover {
+  background: inherit !important;
+  cursor: pointer !important;
+}

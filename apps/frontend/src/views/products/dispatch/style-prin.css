@@ -1,0 +1,33 @@
+@media print {
+  .table-items-to-print .ant-table-thead {
+    /* font-size: 12px !important; */
+  }
+
+  .ant-table td,
+  .ant-table th,
+  .ant-table .ant-table-cell {
+    font-size: 11px !important;
+    /* color: red !important; */
+  }
+  .ant-table,
+  .ant-table .ant-table-cell {
+    border-color: rgb(52, 52, 52) !important;
+  }
+
+  .table-items-to-print .ant-table-tbody {
+    padding: 0 !important;
+  }
+  .table-items-to-print .ant-table-tbody > tr > td {
+    padding: 1px !important;
+    /* font-size: 12px !important; */
+  }
+  .ant-table .ant-table-thead .ant-table-cell,
+  .ant-table .ant-table-thead .ant-table-cell .ant-typography {
+    /* color: red !important; */
+    font-size: 10px;
+    padding: 0 !important;
+  }
+  .col-basic-print {
+    width: 40px !important;
+  }
+}
