@@ -2,7 +2,7 @@ import { format, parseISO, sub } from 'date-fns'
 import { type Request, type Response } from 'express'
 
 import { badRequest, notFound } from '@hapi/boom'
-import { Carrier } from 'pizzadb'
+import { Carrier, Sucursal } from 'pizzadb'
 import { AppDataSource } from '../../../config/database'
 import {
   CreateDriverDto,
@@ -26,7 +26,6 @@ import {
 } from '../../../core/inventory/entities/warehouse'
 import { InvDispatch } from '../../../entities/inventory/Dispatch'
 import { InvDispatchItem } from '../../../entities/inventory/DispatchItems'
-import { Sucursal } from '../../../entities/Sucursal'
 import { invDispatchRepository } from '../../../repositories/inventory/dispatch.repository'
 import parameterRepository from '../../../repositories/parameter.repository'
 import sucursalRepository from '../../../repositories/sucursal.repository'

@@ -1,4 +1,4 @@
-import { Sucursal } from '../../../entities/Sucursal'
+import { Sucursal } from 'pizzadb'
 
 export interface UpdateSucursalDto extends Sucursal {
   sede_razon_social: string

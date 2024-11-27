@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { Sucursal } from '../entities/Sucursal'
+import { Sucursal } from 'pizzadb'
 import sucursalRepository from '../repositories/sucursal.repository'
 import { SucursalService } from '../services/Sucursal.service'
 import { EnvFilters } from '../types'

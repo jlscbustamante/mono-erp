@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { Sucursal } from 'pizzadb'
 import { AppDataSource } from '../config/database'
-import { Sucursal } from '../entities/Sucursal'
 import { EnvFilters } from '../types'
 import { OpFilter } from '../types/filter'
 import { filtersAdapterNt } from '../utils/filtersAdapter'

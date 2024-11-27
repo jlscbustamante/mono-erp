@@ -1,5 +1,5 @@
+import { Sucursal } from 'pizzadb'
 import { In, Repository } from 'typeorm'
-import { Sucursal } from '../../entities/Sucursal'
 import { WarehousesRepository } from '../inventory/entities/repositories/warehouses.repository'
 import {
   WAREHOUSE_TYPE,

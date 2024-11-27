@@ -1,36 +1,38 @@
-import { WAREHOUSE_TYPE, WarehouseLegal } from '@/data/hex/types'
-import { useLegalWarehouses } from '@/hooks/data/iventory/use-legal-warehouses'
+import { WAREHOUSE_TYPE } from '@/data/hex/types'
 import { Table } from 'antd'
+import { Sucursal } from 'pizzadb'
 import { RiPencilFill } from 'react-icons/ri'
 import { useEditWarehouse } from './edit-drawer'
+import { useFilterSucurales } from './state'
 
 export const WarehouseTable = () => {
-  const { data: warehouses, isLoading } = useLegalWarehouses()
+  // const { data: warehouses, isLoading } = useLegalWarehouses()
+  const query = useFilterSucurales()
   const { open } = useEditWarehouse()
   return (
     <Table
-      dataSource={warehouses}
-      loading={isLoading}
+      dataSource={query.data?.data}
+      loading={query.isLoading}
       size="small"
       pagination={false}
-      rowKey={(record) => record.code}
+      rowKey={(record) => record.id}
       columns={[
         {
           title: 'Codigo',
-          dataIndex: 'code',
+          dataIndex: 'id',
         },
         {
           title: 'Tienda',
-          dataIndex: 'name',
-          sorter: (a, b) => a.name.localeCompare(b.name),
+          dataIndex: 'title',
+          sorter: (a, b) => a.title.localeCompare(b.title),
         },
         {
           title: 'Dirección',
-          dataIndex: 'legalAddress',
+          dataIndex: 'ubi_address',
         },
         {
           title: 'Distrito',
-          dataIndex: 'district',
+          dataIndex: 'ubi_district',
         },
         {
           title: 'Tipo de tienda',
@@ -40,23 +42,23 @@ export const WarehouseTable = () => {
         },
         {
           title: 'Concesionario',
-          dataIndex: 'legalName',
+          dataIndex: 'legalperson_name',
         },
         {
           title: 'Ruc',
-          dataIndex: 'legalNumber',
+          dataIndex: 'sede_nro_ruc',
         },
         {
           title: 'Serie factura',
-          dataIndex: 'serie',
+          dataIndex: 'cfd_serie',
         },
         {
           title: 'Serie guía',
-          dataIndex: 'guideSerie',
+          dataIndex: 'guide_serie',
         },
         {
           title: '',
-          render: (_, record: WarehouseLegal) => (
+          render: (_, record: Sucursal) => (
             <RiPencilFill
               className="text-slate-700 w-5 h-auto cursor-pointer"
               onClick={() => open(record)}

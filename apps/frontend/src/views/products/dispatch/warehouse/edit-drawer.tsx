@@ -3,13 +3,14 @@ import {
   updateSucursalFromPos,
 } from '@/data/hex/inventory'
 import { WAREHOUSE_TYPE, WarehouseLegal } from '@/data/hex/types'
-import { useLegalWarehouses } from '@/hooks/data/iventory/use-legal-warehouses'
 import { useMutation } from '@tanstack/react-query'
 import { Button, Drawer, Form, Input, Select } from 'antd'
+import { Sucursal } from 'pizzadb'
 import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
+import { useFilterSucurales } from './state'
 
-const editWarehouseAtom = atom<WarehouseLegal | null>({
+const editWarehouseAtom = atom<Sucursal | null>({
   key: 'editWarehouseAtom',
   default: null,
 })
@@ -17,7 +18,7 @@ const editWarehouseAtom = atom<WarehouseLegal | null>({
 export const useEditWarehouse = () => {
   const [editWarehouse, setEditWarehouse] = useRecoilState(editWarehouseAtom)
 
-  const open = (warehouse: WarehouseLegal) => {
+  const open = (warehouse: Sucursal) => {
     setEditWarehouse(warehouse)
   }
   const close = () => {
@@ -34,7 +35,7 @@ export const useEditWarehouse = () => {
 
 export const EditDrawer = () => {
   const { isOpen, close, warehouse } = useEditWarehouse()
-  const { refetch } = useLegalWarehouses()
+  const { refetch } = useFilterSucurales()
 
   const updateFromPos = useMutation({
     mutationFn: updateSucursalFromPos,
@@ -59,7 +60,7 @@ export const EditDrawer = () => {
             <Button
               type="primary"
               loading={updateFromPos.isPending}
-              onClick={() => updateFromPos.mutate(warehouse.code)}
+              onClick={() => updateFromPos.mutate(warehouse.id)}
             >
               Sync
             </Button>
@@ -87,7 +88,7 @@ const EditWarehouse = ({
   warehouse,
   onFinish: onFinishCreate,
 }: {
-  warehouse: WarehouseLegal
+  warehouse: Sucursal
   onFinish?: () => void
 }) => {
   const [form] = Form.useForm<WarehouseLegal>()
@@ -113,7 +114,17 @@ const EditWarehouse = ({
     <Form
       initialValues={
         {
-          ...warehouse,
+          code: warehouse.id,
+          name: warehouse.title,
+          type: warehouse.type_sede as WAREHOUSE_TYPE,
+          legalAddress: warehouse.ubi_address,
+          legalName: warehouse.legalperson_name,
+          legalNumber: warehouse.sede_nro_ruc ?? '',
+          serie: warehouse.cfd_serie,
+          correlativo: warehouse.cfd_correlativo ?? 1,
+          guideSerie: warehouse.guide_serie,
+          guideCorrelativo: warehouse.guide_correlativo ?? 1,
+          district: warehouse.ubi_district ?? '',
         } satisfies Partial<WarehouseLegal>
       }
       onFinish={onFinish}
@@ -141,7 +152,10 @@ const EditWarehouse = ({
       <Form.Item name="legalNumber" label="RUC">
         <Input />
       </Form.Item>
-      <Form.Item name="Distrito" label="Distrito">
+      <Form.Item name="district" label="Distrito">
+        <Input />
+      </Form.Item>
+      <Form.Item name="legalAddress" label="Dirección">
         <Input />
       </Form.Item>
       <Form.Item name="serie" label="Serie factura">
@@ -151,7 +165,11 @@ const EditWarehouse = ({
         <Input placeholder="Ejm: 001" />
       </Form.Item>
       <Form.Item className="text-right" wrapperCol={{ offset: 8 }}>
-        <Button type="primary" htmlType="submit">
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={updateWarehouseMt.isPending}
+        >
           Guardar
         </Button>
       </Form.Item>

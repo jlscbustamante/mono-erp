@@ -2,8 +2,8 @@ import { format, parseISO, sub } from 'date-fns'
 import { Request, Response } from 'express'
 import { Raw } from 'typeorm'
 
+import { Sucursal } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { Sucursal } from '../../entities/Sucursal'
 import { catchError } from '../../utils/decorators'
 
 interface RatioReport {
@@ -169,10 +169,12 @@ export class RatioController {
     const report: RatioReport[] = []
 
     for (const store of storesCode) {
-      const inicial = initialValues.find((el) => el.warehouse_id === store)
-        ?.total
-      const despachado = dispatchValue.find((el) => el.warehouse_id === store)
-        ?.valor_despachado
+      const inicial = initialValues.find(
+        (el) => el.warehouse_id === store,
+      )?.total
+      const despachado = dispatchValue.find(
+        (el) => el.warehouse_id === store,
+      )?.valor_despachado
       const final = finalValues.find((el) => el.warehouse_id === store)?.total
       const inicialNumber = inicial ? Number(inicial) : 0
       const despachadoNumber = despachado ? Number(despachado) : 0

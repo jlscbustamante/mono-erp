@@ -1,6 +1,7 @@
 import { badRequest } from '@hapi/boom'
 
 import { format } from 'date-fns'
+import { Sucursal } from 'pizzadb'
 import { In, Raw, Repository } from 'typeorm'
 import config from '../../config/config'
 import { AppDataSource } from '../../config/database'
@@ -8,7 +9,6 @@ import { InvDispatch } from '../../entities/inventory/Dispatch'
 import { InvDispatchItem } from '../../entities/inventory/DispatchItems'
 import { InvStock } from '../../entities/inventory/InvStock'
 import { Item } from '../../entities/inventory/Item'
-import { Sucursal } from '../../entities/Sucursal'
 import {
   generateGuideApi,
   generateGuideWithTransportApi,

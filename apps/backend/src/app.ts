@@ -42,6 +42,7 @@ import { loadReportsEndpoints } from './router/reports.router'
 import { loadRequestEndpoints } from './router/request'
 import { loadStoreEndpoints } from './router/store'
 // import { loadStoreEndpoints } from './router/store.router'
+import { commonEndopoints } from './modules/common'
 import { driverEndpoints } from './modules/driver'
 import { loadSucursalEndpoints } from './router/sucursal.router'
 import { loadSupplierEndpoints } from './router/supplier.router'
@@ -70,6 +71,7 @@ app.get('/', (req, res) => {
 // ---
 
 driverEndpoints(apiv2Router)
+commonEndopoints(apiv2Router)
 
 // ---
 authEndpoints(app)

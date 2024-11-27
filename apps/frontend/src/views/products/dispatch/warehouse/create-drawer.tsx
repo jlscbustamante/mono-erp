@@ -1,10 +1,10 @@
 import { createLegalWarehouse } from '@/data/hex/inventory'
 import { WAREHOUSE_TYPE, WarehouseLegal } from '@/data/hex/types'
-import { useLegalWarehouses } from '@/hooks/data/iventory/use-legal-warehouses'
 import { useMutation } from '@tanstack/react-query'
 import { Button, Drawer, Form, Input, Select } from 'antd'
 import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
+import { useFilterSucurales } from './state'
 
 const createWarehouseAtom = atom<boolean>({
   key: 'createWarehouseAtom',
@@ -31,7 +31,7 @@ export const useCreateWarehouse = () => {
 
 export const CreateDrawer = () => {
   const { isOpen, close } = useCreateWarehouse()
-  const { refetch } = useLegalWarehouses()
+  const { refetch } = useFilterSucurales()
 
   const [form] = Form.useForm<WarehouseLegal>()
 
@@ -93,7 +93,10 @@ export const CreateDrawer = () => {
         <Form.Item name="legalNumber" label="RUC">
           <Input />
         </Form.Item>
-        <Form.Item name="Distrito" label="Distrito">
+        <Form.Item name="district" label="Distrito">
+          <Input />
+        </Form.Item>
+        <Form.Item name="legalAddress" label="Dirección">
           <Input />
         </Form.Item>
         <Form.Item name="serie" label="Serie factura">

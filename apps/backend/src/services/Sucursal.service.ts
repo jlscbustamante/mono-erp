@@ -1,4 +1,4 @@
-import { Sucursal } from '../entities/Sucursal'
+import { Sucursal } from 'pizzadb'
 import { SucursalRepository } from '../repositories/sucursal.repository'
 import { EnvFilters } from '../types'
 import { dateNow } from '../utils/getDate'

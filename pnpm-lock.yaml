@@ -325,6 +325,9 @@ importers:
 
   packages/pizzadb:
     dependencies:
+      date-fns:
+        specifier: ^2.30.0
+        version: 2.30.0
       typeorm:
         specifier: ^0.3.17
         version: 0.3.20(mysql2@3.11.4)(ts-node@10.9.2(@swc/core@1.9.3)(@types/node@22.10.0)(typescript@5.7.2))

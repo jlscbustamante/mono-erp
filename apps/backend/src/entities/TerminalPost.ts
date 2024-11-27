@@ -8,8 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm'
 
+import { Sucursal } from 'pizzadb'
 import { DateTransformer } from '../config/transformers/dateTransformer'
-import { Sucursal } from './Sucursal'
 
 @Entity({ name: 'adm_terminalpos' })
 export class TerminalPost {

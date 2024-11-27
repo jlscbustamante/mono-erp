@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Sucursal } from 'pizzadb'
 import { EntitiesTimeStamps } from '../../config/EntitiesTimestamps'
-import { Sucursal } from '../Sucursal'
 
 @Entity({ name: 'inv_warehouse' })
 export class InvWarehouse extends EntitiesTimeStamps {
