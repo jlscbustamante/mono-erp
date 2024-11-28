@@ -20,6 +20,7 @@ export const WarehouseTable = () => {
         {
           title: 'Codigo',
           dataIndex: 'id',
+          sorter: (a, b) => a.id.localeCompare(b.id),
         },
         {
           title: 'Tienda',
@@ -43,14 +44,22 @@ export const WarehouseTable = () => {
         {
           title: 'Concesionario',
           dataIndex: 'legalperson_name',
+          sorter: (a, b) =>
+            a.legalperson_name?.localeCompare(b.legalperson_name),
         },
         {
           title: 'Ruc',
           dataIndex: 'sede_nro_ruc',
+          sorter: (a, b) => a.sede_nro_ruc?.localeCompare(b.sede_nro_ruc),
         },
         {
           title: 'Serie factura',
           dataIndex: 'cfd_serie',
+          sorter: (a, b) => {
+            if (!a.cfd_serie) return -1
+            if (!b.cfd_serie) return 1
+            return a.cfd_serie.localeCompare(b.cfd_serie)
+          },
         },
         {
           title: 'Serie guía',

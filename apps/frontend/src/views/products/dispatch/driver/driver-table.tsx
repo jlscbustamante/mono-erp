@@ -31,18 +31,23 @@ export const DriverTable = () => {
       rowKey={(record) => record.id}
       size="small"
       dataSource={query.data?.data}
+      showSorterTooltip={false}
       columns={[
         {
           title: 'Id',
           dataIndex: 'id',
+          sorter: (a, b) => a.id - b.id,
         },
         {
           title: 'Compañia',
           dataIndex: 'transportName',
+          sorter: (a, b) => a.transportName.localeCompare(b.transportName),
         },
         {
           title: 'RUC',
           dataIndex: 'carrierDocNumber',
+          sorter: (a, b) =>
+            a.carrierDocNumber?.localeCompare(b.carrierDocNumber),
         },
         {
           title: 'Conductor',
@@ -62,6 +67,7 @@ export const DriverTable = () => {
         {
           title: 'Tipo doc.',
           dataIndex: 'driverTypeDoc',
+          sorter: (a, b) => a.driverTypeDoc.localeCompare(b.driverTypeDoc),
         },
         {
           title: 'N° doc.',
