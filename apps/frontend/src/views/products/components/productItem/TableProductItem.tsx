@@ -42,12 +42,14 @@ export const TableProductItem = () => {
       title: 'Costo',
       dataIndex: 'unitCost',
       render: (text) => fNumber(text),
+      sorter: (a, b) => a.unitCost - b.unitCost,
     },
     {
       title: 'Precio',
       dataIndex: 'unitPrice',
       key: 'unitPrice',
       render: (text) => fNumber(text),
+      sorter: (a, b) => a.unitPrice - b.unitPrice,
     },
     {
       title: 'UM',

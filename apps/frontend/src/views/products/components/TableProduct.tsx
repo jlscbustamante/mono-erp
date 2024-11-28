@@ -34,6 +34,10 @@ export const TableProduct = () => {
       title: 'UM',
       dataIndex: ['measure', 'code'],
       key: 'measureId',
+      sorter: (a, b) => {
+        if (!a.measure?.code || !b.measure?.code) return 0
+        return a.measure.code.localeCompare(b.measure.code)
+      },
     },
     {
       title: 'Estado',

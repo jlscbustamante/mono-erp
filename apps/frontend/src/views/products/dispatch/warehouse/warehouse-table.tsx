@@ -30,6 +30,11 @@ export const WarehouseTable = () => {
         {
           title: 'Dirección',
           dataIndex: 'ubi_address',
+          sorter: (a, b) => {
+            if (!a.ubi_address) return -1
+            if (!b.ubi_address) return 1
+            return a.ubi_address.localeCompare(b.ubi_address)
+          },
         },
         {
           title: 'Distrito',
@@ -37,20 +42,35 @@ export const WarehouseTable = () => {
         },
         {
           title: 'Tipo de tienda',
-          dataIndex: 'type',
+          dataIndex: 'type_sede',
           render: (val: WAREHOUSE_TYPE) =>
             val == WAREHOUSE_TYPE.STORE ? 'Tienda' : 'Almacén',
+          sorter: (a, b) => {
+            if (a.type_sede === WAREHOUSE_TYPE.STORE) {
+              return -1
+            } else {
+              return 1
+            }
+          },
         },
         {
           title: 'Concesionario',
           dataIndex: 'legalperson_name',
-          sorter: (a, b) =>
-            a.legalperson_name?.localeCompare(b.legalperson_name),
+          sorter: (a, b) => {
+            if (!a.legalperson_name) return -1
+            if (!b.legalperson_name) return 1
+            return a.legalperson_name.localeCompare(b.legalperson_name)
+          },
         },
         {
           title: 'Ruc',
           dataIndex: 'sede_nro_ruc',
-          sorter: (a, b) => a.sede_nro_ruc?.localeCompare(b.sede_nro_ruc),
+          sorter: (a, b) => {
+            if (!a.sede_nro_ruc) return -1
+            if (!b.sede_nro_ruc) return 1
+            return a.sede_nro_ruc.localeCompare(b.sede_nro_ruc)
+          },
+          // sorter: (a, b) => a.sede_nro_ruc?.localeCompare(b.sede_nro_ruc),
         },
         {
           title: 'Serie factura',
@@ -64,6 +84,11 @@ export const WarehouseTable = () => {
         {
           title: 'Serie guía',
           dataIndex: 'guide_serie',
+          sorter: (a, b) => {
+            if (!a.guide_serie) return -1
+            if (!b.guide_serie) return 1
+            return a.guide_serie.localeCompare(b.guide_serie)
+          },
         },
         {
           title: '',

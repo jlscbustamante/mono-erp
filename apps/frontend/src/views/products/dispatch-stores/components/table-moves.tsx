@@ -61,6 +61,7 @@ export const TableMoves = () => {
       key: 'totalPrice',
       align: 'right',
       render: (text) => fNumber(text, 2),
+      sorter: (a, b) => a.totalValue - b.totalValue,
     },
     {
       title: 'Estado',

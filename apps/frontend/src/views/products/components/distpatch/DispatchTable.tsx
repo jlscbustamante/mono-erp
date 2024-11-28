@@ -222,6 +222,7 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
       dataIndex: 'totalValue',
       key: 'totalPrice',
       render: (text) => fNumber(text),
+      sorter: (a, b) => a.totalValue - b.totalValue,
     },
     {
       title: 'Estado',
