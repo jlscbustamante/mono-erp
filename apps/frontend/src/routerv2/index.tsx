@@ -6,7 +6,7 @@ import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
 import { PATHS } from '@/const/paths'
-import { StorePaymentMethods } from '@/router/lazyImports'
+import { Login } from '@/views/auth/Login'
 import PaymentBank from '@/views/digitization/PaymentBank'
 import PaymentCulqi from '@/views/digitization/PaymentCulqi'
 import UploadFilePayments from '@/views/digitization/PaymentsIzipay'
@@ -40,6 +40,7 @@ import ProductItemView from '@/views/products/ProductItem'
 import Products from '@/views/products/Products'
 import Provider from '@/views/products/provider/page'
 import Purchase from '@/views/products/Purchase'
+import Stock from '@/views/products/Stock'
 import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import TemplatePage from '@/views/products/templates/page'
 import Reports from '@/views/reports/Reports'
@@ -51,6 +52,7 @@ import Rejected from '@/views/requests/Rejected'
 import Requested from '@/views/requests/Requested'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
+import PaymentMethods from '@/views/stores/PaymentMethods'
 import SignMovements from '@/views/stores/SignMovements'
 import StoresStates from '@/views/stores/States'
 import { createBrowserRouter } from 'react-router-dom'
@@ -65,20 +67,27 @@ export const routerv2 = createBrowserRouter([
     element: <ErpLayout />,
     children: [
       {
+        path: PATHS.erp.auth.main,
+        element: <Login />,
+      },
+      {
         path: PATHS.erp.modulos.main,
-        element: <Modules />,
         children: [
+          {
+            path: PATHS.erp.modulos.main,
+            element: <Modules />,
+          },
           {
             path: PATHS.erp.modulos.tiendas.main,
             element: <TiendasLayout />,
             children: [
               {
-                path: PATHS.erp.modulos.tiendas.comprobarCajas,
+                path: PATHS.erp.modulos.tiendas.conciliar,
                 element: <SignMovements />,
               },
               {
-                path: PATHS.erp.modulos.tiendas.conciliar,
-                element: <StorePaymentMethods />,
+                path: PATHS.erp.modulos.tiendas.mediosPago,
+                element: <PaymentMethods />,
               },
               {
                 path: PATHS.erp.modulos.tiendas.comprobarCajas,
@@ -152,11 +161,15 @@ export const routerv2 = createBrowserRouter([
                 element: <Purchase />,
               },
               {
+                path: PATHS.erp.modulos.mercaderia.stockAlmacen,
+                element: <WarehouseStockPage />,
+              },
+              {
                 path: PATHS.erp.modulos.mercaderia.reportes.main,
                 children: [
                   {
                     path: PATHS.erp.modulos.mercaderia.reportes.porAlmacen,
-                    element: <WarehouseStockPage />,
+                    element: <Stock />,
                   },
                   {
                     path: PATHS.erp.modulos.mercaderia.reportes.ratio,

@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { PATHS } from '@/const/paths'
 import { getInfoWarehousesToday } from '@/data/hex/inventory'
 
 export const WarehouseAlert = () => {
@@ -19,7 +20,7 @@ export const WarehouseAlert = () => {
             <a
               className="underline"
               target="_blank"
-              href={`/products/warehouse/stock?warehouse=${warehouse.code}`}
+              href={`${PATHS.erp.modulos.mercaderia.stockAlmacen}?warehouse=${warehouse.code}`}
               rel="noreferrer"
             >
               Cerrar aquí

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt'
 
-import { IamUser } from '../entities/IamUser'
+import { IamUser } from 'pizzadb'
 import { IamUserRepository } from '../repositories/iamUser.repository'
 import { EnvFilters } from '../types'
 import { dateNow } from '../utils/getDate'

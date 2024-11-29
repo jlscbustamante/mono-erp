@@ -1,14 +1,16 @@
 import { Request } from 'express'
-import { validateToken } from '../../middleware/jwt/validateToken'
+import { authToken } from '../../middleware/auth-token.middleware'
+import { IToken } from '../../types'
 import { Get } from '../../utils/decorators/endpoint.middleware'
 import { AuthService } from './auth.service'
 
 export class AuthController {
   constructor(readonly authService: AuthService) {}
 
-  @Get('/auth/user-info', validateToken)
+  @Get('/auth/user-validate', authToken)
   async userInfo(req: Request) {
-    const userId = req.query.id as string
-    return this.authService.userInfo(+userId)
+    const user = req.user as IToken
+    const data = await this.authService.userValidate(user.id)
+    return data
   }
 }

@@ -1,15 +1,16 @@
 import { Avatar, Dropdown } from 'antd'
 import { AiOutlineUser } from 'react-icons/ai'
-import { useRecoilState } from 'recoil'
 
+import { useSession } from '@/app/erp/use-session'
 import { ITEM } from '@/const/localStorageItems'
-import { userAuthState } from '@/states/userAuthState'
+import { PATHS } from '@/const/paths'
 
 export const UserAvatar = () => {
-  const [user] = useRecoilState(userAuthState)
+  // const [user] = useRecoilState(userAuthState)
+  const userName = useSession((st) => st.userName)
   return (
     <div className="flex items-center gap-2">
-      <p>{user?.user.name}</p>
+      <p>{userName}</p>
       <Dropdown
         trigger={['click']}
         menu={{
@@ -33,7 +34,7 @@ export const UserAvatar = () => {
                   console.log(err)
                 } finally {
                   // navigate('/auth/login')
-                  window.location.replace('/auth/login')
+                  window.location.replace(PATHS.erp.auth.main)
                 }
                 console.log('cierra todo')
               },

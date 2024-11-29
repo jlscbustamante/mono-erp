@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
+import { IamRole } from 'pizzadb'
 import { IamFunction } from '../entities/IamFuction'
-import { IamRole } from '../entities/IamRole'
 import IamFunctionRepository from '../repositories/iamFuction.repository'
 import IamRoleRepository from '../repositories/IamRole.repository'
 import { IamRoleService } from '../services/IamRole.service'

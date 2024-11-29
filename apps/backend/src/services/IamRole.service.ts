@@ -1,6 +1,4 @@
-import { IamFunction } from '../entities/IamFuction'
-import { IamRole } from '../entities/IamRole'
-import IamFunctionRepository from '../repositories/iamFuction.repository'
+import { IamRole } from 'pizzadb'
 import { IamRoleRepository } from '../repositories/IamRole.repository'
 import { EnvFilters } from '../types'
 import { dateNow } from '../utils/getDate'

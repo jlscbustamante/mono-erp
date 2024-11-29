@@ -35,7 +35,13 @@ module.exports = {
   rules: {
     'react/react-in-jsx-scope': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': 'warn',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+      },
+    ],
     'react-hooks/exhaustive-deps': 'off',
     'no-extra-semi': 'off',
     '@typescript-eslint/no-implicit-any-catch': 'off',
