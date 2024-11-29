@@ -12,10 +12,10 @@ import PaymentCulqi from '@/views/digitization/PaymentCulqi'
 import UploadFilePayments from '@/views/digitization/PaymentsIzipay'
 import RequestsDigitization from '@/views/digitization/requests'
 import UploadToRequest from '@/views/digitization/UploadToRequest'
+import CourierPage from '@/views/maintenance/Get/courier'
 import GetCashAccount from '@/views/maintenance/Get/GetCashAccount'
 import GetCategory from '@/views/maintenance/Get/GetCategory'
 import GetCostCenter from '@/views/maintenance/Get/GetCostCenter'
-import GetDriver from '@/views/maintenance/Get/GetDriver'
 import GetMenuReport from '@/views/maintenance/Get/GetMenuReport'
 import GetParameters from '@/views/maintenance/Get/GetParameters'
 import GetTerminalPost from '@/views/maintenance/Get/GetTerminalPost'
@@ -303,7 +303,7 @@ export const routerv2 = createBrowserRouter([
               },
               {
                 path: PATHS.erp.modulos.mantenimiento.motorizados,
-                element: <GetDriver />,
+                element: <CourierPage />,
               },
               {
                 path: PATHS.erp.modulos.mantenimiento.menuReportes,
