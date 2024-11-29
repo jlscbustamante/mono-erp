@@ -45,7 +45,7 @@ export const WarehouseTable = () => {
           dataIndex: 'type_sede',
           render: (val: WAREHOUSE_TYPE) =>
             val == WAREHOUSE_TYPE.STORE ? 'Tienda' : 'Almacén',
-          sorter: (a, b) => {
+          sorter: (a) => {
             if (a.type_sede === WAREHOUSE_TYPE.STORE) {
               return -1
             } else {
