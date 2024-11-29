@@ -42,15 +42,17 @@ import { loadReportsEndpoints } from './router/reports.router'
 import { loadRequestEndpoints } from './router/request'
 import { loadStoreEndpoints } from './router/store'
 // import { loadStoreEndpoints } from './router/store.router'
+import './modules/auth'
 import { commonEndopoints } from './modules/common'
 import { driverEndpoints } from './modules/driver'
 import { loadSucursalEndpoints } from './router/sucursal.router'
 import { loadSupplierEndpoints } from './router/supplier.router'
 import { loadTerminalPostEndpoints } from './router/terminalPost.router'
+import { globalRouter } from './utils/decorators/router-app'
 
 // Create Express server
 const app = express()
-const apiv2Router = express.Router()
+// const apiv2Router = express.Router()
 
 // Express configuration
 app.set('url_depend', config.url_depend)
@@ -70,8 +72,8 @@ app.get('/', (req, res) => {
 
 // ---
 
-driverEndpoints(apiv2Router)
-commonEndopoints(apiv2Router)
+driverEndpoints(globalRouter)
+commonEndopoints(globalRouter)
 
 // ---
 authEndpoints(app)
@@ -106,7 +108,8 @@ loadProductEndpoints(app)
 loadStoreEndpoints(app)
 loadInventoryMaintenanceEndpoints(app)
 loadAwsServiceEndpoints(app)
-app.use('/api/v2', apiv2Router)
+// app.use('/api/v2', apiv2Router)
+app.use('/api/v2', globalRouter)
 app.use(invalidRoute)
 app.use(logErrors)
 app.use(boomErrorHandler)

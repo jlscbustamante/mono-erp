@@ -1,0 +1,94 @@
+export const PATHS = {
+  erp: {
+    main: '/erp',
+    auth: {
+      main: '/erp/auth/login',
+    },
+    modulos: {
+      main: '/erp/modulos',
+      tiendas: {
+        main: '/erp/modulos/tiendas',
+        conciliar: '/erp/modulos/tiendas/conciliar',
+        mediosPago: '/erp/modulos/tiendas/medios-pago',
+        comprobarCajas: '/erp/modulos/tiendas/comprobar-cajas',
+        generarAsientos: '/erp/modulos/tiendas/generar-asientos',
+      },
+      requerimientos: {
+        main: '/erp/modulos/requerimientos',
+        solicitados: '/erp/modulos/requerimientos/solicitados',
+        aprobados: '/erp/modulos/requerimientos/aprobados',
+        rechazados: '/erp/modulos/requerimientos/rechazados',
+        reportes: {
+          main: '/erp/modulos/requerimientos/reportes',
+          detallado: '/erp/modulos/requerimientos/reportes/detallado',
+          resumido: '/erp/modulos/requerimientos/reportes/resumido',
+          porCentroCosto:
+            '/erp/modulos/requerimientos/reportes/por-centro-costo',
+        },
+      },
+      digitalizacion: {
+        main: '/erp/modulos/digitalizacion',
+        documentos: '/erp/modulos/digitalizacion/documentos',
+        escaneo: '/erp/modulos/digitalizacion/escaneo',
+        metodosPagos: {
+          main: '/erp/modulos/digitalizacion/metodos-pagos',
+          izipay: '/erp/modulos/digitalizacion/metodos-pagos/izipay',
+          culqui: '/erp/modulos/digitalizacion/metodos-pagos/culqui',
+          bancos: '/erp/modulos/digitalizacion/metodos-pagos/bancos',
+        },
+      },
+      mantenimiento: {
+        main: '/erp/modulos/mantenimiento',
+        categoria: '/erp/modulos/mantenimiento/categoria',
+        cuentaCaja: '/erp/modulos/mantenimiento/cuenta-caja',
+        centroCosto: '/erp/modulos/mantenimiento/centro-costo',
+        tipoCuenta: '/erp/modulos/mantenimiento/tipo-cuenta',
+        tipoCategoria: '/erp/modulos/mantenimiento/tipo-categoria',
+        terminalPos: '/erp/modulos/mantenimiento/terminal-pos',
+        motorizados: '/erp/modulos/mantenimiento/motorizados',
+        menuReportes: '/erp/modulos/mantenimiento/menu-reportes',
+        parametros: '/erp/modulos/mantenimiento/parametros',
+      },
+      seguridad: {
+        main: '/erp/modulos/seguridad',
+        usuarios: '/erp/modulos/seguridad/usuarios',
+        roles: '/erp/modulos/seguridad/roles',
+      },
+      mercaderia: {
+        main: '/erp/modulos/mercaderia',
+        despachos: {
+          main: '/erp/modulos/mercaderia/despachos',
+          deAlmacen: '/erp/modulos/mercaderia/despachos/alamcen',
+          entreTiendas: '/erp/modulos/mercaderia/despachos/entre-tiendas',
+          porRuta: '/erp/modulos/mercaderia/despachos/por-ruta',
+          consolidado: '/erp/modulos/mercaderia/despachos/consolidado',
+        },
+        compra: '/erp/modulos/mercaderia/compra',
+        reportes: {
+          main: '/erp/modulos/mercaderia/reportes',
+          porAlmacen: '/erp/modulos/mercaderia/reportes/por-almacen',
+          ratio: '/erp/modulos/mercaderia/reportes/ratio',
+        },
+        productos: '/erp/modulos/mercaderia/productos',
+        items: '/erp/modulos/mercaderia/items',
+        precios: '/erp/modulos/mercaderia/precios',
+        almacenes: '/erp/modulos/mercaderia/almacen',
+        proveedores: '/erp/modulos/mercaderia/proveedores',
+        rutasDespacho: '/erp/modulos/mercaderia/rutas-despacho',
+        transportistas: '/erp/modulos/mercaderia/transportistas',
+        mantenimiento: {
+          main: '/erp/modulos/mercaderia/mantenimiento',
+          categorias: '/erp/modulos/mercaderia/mantenimiento/categorias',
+          marcas: '/erp/modulos/mercaderia/mantenimiento/marcas',
+          unidades: '/erp/modulos/mercaderia/mantenimiento/unidades',
+          presentacion: '/erp/modulos/mercaderia/mantenimiento/presentacion',
+          equivalencias: '/erp/modulos/mercaderia/mantenimiento/equivalencias',
+          plantillas: '/erp/modulos/mercaderia/mantenimiento/plantillas',
+        },
+      },
+      reportes: {
+        main: '/erp/modulos/reportes',
+      },
+    },
+  },
+}

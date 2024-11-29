@@ -12,7 +12,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider } from 'react-router-dom'
 import { RecoilRoot } from 'recoil'
 
-import router from '@/router'
+import router from './router'
 dayjs.locale('es')
 
 export const queryClient = new QueryClient({
