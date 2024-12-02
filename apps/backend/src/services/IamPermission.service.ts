@@ -1,4 +1,4 @@
-import { IamPermission } from '../entities/IamPermission'
+import { IamPermission } from 'pizzadb'
 import { IamPermissionRepository } from '../repositories/iamPermission.repository'
 import { EnvFilters } from '../types'
 

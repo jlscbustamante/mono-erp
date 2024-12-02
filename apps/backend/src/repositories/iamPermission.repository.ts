@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { IamPermission } from 'pizzadb'
 import { AppDataSource } from '../config/database'
-import { IamPermission } from '../entities/IamPermission'
 import { EnvFilters } from '../types'
 import { OpFilter } from '../types/filter'
 import { filtersAdapterNt } from '../utils/filtersAdapter'

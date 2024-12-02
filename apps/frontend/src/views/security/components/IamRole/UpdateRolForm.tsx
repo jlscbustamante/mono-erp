@@ -1,46 +1,57 @@
-import { Button, Checkbox, Form, Input, Select, Table } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
-
-import { NOTIFICATION } from '@/const/notification'
 import {
-  deletePermission,
-  filterPermisions,
-  getFunction,
-  getModule,
-  groupFunction,
-  nameIamRol,
-  updateIIamRole,
-  updateRol,
-} from '@/data/security/IamRole/sdk'
+  Button,
+  Form,
+  Input,
+  Select,
+  Tree,
+  TreeDataNode,
+  TreeProps,
+} from 'antd'
+import React, {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
+
+import { modules } from '@/const'
 import { ICreateIamRole, IIamRole } from '@/data/security/IamRole/type/IamRole'
 import { IamRoleStatus } from '@/data/security/IamRole/type/status'
+import { authApi } from '@/lib/api/auth'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { IamFunction } from 'pizzadb'
+import { UpdateRoleDto } from 'shared'
 
-interface Permission {
-  rol_id: number
-  module_id: number
-  function_id: any
-  granted: number
+export interface IamFunctionWithChilds extends IamFunction {
+  childs: IamFunctionWithChilds[]
 }
 
-type Module = {
-  id: number
-  name: string
-  status: number
-  created_at: string
-  updated_at: string
-}
+function addChildsToItems(items: IamFunction[]): IamFunctionWithChilds[] {
+  // Crear un mapa de los elementos por su path_view
+  const map: { [path: string]: IamFunctionWithChilds } = {}
 
-type Funciones = {
-  id: number
-  name: string
-  module_id: string
-  path_function: string
-  path_view: string
-  status: number
-}
+  // Inicializar los hijos para cada item
+  items.forEach((item) => {
+    map[item.path_view] = { ...item, childs: [] } // Copiar el item y agregarle la propiedad 'childs'
+  })
 
-const groupedResults: Record<number, any[]> = {}
+  // Relacionar los elementos padres e hijos
+  const result: IamFunctionWithChilds[] = []
+
+  items.forEach((item) => {
+    const parentPath = item.path_view.split('/').slice(0, -1).join('/') // Obtener la URL padre
+
+    // Verificar si tiene un padre
+    if (parentPath && map[parentPath]) {
+      map[parentPath].childs.push(map[item.path_view]) // Agregar el item como hijo del padre
+    } else {
+      result.push(map[item.path_view]) // Si no tiene padre, es un elemento raíz
+    }
+  })
+
+  return result
+}
 
 export const UpdateRolForm: React.FC<{
   iamRole: ICreateIamRole | null
@@ -49,124 +60,77 @@ export const UpdateRolForm: React.FC<{
   reload: () => void
   showUnsign?: boolean
 }> = ({ iamRole, onClose, reload }) => {
-  const [moduleData, setModuleData] = useState<any[]>([])
   const [form] = Form.useForm()
 
-  const [selectedFunctions, setSelectedFunctions] = useState<Funciones[]>([])
-  const [funcionRol, setFuncionRol] = useState<Permission[]>([])
-  const [selectedFunctionsInLastTable, setSelectedFunctionsInLastTable] =
-    useState<Funciones[]>([])
-  const [menuSelect, setMenuSelect] = useState<number[]>([])
-  const [menSelect, setMenSelect] = useState<string[]>([])
-  const [meSelect, setMeSelect] = useState<string[]>([])
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const modules: Module[] = await getModule()
-        const funciones: Funciones[] = await getFunction()
-        const fetchedFuncionRol: Permission[] = await filterPermisions(
-          Number(iamRole?.id),
-        )
-        const matchingFunctionss: Funciones[] = funciones.filter((c) =>
-          fetchedFuncionRol.some((a) => a.function_id === c.id),
-        )
+  const views = useQuery({
+    queryKey: ['url-views'],
+    queryFn: () => authApi.getFunctions(),
+    staleTime: 60000 * 2,
+  })
 
-        setSelectedFunctionsInLastTable(matchingFunctionss)
-        setFuncionRol(fetchedFuncionRol)
-        const accumulatedPathsSet = new Set<string>()
+  const rolePermissions = useQuery({
+    queryKey: ['role-permissions', iamRole?.id],
+    enabled: !!iamRole?.id,
+    queryFn: () => authApi.getRolePermissions(iamRole!.id),
+  })
 
-        for (const a of matchingFunctionss) {
-          if (a.path_function) {
-            accumulatedPathsSet.add(a.path_function)
-          }
-        }
+  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>([])
 
-        const uniquePaths: string[] = Array.from(accumulatedPathsSet)
-        setMenSelect(uniquePaths)
-
-        const accumulatedPathsSets = new Set<string>()
-
-        for (const a of matchingFunctionss) {
-          if (a.name) {
-            accumulatedPathsSets.add(a.name)
-          }
-        }
-
-        const uniquePathss: string[] = Array.from(accumulatedPathsSets)
-        setMeSelect(uniquePathss)
-        for (const module of modules) {
-          const result = await groupFunction(String(module.id))
-          if (!groupedResults[module.id]) {
-            groupedResults[module.id] = []
-            groupedResults[module.id].push(result)
-          }
-        }
-
-        setSelectedFunctions(funciones)
-        setModuleData(modules)
-      } catch (err: any) {
-        toast.dark(err.message, NOTIFICATION.error)
-      }
-    }
-
-    fetchData()
-  }, [iamRole])
-
-  const handleCheckboxChange = (func: Funciones) => {
-    setSelectedFunctionsInLastTable((prevSelectedFunctions) => [
-      ...prevSelectedFunctions,
-      func,
-    ])
+  const onCheck: TreeProps['onCheck'] = (checkedKeysValue) => {
+    setCheckedKeys(checkedKeysValue as React.Key[])
   }
 
-  const handleCheckboxChanges = (funcs: Funciones[], isChecked: boolean) => {
-    setSelectedFunctionsInLastTable((prevSelectedFunctions) => {
-      if (isChecked) {
-        return [...prevSelectedFunctions, ...funcs]
-      } else {
-        return prevSelectedFunctions.filter(
-          (func) => !funcs.some((selectedFunc) => func.id === selectedFunc.id),
-        )
+  const treeData: TreeDataNode[] = useMemo(() => {
+    if (!views.data) return []
+    const urls = addChildsToItems(views.data)
+    return modules.map((el) => {
+      return {
+        title: el.module,
+        key: el.module,
+        children: urls
+          .filter((url) => {
+            return url.module_id === el.id
+          })
+          .map((el) => {
+            return {
+              title: el.name,
+              key: el.id,
+              children: el.childs.map((child) => {
+                return {
+                  title: child.name,
+                  key: child.id,
+                }
+              }),
+            }
+          }),
       }
     })
-  }
+  }, [views.data])
 
-  const onFinish = async (values: ICreateIamRole) => {
-    try {
-      const idNot = toast.loading('Actualizando  rol ...', NOTIFICATION.loading)
-
-      const data: any = await nameIamRol(String(values.name))
-      const id = data[0].id
-
-      try {
-        await deletePermission(id)
-        const newPermissions: Permission[] = selectedFunctionsInLastTable.map(
-          (funcion: Funciones) => ({
-            rol_id: id,
-            module_id: Number(funcion.module_id),
-            function_id: funcion.id,
-            granted: 1,
-          }),
-        )
-        await updateIIamRole(id, values)
-        await updateRol(newPermissions)
-      } catch (error: any) {
-        toast.error(error.message, NOTIFICATION.error)
-      }
-      toast.update(idNot, {
-        render: 'Rol actualizado',
-        ...NOTIFICATION.updateLoading,
-      })
-      reload()
-
-      onClose()
-    } catch (err: any) {
-      toast.error(err.message, NOTIFICATION.error)
+  const updateRoleMt = useMutation({
+    mutationFn: (upd: UpdateRoleDto) => authApi.updateRole(upd),
+    onSuccess: () => {
       reload()
       onClose()
+    },
+  })
+
+  const onFinish = async (values: any) => {
+    const permissions = checkedKeys.filter((el) => typeof el == 'number')
+    const updateRole: UpdateRoleDto = {
+      id: values.id,
+      name: values.name,
+      status: +values.status,
+      permissions: permissions as number[],
     }
+    await updateRoleMt.mutateAsync(updateRole)
   }
 
+  useEffect(() => {
+    if (rolePermissions.data) {
+      setCheckedKeys(rolePermissions.data?.map((el) => el.function_id) || [])
+    }
+  }, [rolePermissions.data])
   return (
     <>
       <div>
@@ -229,319 +193,18 @@ export const UpdateRolForm: React.FC<{
           </Form.Item>
         </Form>
       </div>
-
-      <div style={{ marginTop: '30px' }}>
-        <Table
-          dataSource={moduleData.map((module) => ({
-            id: module.id,
-            name: module.name,
-            key: module.id.toString(),
-          }))}
-          columns={[
-            {
-              title: 'Permisos del nuevo rol',
-              dataIndex: 'name',
-              key: 'name',
-              render: (text, record) => (
-                <React.Fragment>
-                  <span style={{ marginRight: '10px' }}>
-                    <Checkbox
-                      defaultChecked={funcionRol.some(
-                        (a) => a.module_id === record.id,
-                      )}
-                      onChange={(e) => {
-                        const matchingFunctions = selectedFunctions.filter(
-                          (func) => func.module_id === record.id,
-                        )
-                        const functions = groupedResults[record.id]
-                        if (e.target.checked) {
-                          const uniqueNames = new Set([...meSelect])
-
-                          for (const a of matchingFunctions) {
-                            uniqueNames.add(a.name)
-                          }
-
-                          setMeSelect([...uniqueNames])
-
-                          setMenSelect((prevMenSelect) => {
-                            const uniqueSet = new Set(prevMenSelect)
-
-                            functions
-                              .flatMap((func) => func.pathFunctionsArray)
-                              .forEach((newElement) => {
-                                uniqueSet.add(newElement)
-                              })
-
-                            const uniqueArray = Array.from(uniqueSet)
-
-                            return uniqueArray
-                          })
-
-                          setMenuSelect((prevMenuSelect) => {
-                            if (!prevMenuSelect.includes(record.id)) {
-                              return [...prevMenuSelect, record.id]
-                            }
-
-                            return prevMenuSelect
-                          })
-                          handleCheckboxChanges(
-                            matchingFunctions,
-                            e.target.checked,
-                          )
-                        } else {
-                          setMenSelect((prevSelect) => {
-                            const elementsToRemove = functions.flatMap(
-                              (func) => func.pathFunctionsArray,
-                            )
-
-                            const updatedMenSelect = prevSelect.filter(
-                              (element) => !elementsToRemove.includes(element),
-                            )
-
-                            return updatedMenSelect
-                          })
-
-                          setMeSelect((prevSelect) =>
-                            prevSelect.filter(
-                              (value) =>
-                                !matchingFunctions.some(
-                                  (a) => a.name === value,
-                                ),
-                            ),
-                          )
-
-                          setMenuSelect((prevMenuSelect) =>
-                            prevMenuSelect.filter((id) => id !== record.id),
-                          )
-                          setMenSelect((prevMenuSelect) =>
-                            prevMenuSelect.filter((id) => id !== record.id),
-                          )
-                          setSelectedFunctionsInLastTable(
-                            (prevSelectedFunctions) =>
-                              prevSelectedFunctions.filter(
-                                (func) => func.module_id !== record.id,
-                              ),
-                          )
-                        }
-                      }}
-                    />
-                  </span>
-                  {text}
-                </React.Fragment>
-              ),
-            },
-          ]}
-          pagination={false}
-          size="small"
-          expandable={{
-            expandedRowRender: (record) => {
-              const functions = groupedResults[record.id]
-
-              return (
-                <Table
-                  dataSource={(functions || []).flatMap((func, index) => {
-                    const rows = func.pathFunctionsArray.map(
-                      (functionName: any, subIndex: any) => ({
-                        id: `${index}-${subIndex}`,
-                        name: functionName,
-                        key: `${record.id}-${index}-${subIndex}`,
-                        module_id: record.id,
-                        module_name: record.name,
-                      }),
-                    )
-
-                    return rows
-                  })}
-                  columns={[
-                    {
-                      title: '',
-                      dataIndex: 'name',
-                      key: 'name',
-                      render: (text, menus) => (
-                        <React.Fragment>
-                          <span style={{ marginRight: '10px' }}>
-                            <Checkbox
-                              defaultChecked={(() => {
-                                for (const a of funcionRol) {
-                                  for (const b of selectedFunctions) {
-                                    if (
-                                      a.function_id === b.id &&
-                                      b.path_function === menus.name
-                                    ) {
-                                      return true
-                                    }
-                                  }
-                                }
-                                return false
-                              })()}
-                              onChange={(e) => {
-                                const matchingFunctions =
-                                  selectedFunctions.filter(
-                                    (func) =>
-                                      func.path_function === menus.name &&
-                                      func.module_id === menus.module_id,
-                                  )
-
-                                if (e.target.checked) {
-                                  const uniqueNames = new Set([...meSelect])
-
-                                  for (const a of matchingFunctions) {
-                                    uniqueNames.add(a.name)
-                                  }
-
-                                  setMeSelect([...uniqueNames])
-
-                                  setMenSelect((prevMenSelect) => {
-                                    if (!prevMenSelect.includes(text)) {
-                                      return [...prevMenSelect, text]
-                                    }
-
-                                    return prevMenSelect
-                                  })
-
-                                  handleCheckboxChanges(matchingFunctions, true)
-                                } else {
-                                  setMeSelect((prevSelect) =>
-                                    prevSelect.filter(
-                                      (value) =>
-                                        !matchingFunctions.some(
-                                          (a) => a.name === value,
-                                        ),
-                                    ),
-                                  )
-
-                                  setMenSelect((prevMenSelect) =>
-                                    prevMenSelect.filter(
-                                      (item) => item !== text,
-                                    ),
-                                  )
-
-                                  setSelectedFunctionsInLastTable(
-                                    (prevSelectedFunctions) => {
-                                      const updatedFunctions =
-                                        prevSelectedFunctions.filter(
-                                          (func) =>
-                                            func.path_function !== menus.name ||
-                                            func.module_id !== menus.module_id,
-                                        )
-                                      return updatedFunctions
-                                    },
-                                  )
-                                }
-                              }}
-                              checked={
-                                menSelect.some((a) => a === text) ||
-                                menuSelect.some((a) => a === menus.module_id)
-                              }
-                            />
-                          </span>
-                          {text}
-                        </React.Fragment>
-                      ),
-                    },
-                  ]}
-                  pagination={false}
-                  size="small"
-                  expandable={{
-                    expandedRowRender: (record) => {
-                      const functions = record.name
-                      const module = record.module_id
-                      const matchingFunctions = selectedFunctions.filter(
-                        (func) =>
-                          func.path_function === functions &&
-                          func.module_id === module,
-                      )
-                      const module_name = record.module_id
-
-                      return (
-                        <Table
-                          dataSource={matchingFunctions.map((func) => ({
-                            id: func.id,
-                            name: func.name,
-                            key: func.id.toString(),
-                          }))}
-                          columns={[
-                            {
-                              title: '',
-                              dataIndex: 'name',
-                              key: 'name',
-                              render: (text, funcRecord) => (
-                                <React.Fragment>
-                                  <span style={{ marginRight: '10px' }}>
-                                    <Checkbox
-                                      defaultChecked={funcionRol.some(
-                                        (func) =>
-                                          func.function_id === funcRecord.id,
-                                      )}
-                                      onChange={(e) => {
-                                        const selectedFunction =
-                                          matchingFunctions.find(
-                                            (func) => func.id === funcRecord.id,
-                                          )
-
-                                        if (selectedFunction) {
-                                          if (e.target.checked) {
-                                            setMeSelect((prevMenSelect) => {
-                                              if (
-                                                !prevMenSelect.includes(text)
-                                              ) {
-                                                return [...prevMenSelect, text]
-                                              }
-
-                                              return prevMenSelect
-                                            })
-                                            handleCheckboxChange(
-                                              selectedFunction,
-                                            )
-                                          } else {
-                                            setMeSelect((prevMenSelect) =>
-                                              prevMenSelect.filter(
-                                                (item) => item !== text,
-                                              ),
-                                            )
-
-                                            setSelectedFunctionsInLastTable(
-                                              (prevSelectedFunctions) =>
-                                                prevSelectedFunctions.filter(
-                                                  (func) =>
-                                                    func.id !==
-                                                    selectedFunction.id,
-                                                ),
-                                            )
-                                          }
-                                        }
-                                      }}
-                                      checked={
-                                        meSelect.some((a) => a === text) ||
-                                        (menuSelect.some(
-                                          (a) => a === module_name,
-                                        ) &&
-                                          menSelect.some(
-                                            (a) => a === functions,
-                                          ))
-                                      }
-                                    />
-                                  </span>
-                                  {text}
-                                </React.Fragment>
-                              ),
-                            },
-                          ]}
-                          pagination={false}
-                          size="small"
-                        />
-                      )
-                    },
-                  }}
-                />
-              )
-            },
-          }}
+      <div className="my-3">
+        <Tree
+          checkable
+          treeData={treeData}
+          onCheck={onCheck}
+          checkedKeys={checkedKeys}
         />
       </div>
 
       <div style={{ marginBottom: '16px' }}>
         <Button
+          loading={updateRoleMt.isPending}
           type="primary"
           onClick={async () => {
             await form.validateFields()

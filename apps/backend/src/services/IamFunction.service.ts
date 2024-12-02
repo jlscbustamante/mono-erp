@@ -1,4 +1,4 @@
-import { IamFunction } from '../entities/IamFuction'
+import { IamFunction } from 'pizzadb'
 import { IamFunctionRepository } from '../repositories/iamFuction.repository'
 import { EnvFilters } from '../types'
 import { dateNow } from '../utils/getDate'

@@ -7,7 +7,7 @@ import { PATHS } from '@/const/paths'
 
 export const UserAvatar = () => {
   // const [user] = useRecoilState(userAuthState)
-  const userName = useSession((st) => st.userName)
+  const userName = useSession((st) => st.user.userName)
   return (
     <div className="flex items-center gap-2">
       <p>{userName}</p>

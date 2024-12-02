@@ -31,6 +31,7 @@ export interface IToken {
   mail: string
   granted: number
   status: 'A'
+  rol_id: number
 }
 
 export enum StatusEntityNumber {

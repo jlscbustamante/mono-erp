@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { IamPermission } from '../entities/IamPermission'
+import { IamPermission } from 'pizzadb'
 import iamPermissionRepository from '../repositories/iamPermission.repository'
 import { IamPermissionService } from '../services/IamPermission.service'
 import { EnvFilters } from '../types'

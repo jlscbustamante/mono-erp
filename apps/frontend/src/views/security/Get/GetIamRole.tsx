@@ -1,5 +1,4 @@
 import '@/views/maintenance/components/Driver/style.css'
-import '@/views/maintenance/components/Driver/style.css'
 
 import { Button, Drawer, Table } from 'antd'
 import { useEffect, useState } from 'react'
@@ -84,6 +83,7 @@ export const GetIamRole = () => {
     setSelectedRequest(record)
     setIsUpdateFormVisible(true)
   }
+
   return (
     <div className="container mx-auto" style={{ marginTop: '-15px' }}>
       <div className="flex items-center gap-1.5 justify-between my-6 mt-1">
@@ -188,6 +188,7 @@ const RequirementsFound: React.FC<{
       <Table
         columns={columns}
         dataSource={data}
+        pagination={false}
         rowKey="id"
         size="small"
         style={{ marginTop: '-40px' }}

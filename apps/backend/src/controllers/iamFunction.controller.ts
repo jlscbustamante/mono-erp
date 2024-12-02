@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { IamFunction } from '../entities/IamFuction'
+import { IamFunction } from 'pizzadb'
 import IamFunctionRepository from '../repositories/iamFuction.repository'
 import { IamFunctionService } from '../services/IamFunction.service'
 import { EnvFilters } from '../types'

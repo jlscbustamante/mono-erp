@@ -10,8 +10,8 @@ import { useSession } from './use-session'
 export const ErpLayout = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const userId = useSession((st) => st.userId)
   const setSession = useSession((st) => st.setSession)
+  const user = useSession((st) => st.user)
 
   useEffect(() => {
     ;(async () => {
@@ -25,17 +25,21 @@ export const ErpLayout = () => {
   }, [])
 
   useEffect(() => {
-    if (userId != -1) {
+    if (user.userId != -1) {
       if (
         location.pathname == PATHS.erp.auth.main ||
         location.pathname == '/'
       ) {
         navigate(PATHS.erp.modulos.home)
+      } else {
+        if (!user.views.includes(location.pathname)) {
+          navigate(PATHS.erp.modulos.home)
+        }
       }
     }
-  }, [userId])
+  }, [user])
 
-  if (userId == -1 && location.pathname != PATHS.erp.auth.main) return null
+  if (user.userId == -1 && location.pathname != PATHS.erp.auth.main) return null
   return (
     <>
       <ErrorBoundary>

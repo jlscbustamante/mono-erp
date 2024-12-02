@@ -1,6 +1,13 @@
 import { DataSource } from 'typeorm'
 
-import { Carrier, IamRole, IamUser, Sucursal } from 'pizzadb'
+import {
+  Carrier,
+  IamFunction,
+  IamPermission,
+  IamRole,
+  IamUser,
+  Sucursal,
+} from 'pizzadb'
 import config from './config'
 
 const AppDataSource = new DataSource({
@@ -10,7 +17,15 @@ const AppDataSource = new DataSource({
   username: config.mysqlUser,
   password: config.mysqlPassword,
   database: config.mysqlDatabase,
-  entities: ['src/entities/**/*{.js,.ts}', Carrier, Sucursal, IamUser, IamRole],
+  entities: [
+    'src/entities/**/*{.js,.ts}',
+    Carrier,
+    Sucursal,
+    IamUser,
+    IamRole,
+    IamPermission,
+    IamFunction,
+  ],
   logging: config.showTypeormLog,
 })
 

@@ -4,4 +4,6 @@ export interface Session {
   mail: string;
   roleId: number;
   roleName: string;
+  views: string[];
+  modules: number[];
 }

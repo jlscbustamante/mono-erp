@@ -11,24 +11,15 @@ import {
 import { VscChromeRestore, VscGraph } from 'react-icons/vsc'
 import { useNavigate } from 'react-router-dom'
 
+import { useSession } from '@/app/erp/use-session'
 import { UserAvatar } from '@/components/Avatar'
-import config from '@/config'
 import { modules } from '@/const'
-import { ITEM } from '@/const/localStorageItems'
 
 export const Modules = () => {
-  const userPermission = JSON.parse(
-    localStorage.getItem(ITEM.USER_PERMISSION) || '{}',
+  const authorizedModules = useSession((st) => st.user.modules)
+  const availableModules = modules.filter((el) =>
+    authorizedModules.includes(el.id),
   )
-  const moduleNames =
-    userPermission?.permissions?.map(
-      (permission: { module_name: any }) => permission.module_name,
-    ) || []
-  const availableModules = config.allowViewAll
-    ? modules
-    : modules
-        .filter((el) => config.Modules.includes(el.module))
-        .filter((el) => moduleNames.includes(el.module))
 
   return (
     <div className="">
