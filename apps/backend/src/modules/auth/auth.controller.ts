@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { authToken } from '../../middleware/auth-token.middleware'
 import { IToken } from '../../types'
-import { Get, Put } from '../../utils/decorators/endpoint.middleware'
+import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
 import { AuthService } from './auth.service'
 
 export class AuthController {
@@ -35,5 +35,11 @@ export class AuthController {
   async getUserPermissions(req: Request) {
     const token = req.user as IToken
     return await this.authService.getRolePermissions(token.rol_id)
+  }
+
+  @Post('/auth/login')
+  async login(req: Request) {
+    const { email, password } = req.body
+    return await this.authService.login({ email, password })
   }
 }

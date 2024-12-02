@@ -30,5 +30,10 @@ export class AuthApi {
     )
     return result.data.data
   }
+
+  async login(data: { email: string; password: string }) {
+    const result = await this.client.post<{ data: string }>('auth/login', data)
+    return result.data.data
+  }
 }
 export const authApi = new AuthApi(client)

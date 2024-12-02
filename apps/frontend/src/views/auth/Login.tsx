@@ -6,17 +6,12 @@ import { AiOutlineUser } from 'react-icons/ai'
 import { RiLockPasswordLine } from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom'
 import { toast, ToastContainer } from 'react-toastify'
-import { useSetRecoilState } from 'recoil'
 
 import { ReactComponent as Logo } from '@/assets/logo.svg'
 // import Logo from '@/assets/logo.png'
-import { useSession } from '@/app/erp/use-session'
 import { ITEM } from '@/const/localStorageItems'
 import { NOTIFICATION } from '@/const/notification'
-import { PATHS } from '@/const/paths'
-import * as sdk from '@/data/auth/sdk'
 import { authApi } from '@/lib/api/auth'
-import { userAuthState } from '@/states/userAuthState'
 
 export const Login = () => {
   return (
@@ -37,8 +32,6 @@ const FormLogin = () => {
   localStorage.removeItem(ITEM.tkp)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const setSession = useSession((st) => st.setSession)
-  const setUserAuth = useSetRecoilState(userAuthState)
   localStorage.removeItem(ITEM.tkp)
   const navigate = useNavigate()
   const handleLogin = async ({
@@ -49,22 +42,24 @@ const FormLogin = () => {
     password: string
   }) => {
     try {
-      const authResponse = await sdk.login(email, password)
-      setUserAuth(authResponse)
-      localStorage.setItem(ITEM.TOKEN, authResponse.token)
-      localStorage.setItem(
-        ITEM.USER_BASIC_INFO,
-        JSON.stringify(authResponse.user),
-      )
-      localStorage.setItem(
-        ITEM.USER_PERMISSION,
-        JSON.stringify(authResponse.permissionData),
-      )
+      const token = await authApi.login({ email, password })
+      console.log('tokeN : ', token)
+      // const authResponse = await sdk.login(email, password)
+      // setUserAuth(authResponse)
+      // localStorage.setItem(ITEM.TOKEN, authResponse.token)
+      // localStorage.setItem(
+      //   ITEM.USER_BASIC_INFO,
+      //   JSON.stringify(authResponse.user),
+      // )
+      // localStorage.setItem(
+      //   ITEM.USER_PERMISSION,
+      //   JSON.stringify(authResponse.permissionData),
+      // )
 
-      const data = await authApi.userValidate()
-      setSession(data)
-      // toast.dismiss()
-      navigate(PATHS.erp.modulos.home)
+      // const data = await authApi.userValidate()
+      // setSession(data)
+      // // toast.dismiss()
+      // navigate(PATHS.erp.modulos.home)
     } catch (err: any) {
       toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
     }

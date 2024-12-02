@@ -1,4 +1,4 @@
-import type { Request, RequestHandler, Response } from 'express'
+import type { NextFunction, Request, RequestHandler, Response } from 'express'
 import 'reflect-metadata'
 import { globalRouter } from './router-app'
 
@@ -70,36 +70,52 @@ export function createApp(ControllerCLs: any, instance: any) {
         globalRouter.get(
           path,
           ...middlawares,
-          async (req: Request, res: Response) => {
-            const result = await boundHandler(req)
-            return res.json({ data: result })
+          async (req: Request, res: Response, next: NextFunction) => {
+            try {
+              const result = await boundHandler(req)
+              return res.json({ data: result })
+            } catch (err: any) {
+              next(err)
+            }
           },
         )
       } else if (httpMethod === 'post') {
         globalRouter.post(
           path,
           ...middlawares,
-          async (req: Request, res: Response) => {
-            const result = await boundHandler(req)
-            return res.json({ data: result })
+          async (req: Request, res: Response, next: NextFunction) => {
+            try {
+              const result = await boundHandler(req)
+              return res.json({ data: result })
+            } catch (err: any) {
+              next(err)
+            }
           },
         )
       } else if (httpMethod === 'put') {
         globalRouter.put(
           path,
           ...middlawares,
-          async (req: Request, res: Response) => {
-            const result = await boundHandler(req)
-            return res.json({ data: result })
+          async (req: Request, res: Response, next: NextFunction) => {
+            try {
+              const result = await boundHandler(req)
+              return res.json({ data: result })
+            } catch (err: any) {
+              next(err)
+            }
           },
         )
       } else if (httpMethod === 'delete') {
         globalRouter.delete(
           path,
           ...middlawares,
-          async (req: Request, res: Response) => {
-            const result = await boundHandler(req)
-            return res.json({ data: result })
+          async (req: Request, res: Response, next: NextFunction) => {
+            try {
+              const result = await boundHandler(req)
+              return res.json({ data: result })
+            } catch (err: any) {
+              next(err)
+            }
           },
         )
       }

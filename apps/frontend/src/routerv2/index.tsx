@@ -1,3 +1,4 @@
+import { OtpLoginPage } from '@/app/erp/auth/otp-login'
 import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
@@ -69,6 +70,10 @@ export const routerv2 = createBrowserRouter([
       {
         path: PATHS.erp.auth.main,
         element: <Login />,
+      },
+      {
+        path: PATHS.erp.auth.otpLogin,
+        element: <OtpLoginPage />,
       },
       {
         path: PATHS.erp.modulos.main,

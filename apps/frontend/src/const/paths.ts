@@ -3,6 +3,7 @@ export const PATHS = {
     main: '/erp',
     auth: {
       main: '/erp/auth/login',
+      otpLogin: '/erp/auth/otp-login',
     },
     modulos: {
       main: '/erp/modulos',
