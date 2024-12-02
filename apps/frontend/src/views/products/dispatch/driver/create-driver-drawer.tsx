@@ -48,9 +48,21 @@ export const CreateDriverDrawer = () => {
     })
   }
 
+  const onValuesChange = (changedValues: any) => {
+    if (changedValues.transportPlateNumber) {
+      let modifiedValue = changedValues.transportPlateNumber.toUpperCase()
+      modifiedValue = modifiedValue.replace(/[^a-zA-Z0-9]/g, '')
+
+      form.setFieldsValue({
+        transportPlateNumber: modifiedValue,
+      })
+    }
+  }
+
   return (
     <Drawer open={isOpen} onClose={close} title="Nuevo transporte" width={500}>
       <Form
+        onValuesChange={onValuesChange}
         initialValues={
           {
             driverTypeDoc: 'DNI',
@@ -101,6 +113,7 @@ export const CreateDriverDrawer = () => {
 
         <Form.Item name={'transportPlateNumber'} label={'Placa'}>
           <Input />
+          {/* <InputNumber /> */}
         </Form.Item>
 
         <Form.Item name={'status'} label={'Estado'}>

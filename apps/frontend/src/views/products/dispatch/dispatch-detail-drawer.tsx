@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Button, Drawer, Modal, Table } from 'antd'
+import { Button, Drawer, Table } from 'antd'
 import { useMemo, useRef } from 'react'
 import { FaTruck } from 'react-icons/fa6'
 import { IoMdPrint } from 'react-icons/io'
@@ -286,23 +286,6 @@ const DispatchHeader = ({
             onClick={() => open(dispatch.id)}
           >
             Despachar
-          </Button>
-        )}
-        {false && dispatch.status == DISPATCH_STATUS.DISPATCHED && (
-          <Button
-            onClick={() =>
-              Modal.confirm({
-                cancelText: 'Cancelar',
-                okText: 'Facturar',
-                title: '¿ Esta seguro que desea facturar esta despacho ?',
-                content: 'Una vez facturado no se podra modificar',
-                onOk: () => generateInvoiceMt.mutate(dispatch.id),
-              })
-            }
-            size="small"
-            loading={generateInvoiceMt.isPending}
-          >
-            Facturar
           </Button>
         )}
         {dispatch.status == DISPATCH_STATUS.INVOICED &&

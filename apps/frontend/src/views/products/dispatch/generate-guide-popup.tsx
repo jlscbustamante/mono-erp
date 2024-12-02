@@ -9,6 +9,7 @@ import {
 } from '@/data/hex/inventory'
 import { Dispatch, DispatchTransport } from '@/data/hex/types'
 
+import { filterSelectForm } from '@/utils'
 import { useDrivers } from './use-drivers'
 
 type TypeGuide = 'Externo' | 'Interno'
@@ -56,6 +57,7 @@ export const GenerateGuidePopup = ({
 
   const content = (
     <div className="w-80">
+      <p className="mb-2 font-semibold">Completa los datos del transporte</p>
       <Segmented
         options={['Externo', 'Interno']}
         block
@@ -91,8 +93,10 @@ export const GenerateGuidePopup = ({
         />
       ) : (
         <div className="flex justify-center py-5">
+          <p className="text-center text-slate-500">No disponible</p>
           <Button
             type="primary"
+            className="hidden"
             size="small"
             onClick={() =>
               Modal.confirm({
@@ -175,6 +179,8 @@ const GuideWithTransport = ({
           value={selectd}
           className="block w-9/12 my-2 ml-auto"
           size="small"
+          filterOption={filterSelectForm}
+          showSearch
           placeholder="Selecciona al transportista"
           onChange={(val) => {
             setSelected(val)
@@ -183,7 +189,7 @@ const GuideWithTransport = ({
         >
           {query.data?.map((driver) => (
             <Select.Option value={driver.id} key={driver.id}>
-              {driver.driverFirstName} {driver.driverLastName}
+              {`${driver.driverFirstName} ${driver.driverLastName}`}
             </Select.Option>
           ))}
         </Select>

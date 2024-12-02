@@ -73,8 +73,20 @@ const UpdateDriver = ({
     updateDriverMt.mutate(values)
   }
 
+  const onValuesChange = (changedValues: any) => {
+    if (changedValues.transportPlateNumber) {
+      let modifiedValue = changedValues.transportPlateNumber.toUpperCase()
+      modifiedValue = modifiedValue.replace(/[^a-zA-Z0-9]/g, '')
+
+      form.setFieldsValue({
+        transportPlateNumber: modifiedValue,
+      })
+    }
+  }
+
   return (
     <Form
+      onValuesChange={onValuesChange}
       initialValues={{
         ...driver,
       }}
