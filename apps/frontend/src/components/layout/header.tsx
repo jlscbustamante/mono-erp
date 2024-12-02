@@ -54,7 +54,7 @@ export const HeaderLayout = ({
           <button
             className="rounded-full bg-white p-1 flex items-center justify-center border-0 cursor-pointer hover:bg-slate-100 transition-colors ease-in-out hover:text-slate-800"
             // onClick={() => navigate(PATHS.modules)}
-            onClick={() => navigate(PATHS.erp.modulos.main)}
+            onClick={() => navigate(PATHS.erp.modulos.home)}
             style={{ transform: 'scale(-1)' }}
           >
             <BiExit className="w-5 h-auto" />

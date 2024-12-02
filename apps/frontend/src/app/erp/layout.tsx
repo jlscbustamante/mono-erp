@@ -26,8 +26,11 @@ export const ErpLayout = () => {
 
   useEffect(() => {
     if (userId != -1) {
-      if (location.pathname == PATHS.erp.auth.main) {
-        navigate(PATHS.erp.modulos.main)
+      if (
+        location.pathname == PATHS.erp.auth.main ||
+        location.pathname == '/'
+      ) {
+        navigate(PATHS.erp.modulos.home)
       }
     }
   }, [userId])

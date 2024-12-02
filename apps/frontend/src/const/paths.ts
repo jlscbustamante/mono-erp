@@ -6,6 +6,7 @@ export const PATHS = {
     },
     modulos: {
       main: '/erp/modulos',
+      home: '/erp/modulos/home',
       tiendas: {
         main: '/erp/modulos/tiendas',
         conciliar: '/erp/modulos/tiendas/conciliar',

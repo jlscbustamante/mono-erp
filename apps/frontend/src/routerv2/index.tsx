@@ -74,7 +74,7 @@ export const routerv2 = createBrowserRouter([
         path: PATHS.erp.modulos.main,
         children: [
           {
-            path: PATHS.erp.modulos.main,
+            path: PATHS.erp.modulos.home,
             element: <Modules />,
           },
           {
