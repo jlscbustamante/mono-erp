@@ -1,3 +1,4 @@
+import { axiosCatch } from '@/utils/middleware/axios-catch.middleware'
 import { AxiosInstance } from 'axios'
 import { IamFunction, IamPermission } from 'pizzadb'
 import { Session, UpdateRoleDto } from 'shared'
@@ -31,6 +32,7 @@ export class AuthApi {
     return result.data.data
   }
 
+  @axiosCatch
   async login(data: { email: string; password: string }) {
     const result = await this.client.post<{ data: string }>('auth/login', data)
     return result.data.data

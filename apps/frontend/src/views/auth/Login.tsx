@@ -12,6 +12,7 @@ import { ReactComponent as Logo } from '@/assets/logo.svg'
 import { ITEM } from '@/const/localStorageItems'
 import { NOTIFICATION } from '@/const/notification'
 import { authApi } from '@/lib/api/auth'
+import { useMutation } from '@tanstack/react-query'
 
 export const Login = () => {
   return (
@@ -34,6 +35,18 @@ const FormLogin = () => {
   const [password, setPassword] = useState('')
   localStorage.removeItem(ITEM.tkp)
   const navigate = useNavigate()
+
+  const loginMt = useMutation({
+    mutationFn: (variables: { email: string; password: string }) =>
+      authApi.login(variables),
+    onSuccess: (token) => {
+      console.log('token : ', token)
+    },
+    onError: (err) => {
+      toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
+    },
+  })
+
   const handleLogin = async ({
     email,
     password,
@@ -41,28 +54,7 @@ const FormLogin = () => {
     email: string
     password: string
   }) => {
-    try {
-      const token = await authApi.login({ email, password })
-      console.log('tokeN : ', token)
-      // const authResponse = await sdk.login(email, password)
-      // setUserAuth(authResponse)
-      // localStorage.setItem(ITEM.TOKEN, authResponse.token)
-      // localStorage.setItem(
-      //   ITEM.USER_BASIC_INFO,
-      //   JSON.stringify(authResponse.user),
-      // )
-      // localStorage.setItem(
-      //   ITEM.USER_PERMISSION,
-      //   JSON.stringify(authResponse.permissionData),
-      // )
-
-      // const data = await authApi.userValidate()
-      // setSession(data)
-      // // toast.dismiss()
-      // navigate(PATHS.erp.modulos.home)
-    } catch (err: any) {
-      toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
-    }
+    loginMt.mutate({ email, password })
   }
   return (
     <Form
