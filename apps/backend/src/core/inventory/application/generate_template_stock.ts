@@ -161,7 +161,9 @@ export class GenerateTemplateEditStock {
     } = args
     const newStock: StockItemToCreateDto[] = []
     const templateIds = template.map((el) => el.id)
-    const itemsInClosedStock = stockClosed.map((el) => el.itemId)
+    const itemsInClosedStock = stockClosed
+      .filter((el) => el.stockPhysical > 0)
+      .map((el) => el.itemId)
     const itemInProvisionalStock = provitionalStock.map((el) => el.itemId)
     const usedItemIds = [...itemsInClosedStock, ...itemInProvisionalStock]
     const itemsNotInTemplate = usedItemIds.filter(
