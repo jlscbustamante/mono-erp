@@ -1,3 +1,4 @@
+import { appConfig } from '@/const/config'
 import { PATHS, PATHS_MAIN } from '@/const/paths'
 import { authApi } from '@/lib/api/auth'
 import { ErrorBoundary } from '@/views/ErrorBoundary'
@@ -37,8 +38,10 @@ export const ErpLayout = () => {
       ) {
         navigate(PATHS.erp.modulos.home)
       } else {
-        if (!user.views.concat(PATHS_MAIN).includes(location.pathname)) {
-          navigate(PATHS.erp.modulos.home)
+        if (!appConfig.ui.fullAccess) {
+          if (!user.views.concat(PATHS_MAIN).includes(location.pathname)) {
+            navigate(PATHS.erp.modulos.home)
+          }
         }
       }
     }

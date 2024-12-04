@@ -4,9 +4,9 @@ import { MdEdit } from 'react-icons/md'
 import { useNavigate } from 'react-router'
 
 import { getTemplateBase, TemplateType } from '@/data/products/sdk'
-import { PATHS } from '@/router/paths'
 import { TemplateBase } from '@/views/products/templates/useStore'
 
+import { PATHS } from '@/const/paths'
 import { getTemplateTypeName } from './templateTypeName'
 
 export const TemplatesTable = () => {
@@ -14,7 +14,9 @@ export const TemplatesTable = () => {
   const navigate = useNavigate()
 
   const onEdit = (element: TemplateBase) => {
-    navigate(`${PATHS.products.editTemplates}/${element.id}`)
+    navigate(
+      `${PATHS.erp.modulos.mercaderia.mantenimiento.plantillas}/${element.id}`,
+    )
   }
 
   return (

@@ -43,6 +43,7 @@ import Provider from '@/views/products/provider/page'
 import Purchase from '@/views/products/Purchase'
 import Stock from '@/views/products/Stock'
 import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
+import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
 import Reports from '@/views/reports/Reports'
 import Approved from '@/views/requests/Approved'
@@ -238,6 +239,10 @@ export const routerv2 = createBrowserRouter([
                   {
                     path: PATHS.erp.modulos.mercaderia.mantenimiento.plantillas,
                     element: <TemplatePage />,
+                  },
+                  {
+                    path: `${PATHS.erp.modulos.mercaderia.mantenimiento.plantillas}/:id`,
+                    element: <EditTemplate />,
                   },
                 ],
               },
