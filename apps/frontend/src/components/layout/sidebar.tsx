@@ -69,7 +69,7 @@ export const SidebarLayout = ({
   return (
     <div className="h-full overflow-y-auto  shrink-0  float-left transition-[width] ease-in-out duration-300">
       <Menu
-        className={cn({
+        className={cn('h-full', {
           'w-[3.75rem]': !show,
           'w-80': show,
         })}
