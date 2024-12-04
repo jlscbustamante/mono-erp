@@ -1,3 +1,4 @@
+import { NotFound } from '@/app/404'
 import { OtpLoginPage } from '@/app/erp/auth/otp-login'
 import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
@@ -342,5 +343,9 @@ export const routerv2 = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ])
