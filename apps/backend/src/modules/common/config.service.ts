@@ -21,6 +21,7 @@ export class ConfigService {
   private init() {
     const env = process.env
     this.config = {
+      isDev: env.NODE_ENV == 'development',
       email: {
         host: env.EMAIL_HOST,
         port: env.EMAIL_PORT,

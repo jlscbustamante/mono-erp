@@ -1,0 +1,17 @@
+{
+  "sqltools.connections": [
+    {
+      "mysqlOptions": {
+        "authProtocol": "default",
+        "enableSsl": "Disabled"
+      },
+      "previewLimit": 60,
+      "server": "localhost",
+      "port": 3306,
+      "driver": "MySQL",
+      "name": "local db",
+      "username": "dboRSap",
+      "database": "db_erpraul_v1"
+    }
+  ]
+}

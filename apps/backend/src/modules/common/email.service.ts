@@ -2,10 +2,20 @@ import nodemailer from 'nodemailer'
 import { ConfigService } from './config.service'
 import { OtpService } from './otp.service'
 
+interface Register {
+  email: string
+  lastSent: Date
+  attempts: number
+}
+
 export class EmailService {
   private contentOtp = ''
   private transporter
-  // private transporter: nodemailer.Transporter<any>
+  private register: Record<string, Register> = {}
+  private config = {
+    limit: 5,
+    interval: 1000 * 60 * 5,
+  }
 
   constructor(
     // private readonly mailerService: MailerService,
@@ -42,18 +52,52 @@ export class EmailService {
     })
   }
 
+  private checkRegister(email: string) {
+    if (!this.register[email]) {
+      this.register[email] = {
+        email,
+        lastSent: new Date(),
+        attempts: 1,
+      }
+    } else {
+      const now = new Date()
+      const diff = now.getTime() - this.register[email].lastSent.getTime()
+      if (diff < this.config.interval) {
+        this.register[email].attempts++
+        if (this.register[email].attempts > this.config.limit) {
+          throw new Error(
+            'Demasiados intentos, vuelve a intentarlo en 5 minutos',
+          )
+        }
+      } else {
+        this.register[email].lastSent = now
+        this.register[email].attempts = 1
+      }
+    }
+  }
+
+  async resend(name: string, email: string) {
+    this.checkRegister(email)
+  }
+
   async sendOtp(name: string, email: string) {
+    this.checkRegister(email)
+
     const otp = await this.otpService.generate(email)
 
-    const html = this.contentOtp
-      .replace('$$otp', otp.toString())
-      .replace('$$name', name)
+    if (this.configService.get('isDev')) {
+      console.log('OTP : ', otp)
+    } else {
+      const html = this.contentOtp
+        .replace('$$otp', otp.toString())
+        .replace('$$name', name)
 
-    await this.transporter.sendMail({
-      to: email,
-      from: this.configService.get('email.email'),
-      subject: '[Pizza raul] Reseto de contraseña',
-      html,
-    })
+      await this.transporter.sendMail({
+        to: email,
+        from: this.configService.get('email.email'),
+        subject: '[Pizza raul] Reseto de contraseña',
+        html,
+      })
+    }
   }
 }

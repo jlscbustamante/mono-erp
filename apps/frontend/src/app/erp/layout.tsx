@@ -19,7 +19,11 @@ export const ErpLayout = () => {
         const data = await authApi.userValidate()
         setSession(data)
       } catch (err: any) {
-        navigate(PATHS.erp.auth.main)
+        if (
+          location.pathname != PATHS.erp.auth.otpLogin &&
+          location.pathname != PATHS.erp.auth.main
+        )
+          navigate(PATHS.erp.auth.main)
       }
     })()
   }, [])
@@ -39,7 +43,12 @@ export const ErpLayout = () => {
     }
   }, [user])
 
-  if (user.userId == -1 && location.pathname != PATHS.erp.auth.main) return null
+  if (
+    user.userId == -1 &&
+    location.pathname != PATHS.erp.auth.main &&
+    location.pathname != PATHS.erp.auth.otpLogin
+  )
+    return null
   return (
     <>
       <ErrorBoundary>

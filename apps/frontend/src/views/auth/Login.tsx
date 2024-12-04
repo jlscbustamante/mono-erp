@@ -11,6 +11,7 @@ import { ReactComponent as Logo } from '@/assets/logo.svg'
 // import Logo from '@/assets/logo.png'
 import { ITEM } from '@/const/localStorageItems'
 import { NOTIFICATION } from '@/const/notification'
+import { PATHS } from '@/const/paths'
 import { authApi } from '@/lib/api/auth'
 import { useMutation } from '@tanstack/react-query'
 
@@ -40,7 +41,7 @@ const FormLogin = () => {
     mutationFn: (variables: { email: string; password: string }) =>
       authApi.login(variables),
     onSuccess: (token) => {
-      console.log('token : ', token)
+      navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}`)
     },
     onError: (err) => {
       toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
@@ -56,6 +57,7 @@ const FormLogin = () => {
   }) => {
     loginMt.mutate({ email, password })
   }
+
   return (
     <Form
       name="wrap"
