@@ -89,6 +89,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
           },
         },
       },
+      cache: 1000 * 60 * 20,
     })
     this.validateItems(items)
     const presentationIds = items.map((el) => el.itemMove.presentationId)
@@ -183,6 +184,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
         sucursal_type: 'PIZZA',
         used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
       },
+      cache: 1000 * 60 * 20,
     })
     if (!templatebase) {
       if (isWarehouse)
@@ -208,6 +210,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
           id: 'ASC',
         },
       },
+      cache: 1000 * 60 * 20,
     })
     const items: Item[] = templateItems
       .map((el) => {

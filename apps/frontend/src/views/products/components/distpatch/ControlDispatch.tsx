@@ -28,6 +28,11 @@ export const ControlDispatch = () => {
       options: [OpFilter.Equal],
     },
     {
+      label: 'Almacen',
+      key: 'wareFromId',
+      options: [OpFilter.Select],
+    },
+    {
       label: 'Tienda',
       key: 'wareToId',
       options: [OpFilter.Select],

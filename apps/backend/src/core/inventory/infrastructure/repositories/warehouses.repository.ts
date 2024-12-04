@@ -44,7 +44,9 @@ export class WarehousesRepositoryImpl implements WarehousesRepository {
   }
 
   async isWarehouse(code: string): Promise<boolean> {
-    const warehouses = await sucursalRepository.find()
+    const warehouses = await sucursalRepository.find({
+      cache: 1000 * 60 * 20,
+    })
     const warehouse = warehouses.find((w) => w.id === code)
     if (!warehouse)
       throw new Error('No se encontro sucursal con el codigo : ' + code)
@@ -52,7 +54,10 @@ export class WarehousesRepositoryImpl implements WarehousesRepository {
   }
 
   async getWarehouse(code: string): Promise<Warehouse | null> {
-    const warehouse = await sucursalRepository.findOne({ where: { id: code } })
+    const warehouse = await sucursalRepository.findOne({
+      where: { id: code },
+      cache: 1000 * 60 * 20,
+    })
     if (!warehouse) return null
     return {
       code: warehouse.id,
