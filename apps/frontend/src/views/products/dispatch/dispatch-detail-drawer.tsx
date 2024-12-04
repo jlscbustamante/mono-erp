@@ -1,15 +1,13 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { Button, Drawer, Table } from 'antd'
 import { useMemo, useRef } from 'react'
 import { FaTruck } from 'react-icons/fa6'
 import { IoMdPrint } from 'react-icons/io'
 import ReactToPrint from 'react-to-print'
-import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
 import './style-items-print.css'
 import './style-prin.css'
 
-import { generateInvoice } from '@/data/hex/inventory'
 import { Dispatch, DISPATCH_MOVE_TYPE, DISPATCH_STATUS } from '@/data/hex/types'
 import { fCurrency } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
@@ -164,17 +162,6 @@ const DispatchHeader = ({
       null
     )
   }, [querydocs.data, dispatch.numInvoice])
-
-  const generateInvoiceMt = useMutation({
-    mutationFn: generateInvoice,
-    onSuccess: () => {
-      onUpdate?.()
-      toast.success('Factura generada')
-    },
-    onError: (err) => {
-      toast.error(err.message)
-    },
-  })
 
   return (
     <div className="flex justify-between items-center mb-2">
