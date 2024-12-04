@@ -37,9 +37,25 @@ export class AuthController {
     return await this.authService.getRolePermissions(token.rol_id)
   }
 
+  @Post('/auth/resend-otp')
+  async resendOtp(req: Request) {
+    const { token } = req.body
+    return await this.authService.resendOtp(token)
+  }
+
   @Post('/auth/login')
   async login(req: Request) {
     const { email, password } = req.body
     return await this.authService.login({ email, password })
+  }
+
+  @Post('/auth/validate-login')
+  async validateLogin(req: Request) {
+    const { token, otp } = req.body
+    const data = await this.authService.validateEmailAndLogin({
+      otp,
+      token,
+    })
+    return data
   }
 }

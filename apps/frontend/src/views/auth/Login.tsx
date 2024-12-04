@@ -1,11 +1,11 @@
-import 'react-toastify/dist/ReactToastify.css'
+// import 'react-toastify/dist/ReactToastify.css'
 
 import { Button, Form, Input } from 'antd'
 import { useState } from 'react'
 import { AiOutlineUser } from 'react-icons/ai'
 import { RiLockPasswordLine } from 'react-icons/ri'
 import { useNavigate } from 'react-router-dom'
-import { toast, ToastContainer } from 'react-toastify'
+import { toast } from 'react-toastify'
 
 import { ReactComponent as Logo } from '@/assets/logo.svg'
 // import Logo from '@/assets/logo.png'
@@ -25,7 +25,7 @@ export const Login = () => {
       <div className="flex justify-center mt-10">
         <FormLogin />
       </div>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </div>
   )
 }
@@ -41,7 +41,7 @@ const FormLogin = () => {
     mutationFn: (variables: { email: string; password: string }) =>
       authApi.login(variables),
     onSuccess: (token) => {
-      navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}`)
+      navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}&email=${email}`)
     },
     onError: (err) => {
       toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
@@ -92,7 +92,7 @@ const FormLogin = () => {
         {/* ¿Olvidaste tu contraseña? <Link to={}>Recupérala aqui</Link> */}
       </div>
       <Form.Item className="text-center">
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" loading={loginMt.isPending}>
           Ingresar
         </Button>
       </Form.Item>

@@ -10,7 +10,7 @@ export class OtpService {
   private otps: Record<string, OtpRegister> = {}
   private readonly config = {
     duration: 1000 * 60 * 5,
-    maxRetry: 3,
+    maxRetry: 10,
   }
 
   constructor(private readonly configService: ConfigService) {}
@@ -52,11 +52,15 @@ export class OtpService {
     }
     const retryCount = data.retryCount + 1
 
+    this.otps[emailOrPhone].retryCount = retryCount
     if (retryCount > this.config.maxRetry) {
       throw new Error('Has intentado muchas veces, vuelve a generar el codigo')
     } else {
-      this.otps[emailOrPhone].retryCount = retryCount
       return false
     }
+  }
+
+  getOtp(emailOrPhone: string) {
+    return this.otps[emailOrPhone].otp
   }
 }

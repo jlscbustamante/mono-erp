@@ -125,7 +125,7 @@ export class AuthService {
 
     await this.emailService.sendOtp(user.name, email)
     const token = jwt.sign(
-      { email },
+      { email, name: user.name },
       this.configService.get<string>('auth.jwtLoginSecret'),
       {
         expiresIn: '20m',
@@ -138,51 +138,63 @@ export class AuthService {
     return token
   }
 
-  async validateOtp(token: string, otp: string) {
+  async resendOtp(token: string) {
     try {
-      const isValidToken = jwt.verify(
+      const isValid = jwt.verify(
         token,
         this.configService.get('auth.jwtLoginSecret'),
       )
-      if (!isValidToken) throw badRequest('Token invalido')
-      const { email } = isValidToken as { email: string }
-      const isValid = this.otpService.validate(email, otp)
-      return isValid
+      const { email, name } = isValid as { email: string; name: string }
+      await this.emailService.resend(name, email)
     } catch (err: any) {
-      if (err.message == 'jwt expired') throw badRequest('Token expirado')
-      throw badRequest('Token invalido')
+      if (err.message == 'jwt expired')
+        throw badRequest('Tiempo de inicio de sesión agotado')
+      throw badRequest(err.message)
     }
   }
 
   async validateEmailAndLogin({ token, otp }: { token: string; otp: string }) {
-    const isValid = jwt.verify(
-      token,
-      this.configService.get('auth.jwtLoginSecret'),
-    )
-    if (!isValid) throw badRequest('Token invalido')
-    const { email } = isValid as { email: string }
+    try {
+      const isValid = jwt.verify(
+        token,
+        this.configService.get('auth.jwtLoginSecret'),
+      )
+      if (!isValid) throw badRequest('Token invalido')
+      const { email } = isValid as { email: string }
 
-    const user = await this.iamUserRepository.findOne({
-      where: {
-        email,
-      },
-    })
-    if (!user) throw badRequest('El usuario no existe')
-    const isValidOtp = await this.otpService.validate(email, otp)
+      const user = await this.iamUserRepository.findOne({
+        where: {
+          email,
+        },
+      })
+      if (!user) throw badRequest('El usuario no existe')
+      const isValidOtp = this.otpService.validate(email, otp)
 
-    if (!isValidOtp) throw badRequest('El OTP es incorrecto')
+      if (!isValidOtp) throw badRequest('El OTP es incorrecto')
 
-    const data: IToken = {
-      id: user.id,
-      name: user.name,
-      granted: 1,
-      mail: user.email,
-      rol_id: user.rol_id,
-      status: 'A',
-    }
-    const tokenLogin = jwt.sign(data, this.configService.get('auth.jwtSecret'))
-    return {
-      token: tokenLogin,
+      const data: IToken = {
+        id: user.id,
+        name: user.name,
+        granted: 1,
+        mail: user.email,
+        rol_id: user.rol_id,
+        status: 'A',
+      }
+      const tokenLogin = jwt.sign(
+        data,
+        this.configService.get('auth.jwtSecret'),
+      )
+
+      const session: Session = await this.userValidate(user.id)
+
+      return {
+        token: tokenLogin,
+        session,
+      }
+    } catch (err: any) {
+      if (err.message == 'jwt expired')
+        throw badRequest('Tiempo de inicio de sesión agotado')
+      throw badRequest(err.message)
     }
   }
 }

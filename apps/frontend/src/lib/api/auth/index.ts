@@ -37,5 +37,19 @@ export class AuthApi {
     const result = await this.client.post<{ data: string }>('auth/login', data)
     return result.data.data
   }
+
+  @axiosCatch
+  async validateLogin(data: { otp: string; token: string }) {
+    const result = await this.client.post<{
+      data: { session: Session; token: string }
+    }>('auth/validate-login', data)
+    return result.data.data
+  }
+
+  @axiosCatch
+  async resendOtp(data: { token: string }) {
+    const result = await this.client.post('auth/resend-otp', data)
+    return result.data
+  }
 }
 export const authApi = new AuthApi(client)
