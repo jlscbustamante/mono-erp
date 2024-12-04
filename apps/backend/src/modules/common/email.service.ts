@@ -132,7 +132,7 @@ export class EmailService {
       await this.transporter.sendMail({
         to: email,
         from: this.configService.get('email.email'),
-        subject: '[Pizza raul] Reseto de contraseña',
+        subject: '[Pizza raul] Verificación de inicio de sesión',
         html,
       })
     }
