@@ -12,10 +12,10 @@ import {
   IItemTemplate,
   TemplateType,
 } from '@/data/products/sdk'
-import { PATHS } from '@/router/paths'
 import { CreateDrawer } from '@/views/products/templates/edit/create-drawer'
 import { EditItemDrawer } from '@/views/products/templates/edit/edit-drawer'
 
+import { PATHS } from '@/const/paths'
 import { getTemplateTypeName } from '../components/templateTypeName'
 
 export default function EditTemplate() {
@@ -71,7 +71,7 @@ export default function EditTemplate() {
         <div
           className="flex items-center gap-2 hover:underline cursor-pointer"
           onClick={() => {
-            navigate(PATHS.products.templates)
+            navigate(PATHS.erp.modulos.mercaderia.mantenimiento.plantillas)
           }}
         >
           <FaArrowLeft />
