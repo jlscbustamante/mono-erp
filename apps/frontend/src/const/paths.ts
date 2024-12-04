@@ -95,3 +95,12 @@ export const PATHS = {
     },
   },
 }
+
+export const PATHS_MAIN = [
+  PATHS.erp.modulos.tiendas.main,
+  PATHS.erp.modulos.requerimientos.main,
+  PATHS.erp.modulos.digitalizacion.main,
+  PATHS.erp.modulos.mantenimiento.main,
+  PATHS.erp.modulos.mercaderia.main,
+  PATHS.erp.modulos.reportes.main,
+]

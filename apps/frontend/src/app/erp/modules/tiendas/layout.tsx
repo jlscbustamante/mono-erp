@@ -1,5 +1,6 @@
 import { EmptyModule } from '@/components/empty-module'
 import Layout, { MenuOption, MenuSeparator, gm } from '@/components/layout'
+import { appConfig } from '@/const/config'
 import { PATHS } from '@/const/paths'
 import { useMemo } from 'react'
 import { useOutlet } from 'react-router'
@@ -50,7 +51,9 @@ export const TiendasLayout = () => {
     <>
       <Layout>
         <Layout.Header defaultTitle="Tiendas" />
-        <Layout.Sidebar options={authorizedViews} />
+        <Layout.Sidebar
+          options={appConfig.ui.fullAccess ? menu : authorizedViews}
+        />
         <Layout.Content>{outlet ? outlet : <EmptyModule />}</Layout.Content>
       </Layout>
     </>

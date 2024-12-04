@@ -5,6 +5,7 @@ import Layout, {
   MenuSeparator,
   separator,
 } from '@/components/layout'
+import { appConfig } from '@/const/config'
 import { PATHS } from '@/const/paths'
 import { useMemo } from 'react'
 import { useOutlet } from 'react-router'
@@ -64,7 +65,9 @@ export const DigitalizacionLayout = () => {
   return (
     <Layout>
       <Layout.Header defaultTitle="Digitalización" />
-      <Layout.Sidebar options={authorizedViews} />
+      <Layout.Sidebar
+        options={appConfig.ui.fullAccess ? menu : authorizedViews}
+      />
       <Layout.Content>{outlet ? outlet : <EmptyModule />}</Layout.Content>
     </Layout>
   )

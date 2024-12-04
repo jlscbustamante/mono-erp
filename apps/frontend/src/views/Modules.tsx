@@ -14,12 +14,15 @@ import { useNavigate } from 'react-router-dom'
 import { useSession } from '@/app/erp/use-session'
 import { UserAvatar } from '@/components/Avatar'
 import { modules } from '@/const'
+import { appConfig } from '@/const/config'
+import { useMemo } from 'react'
 
 export const Modules = () => {
   const authorizedModules = useSession((st) => st.user.modules)
-  const availableModules = modules.filter((el) =>
-    authorizedModules.includes(el.id),
-  )
+  const availableModules = useMemo(() => {
+    if (appConfig.ui.fullAccess) return modules
+    return modules.filter((el) => authorizedModules.includes(el.id))
+  }, [authorizedModules, appConfig.ui.fullAccess])
 
   return (
     <div className="">

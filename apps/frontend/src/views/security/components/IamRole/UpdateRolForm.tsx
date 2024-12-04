@@ -32,9 +32,11 @@ function addChildsToItems(items: IamFunction[]): IamFunctionWithChilds[] {
   const map: { [path: string]: IamFunctionWithChilds } = {}
 
   // Inicializar los hijos para cada item
-  items.forEach((item) => {
-    map[item.path_view] = { ...item, childs: [] } // Copiar el item y agregarle la propiedad 'childs'
-  })
+  items
+    .sort((a, b) => a.priority - b.priority)
+    .forEach((item) => {
+      map[item.path_view] = { ...item, childs: [] } // Copiar el item y agregarle la propiedad 'childs'
+    })
 
   // Relacionar los elementos padres e hijos
   const result: IamFunctionWithChilds[] = []

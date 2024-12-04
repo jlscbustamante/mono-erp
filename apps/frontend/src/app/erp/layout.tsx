@@ -1,4 +1,4 @@
-import { PATHS } from '@/const/paths'
+import { PATHS, PATHS_MAIN } from '@/const/paths'
 import { authApi } from '@/lib/api/auth'
 import { ErrorBoundary } from '@/views/ErrorBoundary'
 import { useEffect } from 'react'
@@ -32,11 +32,12 @@ export const ErpLayout = () => {
     if (user.userId != -1) {
       if (
         location.pathname == PATHS.erp.auth.main ||
+        location.pathname == PATHS.erp.auth.otpLogin ||
         location.pathname == '/'
       ) {
         navigate(PATHS.erp.modulos.home)
       } else {
-        if (!user.views.includes(location.pathname)) {
+        if (!user.views.concat(PATHS_MAIN).includes(location.pathname)) {
           navigate(PATHS.erp.modulos.home)
         }
       }

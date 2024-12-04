@@ -67,32 +67,34 @@ export const SidebarLayout = ({
   }
 
   return (
-    <Menu
-      className={cn(
-        'shrink-0 float-left h-full transition-[width] ease-in-out duration-300 flex flex-col',
-        {
+    <div className="h-full overflow-y-auto  shrink-0  float-left transition-[width] ease-in-out duration-300">
+      <Menu
+        className={cn({
           'w-[3.75rem]': !show,
           'w-80': show,
-        },
-      )}
-      mode="inline"
-      selectedKeys={[location.pathname]}
-      inlineCollapsed={!show}
-      items={[
-        ...items,
-        {
-          type: 'item',
-          label: show ? 'Ocultar' : 'Mostrar',
-          title: show ? 'Ocultar' : 'Mostrar',
-          key: '__expanded',
-          icon: (
-            <MdOutlineKeyboardDoubleArrowRight
-              style={{ transform: !show ? 'scaleX(1)' : 'scaleX(-1)' }}
-            />
-          ),
-        },
-      ]}
-      onClick={handleSelect}
-    />
+        })}
+        mode="inline"
+        selectedKeys={[location.pathname]}
+        inlineCollapsed={!show}
+        items={[
+          ...items,
+          {
+            type: 'divider',
+          },
+          {
+            type: 'item',
+            label: show ? 'Ocultar' : 'Mostrar',
+            title: show ? 'Ocultar' : 'Mostrar',
+            key: '__expanded',
+            icon: (
+              <MdOutlineKeyboardDoubleArrowRight
+                style={{ transform: !show ? 'scaleX(1)' : 'scaleX(-1)' }}
+              />
+            ),
+          },
+        ]}
+        onClick={handleSelect}
+      />
+    </div>
   )
 }
