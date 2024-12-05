@@ -167,10 +167,7 @@ export const routerv2 = createBrowserRouter([
                 path: PATHS.erp.modulos.mercaderia.compra,
                 element: <Purchase />,
               },
-              {
-                path: PATHS.erp.modulos.mercaderia.stockAlmacen,
-                element: <WarehouseStockPage />,
-              },
+
               {
                 path: PATHS.erp.modulos.mercaderia.reportes.main,
                 children: [
@@ -343,6 +340,10 @@ export const routerv2 = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: PATHS.erp.modulos.mercaderia.stockAlmacen,
+    element: <WarehouseStockPage />,
   },
   {
     path: '*',
