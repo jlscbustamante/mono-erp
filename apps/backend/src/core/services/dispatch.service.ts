@@ -1,11 +1,8 @@
 import { badRequest } from '@hapi/boom'
 
+import { InvDispatch, InvDispatchStatus } from 'pizzadb'
 import { In, Raw, Repository } from 'typeorm'
 import { AppDataSource } from '../../config/database'
-import {
-  InvDispatch,
-  InvDispatchStatus,
-} from '../../entities/inventory/Dispatch'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
 import { productCategoryRepository } from '../../repositories/inventory/productCategory.respository'
 import sucursalRepository from '../../repositories/sucursal.repository'

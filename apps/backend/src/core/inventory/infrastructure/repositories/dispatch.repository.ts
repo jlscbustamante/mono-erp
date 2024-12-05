@@ -1,13 +1,13 @@
 import { In, Raw } from 'typeorm'
 
-import { AppDataSource } from '../../../../config/database'
 import {
   DispatchType,
   InvDispatch,
+  InvDispatchItem,
   InvDispatchStatus,
-} from '../../../../entities/inventory/Dispatch'
-import { InvDispatchItem } from '../../../../entities/inventory/DispatchItems'
-import { Item } from '../../../../entities/inventory/Item'
+  Item,
+} from 'pizzadb'
+import { AppDataSource } from '../../../../config/database'
 import { invDispatchRepository } from '../../../../repositories/inventory/dispatch.repository'
 import { productItemRepository } from '../../../../repositories/inventory/item.repository'
 import {
@@ -123,7 +123,7 @@ export class DispatchRepositoryImpl implements DispatchRepository {
     )
     const totalValue = netValue - dispatchUpdate.taxValue
     const approvedBy =
-      dispatchUpdate.status == DISPATCH_STATUS.DISPATCHED ? user ?? 'sys' : ''
+      dispatchUpdate.status == DISPATCH_STATUS.DISPATCHED ? (user ?? 'sys') : ''
     const items: Partial<InvDispatchItem>[] = dispatchUpdate.items.map((el) => {
       return {
         itemId: el.itemId,

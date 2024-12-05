@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { Brand } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { Brand } from '../../entities/inventory/Brand'
 import { Filter3Method } from '../../types/filter'
 import { filter3Base } from '../filter3base'
 

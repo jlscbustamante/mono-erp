@@ -6,10 +6,10 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Item } from 'pizzadb'
 import { EntitiesTimeStamps } from '../../config/EntitiesTimestamps'
 import { DateTransformer } from '../../config/transformers/dateTransformer'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
-import { Item } from './Item'
 
 export enum StockStatus {
   CANCELED = 0,

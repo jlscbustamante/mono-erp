@@ -1,4 +1,4 @@
-import { InvSupplier } from '../entities/inventory/Supplier'
+import { InvSupplier } from 'pizzadb'
 import { Supplier } from '../entities/Supplier'
 import { invSupplierRepository } from '../repositories/inventory/supplier.repository'
 import { SupplierRepository } from '../repositories/supplier.repository'

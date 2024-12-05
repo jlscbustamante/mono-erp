@@ -7,9 +7,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Item } from 'pizzadb'
 import { EntitiesTimeStamps } from '../../config/EntitiesTimestamps'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
-import { Item } from './Item'
 import { InvPurchase } from './Purchase'
 
 @Entity({ name: 'inv_purchase_item' })

@@ -6,9 +6,8 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Item, Measure } from 'pizzadb'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
-import { Item } from './Item'
-import { Measure } from './Measure'
 
 @Entity({ name: 'inv_dispatchbase_item' })
 export class InvDispatchBaseItem {

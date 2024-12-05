@@ -1,7 +1,6 @@
 import { badRequest } from '@hapi/boom'
 
 import { AppDataSource } from '../config/database'
-import { InvDispatch } from '../entities/inventory/Dispatch'
 import { IDispatchBase } from '../types/final'
 import { dispatchBaseRepository } from './inventory/dispatchBase.repository'
 

@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { Item } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { Item } from '../../entities/inventory/Item'
 import { Filter3Method } from '../../types/filter'
 import { filters3Adapter } from '../../utils/filtersAdapter'
 

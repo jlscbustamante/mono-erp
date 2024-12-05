@@ -1,12 +1,10 @@
 import { badRequest, notFound } from '@hapi/boom'
 import { type Request, type Response } from 'express'
 
+import { Brand, Item, Presentation } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { Brand } from '../../entities/inventory/Brand'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../entities/inventory/InvDispatchBaseItem'
-import { Item } from '../../entities/inventory/Item'
-import { Presentation } from '../../entities/inventory/Presentation'
 import { brandRepository } from '../../repositories/inventory/brand.repository'
 import {
   invDispatchBase,

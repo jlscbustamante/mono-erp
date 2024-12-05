@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { InvSupplier } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { InvSupplier } from '../../entities/inventory/Supplier'
 import { Filter3Method } from '../../types/filter'
 import { filter3Base } from '../filter3base'
 

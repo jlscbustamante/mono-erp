@@ -4,14 +4,14 @@ import { add, format, parseISO, sub } from 'date-fns'
 import { Request, Response } from 'express'
 import { In, Raw } from 'typeorm'
 
-import { AppDataSource } from '../../config/database'
 import {
   DispatchType,
   InvDispatch,
+  InvDispatchItem,
   InvDispatchStatus,
   SucursalAsWarehouse,
-} from '../../entities/inventory/Dispatch'
-import { InvDispatchItem } from '../../entities/inventory/DispatchItems'
+} from 'pizzadb'
+import { AppDataSource } from '../../config/database'
 import { InvStock, StockStatus } from '../../entities/inventory/InvStock'
 import { DispatchRepository } from '../../repositories/dispatchRepository'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'

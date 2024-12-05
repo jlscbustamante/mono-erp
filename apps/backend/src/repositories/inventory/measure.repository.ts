@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm'
 
+import { Measure } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { Measure } from '../../entities/inventory/Measure'
 import { Filter3Method } from '../../types/filter'
 import { filter3Base } from '../filter3base'
 

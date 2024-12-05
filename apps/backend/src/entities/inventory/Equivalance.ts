@@ -6,11 +6,9 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
+import { Measure, Presentation } from 'pizzadb'
 import { EntitiesTimeStamps } from '../../config/EntitiesTimestamps'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
-import { StatusEntityNumber } from '../../types'
-import { Measure } from './Measure'
-import { Presentation } from './Presentation'
 
 @Entity({ name: 'inv_equivalence' })
 export class Equivalance extends EntitiesTimeStamps {
