@@ -20,27 +20,31 @@ export const ErpLayout = () => {
         const data = await authApi.userValidate()
         setSession(data)
       } catch (err: any) {
-        if (
-          location.pathname != PATHS.erp.auth.otpLogin &&
-          location.pathname != PATHS.erp.auth.main
-        )
-          navigate(PATHS.erp.auth.main)
+        if (location.pathname != PATHS.erp.modulos.mercaderia.stockAlmacen) {
+          if (
+            location.pathname != PATHS.erp.auth.otpLogin &&
+            location.pathname != PATHS.erp.auth.main
+          )
+            navigate(PATHS.erp.auth.main)
+        }
       }
     })()
   }, [])
 
   useEffect(() => {
-    if (user.userId != -1) {
-      if (
-        location.pathname == PATHS.erp.auth.main ||
-        location.pathname == PATHS.erp.auth.otpLogin ||
-        location.pathname == '/'
-      ) {
-        navigate(PATHS.erp.modulos.home)
-      } else {
-        if (!appConfig.ui.fullAccess) {
-          if (!user.views.concat(PATHS_MAIN).includes(location.pathname)) {
-            navigate(PATHS.erp.modulos.home)
+    if (location.pathname !== PATHS.erp.modulos.mercaderia.stockAlmacen) {
+      if (user.userId != -1) {
+        if (
+          location.pathname == PATHS.erp.auth.main ||
+          location.pathname == PATHS.erp.auth.otpLogin ||
+          location.pathname == '/'
+        ) {
+          navigate(PATHS.erp.modulos.home)
+        } else {
+          if (!appConfig.ui.fullAccess) {
+            if (!user.views.concat(PATHS_MAIN).includes(location.pathname)) {
+              navigate(PATHS.erp.modulos.home)
+            }
           }
         }
       }
