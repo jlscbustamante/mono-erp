@@ -14,10 +14,11 @@ import { getStockByRange } from '@/data/hex/inventory'
 import { getSalesPos } from '@/data/hex/pos'
 import { StockGeneral, WAREHOUSE_TYPE } from '@/data/hex/types'
 import { queryClient } from '@/main'
-import { PATHS } from '@/router/paths'
+
 import { cn, filterOption } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
+import { PATHS } from '@/const/paths'
 import { useSucursales } from './hooks/useSucursales'
 import { ReportRatioDrawer, useReportRatioDrawer } from './ReportRatioDrawer'
 
@@ -380,7 +381,7 @@ export const ControlStock = () => {
             onClick={() => {
               if (!sucursalCode) return
               navigate(
-                `${PATHS.products.manageWarehouseStock}?warehouse=${sucursalCode}`,
+                `${PATHS.erp.modulos.mercaderia.stockAlmacen}?warehouse=${sucursalCode}`,
               )
             }}
           >
