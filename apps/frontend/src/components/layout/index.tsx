@@ -77,7 +77,7 @@ export const Layout = ({
             options={sidebarConfig.options.filter((el) => el.type == 'option')}
           />
           <SidebarLayout {...sidebarConfig} />
-          <div className="overflow-y-auto h-full">{children}</div>
+          <div className="overflow-y-auto h-[calc(100%-60px)]">{children}</div>
         </div>
       </LayoutProvider>
     </>
