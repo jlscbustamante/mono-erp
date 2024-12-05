@@ -1,12 +1,22 @@
 import { DataSource } from 'typeorm'
 
 import {
+  Brand,
   Carrier,
   IamFunction,
   IamPermission,
   IamRole,
   IamUser,
+  InvDispatch,
+  InvDispatchItem,
+  InvSupplier,
+  Item,
+  Measure,
+  Presentation,
+  Product,
+  ProductCategory,
   Sucursal,
+  SucursalAsWarehouse,
 } from 'pizzadb'
 import config from './config'
 
@@ -25,6 +35,16 @@ const AppDataSource = new DataSource({
     IamRole,
     IamPermission,
     IamFunction,
+    Brand,
+    ProductCategory,
+    InvDispatchItem,
+    InvDispatch,
+    Item,
+    Measure,
+    Presentation,
+    Product,
+    InvSupplier,
+    SucursalAsWarehouse,
   ],
   logging: config.showTypeormLog,
 })
