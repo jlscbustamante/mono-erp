@@ -24,6 +24,7 @@ import {
   WAREHOUSE_TYPE,
   WarehouseLegal,
 } from '../../../core/inventory/entities/warehouse'
+import { cacheApi } from '../../../lib/cache'
 import { invDispatchRepository } from '../../../repositories/inventory/dispatch.repository'
 import parameterRepository from '../../../repositories/parameter.repository'
 import sucursalRepository from '../../../repositories/sucursal.repository'
@@ -267,11 +268,20 @@ export class HexInventoryController {
   @catchError
   async getEditTemplate(req: Request, res: Response) {
     const { warehouse, date } = req.query as { warehouse: string; date: string }
-    const template = await generateTemplateStockUseCase.run(warehouse, date)
-    return res.json({
-      message: 'ok',
-      data: template,
-    })
+    const value = cacheApi.get(`template-${warehouse}-${date}`)
+    if (value) {
+      return res.json({
+        message: 'ok',
+        data: value,
+      })
+    } else {
+      const template = await generateTemplateStockUseCase.run(warehouse, date)
+      cacheApi.set(`template-${warehouse}-${date}`, template)
+      return res.json({
+        message: 'ok',
+        data: template,
+      })
+    }
   }
 
   @catchError

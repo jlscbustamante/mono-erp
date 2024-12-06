@@ -1,7 +1,10 @@
-import { In } from 'typeorm'
-
-import { DispatchUsedTo } from '../../../../entities/inventory/InvDispatchBase'
+import { Equivalance } from '../../../../entities/inventory/Equivalance'
+import {
+  DispatchUsedTo,
+  InvDispatchBase,
+} from '../../../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../../../entities/inventory/InvDispatchBaseItem'
+import { cache } from '../../../../lib/cache'
 import {
   invDispatchBase,
   invDispatchBaseItemRepository,
@@ -69,37 +72,9 @@ export class TemplateRepositoryImpl implements TemplateRepository {
         throw new Error('No se encontro el plantilla base para almacen')
       else throw new Error('No se encontro el plantilla base para tienda')
     }
-    const items = await invDispatchBaseItemRepository.find({
-      where: {
-        dispatch_id: templatebase.id,
-      },
-      relations: {
-        itemMove: {
-          presentation: true,
-          product: {
-            measure: true,
-            category: true,
-          },
-        },
-        itemStock: {
-          presentation: true,
-          product: {
-            measure: true,
-            category: true,
-          },
-        },
-      },
-      cache: 1000 * 60 * 20,
-    })
+    const items = await this.dispatchBaseItems(templatebase.id)
     this.validateItems(items)
-    const presentationIds = items.map((el) => el.itemMove.presentationId)
-    const measureIds = items.map((el) => el.itemStock.product?.measureId)
-    const equivalences = await equivalenceRepository.find({
-      where: {
-        presentation_from: In(presentationIds),
-        measure_to: In(measureIds),
-      },
-    })
+    const equivalences = await this.equivalences()
 
     const templateItems: TemplateItem[] = []
     for (const item of items) {
@@ -163,6 +138,63 @@ export class TemplateRepositoryImpl implements TemplateRepository {
     return templateItems
   }
 
+  private async templatebass() {
+    const value = cache.get('templatebass')
+    if (value) {
+      return value as InvDispatchBase[]
+    }
+    const templatebass = await invDispatchBase.find()
+    cache.set('templatebass', templatebass)
+    return templatebass
+  }
+
+  private async dispatchBaseItems(id: number): Promise<InvDispatchBaseItem[]> {
+    const value = cache.get(`dispatch_base_items_${id}`)
+    if (value) {
+      return value as InvDispatchBaseItem[]
+    } else {
+      const items = await invDispatchBaseItemRepository.find({
+        where: {
+          dispatch_id: id,
+        },
+        relations: {
+          itemMove: {
+            presentation: true,
+            product: {
+              measure: true,
+              category: true,
+            },
+          },
+          itemStock: {
+            presentation: true,
+            product: {
+              measure: true,
+              category: true,
+            },
+          },
+        },
+        order: {
+          itemStock: {
+            itemName: 'ASC',
+            id: 'ASC',
+          },
+        },
+      })
+      cache.set(`dispatch_base_items_${id}`, items)
+      return items
+    }
+  }
+
+  private async equivalences(): Promise<Equivalance[]> {
+    const cached = cache.get('equivalences')
+    if (cached) {
+      return cached as Equivalance[]
+    }
+    const equivalences = await equivalenceRepository.find()
+    cache.set('equivalences', equivalences)
+    return equivalences
+  }
+
   private validateItems(items: InvDispatchBaseItem[]) {
     for (const item of items) {
       if (!item.itemMove.presentationId) {
@@ -179,39 +211,26 @@ export class TemplateRepositoryImpl implements TemplateRepository {
   }
 
   private async getStockItems(isWarehouse: boolean): Promise<Item[]> {
-    const templatebase = await invDispatchBase.findOne({
-      where: {
-        sucursal_type: 'PIZZA',
-        used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
-      },
-      cache: 1000 * 60 * 20,
+    // const templatebase = await invDispatchBase.findOne({
+    //   where: {
+    //     sucursal_type: 'PIZZA',
+    //     used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
+    //   },
+    // })
+    const templatebase = (await this.templatebass()).find((el) => {
+      return (
+        el.sucursal_type == 'PIZZA' &&
+        el.used_to ==
+          (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
+      )
     })
     if (!templatebase) {
       if (isWarehouse)
         throw new Error('No se encontro el plantilla base para almacen')
       else throw new Error('No se encontro el plantilla base para tienda')
     }
-    const templateItems = await invDispatchBaseItemRepository.find({
-      where: {
-        dispatch_id: templatebase.id,
-      },
-      relations: {
-        itemStock: {
-          presentation: true,
-          product: {
-            measure: true,
-            category: true,
-          },
-        },
-      },
-      order: {
-        itemStock: {
-          itemName: 'ASC',
-          id: 'ASC',
-        },
-      },
-      cache: 1000 * 60 * 20,
-    })
+    const templateItems = await this.dispatchBaseItems(templatebase.id)
+
     const items: Item[] = templateItems
       .map((el) => {
         if (!el.itemStock) return null

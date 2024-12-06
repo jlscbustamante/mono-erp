@@ -1,3 +1,5 @@
+import { Sucursal } from 'pizzadb'
+import { cache } from '../../../../lib/cache'
 import sucursalRepository from '../../../../repositories/sucursal.repository'
 import { WarehousesRepository } from '../../entities/repositories/warehouses.repository'
 import {
@@ -44,9 +46,15 @@ export class WarehousesRepositoryImpl implements WarehousesRepository {
   }
 
   async isWarehouse(code: string): Promise<boolean> {
-    const warehouses = await sucursalRepository.find({
-      cache: 1000 * 60 * 20,
-    })
+    // const warehouses = await sucursalRepository.find({})
+    let warehouses: Sucursal[] = []
+    const cached = cache.get('warehouses') as Sucursal[]
+    if (cached) {
+      warehouses = cached
+    } else {
+      warehouses = await sucursalRepository.find({})
+      cache.set('warehouses', warehouses)
+    }
     const warehouse = warehouses.find((w) => w.id === code)
     if (!warehouse)
       throw new Error('No se encontro sucursal con el codigo : ' + code)
@@ -54,10 +62,18 @@ export class WarehousesRepositoryImpl implements WarehousesRepository {
   }
 
   async getWarehouse(code: string): Promise<Warehouse | null> {
-    const warehouse = await sucursalRepository.findOne({
-      where: { id: code },
-      cache: 1000 * 60 * 20,
-    })
+    let warehouses: Sucursal[] = []
+    const cached = cache.get('warehouses') as Sucursal[]
+    if (cached) {
+      warehouses = cached
+    } else {
+      warehouses = await sucursalRepository.find({})
+      cache.set('warehouses', warehouses)
+    }
+    // const warehouse = await sucursalRepository.findOne({
+    //   where: { id: code },
+    // })
+    const warehouse = warehouses.find((w) => w.id === code)
     if (!warehouse) return null
     return {
       code: warehouse.id,

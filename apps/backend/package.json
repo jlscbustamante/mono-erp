@@ -1,5 +1,5 @@
 {
-  "name": "admin-back",
+  "name": "backend",
   "version": "1.0.1",
   "description": "",
   "main": "index.js",
@@ -41,8 +41,6 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "pizzadb": "workspace:*",
-    "shared": "workspace:*",
     "@aws-sdk/client-glue": "^3.507.0",
     "@aws-sdk/client-pinpoint": "^3.665.0",
     "@aws-sdk/client-s3": "^3.400.0",
@@ -60,11 +58,14 @@
     "express": "^4.18.2",
     "fs": "^0.0.1-security",
     "joi": "^17.10.2",
+    "lru-cache": "^11.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.6.0",
     "nodemailer": "^6.9.7",
+    "pizzadb": "workspace:*",
     "reflect-metadata": "^0.1.13",
+    "shared": "workspace:*",
     "typeorm": "^0.3.17",
     "xlsx": "^0.18.5"
   }
