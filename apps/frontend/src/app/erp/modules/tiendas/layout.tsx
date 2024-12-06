@@ -2,9 +2,16 @@ import { EmptyModule } from '@/components/empty-module'
 import Layout, { MenuOption, MenuSeparator, gm } from '@/components/layout'
 import { appConfig } from '@/const/config'
 import { PATHS } from '@/const/paths'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useOutlet } from 'react-router'
 import { useSession } from '../../use-session'
+
+//
+import { useSetRecoilState } from 'recoil'
+
+import { cashAccountStoreSt, categoriesStoreSt } from '@/data/resources/state'
+// import * as sdk from '@/data/resources/sdk'
+import * as sdk from '@/data/stores/sdk'
 
 const menu: (MenuOption | MenuSeparator)[] = [
   gm('Conciliar Tiendas', PATHS.erp.modulos.tiendas.conciliar),
@@ -13,6 +20,8 @@ const menu: (MenuOption | MenuSeparator)[] = [
 ]
 
 export const TiendasLayout = () => {
+  const setCashAccounts = useSetRecoilState(cashAccountStoreSt)
+  const setCategories = useSetRecoilState(categoriesStoreSt)
   const views = useSession((st) => st.user.views)
 
   const outlet = useOutlet()
@@ -47,6 +56,18 @@ export const TiendasLayout = () => {
         .filter((el) => el) as (MenuOption | MenuSeparator)[],
     [views],
   )
+
+  useEffect(() => {
+    ;(async () => {
+      const [cashAccounts, categories] = await Promise.all([
+        sdk.cashAccount(),
+        sdk.categories(),
+      ])
+      setCashAccounts(cashAccounts)
+      setCategories(categories)
+    })()
+  }, [])
+
   return (
     <>
       <Layout>
