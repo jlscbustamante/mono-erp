@@ -248,8 +248,10 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
               className={cn('inline-flex items-center justify-center', {
                 hidden:
                   record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
-                  date !== today ||
                   record.moveType == DispatchType.Exceptional,
+                // record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
+                // date !== today ||
+                // record.moveType == DispatchType.Exceptional,
               })}
               onClick={() =>
                 Modal.confirm({
