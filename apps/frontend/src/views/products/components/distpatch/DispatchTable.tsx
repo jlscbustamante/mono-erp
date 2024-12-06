@@ -16,7 +16,6 @@ import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { useMutation } from '@tanstack/react-query'
-import { format } from 'date-fns'
 import { FiInfo } from 'react-icons/fi'
 import { LuClock4 } from 'react-icons/lu'
 import { RxReset } from 'react-icons/rx'
@@ -31,7 +30,7 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
   const { open } = useDispatchDetailDrawer()
   const query = useDispatchQuery()
   const queryDocs = useDocs()
-  const today = format(new Date(), 'yyyy-MM-dd')
+  // const today = format(new Date(), 'yyyy-MM-dd')
   const { store } = useDispatch()
 
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
@@ -239,7 +238,7 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
         }
       },
       render: (_value, record) => {
-        const date = record.moveAt.split(' ')[0]
+        // const date = record.moveAt.split(' ')[0]
         return (
           <div className="flex justify-around items-center gap-2">
             <Button
