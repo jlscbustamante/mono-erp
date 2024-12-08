@@ -1,8 +1,13 @@
 import { eachDayOfInterval, format, parseISO, sub } from 'date-fns'
-import { DispatchType, InvDispatch, InvDispatchItem, Item } from 'pizzadb'
+import {
+  DispatchType,
+  InvDispatch,
+  InvDispatchItem,
+  InvStock,
+  Item,
+} from 'pizzadb'
 import { In, Raw, Repository, UpdateQueryBuilder } from 'typeorm'
 import { AppDataSource } from '../../config/database'
-import { InvStock } from '../../entities/inventory/InvStock'
 import { InvPurchase } from '../../entities/inventory/Purchase'
 import sucursalRepository from '../../repositories/sucursal.repository'
 import { KARDEX_ORIGIN } from '../common/dto'

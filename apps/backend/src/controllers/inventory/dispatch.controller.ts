@@ -9,10 +9,11 @@ import {
   InvDispatch,
   InvDispatchItem,
   InvDispatchStatus,
+  InvStock,
+  StockStatus,
   SucursalAsWarehouse,
 } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { InvStock, StockStatus } from '../../entities/inventory/InvStock'
 import { DispatchRepository } from '../../repositories/dispatchRepository'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
 import { dispatchBaseRepository } from '../../repositories/inventory/dispatchBase.repository'

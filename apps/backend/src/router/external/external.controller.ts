@@ -4,12 +4,17 @@ import { Request, Response } from 'express'
 import { In, Not, Raw } from 'typeorm'
 
 import jwt from 'jsonwebtoken'
-import { InvDispatch, InvDispatchStatus, Item } from 'pizzadb'
+import {
+  InvDispatch,
+  InvDispatchStatus,
+  InvStock,
+  Item,
+  StockStatus,
+} from 'pizzadb'
 import config from '../../config/config'
 import { AppDataSource } from '../../config/database'
 import { SucursalSale } from '../../entities/adm/SucursalSale'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
-import { InvStock, StockStatus } from '../../entities/inventory/InvStock'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
 import {
   invDispatchBase,

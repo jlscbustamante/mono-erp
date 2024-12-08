@@ -15,4 +15,9 @@ const cacheApi = new LRUCache({
   ttl: 1000 * 60 * 2,
 })
 
-export { cache, cacheApi }
+const cacheHalfDay = new LRUCache({
+  max: 500,
+  ttl: 1000 * 60 * 60 * 12,
+})
+
+export { cache, cacheApi, cacheHalfDay }

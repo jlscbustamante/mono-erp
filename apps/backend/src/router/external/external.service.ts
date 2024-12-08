@@ -1,8 +1,7 @@
 import { badRequest } from '@hapi/boom'
 import { Raw } from 'typeorm'
 
-import { InvDispatch, InvDispatchStatus } from 'pizzadb'
-import { InvStock } from '../../entities/inventory/InvStock'
+import { InvDispatch, InvDispatchStatus, InvStock } from 'pizzadb'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
 import { invStockRepository } from '../../repositories/inventory/invStock.repository'
 import { productItemRepository } from '../../repositories/inventory/item.repository'

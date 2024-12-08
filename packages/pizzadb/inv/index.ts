@@ -7,4 +7,5 @@ export * from "./item.entity";
 export * from "./measure.entity";
 export * from "./presentation.entity";
 export * from "./product.entity";
+export * from "./stock.entity";
 export * from "./supplier.entity";

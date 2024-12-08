@@ -1,7 +1,7 @@
 import { badRequest } from '@hapi/boom'
 
+import { InvStock } from 'pizzadb'
 import { AppDataSource } from '../../../config/database'
-import { InvStock } from '../../../entities/inventory/InvStock'
 import { InvPurchase } from '../../../entities/inventory/Purchase'
 import { StockItemToCreateDto } from '../dto'
 import { Purchase, PURCHASE_STATUS } from '../entities/purchase'

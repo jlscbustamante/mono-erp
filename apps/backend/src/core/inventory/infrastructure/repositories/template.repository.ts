@@ -256,4 +256,14 @@ export class TemplateRepositoryImpl implements TemplateRepository {
 
     return uniqueItems
   }
+
+  async getStoreStockItems(): Promise<Item[]> {
+    const value = cache.get('store_stock_items')
+    if (value) {
+      return value as Item[]
+    }
+    const stocktemplate = this.getStockItems(false)
+    cache.set('store_stock_items', stocktemplate)
+    return stocktemplate
+  }
 }

@@ -2,8 +2,8 @@
 import { eachDayOfInterval, format, parseISO } from 'date-fns'
 import { In, Raw, Repository } from 'typeorm'
 
+import { InvStock } from 'pizzadb'
 import { AppDataSource } from '../../../../config/database'
-import { InvStock } from '../../../../entities/inventory/InvStock'
 import { invStockRepository } from '../../../../repositories/inventory/invStock.repository'
 import { productItemRepository } from '../../../../repositories/inventory/item.repository'
 import { StockItemToCreateDto } from '../../dto'
@@ -253,7 +253,7 @@ export class StockRepositoryImpl implements StockRepository {
         warehouseId: warehouseCode,
         stockAt: date,
         initialStock,
-        totalInitial: initialStock > 0 ? itemInventario?.total_last ?? 0 : 0,
+        totalInitial: initialStock > 0 ? (itemInventario?.total_last ?? 0) : 0,
         stockCurrent,
         stockPhysical: itemInventario?.stock_physical ?? 0,
         unitValue: itemInventario

@@ -1,4 +1,4 @@
-import { InvStock } from '../../../../entities/inventory/InvStock'
+import { InvStock } from 'pizzadb'
 import { StockItemToCreateDto } from '../../dto'
 import { StockGeneral } from '../stock'
 

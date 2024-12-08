@@ -9,6 +9,7 @@ import {
   IamUser,
   InvDispatch,
   InvDispatchItem,
+  InvStock,
   InvSupplier,
   Item,
   Measure,
@@ -45,6 +46,7 @@ const AppDataSource = new DataSource({
     Product,
     InvSupplier,
     SucursalAsWarehouse,
+    InvStock,
   ],
   logging: config.showTypeormLog,
 })

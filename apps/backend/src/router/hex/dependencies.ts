@@ -1,4 +1,4 @@
-import { Carrier } from 'pizzadb'
+import { Carrier, InvStock } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
 import { AuthService } from '../../core/auth/auth.service'
 import { WarehouseService } from '../../core/common/warehouse.service'
@@ -24,7 +24,6 @@ import { WarehousesRepositoryImpl } from '../../core/inventory/infrastructure/re
 import { InventoryService } from '../../core/inventory/inventory.service'
 import { DispatchService } from '../../core/services/dispatch.service'
 import { OtpService } from '../../core/services/otp.service'
-import { InvStock } from '../../entities/inventory/InvStock'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
 import { productItemRepository } from '../../repositories/inventory/item.repository'
 import { invPurchaseRepository } from '../../repositories/inventory/purchase.repository'

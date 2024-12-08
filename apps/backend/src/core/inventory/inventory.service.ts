@@ -1,11 +1,10 @@
 import { badRequest } from '@hapi/boom'
 
 import { format } from 'date-fns'
-import { InvDispatch, InvDispatchItem, Item, Sucursal } from 'pizzadb'
+import { InvDispatch, InvDispatchItem, InvStock, Item, Sucursal } from 'pizzadb'
 import { In, Raw, Repository } from 'typeorm'
 import config from '../../config/config'
 import { AppDataSource } from '../../config/database'
-import { InvStock } from '../../entities/inventory/InvStock'
 import {
   generateGuideApi,
   generateGuideWithTransportApi,
