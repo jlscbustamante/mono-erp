@@ -149,8 +149,10 @@ export class InventoryService {
           initialStock = itemBefore.stock_physical
           totalInitial = itemBefore.total_value
         } else if (itemNow) {
-          initialStock = itemNow.stock_last
-          totalInitial = itemNow.stock_last * itemNow.unit_value
+          if (before.length == 0) {
+            initialStock = itemNow.stock_last
+            totalInitial = itemNow.stock_last * itemNow.unit_value
+          }
         }
         stock.initialStock = initialStock
         stock.totalInitial = totalInitial
@@ -187,6 +189,22 @@ export class InventoryService {
         if (itemNow) {
           stock.unitValue = itemNow.unit_value
         }
+
+        result.push(stock)
+      } else if (itemNow) {
+        const stock = getDefaultFromOther(itemNow, date)
+
+        stock.initialStock = 0
+        stock.totalInitial = 0
+        stock.quantityInDispatch = itemNow?.quantity_in_dp ?? 0
+        stock.quantityOutDispatch = itemNow?.quantity_out_dp ?? 0
+        stock.quantityInMv = itemNow?.quantity_in_mv ?? 0
+        stock.quantityOutMv = itemNow?.quantity_out_mv ?? 0
+        stock.quantityInPurchase = itemNow?.quantity_in_pu ?? 0
+        stock.stockCurrent = itemNow?.stock_current ?? 0
+        stock.stockPhysical = itemNow?.stock_physical ?? 0
+        stock.totalValue = itemNow?.total_value ?? 0
+        stock.unitValue = itemNow.unit_value
 
         result.push(stock)
       }
