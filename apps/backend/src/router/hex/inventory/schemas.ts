@@ -135,7 +135,7 @@ export const saveStockSchema = Joi.object({
         totalInitial: Joi.number().allow(null),
         itemId: Joi.number().integer().required(),
         itemName: Joi.string().required(),
-        categoryName: Joi.string().required(),
+        categoryName: Joi.string().required().allow(''),
         presentationId: Joi.number().integer().required(),
         presentationName: Joi.string().required(),
         measureId: Joi.number().integer().required(),
