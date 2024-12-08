@@ -24,7 +24,7 @@ import {
   WAREHOUSE_TYPE,
   WarehouseLegal,
 } from '../../../core/inventory/entities/warehouse'
-import { cacheApi } from '../../../lib/cache'
+import { service as inventoryServicev2 } from '../../../modules/inventory/index'
 import { invDispatchRepository } from '../../../repositories/inventory/dispatch.repository'
 import parameterRepository from '../../../repositories/parameter.repository'
 import sucursalRepository from '../../../repositories/sucursal.repository'
@@ -39,7 +39,6 @@ import {
   dispatchUtil,
   driverService,
   generateTemplateDispatchUseCase,
-  generateTemplateStockUseCase,
   inventoryService,
   readStockUseCase,
   saveStockUseCase,
@@ -268,20 +267,27 @@ export class HexInventoryController {
   @catchError
   async getEditTemplate(req: Request, res: Response) {
     const { warehouse, date } = req.query as { warehouse: string; date: string }
-    const value = cacheApi.get(`template-${warehouse}-${date}`)
-    if (value) {
-      return res.json({
-        message: 'ok',
-        data: value,
-      })
-    } else {
-      const template = await generateTemplateStockUseCase.run(warehouse, date)
-      cacheApi.set(`template-${warehouse}-${date}`, template)
-      return res.json({
-        message: 'ok',
-        data: template,
-      })
-    }
+
+    const data = await inventoryServicev2.getStockToEdit(warehouse, date)
+    return res.json({
+      message: 'ok',
+      data: data,
+    })
+
+    // const value = cacheApi.get(`template-${warehouse}-${date}`)
+    // if (value) {
+    //   return res.json({
+    //     message: 'ok',
+    //     data: value,
+    //   })
+    // } else {
+    //   const template = await generateTemplateStockUseCase.run(warehouse, date)
+    //   cacheApi.set(`template-${warehouse}-${date}`, template)
+    //   return res.json({
+    //     message: 'ok',
+    //     data: template,
+    //   })
+    // }
   }
 
   @catchError

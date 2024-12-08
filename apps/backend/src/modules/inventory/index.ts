@@ -3,7 +3,10 @@ import { invDispatchRepository, invStockRepository } from '../repositories'
 import { InventoryController } from './inventory.controller'
 import { InventoryService } from './inventory.service'
 
-const service = new InventoryService(invDispatchRepository, invStockRepository)
+export const service = new InventoryService(
+  invDispatchRepository,
+  invStockRepository,
+)
 const controller = new InventoryController(service)
 
 createApp(InventoryController, controller)
