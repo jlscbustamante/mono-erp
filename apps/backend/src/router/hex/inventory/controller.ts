@@ -3,6 +3,7 @@ import { type Request, type Response } from 'express'
 
 import { badRequest, notFound } from '@hapi/boom'
 import { Carrier, InvDispatch, InvDispatchItem, Sucursal } from 'pizzadb'
+import { In } from 'typeorm'
 import { AppDataSource } from '../../../config/database'
 import {
   CreateDriverDto,
@@ -724,9 +725,16 @@ export class HexInventoryController {
       stores: UpdateSucursalDto[]
     }
 
+    const originalStores = await sucursalRepository.find({
+      where: {
+        id: In(stores.map((el) => el.id)),
+      },
+    })
+
     const sucursales: Sucursal[] = []
 
     for (const store of stores) {
+      const originalStore = originalStores.find((el) => el.id == store.id)
       const sucursal = new Sucursal()
       sucursal.id = store.id
       sucursal.title = store.title
@@ -741,7 +749,7 @@ export class HexInventoryController {
       if (store.cfd_seql_fa) sucursal.cfd_correlativo = store.cfd_seql_fa
       sucursal.cfd_serie_bo = store.cfd_serie_bo
       if (store.cfd_seql_bo) sucursal.cfd_seql_bo = store.cfd_seql_bo
-      sucursal.status = store.status
+      sucursal.status = originalStore?.status ?? store.status
       sucursal.type_sede = 'T'
 
       sucursales.push(sucursal)
