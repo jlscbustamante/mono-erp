@@ -16,7 +16,8 @@ import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { useMutation } from '@tanstack/react-query'
-import { FiInfo } from 'react-icons/fi'
+import { useLocalStorage } from '@uidotdev/usehooks'
+import { FiAlertTriangle, FiInfo } from 'react-icons/fi'
 import { LuClock4 } from 'react-icons/lu'
 import { RxReset } from 'react-icons/rx'
 import { useDispatchDetailDrawer } from '../../dispatch/dispatch-detail-drawer'
@@ -33,6 +34,10 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
   // const today = format(new Date(), 'yyyy-MM-dd')
   const { store } = useDispatch()
 
+  const [observadosItems] = useLocalStorage<number[]>(
+    'dispatchItemSelector',
+    [],
+  )
   const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([])
   const sucursalesQuery = useSucursales()
   const [origin, setOrigin] = useState<string | undefined>(undefined)
@@ -126,6 +131,18 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
       title: 'Destino',
       dataIndex: ['wareTo', 'name'],
       key: 'wareTo',
+      render: (text, record) => {
+        const itemIds = record.items?.map((el) => el.itemId) ?? []
+        const hasObservados = itemIds.some((el) => observadosItems.includes(el))
+        return (
+          <p className="flex gap-2 items-center">
+            <span>{text}</span>
+            {hasObservados && (
+              <FiAlertTriangle className="text-orange-700 h-auto w-4" />
+            )}
+          </p>
+        )
+      },
     },
     {
       title: 'Descripcion',

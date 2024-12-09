@@ -500,7 +500,14 @@ export const useDispatch = () => {
 
 const loadDispatchesVariation = async (filters: Filters3<IDispatch>) => {
   const { dispatches } = await sdk.filterDispatch({
-    select: { wareFrom: { name: true }, wareTo: { name: true } },
+    select: {
+      wareFrom: { name: true },
+      wareTo: { name: true },
+      items: {
+        id: true,
+        itemId: true,
+      },
+    },
     filters,
     order: {
       // createdAt: 'DESC',
@@ -508,7 +515,7 @@ const loadDispatchesVariation = async (filters: Filters3<IDispatch>) => {
         name: 'ASC',
       },
     },
-    relations: { wareFrom: true, wareTo: true },
+    relations: { wareFrom: true, wareTo: true, items: true },
   })
   return dispatches
 }
@@ -528,7 +535,7 @@ export const useDispatchQuery = () => {
           DispatchType.Exceptional,
         ],
       }),
-    refetchOnWindowFocus: true,
+    // refetchOnWindowFocus: true,
   })
 
   return query

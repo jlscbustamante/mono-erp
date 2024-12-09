@@ -8,6 +8,7 @@ import { ShowFilters } from '@/components/filter/ShowFilters'
 import { DispatchStatus } from '@/data/products/types'
 import { OpFilter } from '@/data/types/Filters'
 
+import { DispatchItemSelector } from '@/app/erp/modules/mercaderia/dispatch-item-selector'
 import config from '@/config'
 import { zipedFiles } from '@/data/hex/inventory'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
@@ -247,6 +248,7 @@ export const ControlDispatch = () => {
         />
       </div>
       <div className="flex items-center gap-2">
+        <DispatchItemSelector />
         <div>
           {/* <Button>Descargar archivos</Button> */}
           <Dropdown
