@@ -35,6 +35,7 @@ export interface IRequest {
   cost_center_id: number | null
   category_move: RequestTypeCategory
   requested_at: string
+  pay_method: string | undefined
 }
 
 export interface IFilteredRequest extends IRequest {

@@ -7,8 +7,8 @@ import {
   Modal,
   Select,
   Switch,
+  Typography,
 } from 'antd'
-import { Typography } from 'antd'
 import Search from 'antd/es/input/Search'
 import TextArea from 'antd/es/input/TextArea'
 import dayjs from 'dayjs'
@@ -32,7 +32,7 @@ import {
   costCentersSt,
 } from '@/data/resources/state'
 import { AccountFlow } from '@/data/types/accountFlow'
-import { getNameRequestType } from '@/utils'
+import { cn, getNameRequestType } from '@/utils'
 import { filterSelectForm } from '@/utils/filterOptions'
 import { safeAny } from '@/utils/someAny'
 
@@ -73,6 +73,11 @@ export const UpdateForm: React.FC<{
 
   const validateRequest = () => {
     validateUpdate()
+    if (
+      !request.pay_method &&
+      [RequestType.Simple, RequestType.Supplier].includes(request.request_type)
+    )
+      throw new Error('Selecciona una forma de pago')
     if (!request.category_id || !request.cash_id)
       throw new Error('categoria y/o caja invalida')
     if (
@@ -369,6 +374,29 @@ export const UpdateForm: React.FC<{
                 </Select.Option>
               )
             })}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          label="Forma de pago"
+          className={cn({
+            hidden: ![RequestType.Simple, RequestType.Supplier].includes(
+              request.request_type,
+            ),
+          })}
+        >
+          <Select
+            allowClear
+            value={request.pay_method}
+            onChange={(val) => {
+              manageUpdate({ ...request, pay_method: val })
+            }}
+          >
+            <Select.Option key={'CONTADO'} value={'CONTADO'}>
+              CONTADO
+            </Select.Option>
+            <Select.Option key={'CREDITO'} value={'CREDITO'}>
+              CREDITO
+            </Select.Option>
           </Select>
         </Form.Item>
         <Form.Item

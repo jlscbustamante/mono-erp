@@ -283,6 +283,19 @@ export const SimpleForm = () => {
             })}
           </Select>
         </Form.Item>
+        <Form.Item label="Forma de pago" name={'pay_method'}>
+          <Select
+            allowClear
+            value={simpleForm.pay_method}
+            onChange={(val) => {
+              // console.log('val : ', val)
+              setSimpleForm({ ...simpleForm, pay_method: val })
+            }}
+          >
+            <Select.Option key={'CONTADO'}>CONTADO</Select.Option>
+            <Select.Option key={'CREDITO'}>CREDITO</Select.Option>
+          </Select>
+        </Form.Item>
         <Form.Item label="Tiene rentencion" valuePropName="checked">
           <Switch
             checked={simpleForm.retention == Retention.Yes}

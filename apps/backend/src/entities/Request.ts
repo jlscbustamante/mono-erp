@@ -28,6 +28,9 @@ export class RequestEntity extends EntitiesTimeStamps {
   @Column({ type: 'int', name: 'purchase_id' })
   purchaseId: number | null
 
+  @Column({ type: 'varchar', length: 20 })
+  pay_method: string
+
   @Column({ type: 'varchar' })
   legal_number: string
 

@@ -30,4 +30,5 @@ export const updateSchema = joi.object<RequestEntity>({
   createdAt: joi.any(),
   approved_by: joi.any().allow('', null),
   rejected_by: joi.any().allow('', null),
+  pay_method: joi.string().allow('', null),
 })

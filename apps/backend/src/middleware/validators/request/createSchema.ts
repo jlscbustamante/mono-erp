@@ -19,4 +19,5 @@ export const createSchema = joi.object<RequestEntity>({
   description: joi.string().allow(''),
   cost_center_id: joi.number().allow(null),
   retention: joi.string().valid('0', '1'),
+  pay_method: joi.string().allow(''),
 })
