@@ -245,6 +245,8 @@ export const columnsRequested = {
   default: [
     columnsTable.id,
     columnsTable.requested_at,
+    columnsTable.legal_name,
+    columnsTable.num_document,
     columnsTable.description,
     columnsTable.category,
     columnsTable.costCenter,
