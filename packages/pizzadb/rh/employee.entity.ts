@@ -9,7 +9,7 @@ import {
   UpdateDateColumn,
 } from "typeorm";
 import { DateTransformer2 } from "../transformers/dateTransformer";
-import { RhAssistance } from "./assistance.entity";
+import { Attendance } from "./attendance.entity";
 
 @Entity({ name: "rh_employee" })
 export class RhEmployee {
@@ -44,7 +44,7 @@ export class RhEmployee {
   job_title: string;
 
   @Column("varchar", { length: 25 })
-  job_mod: string;
+  job_mode: string;
 
   @Column("varchar", { length: 250 })
   pic_photo: string;
@@ -61,8 +61,8 @@ export class RhEmployee {
   @Column("smallint")
   status: number;
 
-  @OneToMany(() => RhAssistance, (assistance) => assistance.employee)
-  assistance: RhAssistance[];
+  @OneToMany(() => Attendance, (assistance) => assistance.employee)
+  assistance: Attendance[];
 
   @CreateDateColumn()
   created_at: Date;

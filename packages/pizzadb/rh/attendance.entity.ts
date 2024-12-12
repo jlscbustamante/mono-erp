@@ -4,13 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
 import { RhEmployee } from "./employee.entity";
 
-export enum ASSISTANCE_EVENT {
+export enum ATTENDANCE_EVENT {
   IN = "ENTRADA",
   OUT = "SALIDA",
   REFRIGERATOR_SALE = "REFRI_SALE",
@@ -18,7 +19,7 @@ export enum ASSISTANCE_EVENT {
 }
 
 @Entity({ name: "rh_assistance" })
-export class RhAssistance {
+export class Attendance {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -29,7 +30,7 @@ export class RhAssistance {
   attendance_at: string;
 
   @Column("varchar", { length: 20 })
-  event: ASSISTANCE_EVENT;
+  event: ATTENDANCE_EVENT;
 
   @Column("varchar", { length: 250 })
   pic_photo: string;
@@ -41,6 +42,7 @@ export class RhAssistance {
   status: number;
 
   @ManyToOne(() => RhEmployee, (employee) => employee.assistance)
+  @JoinColumn({ name: "employee_id" })
   employee: RhEmployee;
 
   @CreateDateColumn()

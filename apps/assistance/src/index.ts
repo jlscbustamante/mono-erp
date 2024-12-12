@@ -1,0 +1,18 @@
+import { serve } from "@hono/node-server";
+import { Hono } from "hono";
+import "reflect-metadata";
+import { config } from "./config.js";
+import assistance from "./router/assistance";
+
+const app = new Hono();
+
+app.get("/", (c) => {
+  return c.text("Api de asistencia");
+});
+
+app.route("/api/attendance", assistance);
+
+serve({
+  fetch: app.fetch,
+  port: config.port,
+});
