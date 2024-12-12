@@ -283,7 +283,7 @@ export const SimpleForm = () => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item label="Forma de pago" name={'pay_method'}>
+        {/* <Form.Item label="Forma de pago" name={'pay_method'}>
           <Select
             allowClear
             value={simpleForm.pay_method}
@@ -295,7 +295,7 @@ export const SimpleForm = () => {
             <Select.Option key={'CONTADO'}>CONTADO</Select.Option>
             <Select.Option key={'CREDITO'}>CREDITO</Select.Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item label="Tiene rentencion" valuePropName="checked">
           <Switch
             checked={simpleForm.retention == Retention.Yes}

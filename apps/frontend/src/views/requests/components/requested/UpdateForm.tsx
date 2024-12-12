@@ -32,7 +32,7 @@ import {
   costCentersSt,
 } from '@/data/resources/state'
 import { AccountFlow } from '@/data/types/accountFlow'
-import { cn, getNameRequestType } from '@/utils'
+import { getNameRequestType } from '@/utils'
 import { filterSelectForm } from '@/utils/filterOptions'
 import { safeAny } from '@/utils/someAny'
 
@@ -75,7 +75,7 @@ export const UpdateForm: React.FC<{
     validateUpdate()
     if (
       !request.pay_method &&
-      [RequestType.Simple, RequestType.Supplier].includes(request.request_type)
+      [RequestType.Supplier].includes(request.request_type)
     )
       throw new Error('Selecciona una forma de pago')
     if (!request.category_id || !request.cash_id)
@@ -376,7 +376,7 @@ export const UpdateForm: React.FC<{
             })}
           </Select>
         </Form.Item>
-        <Form.Item
+        {/* <Form.Item
           label="Forma de pago"
           className={cn({
             hidden: ![RequestType.Simple, RequestType.Supplier].includes(
@@ -398,7 +398,7 @@ export const UpdateForm: React.FC<{
               CREDITO
             </Select.Option>
           </Select>
-        </Form.Item>
+        </Form.Item> */}
         <Form.Item
           label="Tiene rentencion"
           valuePropName="checked"
