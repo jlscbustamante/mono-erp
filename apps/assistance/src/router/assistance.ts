@@ -1,7 +1,12 @@
+import { format } from "date-fns";
 import { Hono } from "hono";
 import { ATTENDANCE_EVENT } from "pizzadb";
+import { Raw } from "typeorm";
 import { attendanceRepository, employeeRepository } from "../repositories";
+import { S3Service } from "../services/s3.service";
+import { getDatePath } from "../utils";
 
+const s3Service = new S3Service();
 const app = new Hono();
 
 app.get("/users", async (c) => {
@@ -65,25 +70,37 @@ app.get("/checkin", async (c) => {
 
 app.post("/register", async (c) => {
   try {
-    const body: {
-      id_employee: number;
-      event: ATTENDANCE_EVENT;
-    } = await c.req.json();
+    // const body = c.req.json();
+    const formData = await c.req.parseBody();
+    const photo = formData["archivo"] as File;
+    const id_employee = formData["id_employee"] as string;
+    const event = formData["event"] as string;
 
     const user = await employeeRepository.findOne({
       where: {
-        id: body.id_employee,
+        id: +id_employee,
       },
     });
     if (!user) throw new Error("No se encontro el usuario");
 
+    const path = getDatePath();
+    const pathUser = `${path}/${user.doc_number}.jpg`;
+
+    const resultPath = await s3Service.uploadAssistanceFile(photo, pathUser);
+
     await attendanceRepository.insert({
+      id: 1,
       employee_id: user.id,
-      event: body.event,
+      event: event as ATTENDANCE_EVENT,
+      pic_photo: resultPath,
+      attendance_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
     });
 
     return c.json({
-      data: body,
+      data: {
+        id_employee,
+        event,
+      },
     });
   } catch (err: any) {
     c.status(404);
@@ -91,6 +108,49 @@ app.post("/register", async (c) => {
       data: err.message,
     });
   }
+});
+
+app.get("/verify", async (c) => {
+  const docNumber = c.req.query("dni");
+  const date = c.req.query("date");
+
+  const user = await employeeRepository.findOne({
+    where: {
+      doc_number: docNumber,
+    },
+    select: {
+      id: true,
+      first_name: true,
+      last_name: true,
+      gender: true,
+    },
+  });
+  if (!user) throw new Error("No se encontro el usuario");
+
+  const attendance = await attendanceRepository.find({
+    where: {
+      employee_id: user.id,
+      attendance_at: Raw((alias) => `DATE(${alias}) = :date`, { date }),
+    },
+  });
+  if (attendance.length == 0) {
+    return c.json({
+      data: null,
+    });
+  }
+
+  const firstPathFounded = attendance.find((el) => el.pic_photo);
+  let url: string | undefined = undefined;
+  if (firstPathFounded) {
+    url = await s3Service.getPresignedUrl(firstPathFounded.pic_photo);
+  }
+
+  return c.json({
+    data: {
+      user,
+      photo: url ?? null,
+    },
+  });
 });
 
 export default app;
