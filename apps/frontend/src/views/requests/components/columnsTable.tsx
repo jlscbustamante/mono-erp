@@ -16,7 +16,7 @@ export const columnsTable = {
     dataIndex: 'requested_at',
     key: 'requested_at',
     render: (date: string) => {
-      return <p>{fDate(date)}</p>
+      return <p className="min-w-max">{fDate(date)}</p>
     },
   },
   request_type: {
@@ -28,6 +28,9 @@ export const columnsTable = {
     title: 'Proveedor',
     dataIndex: 'legal_name',
     key: 'legal_name',
+    render: (text: string) => {
+      return <p className="max-w-80">{text}</p>
+    },
   },
   legal_number: {
     title: 'Número legal',
@@ -103,7 +106,7 @@ export const columnsTable = {
     dataIndex: 'approved_at',
     key: 'approved_at',
     render: (date: string) => {
-      return <p>{fDate(date)}</p>
+      return <p className="min-w-max">{fDate(date)}</p>
     },
   },
   rejected_at: {
@@ -176,6 +179,7 @@ export const columnsApproved = {
     columnsTable.id,
     columnsTable.requested_at,
     columnsTable.legal_name,
+    columnsTable.num_document,
     columnsTable.description,
     columnsTable.cash,
     columnsTable.costCenter,
@@ -210,6 +214,8 @@ export const columnsApproved = {
   default: [
     columnsTable.id,
     columnsTable.requested_at,
+    columnsTable.legal_name,
+    columnsTable.num_document,
     columnsTable.description,
     columnsTable.category,
     columnsTable.cash,
@@ -226,6 +232,7 @@ export const columnsRequested = {
     columnsTable.id,
     columnsTable.requested_at,
     columnsTable.legal_name,
+    columnsTable.num_document,
     columnsTable.description,
     columnsTable.category,
     columnsTable.costCenter,
