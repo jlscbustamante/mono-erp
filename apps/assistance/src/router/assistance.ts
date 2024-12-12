@@ -89,7 +89,6 @@ app.post("/register", async (c) => {
     const resultPath = await s3Service.uploadAssistanceFile(photo, pathUser);
 
     await attendanceRepository.insert({
-      id: 1,
       employee_id: user.id,
       event: event as ATTENDANCE_EVENT,
       pic_photo: resultPath,
@@ -111,46 +110,57 @@ app.post("/register", async (c) => {
 });
 
 app.get("/verify", async (c) => {
-  const docNumber = c.req.query("dni");
-  const date = c.req.query("date");
+  try {
+    const docNumber = c.req.query("dni");
+    const date = c.req.query("date");
 
-  const user = await employeeRepository.findOne({
-    where: {
-      doc_number: docNumber,
-    },
-    select: {
-      id: true,
-      first_name: true,
-      last_name: true,
-      gender: true,
-    },
-  });
-  if (!user) throw new Error("No se encontro el usuario");
+    const user = await employeeRepository.findOne({
+      where: {
+        doc_number: docNumber,
+      },
+      select: {
+        id: true,
+        first_name: true,
+        last_name: true,
+        gender: true,
+      },
+    });
+    if (!user) throw new Error("No se encontro el usuario");
 
-  const attendance = await attendanceRepository.find({
-    where: {
-      employee_id: user.id,
-      attendance_at: Raw((alias) => `DATE(${alias}) = :date`, { date }),
-    },
-  });
-  if (attendance.length == 0) {
+    const attendance = await attendanceRepository.find({
+      where: {
+        employee_id: user.id,
+        attendance_at: Raw((alias) => `DATE(${alias}) = :date`, { date }),
+      },
+    });
+    if (attendance.length == 0) {
+      return c.json({
+        data: null,
+      });
+    }
+
+    const firstPathFounded = attendance.find((el) => el.pic_photo);
+    let url: string | undefined = undefined;
+    if (firstPathFounded) {
+      url = await s3Service.getPresignedUrl(firstPathFounded.pic_photo);
+    }
+
     return c.json({
-      data: null,
+      data: {
+        user,
+        records: attendance.map((el) => ({
+          datetime: el.attendance_at,
+          event: el.event,
+        })),
+        photo: url ?? null,
+      },
+    });
+  } catch (err: any) {
+    c.status(404);
+    return c.json({
+      message: err.message,
     });
   }
-
-  const firstPathFounded = attendance.find((el) => el.pic_photo);
-  let url: string | undefined = undefined;
-  if (firstPathFounded) {
-    url = await s3Service.getPresignedUrl(firstPathFounded.pic_photo);
-  }
-
-  return c.json({
-    data: {
-      user,
-      photo: url ?? null,
-    },
-  });
 });
 
 export default app;
