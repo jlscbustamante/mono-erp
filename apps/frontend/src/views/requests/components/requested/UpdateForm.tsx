@@ -32,7 +32,7 @@ import {
   costCentersSt,
 } from '@/data/resources/state'
 import { AccountFlow } from '@/data/types/accountFlow'
-import { getNameRequestType } from '@/utils'
+import { cn, getNameRequestType } from '@/utils'
 import { filterSelectForm } from '@/utils/filterOptions'
 import { safeAny } from '@/utils/someAny'
 
@@ -376,12 +376,10 @@ export const UpdateForm: React.FC<{
             })}
           </Select>
         </Form.Item>
-        {/* <Form.Item
+        <Form.Item
           label="Forma de pago"
           className={cn({
-            hidden: ![RequestType.Simple, RequestType.Supplier].includes(
-              request.request_type,
-            ),
+            hidden: ![RequestType.Supplier].includes(request.request_type),
           })}
         >
           <Select
@@ -398,7 +396,7 @@ export const UpdateForm: React.FC<{
               CREDITO
             </Select.Option>
           </Select>
-        </Form.Item> */}
+        </Form.Item>
         <Form.Item
           label="Tiene rentencion"
           valuePropName="checked"

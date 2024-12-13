@@ -6,8 +6,8 @@ import {
   Modal,
   Select,
   Switch,
+  Typography,
 } from 'antd'
-import { Typography } from 'antd'
 import TextArea from 'antd/es/input/TextArea'
 import dayjs from 'dayjs'
 import { Dispatch, SetStateAction, useState } from 'react'
@@ -30,7 +30,7 @@ import {
   categoriesRequestSt,
   costCentersSt,
 } from '@/data/resources/state'
-import { getNameRequestType } from '@/utils'
+import { cn, getNameRequestType } from '@/utils'
 import { filterSelectForm } from '@/utils/filterOptions'
 
 const { Link } = Typography
@@ -186,6 +186,14 @@ export const ReadOnlyForm: React.FC<{
               )
             })}
           </Select>
+        </Form.Item>
+        <Form.Item
+          label="Forma de pago"
+          className={cn({
+            hidden: ![RequestType.Supplier].includes(request.request_type),
+          })}
+        >
+          <Input value={request.pay_method ?? ''} readOnly={true} />
         </Form.Item>
         <Form.Item
           label="Tiene rentencion"
