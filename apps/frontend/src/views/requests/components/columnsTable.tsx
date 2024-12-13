@@ -31,6 +31,7 @@ export const columnsTable = {
     render: (text: string) => {
       return <p className="max-w-80">{text}</p>
     },
+    excelRender: (text: string) => text,
   },
   legal_number: {
     title: 'Número legal',
