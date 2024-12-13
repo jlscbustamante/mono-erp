@@ -32,12 +32,12 @@ export class InventoryService {
     return dispatch
   }
 
-  async getTemplateItems(): Promise<Item[]> {
-    const cached = cacheHalfDay.get('template_items_v2')
+  async getTemplateItems(company = 'PIZZA'): Promise<Item[]> {
+    const cached = cacheHalfDay.get(`template_items_v2_${company}`)
     if (cached) return cached as Item[]
     const templatebase = await invDispatchBase.findOne({
       where: {
-        sucursal_type: 'PIZZA',
+        sucursal_type: company,
         used_to: DispatchUsedTo.Store,
       },
     })
@@ -114,7 +114,7 @@ export class InventoryService {
   /**
    * @description Obtiene template para que el usuario edite lo neceario de una tienda
    */
-  async getStockToEdit(store: string, date: string) {
+  async getStockToEdit(store: string, date: string, company?: string) {
     const cached = cacheApi.get(`stock_edit_v2_${store}_${date}`)
     if (cached) return cached as StockItemToCreateDto[]
     const beforeDay = format(sub(parseISO(date), { days: 1 }), 'yyyy-MM-dd')
@@ -131,7 +131,7 @@ export class InventoryService {
           stock_at: Raw((alias) => `DATE(${alias}) = '${date}'`),
         },
       }),
-      this.getTemplateItems(),
+      this.getTemplateItems(company),
     ])
     const result: StockItemToCreateDto[] = []
     const uniqueIds = getUniqueIds(before, now, template)

@@ -173,6 +173,7 @@ export const saveStockSchema = Joi.object({
 export const getEditTemplateSchema = Joi.object({
   date: Joi.date().iso().required(),
   warehouse: Joi.string().required(),
+  company: Joi.string().allow(''),
 })
 
 export const approveMovementSchema = Joi.object<MoveBetweenStoresDto>({

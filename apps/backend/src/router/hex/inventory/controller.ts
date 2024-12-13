@@ -287,9 +287,17 @@ export class HexInventoryController {
 
   @catchError
   async getEditTemplate(req: Request, res: Response) {
-    const { warehouse, date } = req.query as { warehouse: string; date: string }
+    const { warehouse, date, company } = req.query as {
+      warehouse: string
+      date: string
+      company?: string
+    }
 
-    const data = await inventoryServicev2.getStockToEdit(warehouse, date)
+    const data = await inventoryServicev2.getStockToEdit(
+      warehouse,
+      date,
+      company,
+    )
     return res.json({
       message: 'ok',
       data: data,
