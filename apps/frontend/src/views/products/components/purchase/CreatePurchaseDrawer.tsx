@@ -127,10 +127,12 @@ export const CreatePurchaseDrawer: React.FC<{
           item.itemId == undefined ||
           item.quantity == undefined ||
           item.quantity <= 0,
-      )
+      ) ||
+      !newPurchase.gloss
     ) {
       setIsAvailable(false)
     } else {
+      console.log('here')
       setIsAvailable(true)
     }
   }, [newPurchase])
@@ -181,7 +183,7 @@ export const CreatePurchaseDrawer: React.FC<{
       width={900}
     >
       <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-        <Form.Item label="Proveedor">
+        <Form.Item label="Proveedor" required>
           <div className="flex gap-1">
             <Select
               placeholder="Proveedor"
@@ -235,7 +237,7 @@ export const CreatePurchaseDrawer: React.FC<{
             }
           />
         </Form.Item>
-        <Form.Item label="Fecha">
+        <Form.Item label="Fecha" required>
           <DatePicker
             allowClear={false}
             value={dayjs(newPurchase.purchaseAt)}
@@ -248,9 +250,9 @@ export const CreatePurchaseDrawer: React.FC<{
           />
         </Form.Item>
 
-        <Form.Item label="Glosa">
+        <Form.Item label="Glosa" required>
           <Input
-            placeholder="Descripción"
+            placeholder="CARNE,EMBUTIDOS,ETC"
             value={newPurchase.gloss}
             onChange={(e) =>
               setNewPurchase({ ...newPurchase, gloss: e.target.value })
@@ -438,7 +440,9 @@ export const CreatePurchaseDrawer: React.FC<{
                                 totalValue: value ?? 0,
                                 unitValue:
                                   (value ?? 0) /
-                                  (item.quantity == 0 ? 1 : item.quantity ?? 1),
+                                  (item.quantity == 0
+                                    ? 1
+                                    : (item.quantity ?? 1)),
                               }
                             }
                             return item

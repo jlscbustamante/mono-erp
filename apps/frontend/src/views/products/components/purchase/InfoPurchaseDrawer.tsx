@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import { Button, Drawer, Spin, Table } from 'antd'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { FaWarehouse } from 'react-icons/fa6'
 import { MdEdit } from 'react-icons/md'
 import ReactToPrint from 'react-to-print'
@@ -9,8 +9,9 @@ import { toast } from 'react-toastify'
 import { storePurchase } from '@/data/hex/inventory'
 import { PURCHASE_STATUS } from '@/data/hex/types'
 import { IInvPurchase } from '@/data/products/types/purchase'
-import { fCurrency } from '@/utils'
+import { cn, fCurrency } from '@/utils'
 
+import dayjs from 'dayjs'
 import { usePurchase } from '../../state/usePurchase'
 import {
   EditPurchaseDrawer,
@@ -23,6 +24,7 @@ export const InfoPurchaseDrawer = () => {
   const [purchase, setPurchase] = useState<IInvPurchase | undefined>(undefined)
   const { open } = useEditPurchaseDrawer()
   const componentRef = useRef(null)
+  const today = dayjs()
 
   const handleStorePurchase = useMutation({
     mutationFn: storePurchase,
@@ -45,6 +47,12 @@ export const InfoPurchaseDrawer = () => {
       toast.error(err.message)
     },
   })
+
+  const hideEdit = useMemo(() => {
+    if (!purchase) return true
+    const diff = today.diff(dayjs(purchase.purchaseAt.split(' ')[0]), 'days')
+    return diff > 3
+  }, [purchase])
 
   useEffect(() => {
     if (!store.infoPurchaseId) return
@@ -79,7 +87,11 @@ export const InfoPurchaseDrawer = () => {
                     size="small"
                     icon={<MdEdit />}
                     className={
-                      purchase.status == PURCHASE_STATUS.NEW ? '' : 'hidden'
+                      cn({
+                        hidden:
+                          hideEdit || purchase.status != PURCHASE_STATUS.NEW,
+                      })
+                      // purchase.status == PURCHASE_STATUS.NEW ? '' : 'hidden'
                     }
                     onClick={() => {
                       if (purchase.id) open(purchase.id)

@@ -68,7 +68,8 @@ export class PurchaseController {
     requirement.id = null
     requirement.request_type = RequestType.Supplier
     // requirement.description = purchase.gloss
-    requirement.description = `${purchase.supplierName} ${purchase.numInvoice}`
+    requirement.description = purchase.gloss
+    // requirement.description = `${purchase.supplierName} ${purchase.numInvoice}`
     if (purchase.numInvoice) requirement.num_document = purchase.numInvoice
     requirement.requested_at = purchase.purchaseAt
     requirement.status = RequestStatus.Pending
