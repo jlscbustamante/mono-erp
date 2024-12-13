@@ -1,5 +1,5 @@
 import { format, parseISO, sub } from 'date-fns'
-import { InvDispatch, InvStock } from 'pizzadb'
+import { InvDispatch, InvStock, Item as ItemDb } from 'pizzadb'
 import { Raw, Repository } from 'typeorm'
 import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
@@ -212,6 +212,61 @@ export class InventoryService {
     const ordered = result.sort((a, b) => a.itemName.localeCompare(b.itemName))
     cacheApi.set(`stock_edit_v2_${store}_${date}`, ordered)
     return ordered
+  }
+
+  async getItemsTemplate(company: string) {
+    const cached = cacheHalfDay.get(`template_items_pr_${company}`)
+    if (cached) return cached as ItemDb[]
+    const templatebase = await invDispatchBase.findOne({
+      where: {
+        sucursal_type: company,
+        used_to: DispatchUsedTo.Store,
+      },
+    })
+    if (!templatebase) return []
+    const templateItems = await invDispatchBaseItemRepository.find({
+      select: {
+        id: true,
+        itemMove: {
+          brand: {
+            id: true,
+            brand: true,
+          },
+          presentation: {
+            id: true,
+            presentation: true,
+          },
+          product: {
+            id: true,
+            measure: {
+              id: true,
+              code: true,
+            },
+          },
+        },
+      },
+      where: {
+        dispatch_id: templatebase?.id,
+      },
+      relations: {
+        itemMove: {
+          brand: true,
+          presentation: true,
+          product: {
+            measure: true,
+          },
+        },
+      },
+      order: {
+        item_move_name: 'ASC',
+      },
+    })
+    const itemsMoves = templateItems.map((item) => {
+      if (!item.itemMove) return null
+      return item.itemMove
+    })
+
+    return itemsMoves.filter((el) => el) as ItemDb[]
   }
 }
 

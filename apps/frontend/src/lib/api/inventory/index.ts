@@ -20,6 +20,11 @@ export class InventoryApi {
     }
   }
 
+  async getItemsTemplate() {
+    const result = await this.client.get('inventory/template/items')
+    return result.data.data
+  }
+
   private manageError(error: any) {
     const message = (error as any).response?.data?.message
     if (message) throw new Error(message)

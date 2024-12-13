@@ -11,6 +11,7 @@ import {
 import { fCurrency, filterOption, safeAny } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
+import { inventoryApi } from '@/lib/api/inventory'
 import { usePurchase } from '../../state/usePurchase'
 import { ListTemplateModal } from './ListTemplateModal'
 
@@ -120,7 +121,8 @@ export const ListItemsDispatchDrawer: React.FC<{
 
   useEffect(() => {
     ;(async () => {
-      const list = await getListProductItems()
+      // const list = await getListProductItems()
+      const list = await inventoryApi.getItemsTemplate()
       setProductItems(list)
     })()
   }, [])

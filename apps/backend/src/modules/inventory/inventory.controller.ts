@@ -15,4 +15,12 @@ export class InventoryController {
     const { store, date } = req.query as { store: string; date: string }
     return this.inventoryService.getStockToEdit(store, date)
   }
+
+  @Get('/inventory/template/items')
+  async getItemsTemplate(req: Request) {
+    const { company } = req.query as { company?: string }
+    const searchCompany = company || 'PIZZA'
+    const data = await this.inventoryService.getItemsTemplate(searchCompany)
+    return data
+  }
 }
