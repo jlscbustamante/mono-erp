@@ -156,13 +156,14 @@ const handleProviderExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.description,
     columnsTable.cash,
     columnsTable.requested_by,
+    columnsTable.payMethod,
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
   ]
 
   const excel = new Excel()
-  excel.addSheet('Proveedores')
+  excel.addSheet('Proveedores').addRow()
   excel
     .addColumns(columnsToExport)
     .addDataSource(pendingRequests)
