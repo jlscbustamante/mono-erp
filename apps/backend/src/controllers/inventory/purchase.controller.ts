@@ -191,7 +191,10 @@ export class PurchaseController {
     })
   }
 
-  static async getAccoutingObjects(purchase: InvPurchase, token: IToken) {
+  static async getAccoutingObjects(
+    purchase: InvPurchase,
+    token: { name: string },
+  ) {
     const accounts: { id: number; account: string; name: string }[] =
       await AppDataSource.query(
         `SELECT ac.id,ac.account,par.name FROM account ac INNER JOIN parameters par ON par.value=ac.id

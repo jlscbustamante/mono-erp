@@ -1,9 +1,11 @@
 import { In, Not } from 'typeorm'
-
+import config from '../../../../config/config'
 import { AppDataSource } from '../../../../config/database'
 import { InvPurchase } from '../../../../entities/inventory/Purchase'
 import { InvPurchaseItem } from '../../../../entities/inventory/PurchaseItem'
+import accountMoveRepository from '../../../../repositories/accountMove.repository'
 import { invPurchaseRepository } from '../../../../repositories/inventory/purchase.repository'
+import { AccoutingMoveType } from '../../../../types/accoutingMove'
 import { PurchaseUpdaetDto } from '../../dto'
 import {
   Purchase,
@@ -69,13 +71,42 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
   }
 
   async updatePurchase(purchase: PurchaseUpdaetDto): Promise<void> {
+    const purchaseDb = await invPurchaseRepository.findOne({
+      select: {
+        id: true,
+        totalValue: true,
+      },
+      where: {
+        id: purchase.id,
+      },
+    })
+
+    if (!purchaseDb) throw new Error('Compra no encontrada')
+
     const netValue = purchase.items.reduce((acc, el) => acc + el.totalValue, 0)
     const discount = purchase.discount
     const taxValue = purchase.taxValue ?? 0
     const totalValue = netValue - discount + taxValue
     const itemIds = purchase.items.filter((el) => el.id).map((el) => el.id)
+
+    let moveId: number | undefined
+    if (purchaseDb.totalValue != totalValue) {
+      const move = await accountMoveRepository.findOne({
+        select: {
+          id: true,
+        },
+        where: {
+          move_id: purchase.id,
+          move_type: AccoutingMoveType.Purchase,
+        },
+      })
+      if (move) {
+        moveId = move.id ?? undefined
+      }
+    }
+
     await AppDataSource.transaction(async (manager) => {
-      manager.update(InvPurchase, purchase.id, {
+      await manager.update(InvPurchase, purchase.id, {
         id: purchase.id,
         gloss: purchase.gloss,
         warehouseId: purchase.warehouseId,
@@ -102,6 +133,13 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         }
       }
       await Promise.all(allPromises)
+
+      if (config.purchasegeneratederivate || moveId) {
+        await manager.query(
+          'UPDATE accounting_item SET amount_debit= CASE WHEN amount_debit !=0 THEN ? ELSE amount_debit END, amount_credit= CASE WHEN amount_credit !=0 THEN ? ELSE amount_credit END WHERE move_id=?',
+          [totalValue, totalValue, moveId],
+        )
+      }
     })
   }
 }
