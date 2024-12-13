@@ -224,29 +224,10 @@ export class InventoryService {
       },
     })
     if (!templatebase) return []
+    console.log('dispatch id  ', templatebase.id)
     const templateItems = await invDispatchBaseItemRepository.find({
-      select: {
-        id: true,
-        itemMove: {
-          brand: {
-            id: true,
-            brand: true,
-          },
-          presentation: {
-            id: true,
-            presentation: true,
-          },
-          product: {
-            id: true,
-            measure: {
-              id: true,
-              code: true,
-            },
-          },
-        },
-      },
       where: {
-        dispatch_id: templatebase?.id,
+        dispatch_id: templatebase.id,
       },
       relations: {
         itemMove: {
@@ -266,7 +247,9 @@ export class InventoryService {
       return item.itemMove
     })
 
-    return itemsMoves.filter((el) => el) as ItemDb[]
+    const data = itemsMoves.filter((el) => el) as ItemDb[]
+    cacheHalfDay.set(`template_items_pr_${company}`, data)
+    return data
   }
 }
 

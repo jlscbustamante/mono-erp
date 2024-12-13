@@ -12,7 +12,6 @@ import { fCurrency, filterOption, safeAny } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
 import { inventoryApi } from '@/lib/api/inventory'
-import { usePurchase } from '../../state/usePurchase'
 import { ListTemplateModal } from './ListTemplateModal'
 
 export const ListItemsDispatchDrawer: React.FC<{
@@ -47,7 +46,6 @@ export const ListItemsDispatchDrawer: React.FC<{
   >({})
   const [productItems, setProductItems] = useState<IInvProductItem[]>([])
   const [textField, setTextField] = useState('')
-  const { getListProductItems } = usePurchase()
   const [messageApi, contextHolder] = message.useMessage()
 
   const [openModal, setIsOpenModal] = useState(false)
