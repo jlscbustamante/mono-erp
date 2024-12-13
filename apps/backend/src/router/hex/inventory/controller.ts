@@ -39,8 +39,10 @@ import {
   dispatchService,
   dispatchUtil,
   driverService,
+  generateTemplateDispatchPizzam,
   generateTemplateDispatchUseCase,
   inventoryService,
+  readStockPizzam,
   readStockUseCase,
   saveStockUseCase,
   stockRepository,
@@ -90,16 +92,25 @@ export class HexInventoryController {
 
   @catchError
   async stockByRange(req: Request, res: Response) {
-    const { warehouse, start, end } = req.query as {
+    const { warehouse, start, end, company } = req.query as {
       warehouse: string
       start: string
       end: string
+      company?: string
     }
 
-    const data = await readStockUseCase.run(warehouse, {
-      start,
-      end,
-    })
+    let data
+    if (company == 'PIZZAM') {
+      data = await readStockPizzam.run(warehouse, {
+        start,
+        end,
+      })
+    } else {
+      data = await readStockUseCase.run(warehouse, {
+        start,
+        end,
+      })
+    }
 
     return res.json({
       message: 'ok',
@@ -109,8 +120,17 @@ export class HexInventoryController {
 
   @catchError
   async templateDispatch(req: Request, res: Response) {
-    const { sucursalCode } = req.query as { sucursalCode: string }
-    const template = await generateTemplateDispatchUseCase.run(sucursalCode)
+    const { sucursalCode, company } = req.query as {
+      sucursalCode: string
+      company?: string
+    }
+    let template
+    if (company == 'PIZZAM') {
+      template = await generateTemplateDispatchPizzam.run(sucursalCode)
+    } else {
+      template = await generateTemplateDispatchUseCase.run(sucursalCode)
+    }
+
     return res.json({
       data: template,
     })

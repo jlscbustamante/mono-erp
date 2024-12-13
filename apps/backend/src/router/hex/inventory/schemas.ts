@@ -35,10 +35,12 @@ export const stockByRangeSchema = Joi.object({
   warehouse: Joi.string().required(),
   start: Joi.string().required(),
   end: Joi.string().required(),
+  company: Joi.string().allow(''),
 })
 
 export const templateDispatchSchema = Joi.object({
   sucursalCode: Joi.string().required(),
+  company: Joi.string(),
 })
 
 export const lastClosedDateSchema = Joi.object({

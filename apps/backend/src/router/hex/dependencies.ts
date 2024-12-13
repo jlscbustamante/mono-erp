@@ -19,6 +19,7 @@ import { DispatchRepositoryImpl } from '../../core/inventory/infrastructure/repo
 import { ItemRepositoryImpl } from '../../core/inventory/infrastructure/repositories/item.repository'
 import { PurchaseRepositoryImpl } from '../../core/inventory/infrastructure/repositories/purchase.repository'
 import { StockRepositoryImpl } from '../../core/inventory/infrastructure/repositories/stock.repository'
+import { TemplateRepositoryPizzam } from '../../core/inventory/infrastructure/repositories/template-pizzam.repository'
 import { TemplateRepositoryImpl } from '../../core/inventory/infrastructure/repositories/template.repository'
 import { WarehousesRepositoryImpl } from '../../core/inventory/infrastructure/repositories/warehouses.repository'
 import { InventoryService } from '../../core/inventory/inventory.service'
@@ -35,6 +36,9 @@ export const warehouseRepository = new WarehousesRepositoryImpl()
 export const templateRepository = new TemplateRepositoryImpl(
   warehouseRepository,
 )
+export const templateRepositoryPizzam = new TemplateRepositoryPizzam(
+  warehouseRepository,
+)
 
 const stockDbRepository = AppDataSource.getRepository(InvStock)
 
@@ -44,10 +48,19 @@ export const stockRepository = new StockRepositoryImpl(
   itemRepository,
   stockDbRepository,
 )
+export const stockRepositoryPizzam = new StockRepositoryImpl(
+  templateRepositoryPizzam,
+  warehouseRepository,
+  itemRepository,
+  stockDbRepository,
+)
+
 export const dispatchRepository = new DispatchRepositoryImpl()
 export const purchaseRepository = new PurchaseRepositoryImpl()
 
 export const readStockUseCase = new ReadStock(stockRepository)
+export const readStockPizzam = new ReadStock(stockRepositoryPizzam)
+
 export const saveBiStockUseCase = new SaveBiStock(stockRepository)
 
 export const driverRepository = AppDataSource.getRepository(Carrier)
@@ -108,6 +121,11 @@ export const createDispatch = new CreateDispatch(
 export const generateTemplateDispatchUseCase = new GenerateTemplateDispatch(
   stockRepository,
   templateRepository,
+)
+
+export const generateTemplateDispatchPizzam = new GenerateTemplateDispatch(
+  stockRepositoryPizzam,
+  templateRepositoryPizzam,
 )
 
 export const createInitialStockUseCase = new CreateInitialStock(
