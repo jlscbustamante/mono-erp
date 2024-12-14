@@ -71,10 +71,24 @@ export const generateTemplateStockUseCase = new GenerateTemplateEditStock(
   itemRepository,
 )
 
+export const generateTemplateStockPizzam = new GenerateTemplateEditStock(
+  stockRepository,
+  templateRepositoryPizzam,
+  itemRepository,
+)
+
 export const dispatchItemsUseCase = new DispatchItems(
   generateTemplateStockUseCase,
   saveBiStockUseCase,
   templateRepository,
+  dispatchRepository,
+  warehouseRepository,
+)
+
+export const dispatchItemsPizzam = new DispatchItems(
+  generateTemplateStockPizzam,
+  saveBiStockUseCase,
+  templateRepositoryPizzam,
   dispatchRepository,
   warehouseRepository,
 )

@@ -63,7 +63,8 @@ export class TemplateRepositoryPizzam implements TemplateRepository {
   async getTemplate(isWarehouse: boolean): Promise<TemplateItem[]> {
     const templatebase = await invDispatchBase.findOne({
       where: {
-        sucursal_type: 'PIZZAM',
+        // sucursal_type: 'PIZZAM',
+        sucursal_type: isWarehouse ? 'PIZZA' : 'PIZZAM',
         used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
       },
     })
@@ -219,7 +220,7 @@ export class TemplateRepositoryPizzam implements TemplateRepository {
     // })
     const templatebase = (await this.templatebass()).find((el) => {
       return (
-        el.sucursal_type == 'PIZZAM' &&
+        el.sucursal_type == (isWarehouse ? 'PIZZA' : 'PIZZAM') &&
         el.used_to ==
           (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
       )

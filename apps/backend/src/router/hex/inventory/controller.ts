@@ -35,6 +35,7 @@ import { catchError } from '../../../utils/decorators'
 import {
   createDispatch,
   createInitialStockUseCase,
+  dispatchItemsPizzam,
   dispatchItemsUseCase,
   dispatchService,
   dispatchUtil,
@@ -180,7 +181,20 @@ export class HexInventoryController {
   async approveDispatch(req: Request, res: Response) {
     const dispatch = req.body as DispatchUpdateDto
     const token: IToken = req.headers.token as unknown as IToken
-    await dispatchItemsUseCase.run(dispatch, token.name)
+    const sucursalToId = dispatch.wareToId
+    const sucursales = await AppDataSource.query(
+      `SELECT * FROM adm_sucursal WHERE id= '${sucursalToId}'`,
+    )
+    const sucursal = sucursales[0]
+    let isPizzam = false
+    if (sucursal) {
+      isPizzam = sucursal.trademark_id == 'PIZZAM'
+    }
+    if (isPizzam) {
+      await dispatchItemsPizzam.run(dispatch, token.name)
+    } else {
+      await dispatchItemsUseCase.run(dispatch, token.name)
+    }
     res.json({
       data: 'ok',
     })
