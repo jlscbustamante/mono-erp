@@ -48,7 +48,7 @@ export const InfoPurchaseDrawer = () => {
     },
   })
 
-  const hideEdit = useMemo(() => {
+  const _hideEdit = useMemo(() => {
     if (!purchase) return true
     const diff = today.diff(dayjs(purchase.purchaseAt.split(' ')[0]), 'days')
     return diff > 3
