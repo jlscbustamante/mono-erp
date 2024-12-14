@@ -89,7 +89,8 @@ export const InfoPurchaseDrawer = () => {
                     className={
                       cn({
                         hidden:
-                          hideEdit || purchase.status != PURCHASE_STATUS.NEW,
+                          // hideEdit || purchase.status != PURCHASE_STATUS.NEW,
+                          purchase.status != PURCHASE_STATUS.NEW,
                       })
                       // purchase.status == PURCHASE_STATUS.NEW ? '' : 'hidden'
                     }
