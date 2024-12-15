@@ -400,7 +400,7 @@ export const CreatePurchaseDrawer: React.FC<{
                   return (
                     <InputNumber
                       size="small"
-                      precision={2}
+                      precision={3}
                       value={record.quantity}
                       onChange={(value) => {
                         setNewPurchase({

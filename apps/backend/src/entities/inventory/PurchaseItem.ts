@@ -47,7 +47,7 @@ export class InvPurchaseItem extends EntitiesTimeStamps {
   @Column({
     type: 'decimal',
     precision: 16,
-    scale: 2,
+    scale: 3,
     transformer: new DecimalTransformer(),
   })
   quantity: number
