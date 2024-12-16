@@ -14,6 +14,14 @@ app.get("/", (c) => {
 
 app.route("/api/attendance", assistance);
 
+app.onError((err, c) => {
+  console.log(err);
+  c.status(400);
+  return c.json({
+    message: err.message,
+  });
+});
+
 serve({
   fetch: app.fetch,
   port: config.port,

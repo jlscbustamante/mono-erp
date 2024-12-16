@@ -1,5 +1,7 @@
 import { rhApi } from '@/lib/api/rh'
 import { useQuery } from '@tanstack/react-query'
+import { ColumnsType } from 'antd/es/table'
+import { format, parseISO } from 'date-fns'
 import dayjs from 'dayjs'
 import { Attendance } from 'pizzadb'
 import {
@@ -23,6 +25,49 @@ export const AsistenciaPage = () => {
   ])
   const [controller, addController] = useReducer((state) => state + 1, 0)
 
+  const columns = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+    },
+    {
+      title: 'Empleado',
+      render: (_, record: Attendance) => {
+        return `${record.employee.first_name} ${record.employee.last_name}`
+      },
+    },
+    {
+      title: 'Evento',
+      dataIndex: 'event',
+    },
+    {
+      title: 'Fecha',
+      dataIndex: 'attendance_at',
+      render: (text: string) => format(parseISO(text), 'yyyy-MM-dd HH:mm:ss'),
+    },
+    {
+      title: 'Tienda',
+      dataIndex: ['sucursal', 'title'],
+    },
+    {
+      title: 'Imagen',
+      dataIndex: 'pic_photo',
+      render: (url: string) => {
+        return (
+          <a
+            target="_blank"
+            href={`https://erpraul.com/api/attendance/_img/${url}`}
+            rel="noreferrer"
+          >
+            Abrir
+          </a>
+        )
+      },
+      excelRender: (url: string) =>
+        `https://erpraul.com/api/attendance/_img/${url}`,
+    } as any,
+  ] satisfies ColumnsType<Attendance>
+
   const query = useQuery({
     queryKey: ['asistencias/filter', controller],
     enabled: !!store,
@@ -34,6 +79,7 @@ export const AsistenciaPage = () => {
       value={{
         store,
         setStore,
+        columns,
         dates,
         setDates,
         data: query.data ?? [],
@@ -62,5 +108,6 @@ export const useAsistenciaContext = () => {
     data: Attendance[]
     isLoading: boolean
     addController: () => void
+    columns: ColumnsType<Attendance>
   }
 }

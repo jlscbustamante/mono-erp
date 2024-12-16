@@ -164,4 +164,17 @@ app.get("/verify", async (c) => {
   }
 });
 
+app.get("/_img/*", async (c) => {
+  const url = c.req.path;
+  const imgPath = url.split("/_img/");
+  if (!imgPath[1]) throw new Error("No se encontro la imagen");
+  const imageUrl = await s3Service.getPresignedUrl(imgPath[1]);
+  const response = await fetch(imageUrl);
+  // const data = await response.blob();
+
+  c.header("Content-Type", "image/jpeg");
+  // return here
+  return c.body(response.body);
+});
+
 export default app;

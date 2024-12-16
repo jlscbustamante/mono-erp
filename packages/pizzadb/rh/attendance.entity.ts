@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Sucursal } from "../shared";
 import { RhEmployee } from "./employee.entity";
 
 export enum ATTENDANCE_EVENT {
@@ -44,6 +45,10 @@ export class Attendance {
   @ManyToOne(() => RhEmployee, (employee) => employee.assistance)
   @JoinColumn({ name: "employee_id" })
   employee: RhEmployee;
+
+  @ManyToOne(() => Sucursal)
+  @JoinColumn({ name: "sucursal_id" })
+  sucursal: Sucursal;
 
   @CreateDateColumn()
   created_at: Date;

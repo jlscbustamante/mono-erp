@@ -1,6 +1,8 @@
+import { ExcelExportBtn } from '@/components/excel-btn'
 import { filterSelectForm } from '@/utils'
 import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
 import { Button, DatePicker, Select } from 'antd'
+import { Excel } from 'antd-table-saveas-excel'
 import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { FiSearch } from 'react-icons/fi'
@@ -11,11 +13,29 @@ const RangePicker = DatePicker.RangePicker
 
 export const NavAsistencia = () => {
   const query = useSucursales()
-  const { store, dates, setStore, setDates, addController, isLoading } =
-    useAsistenciaContext()
+  const {
+    store,
+    data,
+    dates,
+    setStore,
+    setDates,
+    addController,
+    isLoading,
+    columns,
+  } = useAsistenciaContext()
 
   const handleSearch = () => {
     addController()
+  }
+
+  const handleExport = () => {
+    const date = dates[0] === dates[1] ? dates[0] : `${dates[0]}-${dates[1]}`
+    const excel = new Excel()
+    excel
+      .addSheet('Asistencia')
+      .addColumns(columns as any)
+      .addDataSource(data)
+      .saveAs(`Asistencia-${date}.xlsx`)
   }
 
   useEffect(() => {
@@ -25,7 +45,7 @@ export const NavAsistencia = () => {
   }, [query.data])
 
   return (
-    <div className="">
+    <div className="flex items-center justify-between">
       <div className="flex gap-1">
         <Select
           allowClear={false}
@@ -67,6 +87,7 @@ export const NavAsistencia = () => {
           danger
         />
       </div>
+      <ExcelExportBtn onExport={handleExport} />
     </div>
   )
 }

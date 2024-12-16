@@ -46,4 +46,12 @@ export class S3Service {
     });
     return url;
   }
+
+  async getContent(path: string) {
+    const command = new GetObjectCommand({
+      Bucket: config.aws.s3.bucket,
+      Key: path,
+    });
+    return this.client.send(command);
+  }
 }
