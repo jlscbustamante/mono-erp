@@ -7,10 +7,12 @@ const client = axios.create({
 
 client.interceptors.request.use(
   (config) => {
+    const contentType = config.headers['Content-Type']
     const token = localStorage.getItem('tk_admin')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
+    config.headers['Content-Type'] = contentType ?? 'application/json'
 
     return config
   },

@@ -21,11 +21,16 @@ import {
   FaFileUpload,
   FaFilter,
 } from 'react-icons/fa'
-import { FaLayerGroup, FaListCheck, FaUserTie } from 'react-icons/fa6'
+import {
+  FaClipboardUser,
+  FaLayerGroup,
+  FaListCheck,
+  FaUserTie,
+} from 'react-icons/fa6'
 import { FiBox } from 'react-icons/fi'
 import { GiConfirmed, GiFullMotorcycleHelmet } from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
-import { IoStorefrontOutline } from 'react-icons/io5'
+import { IoCalendarNumberOutline, IoStorefrontOutline } from 'react-icons/io5'
 import { LiaShippingFastSolid, LiaWarehouseSolid } from 'react-icons/lia'
 import { IconType } from 'react-icons/lib'
 import { LuTruck } from 'react-icons/lu'
@@ -103,6 +108,9 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
 
   [PATHS.erp.modulos.seguridad.roles]: TbHierarchy3,
   [PATHS.erp.modulos.seguridad.usuarios]: BiSolidUser,
+
+  [PATHS.erp.modulos.recursosHumanos.empleado]: FaClipboardUser,
+  [PATHS.erp.modulos.recursosHumanos.asistencia]: IoCalendarNumberOutline,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

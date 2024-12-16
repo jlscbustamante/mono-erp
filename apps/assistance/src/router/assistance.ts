@@ -93,6 +93,7 @@ app.post("/register", async (c) => {
       event: event as ATTENDANCE_EVENT,
       pic_photo: resultPath,
       attendance_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
+      sucursal_id: user.sucursal_id,
     });
 
     return c.json({

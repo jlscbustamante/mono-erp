@@ -92,6 +92,11 @@ export const PATHS = {
       reportes: {
         main: '/erp/modulos/reportes',
       },
+      recursosHumanos: {
+        main: '/erp/modulos/recursos-humanos',
+        empleado: '/erp/modulos/recursos-humanos/empleado',
+        asistencia: '/erp/modulos/recursos-humanos/asistencia',
+      },
     },
   },
 }
@@ -103,4 +108,5 @@ export const PATHS_MAIN = [
   PATHS.erp.modulos.mantenimiento.main,
   PATHS.erp.modulos.mercaderia.main,
   PATHS.erp.modulos.reportes.main,
+  PATHS.erp.modulos.recursosHumanos.main,
 ]

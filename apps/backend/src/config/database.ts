@@ -1,6 +1,7 @@
 import { DataSource } from 'typeorm'
 
 import {
+  Attendance,
   Brand,
   Carrier,
   IamFunction,
@@ -16,6 +17,7 @@ import {
   Presentation,
   Product,
   ProductCategory,
+  RhEmployee,
   Sucursal,
   SucursalAsWarehouse,
 } from 'pizzadb'
@@ -47,6 +49,8 @@ const AppDataSource = new DataSource({
     InvSupplier,
     SucursalAsWarehouse,
     InvStock,
+    RhEmployee,
+    Attendance,
   ],
   logging: config.showTypeormLog,
 })

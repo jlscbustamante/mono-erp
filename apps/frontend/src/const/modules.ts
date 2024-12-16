@@ -48,4 +48,10 @@ export const modules = [
     title: 'Seguridad',
     route: PATHS.erp.modulos.seguridad.main,
   },
+  {
+    id: 14,
+    module: 'RR.HH',
+    title: 'RR.HH',
+    route: PATHS.erp.modulos.recursosHumanos.main,
+  },
 ]

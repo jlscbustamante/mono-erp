@@ -4,6 +4,9 @@ import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
+import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
+import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
+import { RecursosHumanosLayout } from '@/app/erp/modules/recursosHumanos/layout'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
@@ -338,6 +341,20 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.seguridad.usuarios,
                 element: <GetIamUser />,
+              },
+            ],
+          },
+          {
+            path: PATHS.erp.modulos.recursosHumanos.main,
+            element: <RecursosHumanosLayout />,
+            children: [
+              {
+                path: PATHS.erp.modulos.recursosHumanos.empleado,
+                element: <EmpleadoPage />,
+              },
+              {
+                path: PATHS.erp.modulos.recursosHumanos.asistencia,
+                element: <AsistenciaPage />,
               },
             ],
           },
