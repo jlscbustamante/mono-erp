@@ -204,7 +204,12 @@ const ModifyDispatchInformation = ({
           </div>
         </div>
       </div>
-      <Drawer open={openList} onClose={() => setOpenList(false)} width={780}>
+      <Drawer
+        open={openList}
+        onClose={() => setOpenList(false)}
+        width={780}
+        title={'EDITAR DESAPCHO DE ' + dispatch.wareToName}
+      >
         <ModifyDispatchStructure
           dispatch={dispatch}
           items={items}
@@ -306,11 +311,11 @@ const DispatchInformation = ({ dispatch }: { dispatch: DispatchUpdateDto }) => {
       </li>
       <li className="grid grid-cols-2">
         <span>Origen:</span>
-        <span>{dispatch.wareFromId}</span>
+        <span>{dispatch.wareFromName}</span>
       </li>
       <li className="grid grid-cols-2">
         <span>Destino:</span>
-        <span>{dispatch.wareToId}</span>
+        <span>{dispatch.wareToName}</span>
       </li>
       <li className="grid grid-cols-2">
         <span>Registrado por:</span>
