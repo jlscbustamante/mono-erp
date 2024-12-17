@@ -25,7 +25,10 @@ export class HumanResourcesService {
     }
   }
   async updateEmployee(employee: RhEmployee) {
-    await this.employeeRepository.update({ id: employee.id }, { ...employee })
+    await this.employeeRepository.update(
+      { id: employee.id },
+      { ...employee, sucursal_id: employee.sucursal_id ?? null },
+    )
   }
 
   async filterAssistance(store: string, dates: string[], userId?: number) {
