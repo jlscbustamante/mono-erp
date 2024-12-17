@@ -1,6 +1,7 @@
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { RhEmployee } from 'pizzadb'
+import { MdEdit } from 'react-icons/md'
 import { useEditEmployee } from './edit-employee-drawer'
 import { useFilterEmployees } from './state'
 
@@ -54,8 +55,12 @@ export const EmployeesTable = () => {
               title: '',
               render: (_, record) => {
                 return (
-                  <div>
-                    <button onClick={() => open(record)}>Editar</button>
+                  <div className="">
+                    {/* <button onClick={() => open(record)}>Editar</button> */}
+                    <MdEdit
+                      className="h-auto w-5 cursor-pointer"
+                      onClick={() => open(record)}
+                    />
                   </div>
                 )
               },
