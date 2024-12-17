@@ -62,9 +62,9 @@ export class RequestService {
     // request.approved_at = request.approved_at
     request.approved_by = user
     await this.requestRepository.update(id, request)
-    if (request.purchaseId) {
-      invPurchaseRepository.update(request.purchaseId, { status: 3 })
-    }
+    // if (request.purchaseId) {
+    //   invPurchaseRepository.update(request.purchaseId, { status: 3 })
+    // }
   }
 
   async rejectRequest(id: number, user: string): Promise<void> {

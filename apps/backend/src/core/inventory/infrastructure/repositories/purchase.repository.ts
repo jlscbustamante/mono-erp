@@ -5,7 +5,9 @@ import { InvPurchase } from '../../../../entities/inventory/Purchase'
 import { InvPurchaseItem } from '../../../../entities/inventory/PurchaseItem'
 import accountMoveRepository from '../../../../repositories/accountMove.repository'
 import { invPurchaseRepository } from '../../../../repositories/inventory/purchase.repository'
+import requestRepository from '../../../../repositories/request.repository'
 import { AccoutingMoveType } from '../../../../types/accoutingMove'
+import { RequestStatus } from '../../../../types/request'
 import { PurchaseUpdaetDto } from '../../dto'
 import {
   Purchase,
@@ -104,6 +106,15 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         moveId = move.id ?? undefined
       }
     }
+    const requirement = await requestRepository.findOne({
+      select: {
+        id: true,
+      },
+      where: {
+        purchaseId: purchase.id,
+        status: RequestStatus.Pending,
+      },
+    })
 
     await AppDataSource.transaction(async (manager) => {
       await manager.update(InvPurchase, purchase.id, {
@@ -138,6 +149,12 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         await manager.query(
           'UPDATE accounting_item SET amount_debit= CASE WHEN amount_debit !=0 THEN ? ELSE amount_debit END, amount_credit= CASE WHEN amount_credit !=0 THEN ? ELSE amount_credit END WHERE move_id=?',
           [totalValue, totalValue, moveId],
+        )
+      }
+      if (requirement) {
+        await manager.query(
+          'UPDATE adm_request SET description=?, num_document=?,amount=?,retention=0 WHERE id=?',
+          [purchase.gloss, purchase.numInvoice, totalValue, requirement.id],
         )
       }
     })
