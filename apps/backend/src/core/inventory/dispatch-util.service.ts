@@ -954,6 +954,8 @@ export class DispatchUtil {
     newDispatch.createdBy = user
     newDispatch.moveAt = dispatch.dispatchAt
     newDispatch.status = DISPATCH_STATUS.DISPATCHED as any
+    newDispatch.numInvoice = dispatch.numInvoice
+    newDispatch.numGuide = dispatch.numGuide
     newDispatch.taxValue = dispatch.taxValue
     newDispatch.moveType = DispatchType.Exceptional
     newDispatch.wareFromId = dispatch.wareFromId ?? ''
