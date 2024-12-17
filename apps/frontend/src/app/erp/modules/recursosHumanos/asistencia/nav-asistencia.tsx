@@ -6,7 +6,6 @@ import { Excel } from 'antd-table-saveas-excel'
 import dayjs from 'dayjs'
 import { useEffect } from 'react'
 import { FiSearch } from 'react-icons/fi'
-import { MdOutlineCleaningServices } from 'react-icons/md'
 import { useAsistenciaContext } from '.'
 
 const RangePicker = DatePicker.RangePicker
@@ -22,6 +21,10 @@ export const NavAsistencia = () => {
     addController,
     isLoading,
     columns,
+    users,
+    userId,
+    setUserId,
+    isLoadingUsers,
   } = useAsistenciaContext()
 
   const handleSearch = () => {
@@ -56,10 +59,29 @@ export const NavAsistencia = () => {
           filterOption={filterSelectForm}
           placeholder="Tiendas"
         >
+          <Select.Option value={''}>SIN TIENDA</Select.Option>
           {query.data?.map((el) => {
             return (
               <Select.Option key={el.code} value={el.code}>
                 {el.name}
+              </Select.Option>
+            )
+          })}
+        </Select>
+        <Select
+          className="w-auto min-w-52"
+          loading={isLoadingUsers}
+          showSearch
+          allowClear
+          filterOption={filterSelectForm}
+          placeholder
+          onChange={setUserId}
+          value={userId}
+        >
+          {users?.map((el) => {
+            return (
+              <Select.Option key={el.id} value={el.id}>
+                {`${el.first_name} ${el.last_name}`}
               </Select.Option>
             )
           })}
@@ -77,14 +99,6 @@ export const NavAsistencia = () => {
           icon={<FiSearch />}
           onClick={handleSearch}
           loading={isLoading}
-        />
-        <Button
-          type="primary"
-          color="danger"
-          shape="circle"
-          icon={<MdOutlineCleaningServices />}
-          // onClick={() => setFilters({})}
-          danger
         />
       </div>
       <ExcelExportBtn onExport={handleExport} />

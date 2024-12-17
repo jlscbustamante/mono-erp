@@ -35,8 +35,12 @@ export const useFilterEmployees = () => {
     queryFn: () => {
       return rhApi.filterEmployees({
         filters: filtersCleaned,
+        relations: {
+          sucursal: true,
+        },
       })
     },
+    staleTime: 1000 * 60 * 1,
   })
 
   return query

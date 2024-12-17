@@ -31,17 +31,37 @@ export class RhApi {
   }
 
   @axiosCatch
-  async filterAssistance(store: string, dates: string[]) {
+  async updateEmployee(employee: FormData) {
+    const request = await this.client.put('rh/employees', employee)
+    return request.data
+  }
+
+  @axiosCatch
+  async filterAssistance(store: string, dates: string[], userId?: number) {
     const assistences = await this.client.get<{ data: Attendance[] }>(
       'rh/assistances/filter',
       {
         params: {
           store,
           dates,
+          userId,
         },
       },
     )
     return assistences.data.data
+  }
+
+  @axiosCatch
+  async getEmployeesBySucursal(store?: string) {
+    const request = await this.client.get<{ data: RhEmployee[] }>(
+      'rh/sucursal/employees',
+      {
+        params: {
+          store,
+        },
+      },
+    )
+    return request.data.data
   }
 }
 

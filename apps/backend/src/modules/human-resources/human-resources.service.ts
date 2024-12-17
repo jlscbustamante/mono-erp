@@ -1,6 +1,6 @@
 import { Attendance, RhEmployee } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
-import { Raw, Repository } from 'typeorm'
+import { IsNull, Raw, Repository } from 'typeorm'
 import { filter3 } from '../../repositories/filter3base'
 
 export class HumanResourcesService {
@@ -24,8 +24,11 @@ export class HumanResourcesService {
       else throw err
     }
   }
+  async updateEmployee(employee: RhEmployee) {
+    await this.employeeRepository.update({ id: employee.id }, { ...employee })
+  }
 
-  async filterAssistance(store: string, dates: string[]) {
+  async filterAssistance(store: string, dates: string[], userId?: number) {
     const assistance = await this.assistanceRepository.find({
       select: {
         employee: {
@@ -39,6 +42,7 @@ export class HumanResourcesService {
         },
       },
       where: {
+        employee_id: userId,
         attendance_at: Raw(
           (alias) => `DATE(${alias}) BETWEEN '${dates[0]}' AND '${dates[1]}'`,
         ),
@@ -53,5 +57,14 @@ export class HumanResourcesService {
       },
     })
     return assistance
+  }
+
+  async getEmployeesBySucursal(store: string) {
+    const employees = await this.employeeRepository.find({
+      where: {
+        sucursal_id: store == '' ? IsNull() : store,
+      },
+    })
+    return employees
   }
 }

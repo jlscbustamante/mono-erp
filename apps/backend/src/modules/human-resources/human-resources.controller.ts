@@ -3,7 +3,7 @@ import multer, { FileFilterCallback } from 'multer'
 import { RhEmployee } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
-import { Get, Post } from '../../utils/decorators/endpoint.middleware'
+import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
 import { HumanResourcesService } from './human-resources.service'
 
 const upload = multer({
@@ -32,16 +32,37 @@ export class HumanResourcesController {
   @Post('/rh/employees', upload.single('image'))
   async createEmployee(req: Request) {
     const data = req.body as RhEmployee
-    console.log(data)
-    // if (!imagen) throw badRequest('No se encontro la imagen del usuario')
 
     await this.rhService.createEmployee(data)
   }
 
+  @Put('/rh/employees', upload.single('image'))
+  async updateEmployee(req: Request) {
+    const data = req.body as RhEmployee
+
+    await this.rhService.updateEmployee(data)
+  }
+
   @Get('/rh/assistances/filter')
   async filterAssistance(req: Request) {
-    const { store, dates } = req.query as { store: string; dates: string[] }
-    const data = await this.rhService.filterAssistance(store, dates)
+    const { store, dates, userId } = req.query as {
+      store: string
+      dates: string[]
+      userId?: string
+    }
+    const userIdParsed = userId ? parseInt(userId) : undefined
+
+    const data = await this.rhService.filterAssistance(
+      store,
+      dates,
+      userIdParsed,
+    )
     return data
+  }
+
+  @Get('/rh/sucursal/employees')
+  async getEmployeesBySucursal(req: Request) {
+    const { store } = req.query as { store: string | undefined }
+    return this.rhService.getEmployeesBySucursal(store ?? '')
   }
 }

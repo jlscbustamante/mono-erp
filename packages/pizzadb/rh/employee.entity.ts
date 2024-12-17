@@ -4,10 +4,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Sucursal } from "../shared";
 import { DateTransformer2 } from "../transformers/dateTransformer";
 import { Attendance } from "./attendance.entity";
 
@@ -60,6 +63,10 @@ export class RhEmployee {
 
   @Column("smallint")
   status: number;
+
+  @ManyToOne(() => Sucursal)
+  @JoinColumn({ name: "sucursal_id" })
+  sucursal: Sucursal;
 
   @OneToMany(() => Attendance, (assistance) => assistance.employee)
   assistance: Attendance[];

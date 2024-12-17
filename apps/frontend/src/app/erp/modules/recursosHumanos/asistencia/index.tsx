@@ -3,12 +3,13 @@ import { useQuery } from '@tanstack/react-query'
 import { ColumnsType } from 'antd/es/table'
 import { format, parseISO } from 'date-fns'
 import dayjs from 'dayjs'
-import { Attendance } from 'pizzadb'
+import { Attendance, RhEmployee } from 'pizzadb'
 import {
   createContext,
   Dispatch,
   SetStateAction,
   useContext,
+  useEffect,
   useReducer,
   useState,
 } from 'react'
@@ -19,6 +20,7 @@ const AsistenciaContext = createContext<any>(null)
 
 export const AsistenciaPage = () => {
   const [store, setStore] = useState<undefined | string>(undefined)
+  const [userId, setUserId] = useState<undefined | number>(undefined)
   const [dates, setDates] = useState([
     dayjs().format('YYYY-MM-DD'),
     dayjs().format('YYYY-MM-DD'),
@@ -71,8 +73,20 @@ export const AsistenciaPage = () => {
   const query = useQuery({
     queryKey: ['asistencias/filter', controller],
     enabled: !!store,
-    queryFn: () => rhApi.filterAssistance(store!, dates),
+    queryFn: () => rhApi.filterAssistance(store!, dates, userId),
   })
+
+  const usersQuery = useQuery({
+    queryKey: ['users-by-sucursal', store],
+    queryFn: () => rhApi.getEmployeesBySucursal(store),
+    staleTime: 1000 * 60 * 5,
+  })
+
+  useEffect(() => {
+    if (store) {
+      setUserId(undefined)
+    }
+  }, [store])
 
   return (
     <AsistenciaContext.Provider
@@ -80,11 +94,15 @@ export const AsistenciaPage = () => {
         store,
         setStore,
         columns,
+        userId,
+        setUserId,
         dates,
         setDates,
         data: query.data ?? [],
         isLoading: query.isLoading,
         addController,
+        users: usersQuery.data ?? [],
+        isLoadingUsers: usersQuery.isLoading,
       }}
     >
       <div className="p-3 space-y-2">
@@ -109,5 +127,9 @@ export const useAsistenciaContext = () => {
     isLoading: boolean
     addController: () => void
     columns: ColumnsType<Attendance>
+    users: RhEmployee[]
+    isLoadingUsers: boolean
+    userId: number | undefined
+    setUserId: Dispatch<SetStateAction<number | undefined>>
   }
 }

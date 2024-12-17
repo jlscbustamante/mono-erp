@@ -1,4 +1,5 @@
 import { CreateEmployeeDrawer } from './create-employee-drawer'
+import { EditEmployeeDrawer } from './edit-employee-drawer'
 import { EmployeesTable } from './employees-table'
 import { NavEmployees } from './nav-employees'
 
@@ -8,6 +9,7 @@ export const EmpleadoPage = () => {
       <NavEmployees />
       <EmployeesTable />
       <CreateEmployeeDrawer />
+      <EditEmployeeDrawer />
     </div>
   )
 }

@@ -1,4 +1,6 @@
 import { rhApi } from '@/lib/api/rh'
+import { filterSelectForm } from '@/utils'
+import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
 import { useMutation } from '@tanstack/react-query'
 import {
   Button,
@@ -38,6 +40,7 @@ export const CreateEmployeeDrawer = () => {
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [form] = Form.useForm()
   const { refetch } = useFilterEmployees()
+  const query = useSucursales()
 
   const props: UploadProps = {
     onRemove: (file) => {
@@ -116,12 +119,13 @@ export const CreateEmployeeDrawer = () => {
             <Select.Option value="DNI">DNI</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item name={'doc_number'} label="Número de documento" {...config}>
+        <Form.Item name={'doc_number'} label="Número de doc." {...config}>
           <Input placeholder="Número de documento" />
         </Form.Item>
-        <Form.Item name="phone" label="Teléfono" {...config}>
+        <Form.Item name="phone" label="Teléfono">
           <Input placeholder="Teléfono" />
         </Form.Item>
+
         <Form.Item name="email" label="Email">
           <Input placeholder="Email" />
         </Form.Item>
@@ -147,6 +151,17 @@ export const CreateEmployeeDrawer = () => {
               <div style={{ marginTop: 8 }}>Upload</div>
             </button>
           </Upload>
+        </Form.Item>
+        <Form.Item name="sucursal_id" label="Sucursal">
+          <Select showSearch filterOption={filterSelectForm} allowClear={true}>
+            {query.data?.map((el) => {
+              return (
+                <Select.Option key={el.code} value={el.code}>
+                  {el.name}
+                </Select.Option>
+              )
+            })}
+          </Select>
         </Form.Item>
         <Form.Item name="status" label="Estado">
           <Select>

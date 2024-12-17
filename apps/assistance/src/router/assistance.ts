@@ -82,6 +82,7 @@ app.post("/register", async (c) => {
       },
     });
     if (!user) throw new Error("No se encontro el usuario");
+    if (user.status != 1) throw new Error("El usuario no esta activo");
 
     const path = getDatePath();
     const pathUser = `${path}/${user.doc_number}_${event}.jpg`;

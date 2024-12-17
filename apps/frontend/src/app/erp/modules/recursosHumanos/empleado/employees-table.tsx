@@ -1,10 +1,12 @@
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { RhEmployee } from 'pizzadb'
+import { useEditEmployee } from './edit-employee-drawer'
 import { useFilterEmployees } from './state'
 
 export const EmployeesTable = () => {
   const query = useFilterEmployees()
+  const { open } = useEditEmployee()
 
   return (
     <div className="">
@@ -40,9 +42,23 @@ export const EmployeesTable = () => {
               dataIndex: 'email',
             },
             {
+              title: 'Tienda',
+              dataIndex: ['sucursal', 'title'],
+            },
+            {
               title: 'Estado',
               dataIndex: 'status',
               render: (status) => (status == 1 ? 'Activo' : 'Inactivo'),
+            },
+            {
+              title: '',
+              render: (_, record) => {
+                return (
+                  <div>
+                    <button onClick={() => open(record)}>Editar</button>
+                  </div>
+                )
+              },
             },
           ] satisfies ColumnsType<RhEmployee>
         }

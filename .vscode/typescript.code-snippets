@@ -1,0 +1,13 @@
+{
+  "Funcion api": {
+      "prefix": "api",
+      "body": [
+          "@axiosCatch",
+          "async ${1:method}(){",
+          "  const request=await this.client.get('$2')",
+          "  return request.data",
+          "}"
+      ],
+      "description": "funcion api"
+  }
+}
