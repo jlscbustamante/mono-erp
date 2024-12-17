@@ -84,7 +84,7 @@ app.post("/register", async (c) => {
     if (!user) throw new Error("No se encontro el usuario");
 
     const path = getDatePath();
-    const pathUser = `${path}/${user.doc_number}.jpg`;
+    const pathUser = `${path}/${user.doc_number}_${event}.jpg`;
 
     const resultPath = await s3Service.uploadAssistanceFile(photo, pathUser);
 
