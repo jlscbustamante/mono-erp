@@ -16,6 +16,7 @@ import { UserAvatar } from '@/components/Avatar'
 import { modules } from '@/const'
 import { appConfig } from '@/const/config'
 import { useMemo } from 'react'
+import { FaUsersRays } from 'react-icons/fa6'
 
 export const Modules = () => {
   const authorizedModules = useSession((st) => st.user.modules)
@@ -142,6 +143,14 @@ const CoverIcon = ({ module }: { module: string }) => {
     case 'Mercaderia':
       Icon = (
         <VscChromeRestore
+          style={{ width: widthIcon }}
+          className="text-red-500 h-auto"
+        />
+      )
+      break
+    case 'RR.HH':
+      Icon = (
+        <FaUsersRays
           style={{ width: widthIcon }}
           className="text-red-500 h-auto"
         />

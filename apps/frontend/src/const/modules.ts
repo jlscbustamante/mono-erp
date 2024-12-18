@@ -51,7 +51,7 @@ export const modules = [
   {
     id: 14,
     module: 'RR.HH',
-    title: 'RR.HH',
+    title: 'Recursos humanos',
     route: PATHS.erp.modulos.recursosHumanos.main,
   },
 ]
