@@ -13,6 +13,7 @@ import {
   InvStock,
   InvSupplier,
   Item,
+  JobTitle,
   Measure,
   Presentation,
   Product,
@@ -51,6 +52,7 @@ const AppDataSource = new DataSource({
     InvStock,
     RhEmployee,
     Attendance,
+    JobTitle,
   ],
   logging: config.showTypeormLog,
 })

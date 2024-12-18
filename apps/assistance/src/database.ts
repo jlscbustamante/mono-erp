@@ -1,4 +1,4 @@
-import { Attendance, RhEmployee, Sucursal } from "pizzadb";
+import { Attendance, JobTitle, RhEmployee, Sucursal } from "pizzadb";
 import { DataSource } from "typeorm";
 import { config } from "./config";
 
@@ -9,7 +9,7 @@ const AppDataSource = new DataSource({
   username: config.mysql.user,
   password: config.mysql.password,
   database: config.mysql.database,
-  entities: [RhEmployee, Attendance, Sucursal],
+  entities: [RhEmployee, Attendance, Sucursal, JobTitle],
 });
 
 AppDataSource.initialize()

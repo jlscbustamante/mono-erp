@@ -13,6 +13,7 @@ import {
 import { Sucursal } from "../shared";
 import { DateTransformer2 } from "../transformers/dateTransformer";
 import { Attendance } from "./attendance.entity";
+import { JobTitle } from "./jobtitle.entity";
 
 @Entity({ name: "rh_employee" })
 export class RhEmployee {
@@ -43,8 +44,11 @@ export class RhEmployee {
   @Column("varchar", { length: 1 })
   gender: string;
 
+  @Column("int")
+  jobtitle_id: number;
+
   @Column("varchar", { length: 25 })
-  job_title: string;
+  jobtitle_name: string;
 
   @Column("varchar", { length: 25 })
   job_mode: string;
@@ -70,6 +74,10 @@ export class RhEmployee {
 
   @OneToMany(() => Attendance, (assistance) => assistance.employee)
   assistance: Attendance[];
+
+  @ManyToOne(() => JobTitle, (jobtitle) => jobtitle.employees)
+  @JoinColumn({ name: "jobtitle_id" })
+  jobtitle: JobTitle;
 
   @CreateDateColumn()
   created_at: Date;

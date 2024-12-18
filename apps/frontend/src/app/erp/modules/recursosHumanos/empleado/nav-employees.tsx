@@ -32,7 +32,7 @@ const filtersOptions: FiltersOption<RhEmployee>[] = [
   },
   {
     label: 'Cargo',
-    key: 'job_title',
+    key: 'jobtitle_name',
     options: [OpFilter.Contain, OpFilter.Equal],
   },
 ]
