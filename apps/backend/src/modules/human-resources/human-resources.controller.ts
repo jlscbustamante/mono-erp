@@ -1,6 +1,6 @@
 import { type Request } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { RhEmployee } from 'pizzadb'
+import { JobTitle, RhEmployee } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
 import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
@@ -64,5 +64,24 @@ export class HumanResourcesController {
   async getEmployeesBySucursal(req: Request) {
     const { store } = req.query as { store: string | undefined }
     return this.rhService.getEmployeesBySucursal(store ?? '')
+  }
+
+  @Get('/rh/jobs-title')
+  async getJobsTitle() {
+    return this.rhService.getJobsTitle()
+  }
+
+  @Post('/rh/jobs-title')
+  async createJobTitle(req: Request) {
+    const jobTitle = req.body as JobTitle
+
+    return this.rhService.createJobTitle(jobTitle)
+  }
+
+  @Put('/rh/jobs-title')
+  async updateJobTitle(req: Request) {
+    const jobTitle = req.body as JobTitle
+
+    return this.rhService.updateJobTitle(jobTitle)
   }
 }

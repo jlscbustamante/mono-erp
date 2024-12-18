@@ -1,7 +1,7 @@
 import { rhApi } from '@/lib/api/rh'
 import { filterSelectForm } from '@/utils'
 import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   Button,
   DatePicker,
@@ -16,7 +16,7 @@ import {
 import dayjs from 'dayjs'
 import { atom, useAtom } from 'jotai'
 import { RhEmployee } from 'pizzadb'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useFilterEmployees } from './state'
 
@@ -41,6 +41,15 @@ export const CreateEmployeeDrawer = () => {
   const [form] = Form.useForm()
   const { refetch } = useFilterEmployees()
   const query = useSucursales()
+  const queryJobs = useQuery({
+    queryKey: ['jobs'],
+    queryFn: () => {
+      return rhApi.getJobsTitle()
+    },
+    staleTime: 1000 * 60 * 1,
+  })
+
+  const jobtitleId = Form.useWatch('jobtitle_id', form)
 
   const props: UploadProps = {
     onRemove: (file) => {
@@ -91,6 +100,19 @@ export const CreateEmployeeDrawer = () => {
     rules: [{ required: true }],
   }
 
+  useEffect(() => {
+    const jobfounded = queryJobs.data?.find((el) => el.id == jobtitleId)
+    if (jobfounded) {
+      form.setFieldsValue({
+        jobtitle_name: jobfounded.name,
+      })
+    } else {
+      form.setFieldsValue({
+        jobtitle_name: '',
+      })
+    }
+  }, [jobtitleId])
+
   return (
     <Drawer open={isOpen} onClose={close} width={500} title="Crear empleado">
       <Form
@@ -125,7 +147,6 @@ export const CreateEmployeeDrawer = () => {
         <Form.Item name="phone" label="Teléfono">
           <Input placeholder="Teléfono" />
         </Form.Item>
-
         <Form.Item name="email" label="Email">
           <Input placeholder="Email" />
         </Form.Item>
@@ -138,8 +159,19 @@ export const CreateEmployeeDrawer = () => {
             <Select.Option value="M">Masculino</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item name="job_title" label="Cargo">
-          <Input placeholder="Cargo" />
+        <Form.Item name="jobtitle_id" label="Cargo">
+          <Select placeholder="Cargo">
+            {queryJobs.data?.map((el) => {
+              return (
+                <Select.Option key={el.id} value={el.id}>
+                  {el.name}
+                </Select.Option>
+              )
+            })}
+          </Select>
+        </Form.Item>
+        <Form.Item name="jobtitle_name" label="Cargo" hidden={true}>
+          <Input />
         </Form.Item>
         <Form.Item name="job_mode" label="Modo de trabajo">
           <Input placeholder="Modo de trabajo" />
@@ -147,7 +179,6 @@ export const CreateEmployeeDrawer = () => {
         <Form.Item name="pic_photo" label="Foto" className="hidden">
           <Upload maxCount={1} {...props} listType="picture-card">
             <button style={{ border: 0, background: 'none' }} type="button">
-              {/* <PlusOutlined /> */}+
               <div style={{ marginTop: 8 }}>Upload</div>
             </button>
           </Upload>

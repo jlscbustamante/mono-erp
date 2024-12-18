@@ -1,6 +1,6 @@
 import { axiosCatch } from '@/utils/middleware/axios-catch.middleware'
 import { AxiosInstance } from 'axios'
-import { Attendance, RhEmployee } from 'pizzadb'
+import type { Attendance, JobTitle, RhEmployee } from 'pizzadb'
 import type { IFilterResponse, IUserFilter3 } from 'shared'
 import client from '../client'
 
@@ -62,6 +62,22 @@ export class RhApi {
       },
     )
     return request.data.data
+  }
+
+  @axiosCatch
+  async getJobsTitle() {
+    const request = await this.client.get<{ data: JobTitle[] }>('rh/jobs-title')
+    return request.data.data
+  }
+
+  @axiosCatch
+  async createJobTitle(jobTitle: JobTitle) {
+    await this.client.post('rh/jobs-title', jobTitle)
+  }
+
+  @axiosCatch
+  async updateJobTitle(jobTitle: JobTitle) {
+    await this.client.put('rh/jobs-title', jobTitle)
   }
 }
 

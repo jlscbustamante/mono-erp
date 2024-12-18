@@ -1,7 +1,7 @@
 import { rhApi } from '@/lib/api/rh'
 import { filterSelectForm } from '@/utils'
 import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   Button,
   DatePicker,
@@ -16,7 +16,7 @@ import {
 import dayjs from 'dayjs'
 import { atom, useAtom } from 'jotai'
 import { RhEmployee } from 'pizzadb'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import { useFilterEmployees } from './state'
 
@@ -70,6 +70,15 @@ const EmployeeForm = ({
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const query = useSucursales()
   const { refetch } = useFilterEmployees()
+  const queryJobs = useQuery({
+    queryKey: ['jobs'],
+    queryFn: () => {
+      return rhApi.getJobsTitle()
+    },
+    staleTime: 1000 * 60 * 1,
+  })
+
+  const jobtitleId = Form.useWatch('jobtitle_id', form)
 
   const updateEmployeeMt = useMutation({
     mutationFn: (data: FormData) => rhApi.updateEmployee(data),
@@ -120,6 +129,19 @@ const EmployeeForm = ({
     rules: [{ required: true }],
   }
 
+  useEffect(() => {
+    const jobfounded = queryJobs.data?.find((el) => el.id == jobtitleId)
+    if (jobfounded) {
+      form.setFieldsValue({
+        jobtitle_name: jobfounded.name,
+      })
+    } else {
+      form.setFieldsValue({
+        jobtitle_name: '',
+      })
+    }
+  }, [jobtitleId])
+
   return (
     <Form
       labelCol={{ span: 8 }}
@@ -169,8 +191,19 @@ const EmployeeForm = ({
           <Select.Option value="M">Masculino</Select.Option>
         </Select>
       </Form.Item>
-      <Form.Item name="job_title" label="Cargo">
-        <Input placeholder="Cargo" />
+      <Form.Item name="jobtitle_id" label="Cargo">
+        <Select placeholder="Cargo">
+          {queryJobs.data?.map((el) => {
+            return (
+              <Select.Option key={el.id} value={el.id}>
+                {el.name}
+              </Select.Option>
+            )
+          })}
+        </Select>
+      </Form.Item>
+      <Form.Item name="jobtitle_name" label="Cargo" hidden={true}>
+        <Input />
       </Form.Item>
       <Form.Item name="job_mode" label="Modo de trabajo">
         <Input placeholder="Modo de trabajo" />

@@ -96,6 +96,7 @@ export const PATHS = {
         main: '/erp/modulos/recursos-humanos',
         empleado: '/erp/modulos/recursos-humanos/empleado',
         asistencia: '/erp/modulos/recursos-humanos/asistencia',
+        cargos: '/erp/modulos/recursos-humanos/cargos',
       },
     },
   },

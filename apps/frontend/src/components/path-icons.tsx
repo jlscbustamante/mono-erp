@@ -31,7 +31,11 @@ import { FiBox } from 'react-icons/fi'
 import { GiConfirmed, GiFullMotorcycleHelmet } from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
 import { IoCalendarNumberOutline, IoStorefrontOutline } from 'react-icons/io5'
-import { LiaShippingFastSolid, LiaWarehouseSolid } from 'react-icons/lia'
+import {
+  LiaNetworkWiredSolid,
+  LiaShippingFastSolid,
+  LiaWarehouseSolid,
+} from 'react-icons/lia'
 import { IconType } from 'react-icons/lib'
 import { LuTruck } from 'react-icons/lu'
 import {
@@ -111,6 +115,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
 
   [PATHS.erp.modulos.recursosHumanos.empleado]: FaClipboardUser,
   [PATHS.erp.modulos.recursosHumanos.asistencia]: IoCalendarNumberOutline,
+  [PATHS.erp.modulos.recursosHumanos.cargos]: LiaNetworkWiredSolid,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

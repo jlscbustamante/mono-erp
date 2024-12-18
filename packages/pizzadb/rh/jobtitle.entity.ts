@@ -1,6 +1,4 @@
 import {
-  BeforeInsert,
-  BeforeUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -33,14 +31,14 @@ export class JobTitle {
   @UpdateDateColumn()
   updated_at: Date;
 
-  @BeforeInsert()
-  private setCreatedAt() {
-    this.created_at = new Date();
-    this.updated_at = new Date();
-  }
+  // @BeforeInsert()
+  // private setCreatedAt() {
+  //   this.created_at = new Date();
+  //   this.updated_at = new Date();
+  // }
 
-  @BeforeUpdate()
-  private setUpdateAt() {
-    this.updated_at = new Date();
-  }
+  // @BeforeUpdate()
+  // private setUpdateAt() {
+  //   this.updated_at = new Date();
+  // }
 }

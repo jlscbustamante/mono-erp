@@ -1,4 +1,4 @@
-import { Attendance, RhEmployee } from 'pizzadb'
+import { Attendance, JobTitle, RhEmployee } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { IsNull, Raw, Repository } from 'typeorm'
 import { filter3 } from '../../repositories/filter3base'
@@ -7,6 +7,7 @@ export class HumanResourcesService {
   constructor(
     private readonly employeeRepository: Repository<RhEmployee>,
     private readonly assistanceRepository: Repository<Attendance>,
+    private readonly jobtitleRepository: Repository<JobTitle>,
   ) {}
 
   async filterEmployees(filters: IUserFilter3<RhEmployee>) {
@@ -17,8 +18,10 @@ export class HumanResourcesService {
   async createEmployee(employee: RhEmployee) {
     // subir image
     try {
+      console.log('empleado : ', employee)
       await this.employeeRepository.insert({ ...employee })
     } catch (err: any) {
+      console.log(err)
       if (err.code == 'ER_DUP_ENTRY')
         throw new Error('Ya existe un empleado con el mismo documento')
       else throw err
@@ -69,5 +72,21 @@ export class HumanResourcesService {
       },
     })
     return employees
+  }
+
+  async getJobsTitle() {
+    return this.jobtitleRepository.find({
+      order: {
+        name: 'ASC',
+      },
+    })
+  }
+
+  async createJobTitle(jobTitle: JobTitle) {
+    await this.jobtitleRepository.insert({ ...jobTitle })
+  }
+
+  async updateJobTitle(jobTitle: JobTitle) {
+    await this.jobtitleRepository.update({ id: jobTitle.id }, { ...jobTitle })
   }
 }

@@ -9,6 +9,7 @@ import { useSession } from '../../use-session'
 const menu: (MenuOption | MenuSeparator)[] = [
   gm('Empleado', PATHS.erp.modulos.recursosHumanos.empleado),
   gm('Asistencia', PATHS.erp.modulos.recursosHumanos.asistencia),
+  gm('Cargos', PATHS.erp.modulos.recursosHumanos.cargos),
 ]
 
 export const RecursosHumanosLayout = () => {

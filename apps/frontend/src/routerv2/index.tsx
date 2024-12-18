@@ -6,6 +6,7 @@ import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
+import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
 import { RecursosHumanosLayout } from '@/app/erp/modules/recursosHumanos/layout'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
@@ -355,6 +356,10 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.recursosHumanos.asistencia,
                 element: <AsistenciaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.recursosHumanos.cargos,
+                element: <JobsTitlePage />,
               },
             ],
           },
