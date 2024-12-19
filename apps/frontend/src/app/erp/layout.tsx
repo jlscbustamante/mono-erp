@@ -56,7 +56,11 @@ export const ErpLayout = () => {
     location.pathname != PATHS.erp.auth.main &&
     location.pathname != PATHS.erp.auth.otpLogin
   )
-    return null
+    return (
+      <div className="bg-slate-100 h-screen flex items-center justify-center font-semibold text-lg">
+        Iniciando sesion...
+      </div>
+    )
   return (
     <>
       <ErrorBoundary>
