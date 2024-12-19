@@ -13,6 +13,7 @@ export class InventoryController {
   @Get('/inventory/stock/edit')
   async getStockEditTemplate(req: Request) {
     const { store, date } = req.query as { store: string; date: string }
+
     return this.inventoryService.getStockToEdit(store, date)
   }
 

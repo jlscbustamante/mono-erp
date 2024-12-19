@@ -5,6 +5,7 @@ import { IamFunction, IamPermission, IamRole, IamUser } from 'pizzadb'
 import { Session, UpdateRoleDto } from 'shared'
 import { In, Repository } from 'typeorm'
 import { AppDataSource } from '../../config/database'
+import { Parameters } from '../../parameters'
 import { IToken } from '../../types'
 import { ConfigService } from '../common/config.service'
 import { EmailService } from '../common/email.service'
@@ -18,6 +19,7 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly configService: ConfigService,
     private readonly otpService: OtpService,
+    private readonly parameters: Parameters,
   ) {}
 
   async userValidate(userId: number): Promise<Session> {
@@ -54,6 +56,7 @@ export class AuthService {
       userName: user.name,
       views,
       modules,
+      parameters: this.parameters.getAll(),
     }
   }
 

@@ -7,6 +7,7 @@ import { atom, useRecoilState } from 'recoil'
 import { useParametersQuery } from '@/hooks/useParamters'
 import { filterSelectForm } from '@/utils'
 
+import { rhApi } from '@/lib/api/rh'
 import { updateCourier } from '../api'
 import { CourierShift, CourierVehicle, DocType, IUpdateCourier } from '../types'
 import { useCouriers } from '../useCouriers'
@@ -79,7 +80,10 @@ export const UpdateDrawer = () => {
     mutationFn: async (dataUpdate: IUpdateCourier) => {
       if (!parameterData || !parameterData?.ciaIdMoturider)
         throw new Error('No se encontro cia_id de la empresa en parametros.')
-      return await updateCourier(parameterData.ciaIdMoturider, dataUpdate)
+
+      const originalDoc = courier?.doc_number
+      await updateCourier(parameterData.ciaIdMoturider, dataUpdate)
+      await rhApi.saveMotorizer({ ...dataUpdate, original_doc: originalDoc })
     },
     onError: (err) => {
       toast.error(err.message)
@@ -98,7 +102,7 @@ export const UpdateDrawer = () => {
     <Drawer
       open={isOpen}
       onClose={() => close()}
-      title={'Nuevo motorizado'}
+      title={'Actualizar motorizado'}
       width={500}
     >
       {courier && (
@@ -133,7 +137,11 @@ export const UpdateDrawer = () => {
               <Select.Option value={DocType.DNI}>DNI</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="N° documento" name={keys.doc_number}>
+          <Form.Item
+            label="N° documento"
+            name={keys.doc_number}
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
           <Form.Item label="Vehiculo" name={keys.vehicle}>

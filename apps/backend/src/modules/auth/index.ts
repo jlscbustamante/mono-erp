@@ -1,3 +1,4 @@
+import { Parameters } from '../../parameters'
 import IamFunctionRepository from '../../repositories/iamFuction.repository'
 import { createApp } from '../../utils/decorators/endpoint.middleware'
 import { ConfigService } from '../common/config.service'
@@ -13,6 +14,7 @@ const authService = new AuthService(
   emailService,
   ConfigService.getInstance(),
   otpService,
+  Parameters.getInstance(),
 )
 const controller = new AuthController(authService)
 

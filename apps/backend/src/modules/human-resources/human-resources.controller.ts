@@ -5,6 +5,7 @@ import { IUserFilter3 } from 'shared'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
 import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
 import { HumanResourcesService } from './human-resources.service'
+import { SaveMotorizer } from './types/save-motorizer.interface'
 
 const upload = multer({
   fileFilter: (req: any, file: any, cb: FileFilterCallback) => {
@@ -83,5 +84,11 @@ export class HumanResourcesController {
     const jobTitle = req.body as JobTitle
 
     return this.rhService.updateJobTitle(jobTitle)
+  }
+
+  @Post('/rh/motorizer')
+  async saveMotorizer(req: Request) {
+    const body = req.body as SaveMotorizer
+    await this.rhService.saveMotorizer(body)
   }
 }

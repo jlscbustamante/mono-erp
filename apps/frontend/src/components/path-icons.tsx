@@ -41,6 +41,7 @@ import { LuTruck } from 'react-icons/lu'
 import {
   MdAltRoute,
   MdCancelPresentation,
+  MdDeliveryDining,
   MdOutlineCategory,
   MdOutlinePayment,
 } from 'react-icons/md'
@@ -116,6 +117,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recursosHumanos.empleado]: FaClipboardUser,
   [PATHS.erp.modulos.recursosHumanos.asistencia]: IoCalendarNumberOutline,
   [PATHS.erp.modulos.recursosHumanos.cargos]: LiaNetworkWiredSolid,
+  [PATHS.erp.modulos.recursosHumanos.motorizados]: MdDeliveryDining,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

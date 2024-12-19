@@ -7,7 +7,8 @@ import { useOutlet } from 'react-router'
 import { useSession } from '../../use-session'
 
 const menu: (MenuOption | MenuSeparator)[] = [
-  gm('Empleado', PATHS.erp.modulos.recursosHumanos.empleado),
+  gm('Empleados', PATHS.erp.modulos.recursosHumanos.empleado),
+  gm('Motorizados', PATHS.erp.modulos.recursosHumanos.motorizados),
   gm('Asistencia', PATHS.erp.modulos.recursosHumanos.asistencia),
   gm('Cargos', PATHS.erp.modulos.recursosHumanos.cargos),
 ]

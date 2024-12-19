@@ -1,13 +1,18 @@
-import { Attendance, JobTitle, RhEmployee } from 'pizzadb'
+import { Attendance, JobTitle, RhEmployee, Sucursal } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { IsNull, Raw, Repository } from 'typeorm'
+import { Parameters } from '../../parameters'
 import { filter3 } from '../../repositories/filter3base'
+import { separateNames } from '../../utils/separate-names'
+import { SaveMotorizer } from './types/save-motorizer.interface'
 
 export class HumanResourcesService {
   constructor(
     private readonly employeeRepository: Repository<RhEmployee>,
     private readonly assistanceRepository: Repository<Attendance>,
     private readonly jobtitleRepository: Repository<JobTitle>,
+    private readonly sucursalRepository: Repository<Sucursal>,
+    private readonly parameters: Parameters,
   ) {}
 
   async filterEmployees(filters: IUserFilter3<RhEmployee>) {
@@ -88,5 +93,51 @@ export class HumanResourcesService {
 
   async updateJobTitle(jobTitle: JobTitle) {
     await this.jobtitleRepository.update({ id: jobTitle.id }, { ...jobTitle })
+  }
+
+  async saveMotorizer(motorizer: SaveMotorizer) {
+    const doc = motorizer.original_doc ?? motorizer.doc_number
+    if (!doc) throw new Error('No se puede actualizar sin documento')
+    const user = await this.employeeRepository.findOne({
+      where: {
+        doc_number: doc,
+      },
+    })
+
+    const motorizaedJob = await this.jobtitleRepository.findOne({
+      where: {
+        id: this.parameters.getInt('JOBS_ID', 'DELIVERY'),
+      },
+    })
+
+    if (!user) {
+      const newEmployee = new RhEmployee()
+      const { firstName, lastName } = separateNames(motorizer.name)
+      newEmployee.first_name = firstName
+      newEmployee.last_name = lastName
+      newEmployee.email = motorizer.email
+      newEmployee.doc_number = motorizer.doc_number ?? doc
+      newEmployee.status = motorizer.status
+      newEmployee.phone = motorizer.phone
+      if (motorizaedJob) {
+        newEmployee.jobtitle_id = motorizaedJob.id
+        newEmployee.jobtitle_name = motorizaedJob.name
+      }
+      await this.createEmployee(newEmployee)
+    } else {
+      const { firstName, lastName } = separateNames(motorizer.name)
+      user.first_name = firstName
+      user.last_name = lastName
+      user.email = motorizer.email
+      user.doc_number = motorizer.doc_number ?? doc
+      user.status = motorizer.status
+      user.phone = motorizer.phone
+      if (motorizaedJob) {
+        user.jobtitle_id = motorizaedJob.id
+        user.jobtitle_name = motorizaedJob.name
+      }
+
+      await this.employeeRepository.update({ id: user.id }, user)
+    }
   }
 }

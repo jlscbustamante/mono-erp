@@ -1,3 +1,5 @@
+import { AppParameters } from "./parameters.interface";
+
 export interface Session {
   userId: number;
   userName: string;
@@ -6,4 +8,5 @@ export interface Session {
   roleName: string;
   views: string[];
   modules: number[];
+  parameters: AppParameters;
 }

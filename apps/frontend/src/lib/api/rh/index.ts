@@ -79,6 +79,15 @@ export class RhApi {
   async updateJobTitle(jobTitle: JobTitle) {
     await this.client.put('rh/jobs-title', jobTitle)
   }
+
+  // @axiosCatch
+  async saveMotorizer(motorizer: any) {
+    try {
+      await this.client.post('rh/motorizer', motorizer)
+    } catch (err) {
+      console.log('No se pudo guardar el motorizado')
+    }
+  }
 }
 
 export const rhApi = new RhApi(client)

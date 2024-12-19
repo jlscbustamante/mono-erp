@@ -18,7 +18,7 @@ import { atom, useAtom } from 'jotai'
 import { RhEmployee } from 'pizzadb'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { useFilterEmployees } from './state'
+import { useEmpleadoContext } from '.'
 
 const controlAtom = atom<boolean>(false)
 
@@ -39,7 +39,7 @@ export const CreateEmployeeDrawer = () => {
   const { isOpen, close } = useCreateEmployee()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const [form] = Form.useForm()
-  const { refetch } = useFilterEmployees()
+  const { refetch } = useEmpleadoContext()
   const query = useSucursales()
   const queryJobs = useQuery({
     queryKey: ['jobs'],

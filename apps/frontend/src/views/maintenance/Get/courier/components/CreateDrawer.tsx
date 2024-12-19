@@ -8,6 +8,7 @@ import { atom, useRecoilState } from 'recoil'
 import { useParametersQuery } from '@/hooks/useParamters'
 import { filterSelectForm } from '@/utils'
 
+import { rhApi } from '@/lib/api/rh'
 import { createCourier } from '../api'
 import { CourierShift, CourierVehicle, DocType, ICreateCourier } from '../types'
 import { useCouriers } from '../useCouriers'
@@ -56,8 +57,15 @@ export const CreateDrawer = () => {
     mutationFn: async (dataCreate: ICreateCourier) => {
       if (!data || !data?.ciaIdMoturider)
         throw new Error('No se encontro cia_id de la empresa en parametros')
-      return await createCourier(data.ciaIdMoturider, dataCreate)
+      // return await createCourier(data.ciaIdMoturider, dataCreate)
+      // return await Promise.all([
+      //   createCourier(data.ciaIdMoturider, dataCreate),
+      //   rhApi.saveMotorizer(dataCreate),
+      // ])
+      await createCourier(data.ciaIdMoturider, dataCreate)
+      await rhApi.saveMotorizer(dataCreate)
     },
+
     onError: (err) => {
       toast.error(err.message)
     },
@@ -112,7 +120,11 @@ export const CreateDrawer = () => {
             <Select.Option value={DocType.DNI}>DNI</Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="N° documento" name={keys.doc_number}>
+        <Form.Item
+          label="N° documento"
+          name={keys.doc_number}
+          rules={[{ required: true }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item label="Vehiculo" name={keys.vehicle}>

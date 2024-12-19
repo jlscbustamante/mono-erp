@@ -1,13 +1,15 @@
 import { AddFilterButton } from '@/components/filter/AddFilterButton'
 import { FiltersOption, ShowFilters } from '@/components/filter/ShowFilters'
+import { PATHS } from '@/const/paths'
+import { cn } from '@/utils'
 import { Button } from 'antd'
-import { useAtom, useSetAtom } from 'jotai'
 import { RhEmployee } from 'pizzadb'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
+import { Link } from 'react-router-dom'
 import { OpFilter } from 'shared'
+import { useEmpleadoContext } from '.'
 import { useCreateEmployee } from './create-employee-drawer'
-import { controlerAtom, filtersAtom } from './state'
 
 const filtersOptions: FiltersOption<RhEmployee>[] = [
   {
@@ -32,15 +34,20 @@ const filtersOptions: FiltersOption<RhEmployee>[] = [
   },
   {
     label: 'Cargo',
-    key: 'jobtitle_name',
-    options: [OpFilter.Contain, OpFilter.Equal],
+    key: 'jobtitle_id',
+    options: [OpFilter.Select],
   },
 ]
 
-export const NavEmployees = () => {
+export const NavEmployees = ({
+  motorizadPage,
+}: {
+  motorizadPage?: boolean
+}) => {
   const { open } = useCreateEmployee()
-  const [filters, setFilters] = useAtom(filtersAtom)
-  const setController = useSetAtom(controlerAtom)
+  // const [filters, setFilters] = useAtom(filtersAtom)
+  const { filters, setFilters, setController } = useEmpleadoContext()
+  // const setController = useSetAtom(controlerAtom)
 
   return (
     <div className="flex justify-between">
@@ -71,7 +78,20 @@ export const NavEmployees = () => {
           danger
         />
       </div>
-      <Button type="primary" onClick={open}>
+      <div
+        className={cn({
+          hidden: !motorizadPage,
+        })}
+      >
+        <Link to={PATHS.erp.modulos.mantenimiento.motorizados}>
+          Crear o actualizar motorizados.
+        </Link>
+      </div>
+      <Button
+        type="primary"
+        onClick={open}
+        className={motorizadPage ? 'hidden' : ''}
+      >
         Nuevo
       </Button>
     </div>

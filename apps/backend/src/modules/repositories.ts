@@ -7,6 +7,7 @@ import {
   InvStock,
   JobTitle,
   RhEmployee,
+  Sucursal,
 } from 'pizzadb'
 import { AppDataSource } from '../config/database'
 
@@ -21,3 +22,4 @@ export const rhEmployeeRepository = AppDataSource.getRepository(RhEmployee)
 export const assistancesRepository = AppDataSource.getRepository(Attendance)
 
 export const jobsTitleRepository = AppDataSource.getRepository(JobTitle)
+export const sucursalRepository = AppDataSource.getRepository(Sucursal)

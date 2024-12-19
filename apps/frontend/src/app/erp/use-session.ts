@@ -13,6 +13,7 @@ export const useSession = create<{
     userName: '',
     views: [],
     modules: [],
+    parameters: {},
   },
   setSession: (session) => set({ user: session }),
 }))

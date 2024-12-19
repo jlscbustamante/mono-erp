@@ -351,7 +351,7 @@ export const routerv2 = createBrowserRouter([
             children: [
               {
                 path: PATHS.erp.modulos.recursosHumanos.empleado,
-                element: <EmpleadoPage />,
+                element: <EmpleadoPage motorizadPage={false} key={'no-moto'} />,
               },
               {
                 path: PATHS.erp.modulos.recursosHumanos.asistencia,
@@ -360,6 +360,11 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.recursosHumanos.cargos,
                 element: <JobsTitlePage />,
+              },
+              {
+                path: PATHS.erp.modulos.recursosHumanos.motorizados,
+                // element: <MotorizadosPage />,
+                element: <EmpleadoPage motorizadPage={true} key={'moto'} />,
               },
             ],
           },

@@ -1,13 +1,36 @@
+import { useSession } from '@/app/erp/use-session'
+import { cn } from '@/utils'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { RhEmployee } from 'pizzadb'
+import { useMemo } from 'react'
 import { MdEdit } from 'react-icons/md'
+import { useEmpleadoContext } from '.'
 import { useEditEmployee } from './edit-employee-drawer'
-import { useFilterEmployees } from './state'
 
-export const EmployeesTable = () => {
-  const query = useFilterEmployees()
+export const EmployeesTable = ({
+  motorizadPage,
+}: {
+  motorizadPage: boolean
+}) => {
+  // const query = useFilterEmployees()
+  const { data, isLoading } = useEmpleadoContext()
   const { open } = useEditEmployee()
+  const session = useSession((st) => st.user)
+
+  const employees = useMemo(() => {
+    const motorizedId = session.parameters['JOBS_ID']['DELIVERY']
+    if (!motorizedId) return data
+
+    const employeesFiltered = data.filter((el) => {
+      if (motorizadPage) {
+        return el.jobtitle_id == +motorizedId
+      } else {
+        return el.jobtitle_id != +motorizedId
+      }
+    })
+    return employeesFiltered
+  }, [data])
 
   return (
     <div className="">
@@ -16,8 +39,8 @@ export const EmployeesTable = () => {
         bordered
         pagination={false}
         size="small"
-        loading={query.isLoading}
-        dataSource={query.data?.data}
+        loading={isLoading}
+        dataSource={employees}
         columns={
           [
             {
@@ -47,6 +70,10 @@ export const EmployeesTable = () => {
               dataIndex: ['sucursal', 'title'],
             },
             {
+              title: 'Cargo',
+              dataIndex: ['jobtitle', 'name'],
+            },
+            {
               title: 'Estado',
               dataIndex: 'status',
               render: (status) => (status == 1 ? 'Activo' : 'Inactivo'),
@@ -56,9 +83,8 @@ export const EmployeesTable = () => {
               render: (_, record) => {
                 return (
                   <div className="">
-                    {/* <button onClick={() => open(record)}>Editar</button> */}
                     <MdEdit
-                      className="h-auto w-5 cursor-pointer"
+                      className={cn('h-auto w-5 cursor-pointer')}
                       onClick={() => open(record)}
                     />
                   </div>

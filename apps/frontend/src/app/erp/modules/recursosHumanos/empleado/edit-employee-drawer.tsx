@@ -18,7 +18,7 @@ import { atom, useAtom } from 'jotai'
 import { RhEmployee } from 'pizzadb'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { useFilterEmployees } from './state'
+import { useEmpleadoContext } from '.'
 
 const controlAtom = atom<RhEmployee | null>(null)
 
@@ -36,7 +36,7 @@ export const useEditEmployee = () => {
   }
 }
 
-export const EditEmployeeDrawer = () => {
+export const EditEmployeeDrawer = ({ onlyShow }: { onlyShow: boolean }) => {
   const { isOpen, close, employee } = useEditEmployee()
 
   return (
@@ -49,6 +49,7 @@ export const EditEmployeeDrawer = () => {
     >
       {employee && (
         <EmployeeForm
+          onlyShow={onlyShow}
           key={employee.id}
           employee={employee}
           onUpdate={() => {
@@ -62,14 +63,16 @@ export const EditEmployeeDrawer = () => {
 const EmployeeForm = ({
   employee,
   onUpdate,
+  onlyShow,
 }: {
+  onlyShow: boolean
   employee: RhEmployee
   onUpdate: () => void
 }) => {
   const [form] = Form.useForm()
   const [fileList, setFileList] = useState<UploadFile[]>([])
   const query = useSucursales()
-  const { refetch } = useFilterEmployees()
+  const { refetch } = useEmpleadoContext()
   const queryJobs = useQuery({
     queryKey: ['jobs'],
     queryFn: () => {
@@ -162,10 +165,10 @@ const EmployeeForm = ({
         <Input name="id" className="" readOnly />
       </Form.Item>
       <Form.Item name="first_name" label="Nombres" {...config}>
-        <Input placeholder="Nombres" />
+        <Input placeholder="Nombres" readOnly={onlyShow} />
       </Form.Item>
       <Form.Item name="last_name" label="Apellidos" {...config}>
-        <Input placeholder="Apellidos" />
+        <Input placeholder="Apellidos" readOnly={onlyShow} />
       </Form.Item>
       <Form.Item name="doc_type" label="Tipo de documento">
         <Select>
@@ -173,14 +176,14 @@ const EmployeeForm = ({
         </Select>
       </Form.Item>
       <Form.Item name={'doc_number'} label="Número de doc." {...config}>
-        <Input placeholder="Número de documento" />
+        <Input placeholder="Número de documento" readOnly={onlyShow} />
       </Form.Item>
       <Form.Item name="phone" label="Teléfono">
-        <Input placeholder="Teléfono" />
+        <Input placeholder="Teléfono" readOnly={onlyShow} />
       </Form.Item>
 
       <Form.Item name="email" label="Email">
-        <Input placeholder="Email" />
+        <Input placeholder="Email" readOnly={onlyShow} />
       </Form.Item>
       <Form.Item name="birthday_at" label="Fecha de nacimiento">
         <DatePicker placeholder="Fecha de nacimiento" allowClear={false} />
@@ -232,7 +235,7 @@ const EmployeeForm = ({
           <Select.Option value="0">Inactivo</Select.Option>
         </Select>
       </Form.Item>
-      <Form.Item wrapperCol={{ offset: 8, span: 16 }} className="">
+      <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
         <div className="flex justify-end">
           <Button
             type="primary"
