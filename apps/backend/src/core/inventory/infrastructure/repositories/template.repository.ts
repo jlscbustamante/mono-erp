@@ -4,7 +4,7 @@ import {
   InvDispatchBase,
 } from '../../../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../../../entities/inventory/InvDispatchBaseItem'
-import { cache } from '../../../../lib/cache'
+import { cache, cacheApi } from '../../../../lib/cache'
 import {
   invDispatchBase,
   invDispatchBaseItemRepository,
@@ -61,6 +61,9 @@ export class TemplateRepositoryImpl implements TemplateRepository {
   }
 
   async getTemplate(isWarehouse: boolean): Promise<TemplateItem[]> {
+    const valueCached = cacheApi.get(`template-dispatch-raul-${isWarehouse}`)
+    if (valueCached) return valueCached as TemplateItem[]
+
     const templatebase = await invDispatchBase.findOne({
       where: {
         sucursal_type: 'PIZZA',
@@ -134,6 +137,8 @@ export class TemplateRepositoryImpl implements TemplateRepository {
       )
       templateItems.push(itemTemplate)
     }
+
+    cacheApi.set(`template-dispatch-raul-${isWarehouse}`, templateItems)
 
     return templateItems
   }

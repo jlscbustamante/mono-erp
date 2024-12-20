@@ -5,6 +5,7 @@ import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
 import { Item } from '../../core/inventory/entities/item'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
+import { InvDispatchBaseItem } from '../../entities/inventory/InvDispatchBaseItem'
 import { cache, cacheApi, cacheHalfDay } from '../../lib/cache'
 import {
   invDispatchBase,
@@ -224,7 +225,6 @@ export class InventoryService {
       },
     })
     if (!templatebase) return []
-    console.log('dispatch id  ', templatebase.id)
     const templateItems = await invDispatchBaseItemRepository.find({
       where: {
         dispatch_id: templatebase.id,
@@ -235,6 +235,7 @@ export class InventoryService {
           presentation: true,
           product: {
             measure: true,
+            category: true,
           },
         },
       },
@@ -250,6 +251,105 @@ export class InventoryService {
     const data = itemsMoves.filter((el) => el) as ItemDb[]
     cacheHalfDay.set(`template_items_pr_${company}`, data)
     return data
+  }
+
+  async getLastClosedStock(warehouseCode: string) {
+    const stock = await this.stockRepository
+      .createQueryBuilder('stock')
+      .where('stock.warehouse_id = :warehouseCode', { warehouseCode })
+      .andWhere('stock.status = :status', { status: STOCK_STATUS.CLOSED })
+      .orderBy('stock.stock_at', 'DESC')
+      .limit(1)
+      .getOne()
+
+    if (!stock) return []
+    const date = stock.stock_at.split(' ')[0]
+    const stockDate = await this.stockRepository.find({
+      where: {
+        warehouse_id: warehouseCode,
+        stock_at: Raw((alias) => `DATE(${alias}) = '${date}'`),
+      },
+    })
+    return stockDate
+  }
+
+  async getTemplate(company: string) {
+    const cached = cacheHalfDay.get(`template_dispatch_pr_${company}`)
+    if (cached) return cached as InvDispatchBaseItem[]
+    const templatebase = await invDispatchBase.findOne({
+      where: {
+        sucursal_type: company,
+        used_to: DispatchUsedTo.Store,
+      },
+    })
+    if (!templatebase) return []
+    const templateItems = await invDispatchBaseItemRepository.find({
+      where: {
+        dispatch_id: templatebase.id,
+      },
+      relations: {
+        itemMove: {
+          brand: true,
+          presentation: true,
+          product: {
+            measure: true,
+            category: true,
+          },
+        },
+      },
+      order: {
+        item_move_name: 'ASC',
+      },
+    })
+
+    const data = templateItems.filter((el) => el.itemMove)
+    cacheHalfDay.set(`template_items_pr_${company}`, data)
+    return data
+  }
+
+  async getDispatchTemplate(warehouseCode: string, company: string) {
+    const cached = cacheApi.get(`template_dispatch_${warehouseCode}`)
+    if (cached) return cached
+
+    const dispatchBase = await this.getTemplate(company)
+
+    const stock = await this.getLastClosedStock(warehouseCode)
+
+    const dispatchTemplate = dispatchBase.map((el) => {
+      // const stockItem = stock.find((item) => item.item_id == el.item_)
+      // const itemStock = stockItem.itemStock
+      const itemDispatch = el.itemMove
+      const itemPhysical = stock.find(
+        (item) => item.item_id == el.item_stock_id,
+      )
+
+      return {
+        id: itemDispatch.id,
+        name: itemDispatch.itemName,
+        measureCode: itemDispatch.product?.measure?.code ?? '',
+        measureName: itemDispatch.product?.measure?.measure ?? '',
+        unitPrice: itemDispatch.unitPrice,
+        presentationId: itemDispatch.presentationId,
+        presentation: itemDispatch.presentation.presentation,
+        categoryName: itemDispatch.product?.category?.category ?? '',
+        lastQuantity: itemPhysical?.stock_physical ?? 0,
+        lastQuantityMeasureCode: itemDispatch.product?.measure?.code ?? '',
+      } satisfies {
+        id: number
+        name: string
+        measureCode: string
+        measureName: string
+        unitPrice: number
+        presentationId: number
+        presentation: string
+        categoryName: string
+        lastQuantity: number
+        lastQuantityMeasureCode: string
+      }
+    })
+
+    cacheApi.set(`template_dispatch_${warehouseCode}`, dispatchTemplate)
+    return dispatchTemplate
   }
 }
 

@@ -25,6 +25,7 @@ import {
   WAREHOUSE_TYPE,
   WarehouseLegal,
 } from '../../../core/inventory/entities/warehouse'
+import { cacheApi } from '../../../lib/cache'
 import { service as inventoryServicev2 } from '../../../modules/inventory/index'
 import { invDispatchRepository } from '../../../repositories/inventory/dispatch.repository'
 import parameterRepository from '../../../repositories/parameter.repository'
@@ -125,12 +126,26 @@ export class HexInventoryController {
       sucursalCode: string
       company?: string
     }
+    const cached = cacheApi.get(
+      `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
+    )
+    if (cached) {
+      return res.json({
+        data: cached,
+      })
+    }
+
     let template
     if (company == 'PIZZAM') {
       template = await generateTemplateDispatchPizzam.run(sucursalCode)
     } else {
       template = await generateTemplateDispatchUseCase.run(sucursalCode)
     }
+
+    cacheApi.set(
+      `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
+      template,
+    )
 
     return res.json({
       data: template,

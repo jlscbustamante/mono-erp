@@ -4,6 +4,7 @@ import { In, Raw, Repository } from 'typeorm'
 
 import { InvStock } from 'pizzadb'
 import { AppDataSource } from '../../../../config/database'
+import { cacheApi } from '../../../../lib/cache'
 import { invStockRepository } from '../../../../repositories/inventory/invStock.repository'
 import { productItemRepository } from '../../../../repositories/inventory/item.repository'
 import { StockItemToCreateDto } from '../../dto'
@@ -405,6 +406,10 @@ export class StockRepositoryImpl implements StockRepository {
   }
 
   async getLastClosedDate(warehouseCode: string): Promise<string | null> {
+    const cached = cacheApi.get(`last_closed_${warehouseCode}`)
+    if (cached === 'null') return null
+    else if (cached) return cached as string
+
     const inventario = await invStockRepository.findOne({
       where: {
         warehouse_id: warehouseCode,
@@ -414,8 +419,10 @@ export class StockRepositoryImpl implements StockRepository {
         stock_at: 'DESC',
       },
     })
-    if (!inventario) return null
-    return inventario.stock_at.split(' ')[0]
+
+    const date = inventario?.stock_at.split(' ')[0] ?? null
+    cacheApi.set(`last_closed_${warehouseCode}`, date ?? 'null')
+    return date
   }
 
   async getLastClosedStock(

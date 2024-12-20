@@ -1,3 +1,4 @@
+import { cacheApi } from '../../../lib/cache'
 import { DispatchUtil } from '../dispatch-util.service'
 import { StockItemToCreateDto } from '../dto'
 import { STOCK_STATUS } from '../entities'
@@ -40,6 +41,9 @@ export class SaveStock {
         warehouseCode,
       )
       await this.dispatchUtils.fixTotalLast(warehouseCode, date)
+      cacheApi.delete(`last_closed_${warehouseCode}`)
+      cacheApi.delete(`template_dispatch_${warehouseCode}`)
+      cacheApi.delete(`template_dispatch_pr_${warehouseCode}`)
     } else {
       await this.stockRepository.saveStock(stockToCreate, date, warehouseCode)
     }
