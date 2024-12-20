@@ -417,7 +417,15 @@ const ModifyDispatchStructure = ({
           showSearch
         >
           {queryItems.data?.map((el) => (
-            <Select.Option key={el.id} value={el.id.toString()}>
+            <Select.Option
+              key={el.id}
+              value={el.id.toString()}
+              className={cn({
+                '!bg-amber-100 hover:!bg-amber-100': el.name
+                  .toLowerCase()
+                  .includes('pizza m'),
+              })}
+            >
               {el.name}
             </Select.Option>
           ))}

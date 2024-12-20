@@ -30,7 +30,7 @@ import {
   PurchaseUpdaetDto,
   WAREHOUSE_TYPE,
 } from '@/data/hex/types'
-import { filterSelectForm } from '@/utils'
+import { cn, filterSelectForm } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
 const editPurchaseAtom = atom<{
@@ -279,7 +279,7 @@ const PurchaseBody = ({
 
                     setPurchase({
                       ...purchase,
-                      taxValue: check ? purchase.taxValue ?? value : null,
+                      taxValue: check ? (purchase.taxValue ?? value) : null,
                     })
                   }}
                 />
@@ -417,7 +417,7 @@ const EditItems = ({
       render: (_, record) => {
         return (
           <Select
-            className="w-[475px]"
+            className="w-[450px]"
             size="small"
             value={record.itemId}
             showSearch={true}
@@ -427,7 +427,16 @@ const EditItems = ({
             }}
           >
             {allItems?.map((el) => (
-              <Select.Option key={el.id} value={el.id}>
+              <Select.Option
+                key={el.id}
+                value={el.id}
+                // classNam="bg-red-400 hover:!bg-red-800"
+                className={cn({
+                  '!bg-amber-100 hover:!bg-amber-200': el.name
+                    .toLowerCase()
+                    .includes('pizza m'),
+                })}
+              >
                 {el.name}
               </Select.Option>
             ))}
