@@ -25,7 +25,7 @@ import {
   WAREHOUSE_TYPE,
   WarehouseLegal,
 } from '../../../core/inventory/entities/warehouse'
-import { cacheApi } from '../../../lib/cache'
+import { service as inventoryServiceModule } from '../../../modules/inventory'
 import { service as inventoryServicev2 } from '../../../modules/inventory/index'
 import { invDispatchRepository } from '../../../repositories/inventory/dispatch.repository'
 import parameterRepository from '../../../repositories/parameter.repository'
@@ -41,8 +41,6 @@ import {
   dispatchService,
   dispatchUtil,
   driverService,
-  generateTemplateDispatchPizzam,
-  generateTemplateDispatchUseCase,
   inventoryService,
   readStockPizzam,
   readStockUseCase,
@@ -122,34 +120,42 @@ export class HexInventoryController {
 
   @catchError
   async templateDispatch(req: Request, res: Response) {
-    const { sucursalCode, company } = req.query as {
+    const { sucursalCode, company = 'PIZZA' } = req.query as {
       sucursalCode: string
       company?: string
     }
-    const cached = cacheApi.get(
-      `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
-    )
-    if (cached) {
-      return res.json({
-        data: cached,
-      })
-    }
-
-    let template
-    if (company == 'PIZZAM') {
-      template = await generateTemplateDispatchPizzam.run(sucursalCode)
-    } else {
-      template = await generateTemplateDispatchUseCase.run(sucursalCode)
-    }
-
-    cacheApi.set(
-      `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
-      template,
+    const data = await inventoryServiceModule.getDispatchTemplate(
+      sucursalCode,
+      company,
     )
 
     return res.json({
-      data: template,
+      data,
     })
+    // const cached = cacheApi.get(
+    //   `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
+    // )
+    // if (cached) {
+    //   return res.json({
+    //     data: cached,
+    //   })
+    // }
+
+    // let template
+    // if (company == 'PIZZAM') {
+    //   template = await generateTemplateDispatchPizzam.run(sucursalCode)
+    // } else {
+    //   template = await generateTemplateDispatchUseCase.run(sucursalCode)
+    // }
+
+    // cacheApi.set(
+    //   `template_dispatch_${sucursalCode}_${company ?? 'RAUL'}`,
+    //   template,
+    // )
+
+    // return res.json({
+    //   data: template,
+    // })
   }
 
   @catchError
