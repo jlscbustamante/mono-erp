@@ -303,7 +303,7 @@ export class InventoryService {
     })
 
     const data = templateItems.filter((el) => el.itemMove)
-    cacheHalfDay.set(`template_items_pr_${company}`, data)
+    cacheHalfDay.set(`template_dispatch_pr_${company}`, data)
     return data
   }
 
