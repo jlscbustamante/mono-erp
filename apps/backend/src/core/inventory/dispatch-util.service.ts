@@ -518,11 +518,15 @@ export class DispatchUtil {
       },
       {} as Record<number, InvStock>,
     )
+
+    const trackedItemIds:number[]=[]
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemDispatchId,
       )
-      if (itemDispatch) {
+      if (itemDispatch && !trackedItemIds.includes(itemDispatch.itemId)) {
+        trackedItemIds.push(itemDispatch.itemId)
+
         const quantity = itemTemplate.getStockQuantity(itemDispatch?.quantity)
         if (newStock[itemTemplate.itemStockId]) {
           newStock[itemTemplate.itemStockId].quantity_out_dp += quantity
@@ -674,11 +678,15 @@ export class DispatchUtil {
       },
       {} as Record<number, InvStock>,
     )
+    
+    const trackedItemIds: number[]=[]
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemDispatchId,
       )
-      if (itemDispatch) {
+      if (itemDispatch && !trackedItemIds.includes(itemDispatch.itemId)) {
+        trackedItemIds.push(itemDispatch.itemId)
+
         const quantity = itemTemplate.getStockQuantity(itemDispatch.quantity)
         if (newStock[itemTemplate.itemStockId]) {
           newStock[itemTemplate.itemStockId].quantity_in_dp += quantity
