@@ -1,6 +1,5 @@
-import { InvDispatch } from 'pizzadb'
+import { InvDispatch, InvKardex } from 'pizzadb'
 import { AppDataSource } from '../../config/database'
-import { InvKardex } from '../../entities/inventory/InvKardex'
 import { productItemRepository } from '../../repositories/inventory/item.repository'
 import { invPurchaseRepository } from '../../repositories/inventory/purchase.repository'
 import { KardexService } from './kardex.service'

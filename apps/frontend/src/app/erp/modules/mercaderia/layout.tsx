@@ -32,6 +32,7 @@ const menu: (MenuOption | MenuSeparator)[] = [
     ),
     gm('Ratio de inventario', PATHS.erp.modulos.mercaderia.reportes.ratio),
   ]),
+  gm('Kardex',PATHS.erp.modulos.mercaderia.kardex),
   separator(),
   gm('Productos', PATHS.erp.modulos.mercaderia.productos),
   gm('Items', PATHS.erp.modulos.mercaderia.items),

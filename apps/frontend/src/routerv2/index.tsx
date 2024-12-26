@@ -3,6 +3,7 @@ import { OtpLoginPage } from '@/app/erp/auth/otp-login'
 import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
+import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
@@ -186,6 +187,10 @@ export const routerv2 = createBrowserRouter([
                 ],
               },
               {
+                path: PATHS.erp.modulos.mercaderia.kardex,
+                element: <KardexPage />
+              },
+              {
                 path: PATHS.erp.modulos.mercaderia.productos,
                 element: <Products />,
               },
@@ -246,6 +251,7 @@ export const routerv2 = createBrowserRouter([
                     path: PATHS.erp.modulos.mercaderia.mantenimiento.plantillas,
                     element: <TemplatePage />,
                   },
+         
                   {
                     path: `${PATHS.erp.modulos.mercaderia.mantenimiento.plantillas}/:id`,
                     element: <EditTemplate />,

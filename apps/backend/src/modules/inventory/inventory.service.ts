@@ -1,5 +1,5 @@
 import { format, parseISO, sub } from 'date-fns'
-import { InvDispatch, InvStock, Item as ItemDb } from 'pizzadb'
+import { InvDispatch, InvStock, Item as ItemDb, Sucursal } from 'pizzadb'
 import { Raw, Repository } from 'typeorm'
 import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
@@ -16,6 +16,7 @@ export class InventoryService {
   constructor(
     private readonly dispatchRepository: Repository<InvDispatch>,
     private readonly stockRepository: Repository<InvStock>,
+    private readonly sucursalRepository: Repository<Sucursal>
   ) {}
 
   async createOrder() {
@@ -350,6 +351,10 @@ export class InventoryService {
 
     cacheApi.set(`template_dispatch_${warehouseCode}`, dispatchTemplate)
     return dispatchTemplate
+  }
+
+  async sucursales(){
+    return this.sucursalRepository.find()
   }
 }
 

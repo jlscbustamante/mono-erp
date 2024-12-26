@@ -1,10 +1,10 @@
 import { badRequest } from '@hapi/boom'
 import { parseISO } from 'date-fns'
-import { InvDispatch, Item } from 'pizzadb'
+import { InvDispatch, InvKardex, Item } from 'pizzadb'
+import { KARDEX_MOVE_FLOW } from 'shared'
 import { In, Repository } from 'typeorm'
-import { InvKardex } from '../../entities/inventory/InvKardex'
 import { InvPurchase } from '../../entities/inventory/Purchase'
-import { KARDEX_MOVE_TYPE, KARDEX_ORIGIN, KardexCreateDto } from './dto'
+import { KARDEX_ORIGIN, KardexCreateDto } from './dto'
 
 export class KardexService {
   constructor(
@@ -56,7 +56,7 @@ export class KardexService {
             createdBy: user || 'sys',
             moveAt: dispatch.moveAt.split(' ')[0],
             warehouseId: dispatch.wareToId,
-            moveType: KARDEX_MOVE_TYPE.IN,
+            moveType: KARDEX_MOVE_FLOW.IN,
             numDoc: dispatch.numInvoice,
             origin: KARDEX_ORIGIN.DISPATCH,
             originId: dispatch.id,
@@ -70,7 +70,7 @@ export class KardexService {
             createdBy: user || 'sys',
             moveAt: dispatch.moveAt.split(' ')[0],
             warehouseId: dispatch.wareFromId,
-            moveType: KARDEX_MOVE_TYPE.OUT,
+            moveType: KARDEX_MOVE_FLOW.OUT,
             numDoc: dispatch.numInvoice,
             origin: KARDEX_ORIGIN.DISPATCH,
             originId: dispatch.id,
@@ -116,7 +116,7 @@ export class KardexService {
             createdBy: user || 'sys',
             moveAt: purchase.purchaseAt.split(' ')[0],
             warehouseId: purchase.warehouseId,
-            moveType: KARDEX_MOVE_TYPE.IN,
+            moveType: KARDEX_MOVE_FLOW.IN,
             numDoc: purchase.numInvoice,
             origin: KARDEX_ORIGIN.PURCHASE,
             originId: purchase.id,
@@ -172,21 +172,21 @@ export class KardexService {
 
     if (!item) throw badRequest('Item no encontrado')
 
-    kardex.itemId = item.id
-    kardex.itemName = item.itemName
-    kardex.presentationId = item.presentationId
-    kardex.presentationName = item.presentation.presentation
-    kardex.moveType = kardexDto.origin
-    kardex.moveId = kardexDto.originId
-    kardex.moveFlow = kardexDto.moveType
-    kardex.typeDoc = kardexDto.typeDoc
-    kardex.numDoc = kardexDto.numDoc
-    kardex.warehouseId = kardexDto.warehouseId
-    kardex.moveAt = parseISO(kardexDto.moveAt)
+    kardex.item_id= item.id
+    kardex.item_name= item.itemName
+    kardex.presentation_id= item.presentationId
+    kardex.presentation_name= item.presentation.presentation
+    kardex.move_type= kardexDto.origin
+    kardex.move_id= kardexDto.originId
+    kardex.move_flow= kardexDto.moveType
+    kardex.type_doc= kardexDto.typeDoc ?? ''
+    kardex.num_doc= kardexDto.numDoc ?? ''
+    kardex.warehouse_id= kardexDto.warehouseId
+    kardex.move_at= parseISO(kardexDto.moveAt)
     kardex.quantity = kardexDto.quantity
-    kardex.unitPurchase = kardexDto.purchasePrice ?? item.unitCost
-    kardex.unitPrice = item.unitPrice
-    kardex.totalPrice = item.unitCost * kardexDto.quantity
+    kardex.unit_purchase= kardexDto.purchasePrice ?? item.unitCost
+    kardex.unit_price= item.unitPrice
+    kardex.total_price= item.unitCost * kardexDto.quantity
 
     return kardex
   }
@@ -196,21 +196,21 @@ export class KardexService {
 
     const price = kardexDto.purchasePrice ?? item.unitCost
 
-    kardex.itemId = item.id
-    kardex.itemName = item.itemName
-    kardex.presentationId = item.presentationId
-    kardex.presentationName = item.presentation.presentation
-    kardex.moveType = kardexDto.origin
-    kardex.moveId = kardexDto.originId
-    kardex.moveFlow = kardexDto.moveType
-    kardex.typeDoc = kardexDto.typeDoc
-    kardex.numDoc = kardexDto.numDoc
-    kardex.warehouseId = kardexDto.warehouseId
-    kardex.moveAt = parseISO(kardexDto.moveAt)
+    kardex.item_id= item.id
+    kardex.item_name= item.itemName
+    kardex.presentation_id= item.presentationId
+    kardex.presentation_name= item.presentation.presentation
+    kardex.move_type= kardexDto.origin
+    kardex.move_id= kardexDto.originId
+    kardex.move_flow= kardexDto.moveType
+    kardex.type_doc= kardexDto.typeDoc ?? ''
+    kardex.num_doc= kardexDto.numDoc ?? ''
+    kardex.warehouse_id= kardexDto.warehouseId
+    kardex.move_at= parseISO(kardexDto.moveAt)
     kardex.quantity = kardexDto.quantity
-    kardex.unitPurchase = price
-    kardex.unitPrice = item.unitPrice
-    kardex.totalPrice = price * kardexDto.quantity
+    kardex.unit_purchase= price
+    kardex.unit_price= item.unitPrice
+    kardex.total_price= price * kardexDto.quantity
 
     return kardex
   }

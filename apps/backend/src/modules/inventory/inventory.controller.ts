@@ -39,4 +39,9 @@ export class InventoryController {
 
     return data
   }
+
+  @Get('/inventory/sucursales')
+  async sucursales(){
+    return this.inventoryService.sucursales()
+  }
 }

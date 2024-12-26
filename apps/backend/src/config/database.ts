@@ -10,6 +10,7 @@ import {
   IamUser,
   InvDispatch,
   InvDispatchItem,
+  InvKardex,
   InvStock,
   InvSupplier,
   Item,
@@ -54,6 +55,7 @@ const AppDataSource = new DataSource({
     RhEmployee,
     Attendance,
     JobTitle,
+    InvKardex
   ],
   logging: config.showTypeormLog,
 })

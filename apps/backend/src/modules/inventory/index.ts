@@ -1,11 +1,12 @@
 import { createApp } from '../../utils/decorators/endpoint.middleware'
-import { invDispatchRepository, invStockRepository } from '../repositories'
+import { invDispatchRepository, invStockRepository, sucursalRepository } from '../repositories'
 import { InventoryController } from './inventory.controller'
 import { InventoryService } from './inventory.service'
 
 export const service = new InventoryService(
   invDispatchRepository,
   invStockRepository,
+  sucursalRepository
 )
 const controller = new InventoryController(service)
 

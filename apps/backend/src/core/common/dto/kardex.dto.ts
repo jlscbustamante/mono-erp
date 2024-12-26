@@ -1,3 +1,5 @@
+import { KARDEX_MOVE_FLOW } from "shared"
+
 export enum KARDEX_ORIGIN {
   PURCHASE = 'C',
   PRODUCTION = 'P',
@@ -5,16 +7,13 @@ export enum KARDEX_ORIGIN {
   INITIAL_STOCK = 'I',
 }
 
-export enum KARDEX_MOVE_TYPE {
-  IN = 'E',
-  OUT = 'S',
-}
+
 
 export interface KardexCreateDto {
   itemId: number
   origin: KARDEX_ORIGIN
   originId: number
-  moveType: KARDEX_MOVE_TYPE
+  moveType: KARDEX_MOVE_FLOW
   typeDoc: string | null
   numDoc: string | null
   warehouseId: string

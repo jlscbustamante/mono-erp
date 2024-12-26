@@ -4,8 +4,10 @@ export * from "./category.entity";
 export * from "./dispatch-item.entity";
 export * from "./dispatch.entity";
 export * from "./item.entity";
+export * from './kardex.entity';
 export * from "./measure.entity";
 export * from "./presentation.entity";
 export * from "./product.entity";
 export * from "./stock.entity";
 export * from "./supplier.entity";
+
