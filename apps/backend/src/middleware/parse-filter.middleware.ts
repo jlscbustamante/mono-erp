@@ -7,7 +7,6 @@ export const parseFilters = (
 ) => {
   try {
     if (Object.keys(req.body).length > 0) {
-      // console.log('pruebna : ', req.body
       next()
     } else {
       const filtersString = req.query as {

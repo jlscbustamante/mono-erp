@@ -16,7 +16,7 @@ export class InventoryService {
   constructor(
     private readonly dispatchRepository: Repository<InvDispatch>,
     private readonly stockRepository: Repository<InvStock>,
-    private readonly sucursalRepository: Repository<Sucursal>
+    private readonly sucursalRepository: Repository<Sucursal>,
   ) {}
 
   async createOrder() {
@@ -353,7 +353,7 @@ export class InventoryService {
     return dispatchTemplate
   }
 
-  async sucursales(){
+  async sucursales() {
     return this.sucursalRepository.find()
   }
 }
