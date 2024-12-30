@@ -8,6 +8,7 @@ import dayjs from 'dayjs'
 import { type IKardex } from 'pizzadb'
 import { useState } from 'react'
 import { KARDEX_MOVE_FLOW } from 'shared'
+import { KardexFilters } from './kardex-filters'
 
 const RangePicker = DatePicker.RangePicker
 
@@ -27,6 +28,7 @@ export const KardexPage = () => {
 
   return (
     <div className="space-y-3 p-3">
+      <KardexFilters />
       <div className="flex gap-2">
         <RangePicker
           value={[dayjs(dates[0]), dayjs(dates[1])]}

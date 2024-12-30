@@ -27,8 +27,8 @@ export class InventoryApi {
   }
 
   @axiosCatch
-  async sucursales():Promise<Sucursal[]>{
-    const result=await this.client.get('inventory/sucursales')
+  async sucursales(): Promise<Sucursal[]> {
+    const result = await this.client.get('inventory/sucursales')
     return result.data.data
   }
 
