@@ -438,7 +438,8 @@ export class IamUserController {
         },
       })
       if (existingIamUser) {
-        existingIamUser.password = String(req.query.password)
+        const password = await bcrypt.hash(req.query.password as string, 10)
+        existingIamUser.password = password
         IamUserRepository.save(existingIamUser)
       }
 

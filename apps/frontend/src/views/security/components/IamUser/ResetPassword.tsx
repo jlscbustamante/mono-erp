@@ -1,6 +1,5 @@
 import { Button, Form, Input } from 'antd'
-import React, { useState } from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify'
 
 import { NOTIFICATION } from '@/const/notification'
@@ -19,44 +18,33 @@ export const ResetForm: React.FC<{
 
   const onFinish = async () => {
     const password = nuevaContrasena
-    const hasLetter = /[a-zA-Z]/.test(password)
-    const hasNumber = /\d/.test(password)
-    const hasMinLength = password.length >= 8
-    const idNot = toast.loading('Actualizando usuario...', NOTIFICATION.loading)
+    const hasMinLength = password.length >= 6
     try {
-      if (
-        hasNumber &&
-        hasLetter &&
-        hasMinLength &&
-        password === confirmarContrasena
-      ) {
+      if (hasMinLength && password === confirmarContrasena) {
+        const idNot = toast.loading(
+          'Actualizando usuario...',
+          NOTIFICATION.loading,
+        )
         await resetPasswordUser(iamUser?.id, password)
+        toast.update(idNot, {
+          render: 'Usuario actualizado',
+          ...NOTIFICATION.updateLoading,
+        })
+        onClose()
+        reload()
+      } else {
+        toast.error('Verifica las contraseñas', NOTIFICATION.error)
       }
-      console.log(iamUser?.id)
-
-      toast.update(idNot, {
-        render: 'Usuario actualizado',
-        ...NOTIFICATION.updateLoading,
-      })
-      onClose()
-      reload()
     } catch (err: any) {
+      toast.dismiss()
       toast.error(err.message, NOTIFICATION.error)
     }
   }
 
   const passwordRequirements = [
     {
-      condition: /[a-zA-Z]/.test(nuevaContrasena),
-      text: 'Debe contener al menos una letra.',
-    },
-    {
-      condition: /\d/.test(nuevaContrasena),
-      text: 'Debe contener al menos un número.',
-    },
-    {
-      condition: nuevaContrasena.length >= 8,
-      text: 'Debe tener al menos 8 caracteres.',
+      condition: nuevaContrasena.length >= 6,
+      text: 'Debe tener al menos 6 caracteres.',
     },
   ]
 
