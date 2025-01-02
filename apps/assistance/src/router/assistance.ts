@@ -84,6 +84,18 @@ app.post("/register", async (c) => {
     if (!user) throw new Error("No se encontro el usuario");
     if (user.status != 1) throw new Error("El usuario no esta activo");
 
+    const attendance = await attendanceRepository.findOne({
+      where: {
+        employee_id: user.id,
+        attendance_at: Raw((alias) => `DATE(${alias}) = :date`, {
+          date: format(new Date(), "yyyy-MM-dd"),
+        }),
+        event: event as ATTENDANCE_EVENT,
+      },
+    });
+
+    if (attendance) throw new Error("Ya existe un registro para " + event);
+
     const path = getDatePath();
     const pathUser = `${path}/${user.doc_number}_${event}.jpg`;
 
@@ -107,6 +119,7 @@ app.post("/register", async (c) => {
     c.status(404);
     return c.json({
       data: err.message,
+      message: err.message,
     });
   }
 });
