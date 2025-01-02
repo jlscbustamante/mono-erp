@@ -50,7 +50,7 @@ export class RhApi {
       'rh/assistances/filter',
       {
         params: {
-          store,
+          store: store ? store : undefined,
           dates,
           userId,
         },
