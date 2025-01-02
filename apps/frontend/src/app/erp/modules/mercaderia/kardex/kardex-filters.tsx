@@ -1,6 +1,7 @@
 import { FillimeSelector } from '@/components/fillime/selector'
 import { FilterOption } from '@/components/fillime/types'
 import { Button } from 'antd'
+import { RangePickerProps } from 'antd/es/date-picker'
 import type { InvKardex } from 'pizzadb'
 import { useKardexStore } from './state'
 
@@ -10,6 +11,8 @@ const options: FilterOption<InvKardex>[] = [
     index: 'id',
     options: ['equal', 'select'],
     type: 'num',
+    hide: true,
+    default: 0,
     noAllowClear: true,
   },
   {
@@ -17,6 +20,7 @@ const options: FilterOption<InvKardex>[] = [
     index: 'created_at',
     options: ['equal', 'select'],
     type: 'range',
+    props: { size: 'small', allowClear: false } satisfies RangePickerProps,
     default: ['2021-01-01', '2021-12-31'],
   },
   {

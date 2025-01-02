@@ -11,4 +11,5 @@ export interface FilterOption<T = unknown> {
   options?: string[]
   default?: unknown
   type?: 'input' | 'range' | 'select' | 'num'
+  props?: Record<string, any>
 }

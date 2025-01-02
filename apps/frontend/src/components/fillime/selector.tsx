@@ -101,6 +101,7 @@ export const FillimeSelector = <T = unknown,>({
                 })}
               </Select>
               <Component
+                {...el.option.props}
                 filValue={el.filter.value as string}
                 onFilChange={(val: any) => {
                   modFilter?.({
