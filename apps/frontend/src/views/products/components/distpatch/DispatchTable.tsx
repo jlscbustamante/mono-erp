@@ -27,7 +27,13 @@ import { useDocs } from '../../hooks/use-docs'
 import { useDispatch, useDispatchQuery } from '../../state/useDispatch'
 import { useSucursales } from '../stock/hooks/useSucursales'
 
-export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
+export const DispatchTable = ({
+  onUpdate,
+  onlyQuery,
+}: {
+  onUpdate: () => void
+  onlyQuery?: boolean
+}) => {
   const { open } = useDispatchDetailDrawer()
   const query = useDispatchQuery()
   const queryDocs = useDocs()
@@ -264,7 +270,8 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
               className={cn('inline-flex items-center justify-center', {
                 hidden:
                   record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
-                  record.moveType == DispatchType.Exceptional,
+                  record.moveType == DispatchType.Exceptional ||
+                  onlyQuery,
                 // record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
                 // date !== today ||
                 // record.moveType == DispatchType.Exceptional,
@@ -292,7 +299,7 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
             </div>
             <div
               className={cn('cursor-pointer', {
-                hidden: record.status == DispatchStatus.DISPATCHED,
+                hidden: onlyQuery || record.status == DispatchStatus.DISPATCHED,
               })}
               onClick={() => {
                 Modal.confirm({
@@ -316,7 +323,7 @@ export const DispatchTable = ({ onUpdate }: { onUpdate: () => void }) => {
             </div>
             <div
               className={cn('cursor-pointer', {
-                hidden: record.status != DispatchStatus.DISPATCHED,
+                hidden: record.status != DispatchStatus.DISPATCHED || onlyQuery,
               })}
               onClick={() => {
                 Modal.confirm({

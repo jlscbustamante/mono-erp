@@ -79,6 +79,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.mercaderia.transportistas]: LuTruck,
   [PATHS.erp.modulos.mercaderia.mantenimiento.main]: VscSettings,
   [PATHS.erp.modulos.mercaderia.mantenimiento.categorias]: MdOutlineCategory,
+  [PATHS.erp.modulos.mercaderia.reportes.consultaDespachos]: null,
   [PATHS.erp.modulos.mercaderia.mantenimiento.unidades]: TbRulerMeasure,
   [PATHS.erp.modulos.mercaderia.mantenimiento.equivalencias]: FaBalanceScale,
   [PATHS.erp.modulos.mercaderia.mantenimiento.plantillas]: FaListCheck,
