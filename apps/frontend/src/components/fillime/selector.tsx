@@ -1,13 +1,25 @@
+import { cn } from '@/utils'
 import { Button, Dropdown, Select } from 'antd'
 import { MenuProps } from 'antd/lib'
 import { WhereOption } from 'pizzadb'
 import { useMemo } from 'react'
 import { FiInput } from './components/input'
-import { FilterOption } from './types'
+import { FiInputNumber } from './components/input-number'
+import { FiRangePicker } from './components/range'
+import { ComponentFiRender, FilterOption } from './types'
 
 interface IItem<U> {
   filter: WhereOption<U>
   option: FilterOption<U>
+}
+
+const availableComponents: Record<
+  string,
+  (props: ComponentFiRender) => JSX.Element
+> = {
+  default: FiInput as any,
+  range: FiRangePicker,
+  num: FiInputNumber as any,
 }
 
 export const FillimeSelector = <T = unknown,>({
@@ -63,10 +75,14 @@ export const FillimeSelector = <T = unknown,>({
       </div>
       <div className="space-y-1 my-2">
         {availableFilters.map((el) => {
+          const Component = availableComponents[el.option.type ?? 'default']
+
           return (
             <div
               key={el.filter.field.toString()}
-              className="border border-solid border-slate-400"
+              className={cn('border border-solid border-slate-400', {
+                hidden: el.option.hide,
+              })}
             >
               <span>{el.option.title}</span>
               <Select
@@ -84,9 +100,9 @@ export const FillimeSelector = <T = unknown,>({
                   return <Select.Option key={option}>{option}</Select.Option>
                 })}
               </Select>
-              <FiInput
+              <Component
                 filValue={el.filter.value as string}
-                onFilChange={(val) => {
+                onFilChange={(val: any) => {
                   modFilter?.({
                     ...el.filter,
                     value: val,
@@ -94,8 +110,9 @@ export const FillimeSelector = <T = unknown,>({
                 }}
               />
               <div
+                className={cn({ 'text-slate-600': el.option.noAllowClear })}
                 onClick={() => {
-                  removeFilter?.(el.filter)
+                  if (!el.option.noAllowClear) removeFilter?.(el.filter)
                 }}
               >
                 remover

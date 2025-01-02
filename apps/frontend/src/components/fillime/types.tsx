@@ -10,5 +10,5 @@ export interface FilterOption<T = unknown> {
   hide?: boolean
   options?: string[]
   default?: unknown
-  selector?: Record<string, (props: ComponentFiRender) => void>
+  type?: 'input' | 'range' | 'select' | 'num'
 }

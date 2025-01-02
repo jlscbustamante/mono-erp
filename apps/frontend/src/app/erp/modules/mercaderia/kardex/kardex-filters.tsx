@@ -8,27 +8,26 @@ const options: FilterOption<InvKardex>[] = [
   {
     title: 'Id',
     index: 'id',
-    // options: [Operator.Equal, Operator.NotEqual],
     options: ['equal', 'select'],
+    type: 'num',
+    noAllowClear: true,
   },
   {
     title: 'F. creación',
     index: 'created_at',
-    // options: [Operator.Equal, Operator.NotEqual],
     options: ['equal', 'select'],
+    type: 'range',
+    default: ['2021-01-01', '2021-12-31'],
   },
   {
     title: 'Item',
     index: 'item_name',
-    hide: true,
     default: 'nad item name',
-    // options: [Operator.Equal, Operator.NotEqual],
     options: ['equal', 'select'],
   },
   {
     title: 'F. movimiento',
     index: 'move_at',
-    // options: [Operator.Equal],
     options: ['equal'],
   },
 ]

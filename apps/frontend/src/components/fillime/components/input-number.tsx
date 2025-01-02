@@ -1,14 +1,14 @@
-import { Input, InputProps } from 'antd'
+import { InputNumber, InputNumberProps } from 'antd'
 import { ComponentFiRender } from '../types'
 
-export const FiInput = (props: InputProps & ComponentFiRender) => {
+export const FiInputNumber = (props: InputNumberProps & ComponentFiRender) => {
   const { filValue, onFilChange, ...validProps } = props
   return (
-    <Input
+    <InputNumber
       {...validProps}
       value={filValue}
       onChange={(val) => {
-        onFilChange(val.target.value)
+        onFilChange(val)
       }}
     />
   )
