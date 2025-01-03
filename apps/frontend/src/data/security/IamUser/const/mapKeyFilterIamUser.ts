@@ -9,7 +9,7 @@ export const mapKeyFilterIamUser = (key: keyof IIamUser): OpFilter[] => {
     case 'name':
       return [OpFilter.Equal, OpFilter.Contain]
     case 'email':
-      return [OpFilter.Equal, OpFilter.Contain]
+      return [OpFilter.Contain, OpFilter.Equal]
     case 'status':
       return [OpFilter.Select]
     case 'created_at':
@@ -24,10 +24,10 @@ export const validIIamUser = () => {
       key: 'id',
       label: 'ID',
     },
-    {
-      key: 'name',
-      label: 'Nombre',
-    },
+    // {
+    //   key: 'name',
+    //   label: 'Nombre',
+    // },
     {
       key: 'email',
       label: 'Email',

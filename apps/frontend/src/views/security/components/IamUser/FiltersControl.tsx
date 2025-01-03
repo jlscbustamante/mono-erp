@@ -1,4 +1,4 @@
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
 import { useRecoilState } from 'recoil'
@@ -9,6 +9,7 @@ import {
   validIIamUser,
 } from '@/data/security/IamUser/const/mapKeyFilterIamUser'
 import { filterIamUserSt } from '@/data/security/IamUser/state/IamUser'
+import { OpFilter } from '@/data/types/Filters'
 
 export const RequestsFilters: React.FC<{
   applyFilters: () => void
@@ -16,8 +17,19 @@ export const RequestsFilters: React.FC<{
 }> = ({ applyFilters, cleanFilters }) => {
   const [userFilters, setUserFilters] = useRecoilState(filterIamUserSt)
   return (
-    <div className="flex items-center gap-1.5 justify-end my-6">
-      <div className="flex flex-1 gap-1">
+    <div className="flex items-center gap-1.5 justify-end my-6 flex-1">
+      <div className="flex flex-1 gap-1 items-center">
+        <Input
+          className="w-48"
+          placeholder="Nombre"
+          value={userFilters.name?.[1]}
+          onChange={(e) => {
+            setUserFilters({
+              ...userFilters,
+              name: [OpFilter.Contain, e.target.value],
+            })
+          }}
+        />
         <FilterAddButton
           userFilters={userFilters}
           setUserFilters={setUserFilters}
@@ -25,6 +37,7 @@ export const RequestsFilters: React.FC<{
           getFilterTypesForKey={mapKeyFilterIamUser}
         />
         <UserFilters
+          ignore={['name']}
           userFilters={userFilters}
           setFilters={setUserFilters}
           items={validIIamUser()}
@@ -36,22 +49,22 @@ export const RequestsFilters: React.FC<{
             ],
           }}
         />
+        <Button
+          type="primary"
+          shape="circle"
+          icon={<FiSearch />}
+          onClick={applyFilters}
+          className="flex items-center justify-center"
+        />
+        <Button
+          type="primary"
+          color="danger"
+          shape="circle"
+          icon={<MdOutlineCleaningServices />}
+          onClick={cleanFilters}
+          danger
+        />
       </div>
-      <Button
-        type="primary"
-        shape="circle"
-        icon={<FiSearch />}
-        onClick={applyFilters}
-        className="flex items-center justify-center"
-      />
-      <Button
-        type="primary"
-        color="danger"
-        shape="circle"
-        icon={<MdOutlineCleaningServices />}
-        onClick={cleanFilters}
-        danger
-      />
     </div>
   )
 }

@@ -9,6 +9,7 @@ interface IComponentProps<T> {
   items: { label: string; key: string }[]
   getFilterTypesForKey: (key: keyof T) => OpFilter[]
   selections: { [key: string]: { label: string; value: safeAny }[] }
+  ignore?: string[]
 }
 
 export const UserFilters = <T,>(props: IComponentProps<T>) => {
@@ -28,28 +29,30 @@ export const UserFilters = <T,>(props: IComponentProps<T>) => {
   }
   return (
     <>
-      {Object.keys(props.userFilters).map((key) => {
-        const filterTypes = props.getFilterTypesForKey(key as keyof T)
-        let defaultValue: [OpFilter, ...safeAny[]]
-        const elementFounded = props.userFilters[key as keyof T]
-        if (elementFounded) {
-          defaultValue = elementFounded as [OpFilter, ...safeAny[]]
-        } else {
-          defaultValue = [filterTypes[0]]
-        }
-        return (
-          <FilterComponent
-            title={searchLabel(key as keyof T)}
-            key={key}
-            value={defaultValue}
-            selection={props.selections[key]}
-            keyFilter={key as keyof T}
-            filterOptions={optionsKeyFilter(filterTypes)}
-            onChange={onChangeFilter}
-            onDelete={onDelete}
-          />
-        )
-      })}
+      {Object.keys(props.userFilters)
+        .filter((el) => (props.ignore ? !props.ignore.includes(el) : true))
+        .map((key) => {
+          const filterTypes = props.getFilterTypesForKey(key as keyof T)
+          let defaultValue: [OpFilter, ...safeAny[]]
+          const elementFounded = props.userFilters[key as keyof T]
+          if (elementFounded) {
+            defaultValue = elementFounded as [OpFilter, ...safeAny[]]
+          } else {
+            defaultValue = [filterTypes[0]]
+          }
+          return (
+            <FilterComponent
+              title={searchLabel(key as keyof T)}
+              key={key}
+              value={defaultValue}
+              selection={props.selections[key]}
+              keyFilter={key as keyof T}
+              filterOptions={optionsKeyFilter(filterTypes)}
+              onChange={onChangeFilter}
+              onDelete={onDelete}
+            />
+          )
+        })}
     </>
   )
 }
