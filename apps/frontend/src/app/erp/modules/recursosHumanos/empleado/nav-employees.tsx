@@ -1,7 +1,7 @@
 import { AddFilterButton } from '@/components/filter/AddFilterButton'
 import { FiltersOption, ShowFilters } from '@/components/filter/ShowFilters'
 import { PATHS } from '@/const/paths'
-import { cn } from '@/utils'
+import { cn, filterSelectForm } from '@/utils'
 import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
 import { Button, Select } from 'antd'
 import { RhEmployee } from 'pizzadb'
@@ -61,14 +61,15 @@ export const NavEmployees = ({
           showSearch
           value={store}
           onChange={setStore}
+          filterOption={filterSelectForm}
         >
           <Select.Option value={'TODAS'}>TODAS</Select.Option>
           <Select.Option value={'NULL'}>SIN TIENDA</Select.Option>
-          {sucursales.data
-            ?.sort((a, b) => a.name.localeCompare(b.name))
-            .map((el) => (
-              <Select.Option key={el.code}>{el.name}</Select.Option>
-            ))}
+          {sucursales.data?.map((el) => (
+            <Select.Option key={el.code}>{el.name}</Select.Option>
+          ))
+          // ?.sort((a, b) => a.name.localeCompare(b.name))
+          }
         </Select>
         <AddFilterButton
           items={filtersOptions as any}
