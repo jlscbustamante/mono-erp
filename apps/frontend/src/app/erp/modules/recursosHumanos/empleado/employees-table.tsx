@@ -23,6 +23,9 @@ export const EmployeesTable = ({
       if (store == 'NULL') {
         return !el.sucursal_id
       }
+      if (store == 'TODAS') {
+        return true
+      }
       return el.sucursal_id == store
     })
 

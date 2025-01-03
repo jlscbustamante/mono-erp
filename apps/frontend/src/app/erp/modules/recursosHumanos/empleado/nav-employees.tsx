@@ -62,6 +62,7 @@ export const NavEmployees = ({
           value={store}
           onChange={setStore}
         >
+          <Select.Option value={'TODAS'}>TODAS</Select.Option>
           <Select.Option value={'NULL'}>SIN TIENDA</Select.Option>
           {sucursales.data
             ?.sort((a, b) => a.name.localeCompare(b.name))
