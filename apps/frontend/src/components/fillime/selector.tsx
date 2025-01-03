@@ -75,7 +75,9 @@ export const FillimeSelector = <T = unknown,>({
       </div>
       <div className="space-y-1 my-2">
         {availableFilters.map((el) => {
-          const Component = availableComponents[el.option.type ?? 'default']
+          const Component =
+            el.option.render ?? availableComponents[el.option.type ?? 'default']
+          const props = el.option.render ? {} : el.option.props
 
           return (
             <div
@@ -101,7 +103,8 @@ export const FillimeSelector = <T = unknown,>({
                 })}
               </Select>
               <Component
-                {...el.option.props}
+                {...props}
+                operator={el.filter.operator}
                 filValue={el.filter.value as string}
                 onFilChange={(val: any) => {
                   modFilter?.({

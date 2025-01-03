@@ -1,6 +1,7 @@
 export interface ComponentFiRender {
   filValue: any
   onFilChange: (val: any) => void
+  operator: string
 }
 
 export interface FilterOption<T = unknown> {
@@ -12,4 +13,5 @@ export interface FilterOption<T = unknown> {
   default?: unknown
   type?: 'input' | 'range' | 'select' | 'num'
   props?: Record<string, any>
+  render?: (props: ComponentFiRender) => JSX.Element
 }

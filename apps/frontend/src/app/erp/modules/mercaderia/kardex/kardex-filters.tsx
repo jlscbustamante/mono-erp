@@ -1,5 +1,5 @@
 import { FillimeSelector } from '@/components/fillime/selector'
-import { FilterOption } from '@/components/fillime/types'
+import { ComponentFiRender, FilterOption } from '@/components/fillime/types'
 import { Button } from 'antd'
 import { RangePickerProps } from 'antd/es/date-picker'
 import type { InvKardex } from 'pizzadb'
@@ -11,7 +11,7 @@ const options: FilterOption<InvKardex>[] = [
     index: 'id',
     options: ['equal', 'select'],
     type: 'num',
-    hide: true,
+    hide: false,
     default: 0,
     noAllowClear: true,
   },
@@ -28,6 +28,13 @@ const options: FilterOption<InvKardex>[] = [
     index: 'item_name',
     default: 'nad item name',
     options: ['equal', 'select'],
+    render: (props: ComponentFiRender) => {
+      return (
+        <p>
+          Prueba {JSON.stringify(props.filValue)} ope : {props.operator}
+        </p>
+      )
+    },
   },
   {
     title: 'F. movimiento',
