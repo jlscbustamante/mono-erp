@@ -1,26 +1,19 @@
-import { SucursalesSelect } from '@/components/selects/inventory/sucursales-select'
 import { kardexApi } from '@/lib/api/kardex'
 import { fNumber } from '@/utils/formatNumber'
 import { useMutation } from '@tanstack/react-query'
-import { Button, DatePicker, Table } from 'antd'
+import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import dayjs from 'dayjs'
-import { type IKardex } from 'pizzadb'
+import { Fillime, InvKardex, type IKardex } from 'pizzadb'
 import { useState } from 'react'
 import { KARDEX_MOVE_FLOW } from 'shared'
 import { KardexFilters } from './kardex-filters'
 
-const RangePicker = DatePicker.RangePicker
-
 export const KardexPage = () => {
   const [data, setData] = useState<IKardex[]>([])
-  const [dates, setDates] = useState<[string, string]>([
-    dayjs().format('YYYY-MM-DD'),
-    dayjs().format('YYYY-MM-DD'),
-  ])
 
   const getKardex = useMutation({
-    mutationFn: () => kardexApi.getItemsTemplate(),
+    mutationFn: (filters: Fillime<InvKardex>) =>
+      kardexApi.filterKardex(filters),
     onSuccess: (data) => {
       setData(data)
     },
@@ -28,28 +21,10 @@ export const KardexPage = () => {
 
   return (
     <div className="space-y-3 p-3">
-      <KardexFilters />
-      <div className="flex gap-2">
-        <RangePicker
-          value={[dayjs(dates[0]), dayjs(dates[1])]}
-          allowClear={false}
-          onChange={(val: any) => {
-            if (val[0] && val[1])
-              setDates([
-                val[0].format('YYYY-MM-DD'),
-                val[1].format('YYYY-MM-DD'),
-              ])
-          }}
-        />
-        <SucursalesSelect
-          className="w-52"
-          placeholder="Tienda"
-          allowClear={true}
-        />
-        <Button type="primary" onClick={() => getKardex.mutate()}>
-          Buscar
-        </Button>
-      </div>
+      <KardexFilters
+        filterKardex={(filters) => getKardex.mutate(filters)}
+        isLoading={getKardex.isPending}
+      />
       <Table
         dataSource={data}
         rowKey={(el) => el.id}

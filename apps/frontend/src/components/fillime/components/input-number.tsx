@@ -5,6 +5,7 @@ export const FiInputNumber = (props: InputNumberProps & ComponentFiRender) => {
   const { filValue, onFilChange, ...validProps } = props
   return (
     <InputNumber
+      size="small"
       {...validProps}
       value={filValue}
       onChange={(val) => {

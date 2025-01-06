@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { Fillime, InvKardex, WhereOption } from 'pizzadb'
 import { create } from 'zustand'
 
@@ -6,13 +7,29 @@ interface Store {
   setWhere: (data: WhereOption<InvKardex>[]) => void
   addWhere: (dat: WhereOption<InvKardex>) => void
   removeWhere: (dat: WhereOption<InvKardex>) => void
+  clear: (keys: string[]) => void
   modWhere: (dat: WhereOption<InvKardex>) => void
 }
 
 export const useKardexStore = create<Store>((set, get) => ({
   filters: {
-    where: [],
+    where: [
+      {
+        field: 'move_at',
+        operator: 'equal',
+        value: dayjs().format('YYYY-MM-DD'),
+        mods: {
+          field: 'DATE($x)',
+        },
+      },
+    ],
     take: 1000,
+    relations: {
+      warehouse: true,
+    },
+    order: {
+      item_name: 'ASC',
+    },
   },
   setWhere: (data) => {
     const filters = get().filters
@@ -31,6 +48,16 @@ export const useKardexStore = create<Store>((set, get) => ({
   removeWhere: (data) => {
     const filters = get().filters
     const wheres = filters.where?.filter((el) => el.field != data.field)
+    return set({
+      filters: {
+        ...filters,
+        where: wheres,
+      },
+    })
+  },
+  clear: (keys) => {
+    const filters = get().filters
+    const wheres = filters.where?.filter((el) => keys.includes(el.field))
     return set({
       filters: {
         ...filters,

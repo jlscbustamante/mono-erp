@@ -7,6 +7,7 @@ export const FiInput = (props: InputProps & ComponentFiRender) => {
     <Input
       {...validProps}
       value={filValue}
+      size="small"
       onChange={(val) => {
         onFilChange(val.target.value)
       }}

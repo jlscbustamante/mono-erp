@@ -12,6 +12,7 @@ export interface FilterOption<T = unknown> {
   options?: string[]
   default?: unknown
   defaultByOp?: Record<string, unknown>
+  view?: (prop: { value: unknown }) => JSX.Element
   type?: 'input' | 'range' | 'select' | 'num'
   props?: Record<string, any>
   render?: (props: ComponentFiRender) => JSX.Element

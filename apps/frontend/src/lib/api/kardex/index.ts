@@ -20,7 +20,7 @@ export class KardexApi {
         filters,
       },
     })
-    return request.data
+    return request.data.data
   }
 }
 export const kardexApi = new KardexApi(client)

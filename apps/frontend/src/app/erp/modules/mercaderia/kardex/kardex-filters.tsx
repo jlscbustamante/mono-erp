@@ -1,10 +1,12 @@
 import { FiDatePicker } from '@/components/fillime/components/date'
 import { FiRangePicker } from '@/components/fillime/components/range'
+import { ActionFilters } from '@/components/fillime/filter-actions'
 import { FillimeSelector } from '@/components/fillime/selector'
 import { ComponentFiRender, FilterOption } from '@/components/fillime/types'
-import { SelectItem } from '@/hooks/selects/item-select'
-import { Button, InputNumberProps } from 'antd'
-import type { InvKardex } from 'pizzadb'
+import { SelectItem, SelectItemShow } from '@/hooks/selects/item-select'
+import { InputNumberProps } from 'antd'
+import dayjs from 'dayjs'
+import type { Fillime, InvKardex } from 'pizzadb'
 import { useKardexStore } from './state'
 
 const options: FilterOption<InvKardex>[] = [
@@ -17,18 +19,28 @@ const options: FilterOption<InvKardex>[] = [
     default: 0,
   },
   {
-    title: 'F. creación',
-    index: 'created_at',
+    title: 'F. movimiento',
+    hide: true,
+    noAllowClear: true,
+    index: 'move_at',
     options: ['equal', 'range'],
     defaultByOp: {
-      equal: '2024-12-12',
-      range: ['2024-11-11', '2024-11-12'],
+      equal: dayjs().format('YYYY-MM-DD'),
+      range: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
+    },
+    view: ({ value }) => {
+      if (typeof value == 'string') return <span>{value}</span>
+      const [start, end] = value as [string, string]
+      return (
+        <span>
+          {start} - {end}
+        </span>
+      )
     },
     render: (props: ComponentFiRender) => {
-      if (props.operator == 'range') {
+      if (props.operator == 'range')
         return <FiRangePicker {...props} size="small" allowClear={false} />
-      }
-      return <FiDatePicker {...props} size="small" />
+      return <FiDatePicker {...props} allowClear={false} size="small" />
     },
     mods: {
       field: 'DATE($x)',
@@ -36,8 +48,9 @@ const options: FilterOption<InvKardex>[] = [
   },
   {
     title: 'Item',
-    index: 'item_name',
-    options: ['select', 'in'],
+    index: 'item_id',
+    options: ['equal', 'in'],
+    view: ({ value }) => <SelectItemShow value={value} />,
     render: (props: ComponentFiRender) => {
       return (
         <SelectItem
@@ -49,21 +62,38 @@ const options: FilterOption<InvKardex>[] = [
       )
     },
   },
-  {
-    title: 'F. movimiento',
-    index: 'move_at',
-    options: ['equal'],
-  },
 ]
 
-export const KardexFilters = () => {
+export const KardexFilters = ({
+  filterKardex,
+  isLoading,
+}: {
+  filterKardex: (filters: Fillime<InvKardex>) => void
+  isLoading?: boolean
+}) => {
   const filters = useKardexStore((st) => st.filters)
   const addFilter = useKardexStore((st) => st.addWhere)
   const removeFilter = useKardexStore((st) => st.removeWhere)
   const modFilter = useKardexStore((st) => st.modWhere)
+  const clear = useKardexStore((st) => st.clear)
+
+  const handleSearch = () => {
+    const filtersNoEmpties: Fillime<InvKardex> = {
+      ...filters,
+      where: filters.where?.filter((el) => el.value || el.operator == 'isNull'),
+    }
+    filterKardex(filtersNoEmpties)
+  }
+
+  const handleClear = () => {
+    const keysAllowed = options
+      .filter((el) => el.noAllowClear)
+      .map((el) => el.index)
+    clear(keysAllowed)
+  }
 
   return (
-    <div>
+    <div className="flex gap-2">
       <FillimeSelector
         options={options}
         filters={filters.where}
@@ -71,13 +101,11 @@ export const KardexFilters = () => {
         removeFilter={removeFilter}
         modFilter={modFilter}
       />
-      <Button
-        onClick={() => {
-          console.log('imprimir : ', filters)
-        }}
-      >
-        Imprimir
-      </Button>
+      <ActionFilters
+        search={handleSearch}
+        clear={handleClear}
+        loading={isLoading}
+      />
     </div>
   )
 }

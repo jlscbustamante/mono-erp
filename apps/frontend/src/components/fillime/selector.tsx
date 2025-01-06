@@ -1,6 +1,7 @@
 import { cn } from '@/utils'
-import { Button, Dropdown, Select } from 'antd'
+import { Button, Dropdown, Popover, Select } from 'antd'
 import { MenuProps } from 'antd/lib'
+import { CircleX } from 'lucide-react'
 import { WhereOption } from 'pizzadb'
 import { useMemo } from 'react'
 import { FiInput } from './components/input'
@@ -35,28 +36,31 @@ export const FillimeSelector = <T = unknown,>({
   removeFilter?: (data: WhereOption<T>) => void
   modFilter?: (data: WhereOption<T>) => void
 }) => {
-  const items: MenuProps['items'] = options.map((el) => {
-    const operator = el.options?.[0] ?? 'equal'
-    let defaultValue = undefined
-    if (el.defaultByOp) {
-      defaultValue = el.defaultByOp[operator] ?? undefined
-    } else if (el.default) {
-      defaultValue = el.default
-    }
+  const items: MenuProps['items'] = options
+    .map((el) => {
+      if (el.hide) return null
+      const operator = el.options?.[0] ?? 'equal'
+      let defaultValue = undefined
+      if (el.defaultByOp) {
+        defaultValue = el.defaultByOp[operator] ?? undefined
+      } else if (el.default) {
+        defaultValue = el.default
+      }
 
-    return {
-      key: el.index.toString(),
-      label: el.title,
-      onClick: () => {
-        addFilter?.({
-          field: el.index,
-          operator: operator,
-          value: defaultValue,
-          mods: el.mods,
-        })
-      },
-    }
-  })
+      return {
+        key: el.index.toString(),
+        label: el.title,
+        onClick: () => {
+          addFilter?.({
+            field: el.index,
+            operator: operator,
+            value: defaultValue,
+            mods: el.mods,
+          })
+        },
+      }
+    })
+    .filter((el) => el)
 
   const availableFilters: IItem<T>[] = useMemo(() => {
     const data: IItem<T>[] = []
@@ -74,7 +78,7 @@ export const FillimeSelector = <T = unknown,>({
   }, [items, filters])
 
   return (
-    <div>
+    <div className="flex gap-2 items-center">
       <div>
         <Dropdown menu={{ items }} trigger={['click']}>
           <Button size="small" className="w-52">
@@ -82,20 +86,19 @@ export const FillimeSelector = <T = unknown,>({
           </Button>
         </Dropdown>
       </div>
-      <div className="space-y-1 my-2">
+      <div className="flex items-center gap-1">
         {availableFilters.map((el) => {
           const Component =
             el.option.render ?? availableComponents[el.option.type ?? 'default']
+          const ComponentView = el.option.view
           const props = el.option.render ? {} : el.option.props
 
-          return (
+          const content = (
             <div
               key={el.filter.field.toString()}
-              className={cn('border border-solid border-slate-400', {
-                hidden: el.option.hide,
-              })}
+              className={cn('max-w-xl flex flex-col gap-2 items-start')}
             >
-              <span>{el.option.title}</span>
+              {/* <span>{el.option.title}</span> */}
               <Select
                 size="small"
                 className="w-40"
@@ -115,7 +118,11 @@ export const FillimeSelector = <T = unknown,>({
                 }}
               >
                 {el.option.options?.map((option) => {
-                  return <Select.Option key={option}>{option}</Select.Option>
+                  return (
+                    <Select.Option key={option}>
+                      {OperatorName[option] ?? option}
+                    </Select.Option>
+                  )
                 })}
               </Select>
               <Component
@@ -130,17 +137,76 @@ export const FillimeSelector = <T = unknown,>({
                 }}
               />
               <div
-                className={cn({ 'text-slate-600': el.option.noAllowClear })}
+                className={cn('text-blue-600 cursor-pointer', {
+                  'text-slate-600': el.option.noAllowClear,
+                  hidden: el.option.noAllowClear,
+                })}
                 onClick={() => {
                   if (!el.option.noAllowClear) removeFilter?.(el.filter)
                 }}
               >
-                remover
+                remover filtro
               </div>
             </div>
+          )
+
+          return (
+            <Popover
+              content={content}
+              trigger={'click'}
+              key={el.filter.field.toString()}
+              placement="bottom"
+            >
+              <Button size="small">
+                {el.option.title}
+                {' : '}
+                {ComponentView ? (
+                  <ComponentView value={el.filter.value} />
+                ) : (
+                  formatValue(el.filter.value)
+                )}
+                <CircleX
+                  className={cn('w-4 h-auto text-slate-600 cursor-pointer', {
+                    hidden: el.option.noAllowClear,
+                  })}
+                  onClickCapture={(ev) => {
+                    ev.stopPropagation()
+                    if (!el.option.noAllowClear) removeFilter?.(el.filter)
+                  }}
+                />
+              </Button>
+            </Popover>
           )
         })}
       </div>
     </div>
   )
+}
+
+const formatValue = (value: unknown) => {
+  if (typeof value == 'string') {
+    return value.length > 10 ? value.substring(0, 10) + '...' : value
+  }
+  if (typeof value == 'number') {
+    return value.toString().length > 8
+      ? value.toString().substring(0, 8) + '...'
+      : value
+  }
+  if (Array.isArray(value)) {
+    // si es 2 retornar los 2
+    if (value.length <= 2) {
+      return `${value.join(',')}`
+    } else {
+      return `${value[0]},${value[1]}...`
+    }
+  }
+}
+
+const OperatorName: Record<string, string> = {
+  equal: 'igual',
+  range: 'rango',
+  select: 'seleccion',
+  multiple: 'multiple',
+  in: 'multiple',
+  isNull: 'es nulo',
 }

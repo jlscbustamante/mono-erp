@@ -9,6 +9,7 @@ export const FiRangePicker = (props: RangePickerProps & ComponentFiRender) => {
   const { filValue, onFilChange, ...validProps } = props
   return (
     <RangePicker
+      size="small"
       {...validProps}
       value={filValue ? [dayjs(filValue[0]), dayjs(filValue[1])] : undefined}
       onChange={(val) => {
