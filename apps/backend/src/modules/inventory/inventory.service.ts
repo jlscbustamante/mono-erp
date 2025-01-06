@@ -368,6 +368,10 @@ export class InventoryService {
   async filterItems(data: Fillime<ItemDb>) {
     return await this.itemRepository.find(findOptions(data))
   }
+
+  async filterSucursal(data: Fillime<Sucursal>) {
+    return await this.sucursalRepository.find(findOptions(data))
+  }
 }
 
 function getDefaultStock(

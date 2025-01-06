@@ -4,6 +4,7 @@ import { ActionFilters } from '@/components/fillime/filter-actions'
 import { FillimeSelector } from '@/components/fillime/selector'
 import { ComponentFiRender, FilterOption } from '@/components/fillime/types'
 import { SelectItem, SelectItemShow } from '@/hooks/selects/item-select'
+import { SelectSucursal } from '@/hooks/selects/sucursal-select'
 import { InputNumberProps } from 'antd'
 import dayjs from 'dayjs'
 import type { Fillime, InvKardex } from 'pizzadb'
@@ -58,6 +59,21 @@ const options: FilterOption<InvKardex>[] = [
           className="w-52"
           size="small"
           mode={props.operator === 'in' ? 'multiple' : undefined}
+        />
+      )
+    },
+  },
+  {
+    title: 'Tienda',
+    index: 'warehouse_id',
+    options: ['equal', 'in'],
+    render: (props: ComponentFiRender) => {
+      return (
+        <SelectSucursal
+          {...props}
+          className="w-44"
+          size="small"
+          mode={props.operator == 'in' ? 'multiple' : undefined}
         />
       )
     },

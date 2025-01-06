@@ -46,6 +46,20 @@ export class InventoryApi {
     return result.data.data
   }
 
+  @axiosCatch
+  async filterSucursal(data: Fillime<Sucursal>): Promise<Sucursal[]> {
+    const parsed = JSON.stringify(data)
+    const result = await this.client.get<{ data: Sucursal[] }>(
+      'inventory/sucursal/filter',
+      {
+        params: {
+          filters: parsed,
+        },
+      },
+    )
+    return result.data.data
+  }
+
   private manageError(error: any) {
     const message = (error as any).response?.data?.message
     if (message) throw new Error(message)

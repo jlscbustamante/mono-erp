@@ -3,45 +3,45 @@ import { inventoryApi } from '@/lib/api/inventory'
 import { filterSelectForm } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { Select, SelectProps } from 'antd'
-import { Fillime, Item } from 'pizzadb'
+import { Fillime, Sucursal } from 'pizzadb'
 import { useMemo } from 'react'
 
-export const useItemsSelect = (filters: Fillime<Item>) => {
+export const useSucursalSelect = (filters: Fillime<Sucursal>) => {
   const filjson = JSON.stringify(filters)
   const query = useQuery({
     queryKey: ['select:items', filjson],
-    queryFn: () => inventoryApi.filterItems(filters),
+    queryFn: () => inventoryApi.filterSucursal(filters),
     staleTime: Infinity,
   })
 
   return query
 }
 
-const defaultFilter: Fillime<Item> = {
+const defaultFilter: Fillime<Sucursal> = {
   select: {
     id: true,
-    itemName: true,
+    title: true,
   },
   order: {
-    itemName: 'ASC',
+    title: 'ASC',
   },
 }
 
-export const SelectItemShow = ({ value }: { value: unknown }) => {
-  const query = useItemsSelect(defaultFilter)
+export const SelectSucursalShow = ({ value }: { value: unknown }) => {
+  const query = useSucursalSelect(defaultFilter)
   const named = useMemo(() => {
     const id = Array.isArray(value) ? value[0] : value
     if (!id) return '...'
 
     const name = query.data?.find((il) => il.id == id)
     if (!name) return '...'
-    return name.itemName.substring(0, 12) + '...'
+    return name.title.substring(0, 12) + '...'
   }, [value, query.data])
   return `${named}`
 }
 
-export const SelectItem = (props: SelectProps & ComponentFiRender) => {
-  const query = useItemsSelect(defaultFilter)
+export const SelectSucursal = (props: SelectProps & ComponentFiRender) => {
+  const query = useSucursalSelect(defaultFilter)
 
   const { filValue, onFilChange, ...restProps } = props
 
@@ -58,7 +58,7 @@ export const SelectItem = (props: SelectProps & ComponentFiRender) => {
       {query.data?.map((el) => {
         return (
           <Select.Option key={el.id} value={el.id}>
-            {el.itemName}
+            {el.title}
           </Select.Option>
         )
       })}

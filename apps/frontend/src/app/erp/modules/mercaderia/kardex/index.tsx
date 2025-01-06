@@ -3,6 +3,7 @@ import { fNumber } from '@/utils/formatNumber'
 import { useMutation } from '@tanstack/react-query'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
+import dayjs from 'dayjs'
 import { Fillime, InvKardex, type IKardex } from 'pizzadb'
 import { KARDEX_MOVE_FLOW } from 'shared'
 import { KardexFilters } from './kardex-filters'
@@ -38,6 +39,11 @@ export const KardexPage = () => {
               dataIndex: 'id',
             },
             {
+              title: 'Fecha',
+              dataIndex: 'move_at',
+              render: (val) => dayjs(val).format('YYYY-MM-DD HH:mm'),
+            },
+            {
               title: 'Item',
               dataIndex: 'item_name',
             },
@@ -50,6 +56,16 @@ export const KardexPage = () => {
               dataIndex: 'quantity',
               align: 'right',
               render: (val: number) => fNumber(val),
+            },
+            {
+              title: 'Precio',
+              dataIndex: 'unit_price',
+              align: 'center',
+            },
+            {
+              title: 'Costo',
+              dataIndex: 'unit_purchase',
+              align: 'center',
             },
             {
               title: 'Tipo',
