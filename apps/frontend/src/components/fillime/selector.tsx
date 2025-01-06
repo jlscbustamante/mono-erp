@@ -36,14 +36,23 @@ export const FillimeSelector = <T = unknown,>({
   modFilter?: (data: WhereOption<T>) => void
 }) => {
   const items: MenuProps['items'] = options.map((el) => {
+    const operator = el.options?.[0] ?? 'equal'
+    let defaultValue = undefined
+    if (el.defaultByOp) {
+      defaultValue = el.defaultByOp[operator] ?? undefined
+    } else if (el.default) {
+      defaultValue = el.default
+    }
+
     return {
       key: el.index.toString(),
       label: el.title,
       onClick: () => {
         addFilter?.({
           field: el.index,
-          operator: el.options?.[0] ?? 'equal',
-          value: el.default ?? undefined,
+          operator: operator,
+          value: defaultValue,
+          mods: el.mods,
         })
       },
     }
@@ -92,8 +101,15 @@ export const FillimeSelector = <T = unknown,>({
                 className="w-40"
                 value={el.filter.operator}
                 onChange={(val) => {
+                  let defaultValue = undefined
+                  if (el.option.defaultByOp) {
+                    defaultValue = el.option.defaultByOp[val] ?? undefined
+                  } else if (el.option.default) {
+                    defaultValue = el.option.default
+                  }
                   modFilter?.({
                     ...el.filter,
+                    value: defaultValue,
                     operator: val,
                   })
                 }}

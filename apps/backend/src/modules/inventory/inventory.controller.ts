@@ -1,4 +1,6 @@
 import type { Request } from 'express'
+import { Fillime, Item } from 'pizzadb'
+import { parseFilters } from '../../middleware/parse-filter.middleware'
 import { Get } from '../../utils/decorators/endpoint.middleware'
 import { InventoryService } from './inventory.service'
 
@@ -43,5 +45,11 @@ export class InventoryController {
   @Get('/inventory/sucursales')
   async sucursales() {
     return this.inventoryService.sucursales()
+  }
+
+  @Get('/inventory/items/filter', parseFilters)
+  async filterItems(req: Request) {
+    const data = req.body as Fillime<Item>
+    return this.inventoryService.filterItems(data)
   }
 }

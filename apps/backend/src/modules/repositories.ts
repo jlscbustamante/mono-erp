@@ -6,6 +6,7 @@ import {
   InvDispatch,
   InvKardex,
   InvStock,
+  Item,
   JobTitle,
   RhEmployee,
   Sucursal,
@@ -25,5 +26,6 @@ export const assistancesRepository = AppDataSource.getRepository(Attendance)
 export const jobsTitleRepository = AppDataSource.getRepository(JobTitle)
 export const sucursalRepository = AppDataSource.getRepository(Sucursal)
 
+export const itemRepository = AppDataSource.getRepository(Item)
 
-export const kardexRepository= AppDataSource.getRepository(InvKardex)
+export const kardexRepository = AppDataSource.getRepository(InvKardex)

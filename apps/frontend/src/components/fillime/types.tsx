@@ -11,7 +11,12 @@ export interface FilterOption<T = unknown> {
   hide?: boolean
   options?: string[]
   default?: unknown
+  defaultByOp?: Record<string, unknown>
   type?: 'input' | 'range' | 'select' | 'num'
   props?: Record<string, any>
   render?: (props: ComponentFiRender) => JSX.Element
+  mods?: {
+    field?: string
+    value?: string
+  }
 }

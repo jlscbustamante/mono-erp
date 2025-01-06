@@ -1,5 +1,11 @@
 import { format, parseISO, sub } from 'date-fns'
-import { InvDispatch, InvStock, Item as ItemDb, Sucursal } from 'pizzadb'
+import {
+  Fillime,
+  InvDispatch,
+  InvStock,
+  Item as ItemDb,
+  Sucursal,
+} from 'pizzadb'
 import { Raw, Repository } from 'typeorm'
 import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
@@ -7,6 +13,7 @@ import { Item } from '../../core/inventory/entities/item'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../entities/inventory/InvDispatchBaseItem'
 import { cache, cacheApi, cacheHalfDay } from '../../lib/cache'
+import { findOptions } from '../../lib/filters'
 import {
   invDispatchBase,
   invDispatchBaseItemRepository,
@@ -17,6 +24,7 @@ export class InventoryService {
     private readonly dispatchRepository: Repository<InvDispatch>,
     private readonly stockRepository: Repository<InvStock>,
     private readonly sucursalRepository: Repository<Sucursal>,
+    private readonly itemRepository: Repository<ItemDb>,
   ) {}
 
   async createOrder() {
@@ -355,6 +363,10 @@ export class InventoryService {
 
   async sucursales() {
     return this.sucursalRepository.find()
+  }
+
+  async filterItems(data: Fillime<ItemDb>) {
+    return await this.itemRepository.find(findOptions(data))
   }
 }
 

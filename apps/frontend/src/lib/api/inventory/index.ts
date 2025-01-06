@@ -1,6 +1,6 @@
 import { axiosCatch } from '@/utils/middleware/axios-catch.middleware'
 import { AxiosInstance } from 'axios'
-import type { Carrier, Sucursal } from 'pizzadb'
+import type { Carrier, Fillime, Item, Sucursal } from 'pizzadb'
 import type { IFilterResponse, IUserFilter3 } from 'shared'
 import client from '../client'
 
@@ -29,6 +29,20 @@ export class InventoryApi {
   @axiosCatch
   async sucursales(): Promise<Sucursal[]> {
     const result = await this.client.get('inventory/sucursales')
+    return result.data.data
+  }
+
+  @axiosCatch
+  async filterItems(data: Fillime<Item>): Promise<Item[]> {
+    const parsed = JSON.stringify(data)
+    const result = await this.client.get<{ data: Item[] }>(
+      'inventory/items/filter',
+      {
+        params: {
+          filters: parsed,
+        },
+      },
+    )
     return result.data.data
   }
 
