@@ -4,12 +4,13 @@ import { useMutation } from '@tanstack/react-query'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { Fillime, InvKardex, type IKardex } from 'pizzadb'
-import { useState } from 'react'
 import { KARDEX_MOVE_FLOW } from 'shared'
 import { KardexFilters } from './kardex-filters'
+import { useKardexStore } from './state'
 
 export const KardexPage = () => {
-  const [data, setData] = useState<IKardex[]>([])
+  const data = useKardexStore((st) => st.data)
+  const setData = useKardexStore((st) => st.setData)
 
   const getKardex = useMutation({
     mutationFn: (filters: Fillime<InvKardex>) =>

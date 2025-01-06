@@ -49,6 +49,7 @@ import { RiCoinLine } from 'react-icons/ri'
 import {
   TbHierarchy3,
   TbPackages,
+  TbReport,
   TbReportAnalytics,
   TbReportSearch,
   TbRulerMeasure,
@@ -82,6 +83,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.mercaderia.mantenimiento.unidades]: TbRulerMeasure,
   [PATHS.erp.modulos.mercaderia.mantenimiento.equivalencias]: FaBalanceScale,
   [PATHS.erp.modulos.mercaderia.mantenimiento.plantillas]: FaListCheck,
+  [PATHS.erp.modulos.mercaderia.kardex]: TbReport,
 
   [PATHS.erp.modulos.tiendas.conciliar]: GiConfirmed,
   [PATHS.erp.modulos.tiendas.mediosPago]: BsCreditCard2Back,

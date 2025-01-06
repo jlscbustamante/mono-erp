@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { Fillime, InvKardex, WhereOption } from 'pizzadb'
+import { Fillime, InvKardex, Item, WhereOption } from 'pizzadb'
 import { create } from 'zustand'
 
 interface Store {
@@ -9,6 +9,8 @@ interface Store {
   removeWhere: (dat: WhereOption<InvKardex>) => void
   clear: (keys: string[]) => void
   modWhere: (dat: WhereOption<InvKardex>) => void
+  data: Item[]
+  setData: (data: Item[]) => void
 }
 
 export const useKardexStore = create<Store>((set, get) => ({
@@ -31,6 +33,8 @@ export const useKardexStore = create<Store>((set, get) => ({
       item_name: 'ASC',
     },
   },
+  data: [],
+  setData: (dat) => set({ data: dat }),
   setWhere: (data) => {
     const filters = get().filters
     return set({ filters: { ...filters, where: data } })
