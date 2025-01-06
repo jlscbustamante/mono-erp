@@ -69,6 +69,8 @@ export const PATHS = {
         stockAlmacen: '/erp/modulos/mercaderia/stock-almacen',
         reportes: {
           main: '/erp/modulos/mercaderia/reportes',
+          consultaDespachos:
+            '/erp/modulos/mercaderia/reportes/consulta-despachos',
           porAlmacen: '/erp/modulos/mercaderia/reportes/por-almacen',
           ratio: '/erp/modulos/mercaderia/reportes/ratio',
         },

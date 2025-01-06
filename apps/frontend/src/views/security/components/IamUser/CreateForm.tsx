@@ -1,6 +1,5 @@
 import { Button, Form, Input, Select } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { Dispatch, SetStateAction } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { NOTIFICATION } from '@/const/notification'
@@ -96,6 +95,22 @@ export const CreateForm: React.FC<{
             </Select.Option>
           ))}
         </Select>
+      </Form.Item>
+      <Form.Item
+        name={'password'}
+        label="Contraseña"
+        rules={[
+          {
+            required: true,
+            message: 'Por favor ingrese la contraseña',
+          },
+          {
+            min: 6,
+            message: 'La contraseña debe tener al menos 6 caracteres',
+          },
+        ]}
+      >
+        <Input.Password type="password" />
       </Form.Item>
 
       <Form.Item name="status" label="Estado">

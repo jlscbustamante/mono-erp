@@ -126,6 +126,9 @@ export class AuthService {
 
     if (user.status == 0) throw badRequest('El usuario no esta activo')
 
+    const match = await bcrypt.compare(password, user.password)
+    if (!match) throw badRequest('La contraseña es incorrecta')
+
     await this.emailService.sendOtp(user.name, email)
     const token = jwt.sign(
       { email, name: user.name },
@@ -134,9 +137,6 @@ export class AuthService {
         expiresIn: '20m',
       },
     )
-
-    const match = await bcrypt.compare(password, user.password)
-    if (!match) throw badRequest('La contraseña es incorrecta')
 
     return token
   }

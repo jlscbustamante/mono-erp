@@ -14,6 +14,7 @@ import { zipedFiles } from '@/data/hex/inventory'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { filterSelectForm } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
+import { format } from 'date-fns'
 import { useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { useDocs } from '../../hooks/use-docs'
@@ -241,7 +242,9 @@ export const ControlDispatch = () => {
           shape="circle"
           icon={<MdOutlineCleaningServices />}
           onClick={() => {
-            store.setFilters({})
+            store.setFilters({
+              moveAt: [OpFilter.EqualDate, format(new Date(), 'yyyy-MM-dd')],
+            })
             store.addControlUpdateOrCreated()
           }}
           danger

@@ -44,7 +44,8 @@ const FormLogin = () => {
       navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}&email=${email}`)
     },
     onError: (err) => {
-      toast.error(err.message, { ...NOTIFICATION.error, autoClose: false })
+      toast.dismiss()
+      toast.error(err.message, { ...NOTIFICATION.error, autoClose: 1800 })
     },
   })
 

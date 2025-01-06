@@ -72,8 +72,8 @@ export const AsistenciaPage = () => {
 
   const query = useQuery({
     queryKey: ['asistencias/filter', controller],
-    enabled: !!store,
-    queryFn: () => rhApi.filterAssistance(store!, dates, userId),
+    // queryFn: () => rhApi.filterAssistance(store!, dates, userId),
+    queryFn: () => rhApi.filterAssistance({ store, dates, userId }),
   })
 
   const usersQuery = useQuery({

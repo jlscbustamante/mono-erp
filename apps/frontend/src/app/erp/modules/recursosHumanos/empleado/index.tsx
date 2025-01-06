@@ -23,6 +23,8 @@ interface IEmpleadoContext {
   data: RhEmployee[]
   setController: Dispatch<SetStateAction<number>>
   refetch: () => void
+  store: string
+  setStore: Dispatch<SetStateAction<string>>
 }
 
 export const EmpleadoContext = createContext<IEmpleadoContext | null>(null)
@@ -30,6 +32,7 @@ export const EmpleadoContext = createContext<IEmpleadoContext | null>(null)
 export const EmpleadoPage = ({ motorizadPage }: { motorizadPage: boolean }) => {
   const [filters, setFilters] = useState<Filters3<RhEmployee>>({})
   const [controller, setControler] = useState(0)
+  const [store, setStore] = useState('NULL')
 
   const filtersCleaned = useMemo(() => {
     const newFilters: Filters3<RhEmployee> = {}
@@ -70,6 +73,8 @@ export const EmpleadoPage = ({ motorizadPage }: { motorizadPage: boolean }) => {
         data: query.data?.data ?? [],
         setController: setControler,
         refetch: () => query.refetch(),
+        store,
+        setStore,
       }}
     >
       <div className="p-3 space-y-3">

@@ -377,7 +377,7 @@ export class StockRepositoryImpl implements StockRepository {
   }
 
   private getItemsInStock(inventario: InvStock[]): Item[] {
-    const itemInStockDb = inventario.map((el) => el.item)
+    const itemInStockDb = inventario.map((el) => el.item).filter((el) => el)
     const itemsInStock: Item[] = itemInStockDb.map(
       (el) =>
         ({

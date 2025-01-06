@@ -1,8 +1,9 @@
 import { AddFilterButton } from '@/components/filter/AddFilterButton'
 import { FiltersOption, ShowFilters } from '@/components/filter/ShowFilters'
 import { PATHS } from '@/const/paths'
-import { cn } from '@/utils'
-import { Button } from 'antd'
+import { cn, filterSelectForm } from '@/utils'
+import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
+import { Button, Select } from 'antd'
 import { RhEmployee } from 'pizzadb'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
@@ -44,14 +45,32 @@ export const NavEmployees = ({
 }: {
   motorizadPage?: boolean
 }) => {
+  const sucursales = useSucursales()
   const { open } = useCreateEmployee()
   // const [filters, setFilters] = useAtom(filtersAtom)
-  const { filters, setFilters, setController } = useEmpleadoContext()
+  const { filters, setFilters, setController, store, setStore } =
+    useEmpleadoContext()
   // const setController = useSetAtom(controlerAtom)
 
   return (
     <div className="flex justify-between">
       <div className="flex gap-2">
+        <Select
+          placeholder="Tiendas"
+          className="w-52"
+          showSearch
+          value={store}
+          onChange={setStore}
+          filterOption={filterSelectForm}
+        >
+          <Select.Option value={'TODAS'}>TODAS</Select.Option>
+          <Select.Option value={'NULL'}>SIN TIENDA</Select.Option>
+          {sucursales.data?.map((el) => (
+            <Select.Option key={el.code}>{el.name}</Select.Option>
+          ))
+          // ?.sort((a, b) => a.name.localeCompare(b.name))
+          }
+        </Select>
         <AddFilterButton
           items={filtersOptions as any}
           setUserFilters={setFilters as any}

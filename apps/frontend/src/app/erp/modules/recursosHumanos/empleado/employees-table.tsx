@@ -14,15 +14,25 @@ export const EmployeesTable = ({
   motorizadPage: boolean
 }) => {
   // const query = useFilterEmployees()
-  const { data, isLoading } = useEmpleadoContext()
+  const { data, isLoading, store } = useEmpleadoContext()
   const { open } = useEditEmployee()
   const session = useSession((st) => st.user)
 
   const employees = useMemo(() => {
-    const motorizedId = session.parameters['JOBS_ID']['DELIVERY']
-    if (!motorizedId) return data
+    const storeEmployees = data.filter((el) => {
+      if (store == 'NULL') {
+        return !el.sucursal_id
+      }
+      if (store == 'TODAS') {
+        return true
+      }
+      return el.sucursal_id == store
+    })
 
-    const employeesFiltered = data.filter((el) => {
+    const motorizedId = session.parameters['JOBS_ID']['DELIVERY']
+    if (!motorizedId) return storeEmployees
+
+    const employeesFiltered = storeEmployees.filter((el) => {
       if (motorizadPage) {
         return el.jobtitle_id == +motorizedId
       } else {
@@ -30,7 +40,7 @@ export const EmployeesTable = ({
       }
     })
     return employeesFiltered
-  }, [data])
+  }, [data, store])
 
   return (
     <div className="">

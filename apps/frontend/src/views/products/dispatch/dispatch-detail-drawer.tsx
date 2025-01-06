@@ -52,8 +52,10 @@ export const useDispatchDetailDrawer = () => {
 
 export const DispatchDetailDrawer = ({
   onUpdate,
+  onlyQuery,
 }: {
   onUpdate?: () => void
+  onlyQuery?: boolean
 }) => {
   const { isOpen, close, dispatchId } = useDispatchDetailDrawer()
 
@@ -81,15 +83,16 @@ export const DispatchDetailDrawer = ({
           <DispatchStructure
             dispatch={data}
             refList={refList}
+            onlyQuery={onlyQuery}
             onUpdate={handleOnUpdate}
           />
         )}
       </Drawer>
-      {data && data.status === DISPATCH_STATUS.DISPATCHED && (
+      {data && data.status === DISPATCH_STATUS.DISPATCHED && !onlyQuery && (
         <ModifyDispatchedDrawer onUpdate={handleOnUpdate} />
       )}
       {data && <DispatchItemsDrawer dispatch={data} refList={refList} />}
-      {data && (
+      {data && !onlyQuery && (
         <DivideDispatchDrawer
           dispatch={data}
           onFinish={() => {
@@ -106,9 +109,11 @@ const DispatchStructure = ({
   dispatch,
   refList,
   onUpdate,
+  onlyQuery,
 }: {
   dispatch: Dispatch
   refList: any
+  onlyQuery?: boolean
   onUpdate?: () => void
 }) => {
   return (
@@ -117,6 +122,7 @@ const DispatchStructure = ({
         dispatch={dispatch}
         onUpdate={onUpdate}
         refList={refList}
+        onlyQuery={onlyQuery}
       />
       <DispatchInformation dispatch={dispatch} />
       <DispatchItems dispatch={dispatch} refList={refList} />
@@ -128,10 +134,12 @@ const DispatchHeader = ({
   dispatch,
   refList,
   onUpdate,
+  onlyQuery,
 }: {
   dispatch: Dispatch
   refList: any
   onUpdate?: () => void
+  onlyQuery?: boolean
 }) => {
   const { open } = useDispatchEditDrawer()
   const { open: openModifyDispatch } = useModifyDispatchDrawer()
@@ -206,7 +214,11 @@ const DispatchHeader = ({
         {[DISPATCH_STATUS.NEW, DISPATCH_STATUS.DISPATCHED].includes(
           dispatch.status,
         ) && (
-          <Button size="small" onClick={() => OpenDivide()}>
+          <Button
+            size="small"
+            onClick={() => OpenDivide()}
+            className={onlyQuery ? 'hidden' : undefined}
+          >
             Dividir por almacen
           </Button>
         )}
@@ -247,7 +259,7 @@ const DispatchHeader = ({
           <Button
             size="small"
             onClick={() => openModifyDispatch(dispatch.id)}
-            className=""
+            className={onlyQuery ? 'hidden' : undefined}
           >
             Modificar despacho
           </Button>
@@ -285,7 +297,8 @@ const DispatchHeader = ({
             />
           )}
         {dispatch.status == DISPATCH_STATUS.DISPATCHED &&
-          dispatch.moveType == DISPATCH_MOVE_TYPE.WAREHOUSE_TO_STORE && (
+          dispatch.moveType == DISPATCH_MOVE_TYPE.WAREHOUSE_TO_STORE &&
+          !onlyQuery && (
             <GenerateGuidePopup dispatch={dispatch} onUpdate={onUpdate} />
           )}
       </div>

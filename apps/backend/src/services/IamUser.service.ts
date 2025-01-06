@@ -91,13 +91,14 @@ export class IamUserService {
   async createIamUser(args: CreateIamUser): Promise<void> {
     const newIamUser = new IamUser()
     try {
-      ;(newIamUser.status = args.status),
-        (newIamUser.email = args.email),
-        (newIamUser.password = ''),
-        (newIamUser.rol_id = args.rol_id),
-        (newIamUser.name = args.name),
-        (newIamUser.created_at = dateNow()),
-        (newIamUser.updated_at = dateNow())
+      const hashed = args.password ? await bcrypt.hash(args.password, 10) : ''
+      newIamUser.status = args.status
+      newIamUser.email = args.email
+      newIamUser.password = hashed
+      newIamUser.rol_id = args.rol_id
+      newIamUser.name = args.name
+      newIamUser.created_at = dateNow()
+      newIamUser.updated_at = dateNow()
 
       await this.IamUserRepository.save(newIamUser)
     } catch (err: any) {

@@ -1,5 +1,4 @@
 import '@/views/maintenance/components/Driver/style.css'
-import '@/views/maintenance/components/Driver/style.css'
 
 import { Button, Drawer, Table } from 'antd'
 import React, { useEffect, useState } from 'react'
@@ -243,6 +242,7 @@ const RequirementsFound: React.FC<{
         rowKey="id"
         size="small"
         style={{ marginTop: '-40px' }}
+        pagination={false}
       />
     </div>
   )

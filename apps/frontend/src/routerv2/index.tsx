@@ -30,6 +30,7 @@ import GetTypeCashAccountType from '@/views/maintenance/Get/GetTypeCashAccount'
 import GetTypeCategory from '@/views/maintenance/Get/GetTypeCategory'
 import { Modules } from '@/views/Modules'
 import Dispatch from '@/views/products/Dispatch'
+import DispatchConsulta from '@/views/products/Dispatch-consulta'
 import DispatchStoresPage from '@/views/products/dispatch-stores/page'
 import { DispatchRoute } from '@/views/products/dispatch/dispatch-route/dispatch-route'
 import { Driver } from '@/views/products/dispatch/driver/driver'
@@ -176,6 +177,11 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.mercaderia.reportes.main,
                 children: [
+                  {
+                    path: PATHS.erp.modulos.mercaderia.reportes
+                      .consultaDespachos,
+                    element: <DispatchConsulta />,
+                  },
                   {
                     path: PATHS.erp.modulos.mercaderia.reportes.porAlmacen,
                     element: <Stock />,

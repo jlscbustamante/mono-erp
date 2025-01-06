@@ -43,7 +43,7 @@ export const NavAsistencia = () => {
 
   useEffect(() => {
     if (query.data) {
-      setStore(query.data[0].code)
+      // setStore(query.data[0].code)
     }
   }, [query.data])
 
@@ -58,6 +58,7 @@ export const NavAsistencia = () => {
           showSearch
           filterOption={filterSelectForm}
           placeholder="Tiendas"
+          defaultValue={''}
         >
           <Select.Option value={''}>SIN TIENDA</Select.Option>
           {query.data?.map((el) => {

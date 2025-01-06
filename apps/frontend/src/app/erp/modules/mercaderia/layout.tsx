@@ -27,6 +27,10 @@ const menu: (MenuOption | MenuSeparator)[] = [
   gm('Compra mercadería', PATHS.erp.modulos.mercaderia.compra),
   gm('Reportes de inventario', PATHS.erp.modulos.mercaderia.reportes.main, [
     gm(
+      'Despacho tiendas',
+      PATHS.erp.modulos.mercaderia.reportes.consultaDespachos,
+    ),
+    gm(
       'Inventario por almacén',
       PATHS.erp.modulos.mercaderia.reportes.porAlmacen,
     ),

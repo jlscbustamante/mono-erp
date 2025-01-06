@@ -37,12 +37,20 @@ export class RhApi {
   }
 
   @axiosCatch
-  async filterAssistance(store: string, dates: string[], userId?: number) {
+  async filterAssistance({
+    store,
+    dates,
+    userId,
+  }: {
+    store?: string
+    dates: string[]
+    userId?: number
+  }) {
     const assistences = await this.client.get<{ data: Attendance[] }>(
       'rh/assistances/filter',
       {
         params: {
-          store,
+          store: store ? store : undefined,
           dates,
           userId,
         },
