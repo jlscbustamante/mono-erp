@@ -1,7 +1,7 @@
 import { badRequest } from '@hapi/boom'
 import { add, format, parseISO, sub } from 'date-fns'
 import { Request, Response } from 'express'
-import { In, Not, Raw } from 'typeorm'
+import { In, IsNull, Not, Raw } from 'typeorm'
 
 import jwt from 'jsonwebtoken'
 import {
@@ -101,6 +101,7 @@ export class ExternalController {
     const clients = await sucursalRepository.find({
       where: {
         type_sede: 'T',
+        sede_nro_ruc: Not(IsNull()),
       },
     })
     const clientes: ClientSipro[] = []
