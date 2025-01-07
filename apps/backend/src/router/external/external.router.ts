@@ -201,4 +201,10 @@ export const loadExternalEndpoints = (app: Application) => {
   )
 
   app.get('/api/ext/sipro/items', controller.getItemsStockSipro)
+
+  app.get('/api/ext/sipro/despachos', controller.getDispatchSipro)
+
+  app.get('/api/ext/sipro/despachos/:id', controller.getOneDispatchSipro)
+
+  app.get('/api/ext/sipro/clientes', controller.getClientsSipro)
 }

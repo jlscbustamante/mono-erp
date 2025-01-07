@@ -5,6 +5,7 @@ import { In, Not, Raw } from 'typeorm'
 
 import jwt from 'jsonwebtoken'
 import {
+  DispatchType,
   InvDispatch,
   InvDispatchStatus,
   InvStock,
@@ -13,6 +14,7 @@ import {
 } from 'pizzadb'
 import config from '../../config/config'
 import { AppDataSource } from '../../config/database'
+import { DISPATCH_STATUS } from '../../core/inventory/entities/dispatch'
 import { SucursalSale } from '../../entities/adm/SucursalSale'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
 import { invDispatchRepository } from '../../repositories/inventory/dispatch.repository'
@@ -52,8 +54,180 @@ interface IStock {
   dispatched: number
 }
 
+interface ClientSipro {
+  id: string
+  tipo_documento_id: 2
+  razon_social: string
+  numero_documento: string
+  telefono?: string
+  correo?: string
+  tipo_documento: {
+    id: 2
+    nombre: 'RUC'
+  }
+  locales: {
+    id: string
+    direccion?: string
+    nombre_local: string
+  }[]
+}
+
+interface DespachoSipro {
+  id: number
+  local_cliente_id?: string
+  fecha_emision: string
+  cliente_id: string
+  modalidad_pago_id?: number
+  detalles: {
+    producto_id: number
+    cantidad_solicitada: number
+    cantidad_entregada: number
+  }[]
+  size?: number
+}
+
 const externalService = new ExternalService()
 export class ExternalController {
+  @catchError
+  async getClientsSipro(req: Request, res: Response) {
+    const bearer = req.headers.authorization
+    if (!bearer) throw badRequest('No se envio el token')
+    const token = bearer.split(' ')[1]
+    if (!token) throw badRequest('No se envio el token')
+    // verify toeken
+    const isValid = jwt.verify(token, config.external.sipro.key)
+    if (!isValid) throw badRequest('Token invalido')
+
+    const clients = await sucursalRepository.find({
+      where: {
+        type_sede: 'T',
+      },
+    })
+    const clientes: ClientSipro[] = []
+    for (const client of clients) {
+      clientes.push({
+        id: client.id,
+        tipo_documento_id: 2,
+        razon_social: client.legalperson_name,
+        numero_documento: client.sede_nro_ruc,
+        tipo_documento: {
+          id: 2,
+          nombre: 'RUC',
+        },
+        locales: [
+          {
+            id: client.id,
+            nombre_local: client.title,
+            direccion: client.ubi_address ?? undefined,
+          },
+        ],
+      })
+    }
+
+    return res.json({
+      data: clientes,
+    })
+  }
+
+  @catchError
+  async getDispatchSipro(req: Request, res: Response) {
+    const bearer = req.headers.authorization
+    if (!bearer) throw badRequest('No se envio el token')
+    const token = bearer.split(' ')[1]
+    if (!token) throw badRequest('No se envio el token')
+    // verify toeken
+    const isValid = jwt.verify(token, config.external.sipro.key)
+    if (!isValid) throw badRequest('Token invalido')
+
+    const { date } = req.query as { date: string }
+    if (!date) throw badRequest('Fecha invalida (`date` en la url)')
+    const despachos = await invDispatchRepository.find({
+      where: {
+        moveAt: Raw((el) => `Date(${el})=:date`, { date }),
+        status: In([
+          DISPATCH_STATUS.INVOICED,
+          DISPATCH_STATUS.DISPATCHED,
+          DISPATCH_STATUS.NEW,
+        ]),
+        moveType: DispatchType.WarehouseToStore,
+      },
+      relations: {
+        items: true,
+      },
+    })
+
+    const despachosSipro: DespachoSipro[] = []
+    for (const despacho of despachos) {
+      despachosSipro.push({
+        id: despacho.id,
+        fecha_emision: despacho.moveAt.split(' ')[0],
+        cliente_id: despacho.wareToId,
+        detalles:
+          despacho.items?.map((el) => {
+            return {
+              producto_id: el.itemId,
+              cantidad_solicitada: el.quantity,
+              cantidad_entregada: el.quantity,
+            }
+          }) ?? [],
+      })
+    }
+
+    return res.json({
+      data: despachosSipro,
+    })
+  }
+
+  @catchError
+  async getOneDispatchSipro(req: Request, res: Response) {
+    const bearer = req.headers.authorization
+    if (!bearer) throw badRequest('No se envio el token')
+    const token = bearer.split(' ')[1]
+    if (!token) throw badRequest('No se envio el token')
+    // verify toeken
+    const isValid = jwt.verify(token, config.external.sipro.key)
+    if (!isValid) throw badRequest('Token invalido')
+
+    const { id } = req.params as { id: string }
+    if (!id) throw badRequest('Id invalido (`id` en la url)')
+    const despacho = await invDispatchRepository.findOne({
+      where: {
+        id: +id,
+        status: In([
+          DISPATCH_STATUS.INVOICED,
+          DISPATCH_STATUS.DISPATCHED,
+          DISPATCH_STATUS.NEW,
+        ]),
+        moveType: DispatchType.WarehouseToStore,
+      },
+      relations: {
+        items: true,
+      },
+    })
+    if (!despacho)
+      return res.json({
+        data: null,
+      })
+
+    const despachosSipro: DespachoSipro = {
+      id: despacho.id,
+      fecha_emision: despacho.moveAt.split(' ')[0],
+      cliente_id: despacho.wareToId,
+      detalles:
+        despacho.items?.map((el) => {
+          return {
+            producto_id: el.itemId,
+            cantidad_solicitada: el.quantity,
+            cantidad_entregada: el.quantity,
+          }
+        }) ?? [],
+    }
+
+    return res.json({
+      data: despachosSipro,
+    })
+  }
+
   @catchError
   async getItemsStockSipro(req: Request, res: Response) {
     const bearer = req.headers.authorization
