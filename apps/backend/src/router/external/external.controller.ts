@@ -169,6 +169,7 @@ export class ExternalController {
               producto_id: el.itemId,
               cantidad_solicitada: el.quantity,
               cantidad_entregada: el.quantity,
+              presentacion_id: el.presentationId,
             }
           }) ?? [],
       })
