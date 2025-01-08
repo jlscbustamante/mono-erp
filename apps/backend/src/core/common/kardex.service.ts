@@ -91,7 +91,7 @@ export class KardexService {
         }
       }
 
-      await this.kardexRepository.save(kardex)
+      await this.kardexRepository.insert(kardex)
     } catch (err) {
       console.log('[KARDEX][despacho]: ' + dispatchId, err)
     }
@@ -199,7 +199,7 @@ export class KardexService {
   private syncDtoToEntity(kardexDto: KardexCreateDto, item: Item) {
     const kardex = new InvKardex()
 
-    const price = kardexDto.purchasePrice ?? item.unitCost
+    // const price = kardexDto.purchasePrice ?? item.unitCost
 
     kardex.item_id = item.id
     kardex.item_name = item.itemName
@@ -213,9 +213,9 @@ export class KardexService {
     kardex.warehouse_id = kardexDto.warehouseId
     kardex.move_at = parseISO(kardexDto.moveAt)
     kardex.quantity = kardexDto.quantity
-    kardex.unit_purchase = price
+    kardex.unit_purchase = item.unitCost
     kardex.unit_price = item.unitPrice
-    kardex.total_price = price * kardexDto.quantity
+    kardex.total_price = item.unitPrice * kardexDto.quantity
 
     return kardex
   }
