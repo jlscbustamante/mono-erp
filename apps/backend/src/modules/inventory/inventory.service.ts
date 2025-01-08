@@ -372,6 +372,10 @@ export class InventoryService {
   async filterSucursal(data: Fillime<Sucursal>) {
     return await this.sucursalRepository.find(findOptions(data))
   }
+
+  async filterDispatch(data: Fillime<InvDispatch>) {
+    return await this.dispatchRepository.find(findOptions(data))
+  }
 }
 
 function getDefaultStock(

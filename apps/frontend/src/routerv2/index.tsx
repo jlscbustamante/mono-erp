@@ -5,6 +5,7 @@ import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
+import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
@@ -170,6 +171,10 @@ export const routerv2 = createBrowserRouter([
                 ],
               },
               {
+                path: PATHS.erp.modulos.mercaderia.notaCredito,
+                element: <NotaCreditoPage />,
+              },
+              {
                 path: PATHS.erp.modulos.mercaderia.compra,
                 element: <Purchase />,
               },
@@ -194,7 +199,7 @@ export const routerv2 = createBrowserRouter([
               },
               {
                 path: PATHS.erp.modulos.mercaderia.kardex,
-                element: <KardexPage />
+                element: <KardexPage />,
               },
               {
                 path: PATHS.erp.modulos.mercaderia.productos,
@@ -257,7 +262,7 @@ export const routerv2 = createBrowserRouter([
                     path: PATHS.erp.modulos.mercaderia.mantenimiento.plantillas,
                     element: <TemplatePage />,
                   },
-         
+
                   {
                     path: `${PATHS.erp.modulos.mercaderia.mantenimiento.plantillas}/:id`,
                     element: <EditTemplate />,
