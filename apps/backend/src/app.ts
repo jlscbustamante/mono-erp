@@ -58,12 +58,16 @@ import { globalRouter } from './utils/decorators/router-app'
 const app = express()
 // const apiv2Router = express.Router()
 
+morgan.token('only-url', (req) => {
+  return req.url?.split('?')[0]
+})
+
 // Express configuration
 app.set('url_depend', config.url_depend)
 app.set('port', config.port)
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cors())
-app.use(morgan('tiny'))
+app.use(morgan(':method :only-url :status - :response-time ms'))
 app.use(express.json({ limit: '20mb' }))
 app.use(express.urlencoded({ extended: true }))
 
