@@ -1,7 +1,11 @@
 import type { Request } from 'express'
+import Joi from 'joi'
 import { Fillime, InvDispatch, Item, Sucursal } from 'pizzadb'
+import { validateToken } from '../../middleware/jwt/validateToken'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
-import { Get } from '../../utils/decorators/endpoint.middleware'
+import validateSchema from '../../middleware/validators/validateSchema'
+import { IToken } from '../../types'
+import { Get, Put } from '../../utils/decorators/endpoint.middleware'
 import { InventoryService } from './inventory.service'
 
 export class InventoryController {
@@ -63,5 +67,20 @@ export class InventoryController {
   async filterDispatch(req: Request) {
     const data = req.body as Fillime<InvDispatch>
     return this.inventoryService.filterDispatch(data)
+  }
+
+  @Put(
+    '/inventory/dispatch/duplicate',
+    validateToken,
+    validateSchema(
+      Joi.object({
+        id: Joi.number().required(),
+      }),
+    ),
+  )
+  async duplicateDispatch(req: Request) {
+    const { id } = req.body as { id: string }
+    const token = req.headers.token as unknown as IToken
+    return this.inventoryService.duplicateDispatch(+id, token?.name)
   }
 }

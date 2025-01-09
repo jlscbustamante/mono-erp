@@ -2,7 +2,7 @@ import { Button, DatePicker, Modal, Popover, Select } from 'antd'
 import Table, { ColumnsType, TableProps } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
-import { FaTrash } from 'react-icons/fa6'
+import { FaRegCopy, FaTrash } from 'react-icons/fa6'
 import { MdRemoveRedEye } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
@@ -15,6 +15,7 @@ import { fNumber } from '@/utils/formatNumber'
 import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
+import { inventoryApi } from '@/lib/api/inventory'
 import { useMutation } from '@tanstack/react-query'
 import { useLocalStorage } from '@uidotdev/usehooks'
 import { FiAlertTriangle, FiInfo } from 'react-icons/fi'
@@ -97,6 +98,17 @@ export const DispatchTable = ({
     },
     onError: () => {
       toast.error('Error al resetear el movimiento')
+    },
+  })
+
+  const duplicateDispatch = useMutation({
+    mutationFn: (dispatchId: number) =>
+      inventoryApi.duplicateDispatch(dispatchId),
+    onSuccess: () => {
+      onUpdate()
+    },
+    onError: () => {
+      toast.error('Error al duplicar el movimiento')
     },
   })
 
@@ -287,6 +299,22 @@ export const DispatchTable = ({
               }
             >
               <RxReset className="text-black w-4 h-auto" />
+            </Button>
+            <Button
+              type="text"
+              size="small"
+              onClick={() =>
+                Modal.confirm({
+                  title: '¿Duplicar despacho?',
+                  content:
+                    "El despacho se duplicara con estado 'Nuevo' y la misma fecha",
+                  onOk: () => {
+                    duplicateDispatch.mutate(record.id)
+                  },
+                })
+              }
+            >
+              <FaRegCopy className="text-black w-4 h-auto" />
             </Button>
             <div
               className="cursor-pointer"

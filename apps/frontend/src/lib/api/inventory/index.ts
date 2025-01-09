@@ -72,6 +72,13 @@ export class InventoryApi {
     return result.data.data
   }
 
+  @axiosCatch
+  async duplicateDispatch(dispatchId: number) {
+    await this.client.put('/inventory/dispatch/duplicate', {
+      id: dispatchId,
+    })
+  }
+
   private manageError(error: any) {
     const message = (error as any).response?.data?.message
     if (message) throw new Error(message)
