@@ -5,26 +5,28 @@ import { Search } from 'lucide-react'
 import { toast } from 'react-toastify'
 import { useGenerateCredito } from './generate-credite-note'
 import { useNotaCreditoStore } from './state'
+import { NotaCredito } from './types'
 
 const getListNotaCreadito = async (date: string) => {
   const data = await fetch(
     'https://facturacion.pizzaraul.com/api/search' +
-      `?date=${date}&company_id=ERPRAUL$type=NOTACREDITO`,
+      `?date=${date}&company_id=ERPRAUL&type=NOTACREDITO`,
   )
   if (!data.ok) throw new Error('No se pudo consultar la nota de credito')
-  const res = (await data.json()) as { search: any[] }
+  const res = (await data.json()) as { search: NotaCredito[] }
   return res.search
 }
 
 export const Control = () => {
   const date = useNotaCreditoStore((st) => st.date)
+  const setData = useNotaCreditoStore((st) => st.setData)
   const { open } = useGenerateCredito()
   const changeDate = useNotaCreditoStore((st) => st.changeDate)
 
   const handleSearch = useMutation({
     mutationFn: getListNotaCreadito,
     onSuccess: (data) => {
-      console.log(data)
+      setData(data)
     },
     onError: (err) => {
       toast.error(err.message)

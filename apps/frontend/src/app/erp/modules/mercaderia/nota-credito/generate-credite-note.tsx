@@ -2,7 +2,7 @@ import { DispatchStatus } from '@/data/products/types'
 import { inventoryApi } from '@/lib/api/inventory'
 import { StatusTag } from '@/views/products/dispatch/status-tag'
 import { useMutation } from '@tanstack/react-query'
-import { Button, Drawer, Empty, InputNumber, Table } from 'antd'
+import { Button, Drawer, Empty, InputNumber, Modal, Table } from 'antd'
 import { atom, useAtom } from 'jotai'
 import { Fillime, InvDispatch } from 'pizzadb'
 import { useState } from 'react'
@@ -184,8 +184,14 @@ const CreateCreditNote = ({
           type="primary"
           loading={generateCreditNoteMt.isPending}
           onClick={() => {
-            if (dispatch.numInvoice)
-              generateCreditNoteMt.mutate(dispatch.numInvoice)
+            Modal.confirm({
+              title: 'Generar nota de credito',
+              content: `¿Desea generar la nota de credito para la factura ${dispatch.numInvoice} ?`,
+              onOk: () => {
+                if (dispatch.numInvoice)
+                  generateCreditNoteMt.mutate(dispatch.numInvoice)
+              },
+            })
           }}
         >
           Crear nota de credito para este pedido
