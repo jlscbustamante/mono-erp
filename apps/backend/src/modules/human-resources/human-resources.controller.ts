@@ -61,6 +61,27 @@ export class HumanResourcesController {
     return data
   }
 
+  @Get('/rh/assistances/pos/filter')
+  async filterAssistancePos(req: Request) {
+    const { store, dates, doc, event } = req.query as {
+      store: string
+      dates: string[]
+      doc?: string
+      event?: string
+    }
+    console.log('==========')
+    console.log(doc, event)
+
+    const data = await this.rhService.filterAssistancePos(
+      store,
+      dates,
+      doc,
+      event,
+    )
+
+    return data
+  }
+
   @Get('/rh/sucursal/employees')
   async getEmployeesBySucursal(req: Request) {
     const { store } = req.query as { store: string | undefined }

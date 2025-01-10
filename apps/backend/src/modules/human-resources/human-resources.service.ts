@@ -1,4 +1,10 @@
-import { Attendance, JobTitle, RhEmployee, Sucursal } from 'pizzadb'
+import {
+  Attendance,
+  ATTENDANCE_EVENT,
+  JobTitle,
+  RhEmployee,
+  Sucursal,
+} from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { IsNull, Raw, Repository } from 'typeorm'
 import { Parameters } from '../../parameters'
@@ -58,6 +64,45 @@ export class HumanResourcesService {
           (alias) => `DATE(${alias}) BETWEEN '${dates[0]}' AND '${dates[1]}'`,
         ),
         sucursal_id: store,
+      },
+      order: {
+        attendance_at: 'ASC',
+      },
+      relations: {
+        employee: true,
+        sucursal: true,
+      },
+    })
+    return assistance
+  }
+
+  async filterAssistancePos(
+    store: string,
+    dates: string[],
+    doc?: string,
+    event?: string,
+  ) {
+    const assistance = await this.assistanceRepository.find({
+      select: {
+        employee: {
+          id: true,
+          first_name: true,
+          last_name: true,
+        },
+        sucursal: {
+          id: true,
+          title: true,
+        },
+      },
+      where: {
+        attendance_at: Raw(
+          (alias) => `DATE(${alias}) BETWEEN '${dates[0]}' AND '${dates[1]}'`,
+        ),
+        sucursal_id: store,
+        event: event as ATTENDANCE_EVENT,
+        employee: {
+          doc_number: doc,
+        },
       },
       order: {
         attendance_at: 'ASC',
