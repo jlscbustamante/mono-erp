@@ -10,11 +10,13 @@ import {
 } from 'pizzadb'
 import { Raw, Repository } from 'typeorm'
 import { AppDataSource } from '../../config/database'
+import { DispatchUtil } from '../../core/inventory/dispatch-util.service'
 import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
 import { Item } from '../../core/inventory/entities/item'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../entities/inventory/InvDispatchBaseItem'
+import { cancelInvoiceApi } from '../../lib/api/cancel-invoice'
 import { cache, cacheApi, cacheHalfDay } from '../../lib/cache'
 import { findOptions } from '../../lib/filters'
 import {
@@ -28,6 +30,7 @@ export class InventoryService {
     private readonly stockRepository: Repository<InvStock>,
     private readonly sucursalRepository: Repository<Sucursal>,
     private readonly itemRepository: Repository<ItemDb>,
+    private readonly dispatchUtil: DispatchUtil,
   ) {}
 
   async duplicateDispatch(dispatchId: number, user?: string) {
@@ -79,6 +82,22 @@ export class InventoryService {
           })),
         )
     })
+  }
+
+  async cancelInvoice(id: number, motivo: string) {
+    const dispatch = await this.dispatchRepository.findOne({
+      where: {
+        id: id,
+      },
+    })
+    if (!dispatch) throw new Error('Despacho no encontrado')
+    if (dispatch.status != InvDispatchStatus.INVOICED || !dispatch.numInvoice)
+      throw new Error('Despacho no facturado')
+    await cancelInvoiceApi({
+      invoice: dispatch.numInvoice,
+      motivo,
+    })
+    await this.dispatchUtil.resetAndDeleteDispatch(id)
   }
 
   async createOrder() {
