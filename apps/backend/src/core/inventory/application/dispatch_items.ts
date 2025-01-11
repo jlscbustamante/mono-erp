@@ -37,7 +37,6 @@ export class DispatchItems {
       user,
     )
     await kardexService.generateFromDispatch(dispatch.id, user ?? 'sys')
-    // await kardexService.generateFromDispatch(dispatch.id, user ?? 'sys')
   }
 
   async runWithoutValidate(dispatch: DispatchUpdateDto, user?: string) {

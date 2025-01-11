@@ -72,7 +72,7 @@ export const generateTemplateStockUseCase = new GenerateTemplateEditStock(
 )
 
 export const generateTemplateStockPizzam = new GenerateTemplateEditStock(
-  stockRepository,
+  stockRepositoryPizzam,
   templateRepositoryPizzam,
   itemRepository,
 )
