@@ -5,7 +5,7 @@ import { validateToken } from '../../middleware/jwt/validateToken'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
 import validateSchema from '../../middleware/validators/validateSchema'
 import { IToken } from '../../types'
-import { Get, Put } from '../../utils/decorators/endpoint.middleware'
+import { Delete, Get, Put } from '../../utils/decorators/endpoint.middleware'
 import { InventoryService } from './inventory.service'
 
 export class InventoryController {
@@ -67,6 +67,22 @@ export class InventoryController {
   async filterDispatch(req: Request) {
     const data = req.body as Fillime<InvDispatch>
     return this.inventoryService.filterDispatch(data)
+  }
+
+  @Delete(
+    '/inventory/dispatch/cancel-invoice',
+    validateToken,
+    validateSchema(
+      Joi.object({
+        id: Joi.number().required(),
+        motivo: Joi.string().required(),
+      }),
+      'body',
+    ),
+  )
+  async deleteInvoice(req: Request) {
+    const data = req.body as { id: number; motivo: string }
+    return this.inventoryService.cancelInvoice(data.id, data.motivo)
   }
 
   @Put(

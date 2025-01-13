@@ -79,6 +79,12 @@ export class InventoryApi {
     })
   }
 
+  async cancelInvoice(data: { id: number; motivo: string }) {
+    await this.client.delete('/inventory/dispatch/cancel-invoice', {
+      data,
+    })
+  }
+
   private manageError(error: any) {
     const message = (error as any).response?.data?.message
     if (message) throw new Error(message)
