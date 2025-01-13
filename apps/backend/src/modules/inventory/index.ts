@@ -1,3 +1,4 @@
+import { dispatchUtil } from '../../router/hex/dependencies'
 import { createApp } from '../../utils/decorators/endpoint.middleware'
 import {
   invDispatchRepository,
@@ -13,6 +14,7 @@ export const service = new InventoryService(
   invStockRepository,
   sucursalRepository,
   itemRepository,
+  dispatchUtil,
 )
 const controller = new InventoryController(service)
 

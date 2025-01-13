@@ -1,7 +1,11 @@
 import type { Request } from 'express'
-import { Fillime, Item, Sucursal } from 'pizzadb'
+import Joi from 'joi'
+import { Fillime, InvDispatch, Item, Sucursal } from 'pizzadb'
+import { validateToken } from '../../middleware/jwt/validateToken'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
-import { Get } from '../../utils/decorators/endpoint.middleware'
+import validateSchema from '../../middleware/validators/validateSchema'
+import { IToken } from '../../types'
+import { Delete, Get, Put } from '../../utils/decorators/endpoint.middleware'
 import { InventoryService } from './inventory.service'
 
 export class InventoryController {
@@ -57,5 +61,42 @@ export class InventoryController {
   async filterSucursal(req: Request) {
     const data = req.body as Fillime<Sucursal>
     return this.inventoryService.filterSucursal(data)
+  }
+
+  @Get('/inventory/dispatch/filter', parseFilters)
+  async filterDispatch(req: Request) {
+    const data = req.body as Fillime<InvDispatch>
+    return this.inventoryService.filterDispatch(data)
+  }
+
+  @Delete(
+    '/inventory/dispatch/cancel-invoice',
+    validateToken,
+    validateSchema(
+      Joi.object({
+        id: Joi.number().required(),
+        motivo: Joi.string().required(),
+      }),
+      'body',
+    ),
+  )
+  async deleteInvoice(req: Request) {
+    const data = req.body as { id: number; motivo: string }
+    return this.inventoryService.cancelInvoice(data.id, data.motivo)
+  }
+
+  @Put(
+    '/inventory/dispatch/duplicate',
+    validateToken,
+    validateSchema(
+      Joi.object({
+        id: Joi.number().required(),
+      }),
+    ),
+  )
+  async duplicateDispatch(req: Request) {
+    const { id } = req.body as { id: string }
+    const token = req.headers.token as unknown as IToken
+    return this.inventoryService.duplicateDispatch(+id, token?.name)
   }
 }

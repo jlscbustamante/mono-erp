@@ -2,16 +2,21 @@ import { format, parseISO, sub } from 'date-fns'
 import {
   Fillime,
   InvDispatch,
+  InvDispatchItem,
+  InvDispatchStatus,
   InvStock,
   Item as ItemDb,
   Sucursal,
 } from 'pizzadb'
 import { Raw, Repository } from 'typeorm'
+import { AppDataSource } from '../../config/database'
+import { DispatchUtil } from '../../core/inventory/dispatch-util.service'
 import { StockItemToCreateDto } from '../../core/inventory/dto'
 import { STOCK_STATUS } from '../../core/inventory/entities'
 import { Item } from '../../core/inventory/entities/item'
 import { DispatchUsedTo } from '../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../entities/inventory/InvDispatchBaseItem'
+import { cancelInvoiceApi } from '../../lib/api/cancel-invoice'
 import { cache, cacheApi, cacheHalfDay } from '../../lib/cache'
 import { findOptions } from '../../lib/filters'
 import {
@@ -25,7 +30,75 @@ export class InventoryService {
     private readonly stockRepository: Repository<InvStock>,
     private readonly sucursalRepository: Repository<Sucursal>,
     private readonly itemRepository: Repository<ItemDb>,
+    private readonly dispatchUtil: DispatchUtil,
   ) {}
+
+  async duplicateDispatch(dispatchId: number, user?: string) {
+    const dispatch = await this.dispatchRepository.findOne({
+      where: {
+        id: dispatchId,
+      },
+      relations: {
+        items: true,
+      },
+    })
+    if (!dispatch) throw new Error('Despacho no encontrado')
+
+    const newDispatch: InvDispatch = new InvDispatch()
+    newDispatch.wareFromId = dispatch.wareFromId
+    newDispatch.wareToId = dispatch.wareToId
+    newDispatch.gloss = `COPIA ${dispatch.id}`
+    newDispatch.moveAt = dispatch.moveAt
+    newDispatch.moveType = dispatch.moveType
+    newDispatch.netValue = dispatch.netValue
+    newDispatch.totalValue = dispatch.totalValue
+    newDispatch.taxValue = dispatch.taxValue
+    newDispatch.createdBy = user ?? 'sys'
+    newDispatch.status = InvDispatchStatus.NEW
+
+    const items = dispatch.items?.map((el) => {
+      const newItem = new InvDispatchItem()
+      newItem.itemId = el.itemId
+      newItem.itemName = el.itemName
+      newItem.presentationId = el.presentationId
+      newItem.presentationName = el.presentationName
+      newItem.measureId = el.measureId
+      newItem.unitValue = el.unitValue
+      newItem.quantity = el.quantity
+      newItem.totalValue = el.totalValue
+
+      return newItem
+    })
+
+    await AppDataSource.transaction(async (manager) => {
+      const result = await manager.insert(InvDispatch, newDispatch)
+      const insertedId = result.raw.insertId as number
+      if (items)
+        await manager.insert(
+          InvDispatchItem,
+          items.map((el) => ({
+            ...el,
+            dispatchId: insertedId,
+          })),
+        )
+    })
+  }
+
+  async cancelInvoice(id: number, motivo: string) {
+    const dispatch = await this.dispatchRepository.findOne({
+      where: {
+        id: id,
+      },
+    })
+    if (!dispatch) throw new Error('Despacho no encontrado')
+    if (dispatch.status != InvDispatchStatus.INVOICED || !dispatch.numInvoice)
+      throw new Error('Despacho no facturado')
+    await cancelInvoiceApi({
+      invoice: dispatch.numInvoice,
+      motivo,
+    })
+    await this.dispatchUtil.resetAndDeleteDispatch(id)
+  }
 
   async createOrder() {
     const value = cache.get('despacho_683')
@@ -371,6 +444,10 @@ export class InventoryService {
 
   async filterSucursal(data: Fillime<Sucursal>) {
     return await this.sucursalRepository.find(findOptions(data))
+  }
+
+  async filterDispatch(data: Fillime<InvDispatch>) {
+    return await this.dispatchRepository.find(findOptions(data))
   }
 }
 

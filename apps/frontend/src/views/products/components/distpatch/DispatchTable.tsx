@@ -1,8 +1,8 @@
-import { Button, DatePicker, Modal, Popover, Select } from 'antd'
+import { Button, DatePicker, Input, Modal, Popover, Select } from 'antd'
 import Table, { ColumnsType, TableProps } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { useMemo, useState } from 'react'
-import { FaTrash } from 'react-icons/fa6'
+import { FaRegCopy, FaTrash } from 'react-icons/fa6'
 import { MdRemoveRedEye } from 'react-icons/md'
 import { toast } from 'react-toastify'
 
@@ -15,6 +15,7 @@ import { fNumber } from '@/utils/formatNumber'
 import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
+import { inventoryApi } from '@/lib/api/inventory'
 import { useMutation } from '@tanstack/react-query'
 import { useLocalStorage } from '@uidotdev/usehooks'
 import { FiAlertTriangle, FiInfo } from 'react-icons/fi'
@@ -49,6 +50,10 @@ export const DispatchTable = ({
   const [origin, setOrigin] = useState<string | undefined>(undefined)
   const [date, setDate] = useState<string>(dayjs().format('YYYY-MM-DD'))
   const queryRoute = useWarehousesRoute()
+  const [deleteData, setDeleteData] = useState<{
+    id: number
+    motivo: string
+  } | null>(null)
   const [idsProcess, setIdsProcess] = useState<{
     ids: number[]
     origin: string | undefined
@@ -100,6 +105,17 @@ export const DispatchTable = ({
     },
   })
 
+  const duplicateDispatch = useMutation({
+    mutationFn: (dispatchId: number) =>
+      inventoryApi.duplicateDispatch(dispatchId),
+    onSuccess: () => {
+      onUpdate()
+    },
+    onError: () => {
+      toast.error('Error al duplicar el movimiento')
+    },
+  })
+
   const resetAnDeleteMt = useMutation({
     mutationFn: resetAndDeleteDispatch,
     onSuccess: () => {
@@ -107,6 +123,19 @@ export const DispatchTable = ({
     },
     onError: () => {
       toast.error('Error al resetear el movimiento')
+    },
+  })
+
+  const cancelInvoice = useMutation({
+    mutationFn: async (data: { id: number; motivo: string }) => {
+      await inventoryApi.cancelInvoice(data)
+    },
+    onSuccess: () => {
+      onUpdate()
+      setDeleteData(null)
+    },
+    onError: () => {
+      toast.error('Error al cancelar la factura')
     },
   })
 
@@ -288,6 +317,22 @@ export const DispatchTable = ({
             >
               <RxReset className="text-black w-4 h-auto" />
             </Button>
+            <Button
+              type="text"
+              size="small"
+              onClick={() =>
+                Modal.confirm({
+                  title: '¿Duplicar despacho?',
+                  content:
+                    "El despacho se duplicara con estado 'Nuevo' y la misma fecha",
+                  onOk: () => {
+                    duplicateDispatch.mutate(record.id)
+                  },
+                })
+              }
+            >
+              <FaRegCopy className="text-black w-4 h-auto" />
+            </Button>
             <div
               className="cursor-pointer"
               onClick={() => {
@@ -299,7 +344,7 @@ export const DispatchTable = ({
             </div>
             <div
               className={cn('cursor-pointer', {
-                hidden: onlyQuery || record.status == DispatchStatus.DISPATCHED,
+                hidden: onlyQuery || record.status != DispatchStatus.NEW,
               })}
               onClick={() => {
                 Modal.confirm({
@@ -328,7 +373,6 @@ export const DispatchTable = ({
               onClick={() => {
                 Modal.confirm({
                   title: 'Eliminar',
-
                   content: '¿Está seguro de anular este despacho?',
                   onOk: () => {
                     resetAnDeleteMt.mutate(record.id)
@@ -343,6 +387,20 @@ export const DispatchTable = ({
                     //   })
                   },
                 })
+              }}
+            >
+              <FaTrash className="h-auto w-3.5" />
+            </div>
+            <div
+              className={cn('cursor-pointer', {
+                hidden: record.status != DispatchStatus.INVOICED || onlyQuery,
+              })}
+              onClick={() => {
+                if (record)
+                  setDeleteData({
+                    id: record.id,
+                    motivo: '',
+                  })
               }}
             >
               <FaTrash className="h-auto w-3.5" />
@@ -426,6 +484,40 @@ export const DispatchTable = ({
           setOrigin(undefined)
         }}
       />
+      <Modal
+        open={!!deleteData}
+        title="¿Eliminar despacho facturado?"
+        confirmLoading={cancelInvoice.isPending}
+        onCancel={() => {
+          setDeleteData(null)
+        }}
+        okText="Eliminar"
+        onOk={() => {
+          if (deleteData) {
+            cancelInvoice.mutate({
+              id: deleteData.id,
+              motivo: deleteData.motivo,
+            })
+          }
+        }}
+      >
+        <div className="flex flex-col gap-1">
+          <p>
+            <span className="font-bold">Id : {deleteData?.id}</span>{' '}
+            <span className="text-slate-500">(verifica el id)</span>
+          </p>
+          <p>Ingresa el motivo de la anulación : </p>
+          <Input
+            placeholder="Item equivocado, cantidad,etc"
+            value={deleteData?.motivo}
+            onChange={(e) => {
+              if (deleteData) {
+                setDeleteData({ ...deleteData, motivo: e.target.value })
+              }
+            }}
+          />
+        </div>
+      </Modal>
       <Table
         rowSelection={{ type: 'checkbox', ...rowSelection }}
         size="small"
