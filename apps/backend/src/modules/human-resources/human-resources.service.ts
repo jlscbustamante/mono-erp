@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import {
   Attendance,
   ATTENDANCE_EVENT,
@@ -112,7 +113,12 @@ export class HumanResourcesService {
         sucursal: true,
       },
     })
-    return assistance
+    return assistance.map((el) => {
+      return {
+        ...el,
+        attendance_at: format(new Date(el.attendance_at), 'yyyy-MM-dd HH:mm'),
+      }
+    })
   }
 
   async getEmployeesBySucursal(store: string) {

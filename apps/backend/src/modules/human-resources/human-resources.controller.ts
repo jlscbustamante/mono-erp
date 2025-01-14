@@ -69,8 +69,6 @@ export class HumanResourcesController {
       doc?: string
       event?: string
     }
-    console.log('==========')
-    console.log(doc, event)
 
     const data = await this.rhService.filterAssistancePos(
       store,
