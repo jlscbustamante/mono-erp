@@ -78,8 +78,8 @@ export class HumanResourcesService {
   }
 
   async filterAssistancePos(
-    store: string,
     dates: string[],
+    store?: string,
     doc?: string,
     event?: string,
   ) {
@@ -99,7 +99,7 @@ export class HumanResourcesService {
         attendance_at: Raw(
           (alias) => `DATE(${alias}) BETWEEN '${dates[0]}' AND '${dates[1]}'`,
         ),
-        sucursal_id: store,
+        sucursal_id: !store ? IsNull() : store,
         event: event as ATTENDANCE_EVENT,
         employee: {
           doc_number: doc,
