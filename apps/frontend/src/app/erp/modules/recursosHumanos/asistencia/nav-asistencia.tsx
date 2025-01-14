@@ -1,13 +1,20 @@
 import { ExcelExportBtn } from '@/components/excel-btn'
+import { FiDatePicker } from '@/components/fillime/components/date'
+import { FiRangePicker } from '@/components/fillime/components/range'
 import { ActionFilters } from '@/components/fillime/filter-actions'
 import { FillimeSelector } from '@/components/fillime/selector'
 import { FilterOption } from '@/components/fillime/types'
+import {
+  SelectEmployee,
+  SelectEmployeeShow,
+} from '@/hooks/selects/employee-select'
 import {
   SelectSucursal,
   SelectSucursalShow,
 } from '@/hooks/selects/sucursal-select'
 import { Select } from 'antd'
 import { Excel } from 'antd-table-saveas-excel'
+import dayjs from 'dayjs'
 import { Attendance } from 'pizzadb'
 import { useAsistenciaContext } from '.'
 import { useAttendanceStore } from './state'
@@ -16,8 +23,17 @@ const options: FilterOption<Attendance>[] = [
   {
     title: 'Fecha',
     index: 'attendance_at',
-    options: ['equal'],
+    options: ['equal', 'range'],
+    defaultByOp: {
+      equal: dayjs().format('YYYY-MM-DD'),
+      range: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
+    },
     type: 'date',
+    render: (props) => {
+      if (props.operator == 'equal')
+        return <FiDatePicker {...props} allowClear={false} />
+      else return <FiRangePicker {...props} allowClear={false} />
+    },
     noAllowClear: true,
     hide: true,
   },
@@ -49,6 +65,16 @@ const options: FilterOption<Attendance>[] = [
     title: 'Empleado',
     index: 'employee_id',
     options: ['equal', 'in'],
+    view: (val) => <SelectEmployeeShow value={val.value} />,
+    render: (props) => {
+      return (
+        <SelectEmployee
+          {...props}
+          className="w-52"
+          mode={props.operator == 'in' ? 'multiple' : undefined}
+        />
+      )
+    },
   },
   {
     title: 'Evento',

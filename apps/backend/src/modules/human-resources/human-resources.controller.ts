@@ -30,6 +30,13 @@ export class HumanResourcesController {
     return data
   }
 
+  @Get('/rh/employees/fillime', parseFilters)
+  async filterEmployeesFillime(req: Request) {
+    const filters = req.body as Fillime<RhEmployee>
+    const data = await this.rhService.fillimeEmployees(filters)
+    return data
+  }
+
   @Post('/rh/employees', upload.single('image'))
   async createEmployee(req: Request) {
     const data = req.body as RhEmployee

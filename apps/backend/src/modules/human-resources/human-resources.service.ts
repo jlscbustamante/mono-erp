@@ -28,6 +28,11 @@ export class HumanResourcesService {
     return data
   }
 
+  async fillimeEmployees(filters: Fillime<RhEmployee>) {
+    const data = await this.employeeRepository.find(findOptions(filters))
+    return data
+  }
+
   async createEmployee(employee: RhEmployee) {
     // subir image
     try {

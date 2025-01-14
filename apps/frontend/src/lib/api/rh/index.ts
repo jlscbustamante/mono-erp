@@ -101,6 +101,20 @@ export class RhApi {
     return request.data.data
   }
 
+  @axiosCatch
+  async fillimeEmployees(filters: Fillime<RhEmployee>) {
+    const request = await this.client.get<{ data: RhEmployee[] }>(
+      'rh/employees/fillime',
+      {
+        params: {
+          filters: JSON.stringify(filters),
+        },
+      },
+    )
+
+    return request.data.data
+  }
+
   // @axiosCatch
   async saveMotorizer(motorizer: any) {
     try {
