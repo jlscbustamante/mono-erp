@@ -2,14 +2,8 @@ import { rhApi } from '@/lib/api/rh'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnsType } from 'antd/es/table'
 import { format, parseISO } from 'date-fns'
-import { Attendance, RhEmployee } from 'pizzadb'
-import {
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useReducer,
-} from 'react'
+import { Attendance } from 'pizzadb'
+import { createContext, useContext, useReducer } from 'react'
 import { AttendanceTable } from './attendance-table'
 import { NavAsistencia } from './nav-asistencia'
 import { useAttendanceStore } from './state'
@@ -94,17 +88,9 @@ export const useAsistenciaContext = () => {
     throw new Error('useAsistenciaContext debe estar dentro del proveedor')
   }
   return context as {
-    store: string | undefined
-    setStore: Dispatch<SetStateAction<string | undefined>>
-    dates: string[]
-    setDates: Dispatch<SetStateAction<string[]>>
     data: Attendance[]
     isLoading: boolean
     addController: () => void
     columns: ColumnsType<Attendance>
-    users: RhEmployee[]
-    isLoadingUsers: boolean
-    userId: number | undefined
-    setUserId: Dispatch<SetStateAction<number | undefined>>
   }
 }

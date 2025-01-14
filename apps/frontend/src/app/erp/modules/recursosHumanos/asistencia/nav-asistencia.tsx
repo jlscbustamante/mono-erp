@@ -99,7 +99,7 @@ const options: FilterOption<Attendance>[] = [
 ]
 
 export const NavAsistencia = () => {
-  const { data, dates, addController, columns } = useAsistenciaContext()
+  const { data, addController, columns } = useAsistenciaContext()
 
   const filters = useAttendanceStore((st) => st.filters)
   const addFilter = useAttendanceStore((st) => st.addWhere)
@@ -108,13 +108,33 @@ export const NavAsistencia = () => {
   const clear = useAttendanceStore((st) => st.clear)
 
   const handleExport = () => {
-    const date = dates[0] === dates[1] ? dates[0] : `${dates[0]}-${dates[1]}`
+    const dates = filters.where?.find(
+      (el) => el.field == 'attendance_at',
+    )?.value
+    let str = ''
+    if (Array.isArray(dates)) {
+      const [start, end] = dates as [string, string]
+      str = `${start.split(' ')[0]}-${end.split(' ')[0]}`
+    } else {
+      str = (dates as string).split(' ')[0]
+    }
+
     const excel = new Excel()
     excel
       .addSheet('Asistencia')
-      .addColumns(columns as any)
+      .addColumns([
+        ...columns,
+        {
+          title: 'Cod. tienda',
+          dataIndex: 'sucursal_id',
+        },
+        {
+          title: 'Documento',
+          dataIndex: ['employee', 'doc_number'],
+        },
+      ] as any)
       .addDataSource(data)
-      .saveAs(`Asistencia-${date}.xlsx`)
+      .saveAs(`Asistencia-${str}.xlsx`)
   }
 
   const handleClear = () => {
