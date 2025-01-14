@@ -4,6 +4,7 @@ export interface WhereOption<T> {
   field: keyof T;
   operator: string;
   value?: unknown;
+  useMod?: boolean;
   mods?: {
     field?: string;
     value?: string;
