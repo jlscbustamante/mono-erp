@@ -18,12 +18,15 @@ export const transformWhere = <T>(
 
   for (const filter of initial) {
     let val: any
-    if (filter.mods) {
+    if (filter.mods || filter.useMod) {
       const value = filter.mods?.value
         ? filter.mods.value.replace('$x', filter.value as string)
         : filter.value
       val = Raw((alias) => {
-        const definition = `${filter.mods?.field ? filter.mods.field.replace('$x', alias) : alias} ${operatorAndValue(filter.operator, value)}`
+        const field = filter.mods?.field
+          ? filter.mods.field.replace('$x', filter.field as string)
+          : alias
+        const definition = `${operatorAndValue(field, filter.operator, value)}`
 
         return definition
       })
@@ -52,17 +55,35 @@ export const transformWhere = <T>(
   return filters
 }
 
-export const operatorAndValue = (operator: string, val?: unknown): string => {
+export const operatorAndValue = (
+  field: string,
+  operator: string,
+  val?: unknown,
+): string => {
   const isString = isNaN(Number(val))
   const value = Array.isArray(val) ? val : isString ? `'${val}'` : val
-  if (operator == 'equal') return '= ' + value
-  if (operator == 'notEqual') return '!= ' + value
-  if (operator == 'isNull') return 'IS NULL'
-  if (operator == 'contain') return 'LIKE ' + value
-  if (operator == 'in')
-    return `IN (${(value as string[]).map((v) => `'${v}'`).join(', ')})`
+  if (operator == 'equal') {
+    if (val == '$$isNull$$') return field + ' IS NULL'
+    return field + ' = ' + value
+  }
+  if (operator == 'notEqual') return field + ' != ' + value
+  if (operator == 'isNull') return field + ' IS NULL'
+  if (operator == 'contain') return field + ' LIKE ' + value
+  if (operator == 'in') {
+    const list = value as string[]
+    if (list.includes('$$isNull$$')) {
+      return `(${field} IS NULL OR ${field} IN (${list
+        .map((v) => {
+          if (v == '$$isNull$$') return null
+          return `'${v}'`
+        })
+        .filter((el) => el)
+        .join(', ')}))`
+    }
+    return `IN (${list.map((v) => `'${v}'`).join(', ')})`
+  }
   if (operator == 'between')
-    return `BETWEEN '${(value as string[])[0]}' AND '${(value as string[])[1]}'`
+    return `${field} BETWEEN '${(value as string[])[0]}' AND '${(value as string[])[1]}'`
   return ''
 }
 

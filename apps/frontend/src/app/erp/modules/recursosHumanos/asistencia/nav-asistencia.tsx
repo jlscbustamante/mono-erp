@@ -1,35 +1,85 @@
 import { ExcelExportBtn } from '@/components/excel-btn'
-import { filterSelectForm } from '@/utils'
-import { useSucursales } from '@/views/products/components/stock/hooks/useSucursales'
-import { Button, DatePicker, Select } from 'antd'
+import { ActionFilters } from '@/components/fillime/filter-actions'
+import { FillimeSelector } from '@/components/fillime/selector'
+import { FilterOption } from '@/components/fillime/types'
+import {
+  SelectSucursal,
+  SelectSucursalShow,
+} from '@/hooks/selects/sucursal-select'
+import { Select } from 'antd'
 import { Excel } from 'antd-table-saveas-excel'
-import dayjs from 'dayjs'
-import { useEffect } from 'react'
-import { FiSearch } from 'react-icons/fi'
+import { Attendance } from 'pizzadb'
 import { useAsistenciaContext } from '.'
+import { useAttendanceStore } from './state'
 
-const RangePicker = DatePicker.RangePicker
+const options: FilterOption<Attendance>[] = [
+  {
+    title: 'Fecha',
+    index: 'attendance_at',
+    options: ['equal'],
+    type: 'date',
+    noAllowClear: true,
+    hide: true,
+  },
+  {
+    title: 'Tienda',
+    index: 'sucursal_id',
+    options: ['equal', 'in'],
+    type: 'select',
+    render: (props) => {
+      return (
+        <SelectSucursal
+          extra={[
+            {
+              value: '$$isNull$$',
+              label: 'SIN TIENDA',
+            },
+          ]}
+          {...props}
+          className="w-44"
+          size="small"
+          mode={props.operator == 'in' ? 'multiple' : undefined}
+        />
+      )
+    },
+    view: (val) => <SelectSucursalShow value={val.value} />,
+    useMod: true,
+  },
+  {
+    title: 'Empleado',
+    index: 'employee_id',
+    options: ['equal', 'in'],
+  },
+  {
+    title: 'Evento',
+    index: 'event',
+    options: ['equal'],
+    render: (props) => {
+      return (
+        <Select
+          value={props.filValue}
+          onChange={(val) => {
+            props.onFilChange(val)
+          }}
+          size="small"
+          className="w-full"
+        >
+          <Select.Option value={'ENTRADA'}>ENTRADA</Select.Option>
+          <Select.Option value={'SALIDA'}>SALIDA</Select.Option>
+        </Select>
+      )
+    },
+  },
+]
 
 export const NavAsistencia = () => {
-  const query = useSucursales()
-  const {
-    store,
-    data,
-    dates,
-    setStore,
-    setDates,
-    addController,
-    isLoading,
-    columns,
-    users,
-    userId,
-    setUserId,
-    isLoadingUsers,
-  } = useAsistenciaContext()
+  const { data, dates, addController, columns } = useAsistenciaContext()
 
-  const handleSearch = () => {
-    addController()
-  }
+  const filters = useAttendanceStore((st) => st.filters)
+  const addFilter = useAttendanceStore((st) => st.addWhere)
+  const removeFilter = useAttendanceStore((st) => st.removeWhere)
+  const modFilter = useAttendanceStore((st) => st.modWhere)
+  const clear = useAttendanceStore((st) => st.clear)
 
   const handleExport = () => {
     const date = dates[0] === dates[1] ? dates[0] : `${dates[0]}-${dates[1]}`
@@ -41,65 +91,28 @@ export const NavAsistencia = () => {
       .saveAs(`Asistencia-${date}.xlsx`)
   }
 
-  useEffect(() => {
-    if (query.data) {
-      // setStore(query.data[0].code)
-    }
-  }, [query.data])
+  const handleClear = () => {
+    const keysAllowed = options
+      .filter((el) => el.noAllowClear)
+      .map((el) => el.index)
+    clear(keysAllowed)
+  }
 
   return (
     <div className="flex items-center justify-between">
-      <div className="flex gap-1">
-        <Select
-          allowClear={false}
-          className="w-auto min-w-52"
-          value={store}
-          onChange={setStore}
-          showSearch
-          filterOption={filterSelectForm}
-          placeholder="Tiendas"
-          defaultValue={''}
-        >
-          <Select.Option value={''}>SIN TIENDA</Select.Option>
-          {query.data?.map((el) => {
-            return (
-              <Select.Option key={el.code} value={el.code}>
-                {el.name}
-              </Select.Option>
-            )
-          })}
-        </Select>
-        <Select
-          className="w-auto min-w-52"
-          loading={isLoadingUsers}
-          showSearch
-          allowClear
-          filterOption={filterSelectForm}
-          placeholder
-          onChange={setUserId}
-          value={userId}
-        >
-          {users?.map((el) => {
-            return (
-              <Select.Option key={el.id} value={el.id}>
-                {`${el.first_name} ${el.last_name}`}
-              </Select.Option>
-            )
-          })}
-        </Select>
-        <RangePicker
-          value={[dayjs(dates[0]), dayjs(dates[1])]}
-          onChange={(val: any) => {
-            setDates([val[0].format('YYYY-MM-DD'), val[1].format('YYYY-MM-DD')])
-          }}
-          allowClear={false}
+      <div className="flex item-center gap-2">
+        <FillimeSelector
+          options={options}
+          filters={filters.where}
+          addFilter={addFilter}
+          removeFilter={removeFilter}
+          modFilter={modFilter}
         />
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<FiSearch />}
-          onClick={handleSearch}
-          loading={isLoading}
+        <ActionFilters
+          clear={handleClear}
+          search={() => {
+            addController()
+          }}
         />
       </div>
       <ExcelExportBtn onExport={handleExport} />

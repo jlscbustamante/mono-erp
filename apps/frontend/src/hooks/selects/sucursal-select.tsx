@@ -33,6 +33,7 @@ export const SelectSucursalShow = ({ value }: { value: unknown }) => {
     const id = Array.isArray(value) ? value[0] : value
     if (!id) return '...'
 
+    if (id == '$$isNull$$') return 'SIN TIENDA' + '...'
     const name = query.data?.find((il) => il.id == id)
     if (!name) return '...'
     return name.title.substring(0, 12) + '...'
@@ -40,10 +41,15 @@ export const SelectSucursalShow = ({ value }: { value: unknown }) => {
   return `${named}`
 }
 
-export const SelectSucursal = (props: SelectProps & ComponentFiRender) => {
+export const SelectSucursal = (
+  props: SelectProps &
+    ComponentFiRender & {
+      extra?: { label: string; value: string | number }[]
+    },
+) => {
   const query = useSucursalSelect(defaultFilter)
 
-  const { filValue, onFilChange, ...restProps } = props
+  const { extra, filValue, onFilChange, ...restProps } = props
 
   return (
     <Select
@@ -55,6 +61,13 @@ export const SelectSucursal = (props: SelectProps & ComponentFiRender) => {
       filterOption={filterSelectForm}
       showSearch
     >
+      {extra?.map((el) => {
+        return (
+          <Select.Option key={el.value.toString()} value={el.value}>
+            {el.label}
+          </Select.Option>
+        )
+      })}
       {query.data?.map((el) => {
         return (
           <Select.Option key={el.id} value={el.id}>

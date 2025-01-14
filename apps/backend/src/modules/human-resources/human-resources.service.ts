@@ -1,12 +1,14 @@
 import {
   Attendance,
   ATTENDANCE_EVENT,
+  Fillime,
   JobTitle,
   RhEmployee,
   Sucursal,
 } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { IsNull, Raw, Repository } from 'typeorm'
+import { findOptions } from '../../lib/filters'
 import { Parameters } from '../../parameters'
 import { filter3 } from '../../repositories/filter3base'
 import { separateNames } from '../../utils/separate-names'
@@ -184,5 +186,10 @@ export class HumanResourcesService {
 
       await this.employeeRepository.update({ id: user.id }, user)
     }
+  }
+
+  async filterAssistanceFillime(filters: Fillime<Attendance>) {
+    const data = await this.assistanceRepository.find(findOptions(filters))
+    return data
   }
 }

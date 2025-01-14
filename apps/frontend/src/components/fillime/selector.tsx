@@ -4,6 +4,7 @@ import { MenuProps } from 'antd/lib'
 import { CircleX } from 'lucide-react'
 import { WhereOption } from 'pizzadb'
 import { useMemo } from 'react'
+import { FiDatePicker } from './components/date'
 import { FiInput } from './components/input'
 import { FiInputNumber } from './components/input-number'
 import { FiRangePicker } from './components/range'
@@ -21,6 +22,7 @@ const availableComponents: Record<
   default: FiInput as any,
   range: FiRangePicker,
   num: FiInputNumber as any,
+  date: FiDatePicker,
 }
 
 export const FillimeSelector = <T = unknown,>({
@@ -55,6 +57,7 @@ export const FillimeSelector = <T = unknown,>({
             field: el.index,
             operator: operator,
             value: defaultValue,
+            useMod: el.useMod,
             mods: el.mods,
           })
         },

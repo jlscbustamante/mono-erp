@@ -2,30 +2,23 @@ import { rhApi } from '@/lib/api/rh'
 import { useQuery } from '@tanstack/react-query'
 import { ColumnsType } from 'antd/es/table'
 import { format, parseISO } from 'date-fns'
-import dayjs from 'dayjs'
 import { Attendance, RhEmployee } from 'pizzadb'
 import {
   createContext,
   Dispatch,
   SetStateAction,
   useContext,
-  useEffect,
   useReducer,
-  useState,
 } from 'react'
 import { AttendanceTable } from './attendance-table'
 import { NavAsistencia } from './nav-asistencia'
+import { useAttendanceStore } from './state'
 
 const AsistenciaContext = createContext<any>(null)
 
 export const AsistenciaPage = () => {
-  const [store, setStore] = useState<undefined | string>(undefined)
-  const [userId, setUserId] = useState<undefined | number>(undefined)
-  const [dates, setDates] = useState([
-    dayjs().format('YYYY-MM-DD'),
-    dayjs().format('YYYY-MM-DD'),
-  ])
   const [controller, addController] = useReducer((state) => state + 1, 0)
+  const filter = useAttendanceStore((st) => st.filters)
 
   const columns = [
     {
@@ -72,37 +65,19 @@ export const AsistenciaPage = () => {
 
   const query = useQuery({
     queryKey: ['asistencias/filter', controller],
+    enabled: controller > 0,
     // queryFn: () => rhApi.filterAssistance(store!, dates, userId),
-    queryFn: () => rhApi.filterAssistance({ store, dates, userId }),
+    queryFn: () => rhApi.filterAssistanceFillime(filter),
+    staleTime: 1000 * 60,
   })
-
-  const usersQuery = useQuery({
-    queryKey: ['users-by-sucursal', store],
-    queryFn: () => rhApi.getEmployeesBySucursal(store),
-    staleTime: 1000 * 60 * 5,
-  })
-
-  useEffect(() => {
-    if (store) {
-      setUserId(undefined)
-    }
-  }, [store])
 
   return (
     <AsistenciaContext.Provider
       value={{
-        store,
-        setStore,
         columns,
-        userId,
-        setUserId,
-        dates,
-        setDates,
         data: query.data ?? [],
         isLoading: query.isLoading,
         addController,
-        users: usersQuery.data ?? [],
-        isLoadingUsers: usersQuery.isLoading,
       }}
     >
       <div className="p-3 space-y-2">

@@ -1,6 +1,6 @@
 import { type Request } from 'express'
 import multer, { FileFilterCallback } from 'multer'
-import { JobTitle, RhEmployee } from 'pizzadb'
+import { Attendance, Fillime, JobTitle, RhEmployee } from 'pizzadb'
 import { IUserFilter3 } from 'shared'
 import { parseFilters } from '../../middleware/parse-filter.middleware'
 import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
@@ -44,6 +44,13 @@ export class HumanResourcesController {
     await this.rhService.updateEmployee(data)
   }
 
+  @Get('/rh/assistances/fillime', parseFilters)
+  async filterAssistanceFillime(req: Request) {
+    const filter = req.body as Fillime<Attendance>
+
+    return this.rhService.filterAssistanceFillime(filter)
+  }
+
   @Get('/rh/assistances/filter')
   async filterAssistance(req: Request) {
     const { store, dates, userId } = req.query as {
@@ -69,8 +76,6 @@ export class HumanResourcesController {
       doc?: string
       event?: string
     }
-    console.log('==========')
-    console.log(doc, event)
 
     const data = await this.rhService.filterAssistancePos(
       store,
