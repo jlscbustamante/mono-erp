@@ -1,0 +1,14 @@
+{
+  "name":"@scope/shared",
+  "imports":{
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
+    "hono": "npm:hono@^4.6.16",
+    "jose":"https://deno.land/x/jose@v5.9.6/index.ts"
+  },
+  "exports":{
+    ".":"./types/index.ts",
+    "./env":"./load-env.ts",
+    "./services/jwt":"./services/jwt.service.ts"
+
+  }
+}

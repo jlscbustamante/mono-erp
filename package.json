@@ -7,6 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev:backend": "cd apps/backend && pnpm run dev",
     "dev:frontend": "cd apps/frontend && pnpm run dev",
+    "dev:views":"cd backend/views && deno task dev",
     "dbbuild": "cd packages/pizzadb && pnpm run build",
     "dev": "concurrently \"pnpm:dev:*\""
   },
@@ -15,5 +16,8 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.10.0"
+  },
+  "dependencies": {
+    "hono": "^4.6.13"
   }
 }

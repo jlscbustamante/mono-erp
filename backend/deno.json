@@ -1,0 +1,8 @@
+{
+  "workspace" :["./views","./shared"],
+  "compilerOptions":{
+    "jsx":"precompile",
+    "jsxImportSource":"hono/jsx",
+    "strict":true
+  }
+}
