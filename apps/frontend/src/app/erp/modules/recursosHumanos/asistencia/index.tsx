@@ -42,6 +42,7 @@ export const AsistenciaPage = () => {
       title: 'Imagen',
       dataIndex: 'pic_photo',
       render: (url: string) => {
+        if (url === null) return 'Sin imagen'
         return (
           <a
             target="_blank"
@@ -53,7 +54,7 @@ export const AsistenciaPage = () => {
         )
       },
       excelRender: (url: string) =>
-        `https://erpraul.com/api/attendance/_img/${url}`,
+        url ? `https://erpraul.com/api/attendance/_img/${url}` : 'Sin imagen',
     } as any,
   ] satisfies ColumnsType<Attendance>
 

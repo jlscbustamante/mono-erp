@@ -77,11 +77,12 @@ export class HumanResourcesController {
 
   @Get('/rh/assistances/pos/filter')
   async filterAssistancePos(req: Request) {
-    const { store, dates, doc, event } = req.query as {
+    const { store, dates, doc, event, name } = req.query as {
       store?: string
       dates: string[]
       doc?: string
       event?: string
+      name?: string
     }
 
     const data = await this.rhService.filterAssistancePos(
@@ -89,6 +90,7 @@ export class HumanResourcesController {
       store,
       doc,
       event,
+      name,
     )
 
     return data

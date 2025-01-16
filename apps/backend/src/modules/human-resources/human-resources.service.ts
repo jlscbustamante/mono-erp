@@ -89,6 +89,7 @@ export class HumanResourcesService {
     store?: string,
     doc?: string,
     event?: string,
+    name?: string,
   ) {
     const assistance = await this.assistanceRepository.find({
       select: {
@@ -96,6 +97,7 @@ export class HumanResourcesService {
           id: true,
           first_name: true,
           last_name: true,
+          doc_number: true,
         },
         sucursal: {
           id: true,
@@ -120,7 +122,14 @@ export class HumanResourcesService {
         sucursal: true,
       },
     })
-    return assistance.map((el) => {
+    const filtered = name
+      ? assistance.filter((el) => {
+          const concated =
+            `${el.employee.first_name} ${el.employee.last_name}`.toLowerCase()
+          return concated.includes(name.toLowerCase())
+        })
+      : assistance
+    return filtered.map((el) => {
       return {
         ...el,
         attendance_at: format(new Date(el.attendance_at), 'yyyy-MM-dd HH:mm'),
