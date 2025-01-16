@@ -4,3 +4,6 @@
 **/dist/
 
 apis.md
+
+files/*
+!file/note.md

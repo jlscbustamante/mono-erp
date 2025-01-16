@@ -6,7 +6,19 @@ import { Select, SelectProps } from 'antd'
 import { Fillime, Sucursal } from 'pizzadb'
 import { useMemo } from 'react'
 
-export const useSucursalSelect = (filters: Fillime<Sucursal>) => {
+const defaultFilter: Fillime<Sucursal> = {
+  select: {
+    id: true,
+    title: true,
+    type_sede: true,
+  },
+  order: {
+    title: 'ASC',
+  },
+}
+export const useSucursalSelect = (
+  filters: Fillime<Sucursal> = defaultFilter,
+) => {
   const filjson = JSON.stringify(filters)
   const query = useQuery({
     queryKey: ['select:items', filjson],
@@ -15,16 +27,6 @@ export const useSucursalSelect = (filters: Fillime<Sucursal>) => {
   })
 
   return query
-}
-
-const defaultFilter: Fillime<Sucursal> = {
-  select: {
-    id: true,
-    title: true,
-  },
-  order: {
-    title: 'ASC',
-  },
 }
 
 export const SelectSucursalShow = ({ value }: { value: unknown }) => {

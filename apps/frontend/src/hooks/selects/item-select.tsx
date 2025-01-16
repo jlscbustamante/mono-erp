@@ -6,17 +6,6 @@ import { Select, SelectProps } from 'antd'
 import { Fillime, Item } from 'pizzadb'
 import { useMemo } from 'react'
 
-export const useItemsSelect = (filters: Fillime<Item>) => {
-  const filjson = JSON.stringify(filters)
-  const query = useQuery({
-    queryKey: ['select:items', filjson],
-    queryFn: () => inventoryApi.filterItems(filters),
-    staleTime: Infinity,
-  })
-
-  return query
-}
-
 const defaultFilter: Fillime<Item> = {
   select: {
     id: true,
@@ -25,6 +14,17 @@ const defaultFilter: Fillime<Item> = {
   order: {
     itemName: 'ASC',
   },
+}
+
+export const useItemsSelect = (filters: Fillime<Item> = defaultFilter) => {
+  const filjson = JSON.stringify(filters)
+  const query = useQuery({
+    queryKey: ['select:items', filjson],
+    queryFn: () => inventoryApi.filterItems(filters),
+    staleTime: Infinity,
+  })
+
+  return query
 }
 
 export const SelectItemShow = ({ value }: { value: unknown }) => {

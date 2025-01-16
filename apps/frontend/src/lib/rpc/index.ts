@@ -11,6 +11,7 @@ export const viewClient = hc<ViewType>('http://localhost:8001/', {
       ...init,
       headers: {
         ...init?.headers,
+        'Content-Type': 'application/json',
         Authorization: `Bearer ${getToken()}`,
       },
     }),

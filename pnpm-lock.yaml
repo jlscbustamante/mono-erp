@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@hono/zod-validator':
+        specifier: ^0.4.2
+        version: 0.4.2(hono@4.6.13)(zod@3.24.1)
       hono:
         specifier: ^4.6.13
         version: 4.6.13
+      zod:
+        specifier: ^3.24.1
+        version: 3.24.1
     devDependencies:
       '@types/node':
         specifier: ^22.10.0
@@ -233,6 +239,9 @@ importers:
       '@fontsource/poppins':
         specifier: ^5.0.15
         version: 5.1.0
+      '@hono/zod-validator':
+        specifier: ^0.4.2
+        version: 0.4.2(hono@4.6.13)(zod@3.24.1)
       '@tanstack/react-query':
         specifier: ^5.40.0
         version: 5.61.5(react@18.3.1)
@@ -1140,6 +1149,12 @@ packages:
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
+
+  '@hono/zod-validator@0.4.2':
+    resolution: {integrity: sha512-1rrlBg+EpDPhzOV4hT9pxr5+xDVmKuz6YJl+la7VCwK6ass5ldyKm5fD+umJdV2zhHD6jROoCCv8NbTwyfhT0g==}
+    peerDependencies:
+      hono: '>=3.9.0'
+      zod: ^3.19.1
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -6448,6 +6463,11 @@ snapshots:
   '@hono/node-server@1.13.7(hono@4.6.13)':
     dependencies:
       hono: 4.6.13
+
+  '@hono/zod-validator@0.4.2(hono@4.6.13)(zod@3.24.1)':
+    dependencies:
+      hono: 4.6.13
+      zod: 3.24.1
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
