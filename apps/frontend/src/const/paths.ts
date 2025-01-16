@@ -65,6 +65,7 @@ export const PATHS = {
           porRuta: '/erp/modulos/mercaderia/despachos/por-ruta',
           consolidado: '/erp/modulos/mercaderia/despachos/consolidado',
         },
+        divider: '/erp/modulos/mercaderia/divider',
         notaCredito: '/erp/modulos/mercaderia/nota-credito',
         compra: '/erp/modulos/mercaderia/compra',
         stockAlmacen: '/erp/modulos/mercaderia/stock-almacen',

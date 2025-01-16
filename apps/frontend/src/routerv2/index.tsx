@@ -3,6 +3,7 @@ import { OtpLoginPage } from '@/app/erp/auth/otp-login'
 import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
+import DispatchDivider from '@/app/erp/modules/mercaderia/dispatch-divider'
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
@@ -169,6 +170,10 @@ export const routerv2 = createBrowserRouter([
                     element: <DispatchConsolidated />,
                   },
                 ],
+              },
+              {
+                path: PATHS.erp.modulos.mercaderia.divider,
+                element: <DispatchDivider />,
               },
               {
                 path: PATHS.erp.modulos.mercaderia.notaCredito,
