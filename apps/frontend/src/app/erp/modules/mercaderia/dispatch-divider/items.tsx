@@ -119,7 +119,7 @@ export const ListItems = () => {
             ?.filter((el) => el.type_sede == WAREHOUSE_TYPE.WAREHOUSE)
             .map((el) => (
               <Select.Option value={el.id} key={el.id}>
-                {el.title} ({el.id})
+                {el.title}
               </Select.Option>
             ))}
         </Select>
