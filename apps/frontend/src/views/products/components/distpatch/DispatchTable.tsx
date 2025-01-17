@@ -296,6 +296,7 @@ export const DispatchTable = ({
         return (
           <div className="flex justify-around items-center gap-2">
             <Button
+              loading={divideMt.variables == record.id && divideMt.isPending}
               type="text"
               size="small"
               className={cn('inline-flex items-center justify-center', {
