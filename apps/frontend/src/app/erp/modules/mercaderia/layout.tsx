@@ -25,7 +25,7 @@ const menu: (MenuOption | MenuSeparator)[] = [
     ),
   ]),
   gm('Nota de credito', PATHS.erp.modulos.mercaderia.notaCredito),
-  gm('Dividir mercaderia', PATHS.erp.modulos.mercaderia.divider),
+  gm('Dividir despacho', PATHS.erp.modulos.mercaderia.divider),
   gm('Compra mercadería', PATHS.erp.modulos.mercaderia.compra),
   gm('Reportes de inventario', PATHS.erp.modulos.mercaderia.reportes.main, [
     gm(

@@ -16,8 +16,10 @@ import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { inventoryApi } from '@/lib/api/inventory'
+import { viewClient } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import { useLocalStorage } from '@uidotdev/usehooks'
+import { SquareSplitVertical } from 'lucide-react'
 import { FiAlertTriangle, FiInfo } from 'react-icons/fi'
 import { LuClock4 } from 'react-icons/lu'
 import { RxReset } from 'react-icons/rx'
@@ -298,6 +300,30 @@ export const DispatchTable = ({
               size="small"
               className={cn('inline-flex items-center justify-center', {
                 hidden:
+                  (record.status !== (DISPATCH_STATUS.DISPATCHED as any) &&
+                    record.status != (DISPATCH_STATUS.NEW as any)) ||
+                  onlyQuery,
+                // record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
+                // date !== today ||
+                // record.moveType == DispatchType.Exceptional,
+              })}
+              onClick={() =>
+                Modal.confirm({
+                  title: 'Dividir el despacho',
+                  content: `¿Está seguro de dividir el despacho ${record.id} ?`,
+                  onOk: () => {
+                    divideMt.mutate(record.id)
+                  },
+                })
+              }
+            >
+              <SquareSplitVertical className="text-black w-4 h-auto" />
+            </Button>
+            <Button
+              type="text"
+              size="small"
+              className={cn('inline-flex items-center justify-center', {
+                hidden:
                   record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
                   record.moveType == DispatchType.Exceptional ||
                   onlyQuery,
@@ -421,6 +447,23 @@ export const DispatchTable = ({
       return warehouseCodes.includes(el.wareToId)
     })
   }, [query.data, queryRoute.data, store.showValueForm])
+
+  const divideMt = useMutation({
+    mutationFn: async (id: number) => {
+      const data = await viewClient.api.view.inventory.divideDispatch.$post({
+        json: {
+          ids: [id],
+        },
+      })
+      if (!data.ok) throw new Error('No se pudo dividir el despacho')
+    },
+    onSuccess: () => {
+      query.refetch()
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
 
   return (
     <>

@@ -2,6 +2,7 @@
   "imports": {
     "@hono/zod-validator": "npm:@hono/zod-validator@^0.4.2",
     "@std/path": "jsr:@std/path@^1.0.8",
+    "dayjs": "npm:dayjs@^1.11.13",
     "drizzle-orm": "npm:drizzle-orm@^0.38.3",
     "hono": "npm:hono@^4.6.16",
     "mysql2": "npm:mysql2@^3.12.0",

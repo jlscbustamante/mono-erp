@@ -1,5 +1,5 @@
 {
-  "workspace" :["./views","./shared"],
+  "workspace" :["./views","./shared","./pizzadb"],
   "compilerOptions":{
     "jsx":"precompile",
     "jsxImportSource":"hono/jsx",

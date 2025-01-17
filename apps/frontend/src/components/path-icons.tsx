@@ -39,7 +39,7 @@ import {
   LiaWarehouseSolid,
 } from 'react-icons/lia'
 import { IconType } from 'react-icons/lib'
-import { LuTruck } from 'react-icons/lu'
+import { LuSplitSquareVertical, LuTruck } from 'react-icons/lu'
 import {
   MdAltRoute,
   MdCancelPresentation,
@@ -74,6 +74,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.mercaderia.reportes.ratio]: null,
   [PATHS.erp.modulos.mercaderia.productos]: FiBox,
   [PATHS.erp.modulos.mercaderia.items]: TbPackages,
+  [PATHS.erp.modulos.mercaderia.divider]: LuSplitSquareVertical,
   [PATHS.erp.modulos.mercaderia.precios]: RiCoinLine,
   [PATHS.erp.modulos.mercaderia.almacenes]: LiaWarehouseSolid,
   [PATHS.erp.modulos.mercaderia.proveedores]: FaUserTie,

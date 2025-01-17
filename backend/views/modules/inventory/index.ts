@@ -37,4 +37,18 @@ export const inventoryRouter = new Hono()
 
       return c.json({ message: "ok" }, 200);
     }
+  )
+  .post(
+    "/divideDispatch",
+    zValidator(
+      "json",
+      z.object({
+        ids: z.array(z.number().int()),
+      })
+    ),
+    async (c) => {
+      const { ids } = c.req.valid("json");
+      await dividerDispatchService.execute(ids);
+      return c.json({ message: "ok" }, 200);
+    }
   );

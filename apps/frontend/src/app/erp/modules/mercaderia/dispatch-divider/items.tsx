@@ -108,46 +108,43 @@ export const ListItems = () => {
 
   return (
     <div className="space-y-3">
-      <div className="space-x-1">
-        <Select
-          className="w-48"
-          allowClear
-          value={sucursal}
-          onChange={setSucursal}
-        >
-          {sucursales.data
-            ?.filter((el) => el.type_sede == WAREHOUSE_TYPE.WAREHOUSE)
-            .map((el) => (
-              <Select.Option value={el.id} key={el.id}>
-                {el.title}
-              </Select.Option>
-            ))}
-        </Select>
-        <Button
-          className={isEditMode ? 'hidden' : ''}
-          onClick={() => editMode(true)}
-        >
-          Editar
-        </Button>
-        <Button
-          className={isEditMode ? '' : 'hidden'}
-          onClick={() => editMode(false)}
-        >
-          Cancelar
-        </Button>
-        <Button
-          type="primary"
-          loading={saveRelationMt.isPending}
-          className={isEditMode ? '' : 'hidden'}
-          onClick={handleSave}
-        >
-          Guardar
-        </Button>
-      </div>
-      <div className={isEditMode ? '' : 'hidden'}>
-        <p className="text-sm py-1">
-          Si dejas vacio por defecto se usa el almacen {defaultStoreCode}
-        </p>
+      <div className="flex items-center justify-between">
+        <div className="space-x-1">
+          <Select
+            className="w-48"
+            allowClear
+            value={sucursal}
+            onChange={setSucursal}
+          >
+            {sucursales.data
+              ?.filter((el) => el.type_sede == WAREHOUSE_TYPE.WAREHOUSE)
+              .map((el) => (
+                <Select.Option value={el.id} key={el.id}>
+                  {el.title}
+                </Select.Option>
+              ))}
+          </Select>
+          <Button
+            className={isEditMode ? 'hidden' : ''}
+            onClick={() => editMode(true)}
+          >
+            Editar
+          </Button>
+          <Button
+            className={isEditMode ? '' : 'hidden'}
+            onClick={() => editMode(false)}
+          >
+            Cancelar
+          </Button>
+          <Button
+            type="primary"
+            loading={saveRelationMt.isPending}
+            className={isEditMode ? '' : 'hidden'}
+            onClick={handleSave}
+          >
+            Guardar
+          </Button>
+        </div>
       </div>
       <Table
         pagination={false}
