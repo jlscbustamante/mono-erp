@@ -75,6 +75,9 @@ app.post("/register", async (c) => {
     const photo = formData["archivo"] as File;
     const id_employee = formData["id_employee"] as string;
     const event = formData["event"] as string;
+    const storeCode = formData["store_code"] as string;
+
+    if (!storeCode || !id_employee) throw new Error("Faltan datos");
 
     const user = await employeeRepository.findOne({
       where: {
@@ -99,14 +102,17 @@ app.post("/register", async (c) => {
     const path = getDatePath();
     const pathUser = `${path}/${user.doc_number}_${event}.jpg`;
 
-    const resultPath = await s3Service.uploadAssistanceFile(photo, pathUser);
+    let resultPath;
+    if (photo) {
+      resultPath = await s3Service.uploadAssistanceFile(photo, pathUser);
+    }
 
     await attendanceRepository.insert({
       employee_id: user.id,
       event: event as ATTENDANCE_EVENT,
-      pic_photo: resultPath,
+      pic_photo: resultPath ?? null,
       attendance_at: format(new Date(), "yyyy-MM-dd HH:mm:ss"),
-      sucursal_id: user.sucursal_id,
+      sucursal_id: storeCode,
     });
 
     return c.json({
@@ -156,7 +162,7 @@ app.get("/verify", async (c) => {
 
     const firstPathFounded = attendance.find((el) => el.pic_photo);
     let url: string | undefined = undefined;
-    if (firstPathFounded) {
+    if (firstPathFounded && firstPathFounded.pic_photo) {
       url = await s3Service.getPresignedUrl(firstPathFounded.pic_photo);
     }
 

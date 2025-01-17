@@ -34,7 +34,7 @@ export class Attendance {
   event: ATTENDANCE_EVENT;
 
   @Column("varchar", { length: 250 })
-  pic_photo: string;
+  pic_photo: string | null;
 
   @Column("varchar", { length: 10 })
   sucursal_id: string;
