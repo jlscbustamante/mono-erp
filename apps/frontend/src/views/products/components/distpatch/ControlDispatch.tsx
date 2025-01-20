@@ -1,4 +1,4 @@
-import { Button, Dropdown, Input, Select } from 'antd'
+import { Button, Dropdown, Input, Modal, Select } from 'antd'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
 import { TfiReload } from 'react-icons/tfi'
@@ -12,6 +12,7 @@ import { DispatchItemSelector } from '@/app/erp/modules/mercaderia/dispatch-item
 import config from '@/config'
 import { zipedFiles } from '@/data/hex/inventory'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
+import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
 import { format } from 'date-fns'
@@ -166,6 +167,40 @@ export const ControlDispatch = () => {
     },
   })
 
+  const idsCanDivide: number[] = useMemo(() => {
+    if (!query.data) return []
+    return query.data
+      ?.filter((el) => {
+        const result = [
+          DispatchStatus.DISPATCHED,
+          DispatchStatus.NEW,
+          DispatchStatus.APPROVED,
+        ].includes(('' + el.status) as DispatchStatus)
+        return result
+      })
+      .map((el) => el.id)
+  }, [query.data])
+
+  const divideDispatchMt = useMutation({
+    mutationFn: async (ids: number[]) =>
+      viewClient.api.view.inventory.divideDispatch.$post({
+        json: {
+          ids,
+        },
+      }),
+    onSuccess: () => {
+      query.refetch()
+    },
+    onError: (err: any) => {
+      toast.error(err.message)
+    },
+  })
+
+  const handleDivideDispatch = () => {
+    if (idsCanDivide.length == 0) return
+    divideDispatchMt.mutate(idsCanDivide)
+  }
+
   return (
     <div className="flex items-center">
       <div className="flex gap-1 mb-3 items-center flex-1">
@@ -251,6 +286,17 @@ export const ControlDispatch = () => {
         />
       </div>
       <div className="flex items-center gap-2">
+        <Button
+          onClick={() =>
+            Modal.confirm({
+              content: `Se dividirán los despachos NUEVOS, APROBADOS y DESPACHADOS que estan en pantalla. Total: ${idsCanDivide.length}`,
+              title: '¿Desea dividir los despachos?',
+              onOk: handleDivideDispatch,
+            })
+          }
+        >
+          Dividir despachos
+        </Button>
         <DispatchItemSelector />
         <div>
           {/* <Button>Descargar archivos</Button> */}

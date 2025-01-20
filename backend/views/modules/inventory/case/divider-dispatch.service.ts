@@ -74,10 +74,12 @@ export class DividerDispatchService {
         });
       } else if (keysLen == 1) {
         const code = Object.keys(record)[0];
-        updateCode.push({
-          code,
-          id: dispatch.id,
-        });
+        if (dispatch.sucursal_from_id != code) {
+          updateCode.push({
+            code,
+            id: dispatch.id,
+          });
+        }
       } else {
         const codes = Object.keys(record);
         const { items: _item, ...originalDispatch } = dispatch;
