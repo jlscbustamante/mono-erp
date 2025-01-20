@@ -294,6 +294,7 @@ export const ControlDispatch = () => {
               onOk: handleDivideDispatch,
             })
           }
+          className="hidden"
         >
           Dividir despachos
         </Button>
