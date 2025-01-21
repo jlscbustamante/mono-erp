@@ -6,6 +6,7 @@ export class JwtService {
     secretKey: string,
     private readonly expiresIn = "30d"
   ) {
+    console.log("private : ", secretKey);
     this.secret = new TextEncoder().encode(secretKey);
   }
 
