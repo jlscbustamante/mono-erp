@@ -73,7 +73,11 @@ const Header = () => {
         </Button>
       </div>
       <div className="flex gap-1 items-center">
-        <Button size="small" onClick={() => setOpenProcessDrawer(true)}>
+        <Button
+          size="small"
+          onClick={() => setOpenProcessDrawer(true)}
+          type="primary"
+        >
           Correr procesos
         </Button>
         <Popover
@@ -98,12 +102,13 @@ const Header = () => {
             </div>
           }
         >
-          <Button size="small" loading={!steps.loadStatus}>
+          <Button size="small" loading={!steps.loadStatus} type="primary">
             Excluir estados : {excludeStatus.filter((el) => el.exclude).length}
           </Button>
         </Popover>
         <Button
           size="small"
+          type="primary"
           onClick={loadDataFromEfisis}
           loading={loading.loadEfis}
         >
