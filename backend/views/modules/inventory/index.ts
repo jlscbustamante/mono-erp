@@ -1,7 +1,7 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
 import { z } from "zod";
-import { dividerDispatchService } from "./dependencies.ts";
+import { dispatchOrderUC, dividerDispatchService } from "./dependencies.ts";
 
 export const inventoryRouter = new Hono()
   .get("/items", (c) => {
@@ -49,6 +49,20 @@ export const inventoryRouter = new Hono()
     async (c) => {
       const { ids } = c.req.valid("json");
       await dividerDispatchService.execute(ids);
+      return c.json({ message: "ok" }, 200);
+    }
+  )
+  .post(
+    "dispatchOrder",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number().int(),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid("json");
+      await dispatchOrderUC.execute(id);
       return c.json({ message: "ok" }, 200);
     }
   );
