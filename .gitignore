@@ -7,3 +7,6 @@ apis.md
 
 files/*
 !file/note.md
+
+**/.env
+**/.env.production
