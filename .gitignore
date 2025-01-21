@@ -10,3 +10,4 @@ files/*
 
 **/.env
 **/.env.production
+.env
