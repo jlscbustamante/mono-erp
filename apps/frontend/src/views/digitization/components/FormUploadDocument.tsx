@@ -105,7 +105,9 @@ export const FormUploadDocument: React.FC<{
           }}
           beforeUpload={() => false}
         >
-          <Button icon={<AiOutlineUpload />}>Selecciona archivo</Button>
+          <Button icon={<AiOutlineUpload />} type="primary">
+            Selecciona archivo
+          </Button>
         </Upload>
       </Form.Item>
       <Form.Item>

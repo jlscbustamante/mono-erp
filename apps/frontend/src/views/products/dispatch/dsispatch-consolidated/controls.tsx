@@ -64,7 +64,7 @@ export const ConsolidatedControls = ({
       <ReactToPrint
         content={() => tableRef.current}
         trigger={() => (
-          <Button size="small" icon={<IoMdPrint />}>
+          <Button type="primary" size="small" icon={<IoMdPrint />}>
             Imprimir
           </Button>
         )}

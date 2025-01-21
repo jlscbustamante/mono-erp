@@ -220,6 +220,7 @@ export const InfoDispatchDrawer = () => {
                         icon={<PrinterOutlined />}
                         title="Imprimir lista"
                         size="small"
+                        type="primary"
                       >
                         Imprimir lista
                       </Button>
@@ -235,6 +236,7 @@ export const InfoDispatchDrawer = () => {
                     // icon={<MdEdit />}
                     icon={<TbTruckDelivery />}
                     title="Editar"
+                    type="primary"
                     size="small"
                   >
                     Despachar

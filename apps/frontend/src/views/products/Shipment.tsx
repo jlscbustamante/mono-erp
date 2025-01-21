@@ -36,7 +36,7 @@ const Filters: React.FC<{ setOpenModal: (open: boolean) => void }> = ({
       <div className="flex gap-2">
         <RangePicker />
         <Select placeholder="Selecciona" />
-        <Button type="default">Buscar</Button>
+        <Button type="primary">Buscar</Button>
       </div>
       <div>
         <Button type="primary" onClick={() => setOpenModal(true)}>

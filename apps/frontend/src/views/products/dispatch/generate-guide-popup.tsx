@@ -131,6 +131,7 @@ export const GenerateGuidePopup = ({
       onOpenChange={setOpen}
     >
       <Button
+        type="primary"
         size="small"
         loading={
           generateInvoiceAndGuideMt.isPending || generateGuideMt.isPending

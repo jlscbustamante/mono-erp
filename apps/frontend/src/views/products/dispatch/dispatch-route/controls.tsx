@@ -84,7 +84,7 @@ export const DispatchRoutesControl = ({
       <ReactToPrint
         content={() => tableRef.current}
         trigger={() => (
-          <Button size="small" icon={<IoMdPrint />}>
+          <Button size="small" type="primary" icon={<IoMdPrint />}>
             Imprimir
           </Button>
         )}

@@ -125,12 +125,14 @@ export const ListItems = () => {
               ))}
           </Select>
           <Button
+            type="primary"
             className={isEditMode ? 'hidden' : ''}
             onClick={() => editMode(true)}
           >
             Editar
           </Button>
           <Button
+            type="primary"
             className={isEditMode ? '' : 'hidden'}
             onClick={() => editMode(false)}
           >

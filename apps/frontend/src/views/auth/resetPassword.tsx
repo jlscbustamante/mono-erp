@@ -275,7 +275,7 @@ const CodeVerificationSection: React.FC<{
         </ul>
       </div>
       <div className="grid grid-cols-2 gap-1 mt-6">
-        <Button onClick={prevPage} loading={loading}>
+        <Button onClick={prevPage} loading={loading} type="primary">
           Volver
         </Button>
         <Button type="primary" onClick={handleReset} loading={loading}>

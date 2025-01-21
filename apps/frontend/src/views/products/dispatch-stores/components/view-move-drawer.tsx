@@ -121,6 +121,7 @@ const DrawerContent = ({
                 <ReactToPrint
                   trigger={() => (
                     <Button
+                      type="primary"
                       icon={<PrinterOutlined />}
                       title="Imprimir lista"
                       size="small"
@@ -132,6 +133,7 @@ const DrawerContent = ({
                 />
                 {dispatch.status == DispatchStatus.APPROVED && (
                   <Button
+                    type="primary"
                     onClick={() =>
                       approveDispatchBetweenStoresMt.mutate(dispatch.id)
                     }

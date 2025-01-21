@@ -65,7 +65,7 @@ export const InfoPurchaseDrawer = () => {
           <div className="flex justify-between">
             <p>Información de compra</p>
             <ReactToPrint
-              trigger={() => <Button>Imprimir</Button>}
+              trigger={() => <Button type="primary">Imprimir</Button>}
               content={() => componentRef.current}
             />
           </div>
@@ -84,6 +84,7 @@ export const InfoPurchaseDrawer = () => {
                 <div className="flex gap-2">
                   <Button
                     size="small"
+                    type="primary"
                     icon={<MdEdit />}
                     className={
                       cn({
@@ -100,6 +101,7 @@ export const InfoPurchaseDrawer = () => {
                     Editar
                   </Button>
                   <Button
+                    type="primary"
                     loading={handleStorePurchase.isPending}
                     onClick={() => {
                       if (purchase.id && purchase.status == 1)

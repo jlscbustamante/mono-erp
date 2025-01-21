@@ -330,11 +330,14 @@ export const ControlDispatch = () => {
               ],
             }}
           >
-            <Button loading={zipedFilesMt.isPending}>Descargar archivos</Button>
+            <Button loading={zipedFilesMt.isPending} type="primary">
+              Descargar archivos
+            </Button>
           </Dropdown>
         </div>
         <div>
           <Button
+            type="primary"
             onClick={() => {
               store.setDrawers({ create: true })
             }}
@@ -345,6 +348,7 @@ export const ControlDispatch = () => {
 
         <div className="hidden">
           <Button
+            type="primary"
             shape="circle"
             loading={query.isFetching}
             onClick={() => query.refetch()}

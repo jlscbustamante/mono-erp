@@ -110,7 +110,7 @@ export const DispatchEditItemsDrawer = ({
             </Select.Option>
           ))}
         </Select>
-        <Button size="small" onClick={addItem}>
+        <Button type="primary" size="small" onClick={addItem}>
           Agregar
         </Button>
       </div>

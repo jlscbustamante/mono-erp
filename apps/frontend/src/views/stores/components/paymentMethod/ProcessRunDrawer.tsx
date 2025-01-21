@@ -74,12 +74,14 @@ const ProcessRunDrawer: React.FC<{
           </Button>
           <div className="space-x-1">
             <Button
+              type="primary"
               onClick={() => clearLogs.mutate()}
               loading={clearLogs.isPending}
             >
               Limpiar registros
             </Button>
             <Button
+              type="primary"
               icon={<TbReload className="" />}
               onClick={() => logQuery.refetch()}
               loading={logQuery.isRefetching}

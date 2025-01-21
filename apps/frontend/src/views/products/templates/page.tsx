@@ -36,6 +36,7 @@ export default function TemplatePage() {
     <div className="p-3">
       <div className="flex justify-end mb-3">
         <Button
+          type="primary"
           loading={checkTemplateMt.isPending}
           onClick={() => checkTemplateMt.mutate()}
         >

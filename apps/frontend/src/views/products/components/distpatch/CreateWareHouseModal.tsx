@@ -66,7 +66,7 @@ export const CreateWareHouseModal: React.FC<{
         </Form>
       }
     >
-      <Button className="w-7 p-0">
+      <Button className="w-7 p-0" type="primary">
         <LuPlus />
       </Button>
     </Popover>

@@ -281,7 +281,7 @@ const ActionsBoxCash: React.FC<{
         <Button type="primary" onClick={handlerCreate}>
           Crear
         </Button>
-        <Button danger onClick={cancelCreation}>
+        <Button danger onClick={cancelCreation} type="primary">
           Cancelar
         </Button>
       </div>
@@ -289,7 +289,9 @@ const ActionsBoxCash: React.FC<{
         className="flex justify-between my-4"
         style={{ display: !isCreating && storeFilter ? 'flex' : 'none' }}
       >
-        <Button onClick={() => setIsCreating(true)}>Agregar movimiento</Button>
+        <Button type="primary" onClick={() => setIsCreating(true)}>
+          Agregar movimiento
+        </Button>
         <Button
           type="primary"
           onClick={() => {

@@ -103,7 +103,7 @@ export const CardElement: React.FC<{
       title={
         <div className="text-right">
           <Button
-            type="default"
+            type="primary"
             onClick={handleGenerate}
             loading={loading}
             disabled={data.some((el) => el.info)}
@@ -161,7 +161,12 @@ const GetOptionItem: React.FC<{
     )
   else if (item.state != 'T')
     return (
-      <Button size="small" loading={loading} onClick={handleGenerate}>
+      <Button
+        size="small"
+        loading={loading}
+        onClick={handleGenerate}
+        type="primary"
+      >
         Generar
       </Button>
     )

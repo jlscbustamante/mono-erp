@@ -59,7 +59,7 @@ export const CreateCategory: React.FC<{ onCreate: (id: number) => void }> = ({
         </Form>
       }
     >
-      <Button className="w-7 p-0">
+      <Button className="w-7 p-0" type="primary">
         <LuPlus />
       </Button>
     </Popover>

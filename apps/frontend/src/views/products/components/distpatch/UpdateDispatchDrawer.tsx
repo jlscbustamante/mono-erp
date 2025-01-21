@@ -282,6 +282,7 @@ export const UpdateDispatchDrawer: React.FC<{
               </div>
               <div className="py-3 text-right flex justify-end items-center gap-2">
                 <Button
+                  type="primary"
                   onClick={onSave}
                   loading={store.loading.updating}
                   disabled={loadingSP}
@@ -295,6 +296,7 @@ export const UpdateDispatchDrawer: React.FC<{
                   // disabled={dispatch.status != DispatchStatus.APPROVED}
                   // onClick={dispatchRequest}
                   // onClick={saveAndApprove}
+                  typeof="primary"
                   onClick={() => {
                     const dispatchAt = dispatch.moveAt?.split(' ')[0]
                     Modal.confirm({
@@ -409,7 +411,7 @@ const EditItemList: React.FC<{
             setSelectedItem(val)
           }}
         />
-        <Button size="small" onClick={addNewItem}>
+        <Button size="small" onClick={addNewItem} type="primary">
           Agregar item
         </Button>
       </div>

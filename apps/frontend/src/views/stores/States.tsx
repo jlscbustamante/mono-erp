@@ -214,7 +214,7 @@ const StatesTable = () => {
         return (
           <Button
             disabled={isDisabled}
-            type="default"
+            type="primary"
             size="small"
             loading={isClosing}
             onClick={() =>

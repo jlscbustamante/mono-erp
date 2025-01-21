@@ -377,6 +377,7 @@ export const ControlStock = () => {
         </div>
         <div className="flex items-center gap-2">
           <Button
+            type="primary"
             className={isWarehouseSelected ? undefined : 'hidden'}
             onClick={() => {
               if (!sucursalCode) return
@@ -388,6 +389,7 @@ export const ControlStock = () => {
             Hacer inventario
           </Button>
           <Button
+            type="primary"
             // className={isWarehouseSelected ? 'hidden' : undefined}
             // className="hidden"
             onClick={() => {

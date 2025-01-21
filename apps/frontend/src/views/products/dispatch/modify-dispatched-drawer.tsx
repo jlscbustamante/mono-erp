@@ -430,7 +430,7 @@ const ModifyDispatchStructure = ({
             </Select.Option>
           ))}
         </Select>
-        <Button size="small" onClick={addItem}>
+        <Button size="small" onClick={addItem} type="primary">
           Agregar
         </Button>
       </div>

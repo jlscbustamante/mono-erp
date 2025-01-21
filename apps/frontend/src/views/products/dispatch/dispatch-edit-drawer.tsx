@@ -160,6 +160,7 @@ const DispatchEditStructure = ({
       <SummaryDispatch dispatch={dispatch} setDispatch={setDispatch} />
       <div className="flex justify-end gap-1">
         <Button
+          type="primary"
           onClick={handleUpdate}
           loading={updateDispatchMt.isPending}
           disabled={dispatchItemsMt.isPending}

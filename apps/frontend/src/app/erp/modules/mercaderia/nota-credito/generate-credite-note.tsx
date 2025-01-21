@@ -196,7 +196,9 @@ const CreateCreditNote = ({
         >
           Crear nota de credito para este pedido
         </Button>
-        <Button onClick={onClear}>Cancelar</Button>
+        <Button type="primary" onClick={onClear}>
+          Cancelar
+        </Button>
       </div>
     </div>
   )

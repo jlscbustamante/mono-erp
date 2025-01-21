@@ -227,7 +227,7 @@ const ButtonUpload = () => {
   return (
     <>
       <Dropdown menu={{ items }}>
-        <Button type="default">Subir archivo</Button>
+        <Button type="primary">Subir archivo</Button>
       </Dropdown>
       <Modal
         open={isOpen}
@@ -243,7 +243,9 @@ const ButtonUpload = () => {
       >
         <div className="flex items-center justify-center my-4 flex-col">
           <Upload {...props} className="w-full flex flex-col items-center">
-            <Button icon={<AiOutlineInbox />}>Agregar archivo</Button>
+            <Button icon={<AiOutlineInbox />} type="primary">
+              Agregar archivo
+            </Button>
             {fileList.length > 3 && (
               <div>
                 <p className="m-2">

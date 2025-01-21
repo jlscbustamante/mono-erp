@@ -23,7 +23,9 @@ export const ModalLogs: React.FC<{
           <Button type="text" onClick={() => donwloadAsTxt()}>
             Descargar lista.txt
           </Button>
-          <Button onClick={() => onClose()}>Aceptar</Button>
+          <Button type="primary" onClick={() => onClose()}>
+            Aceptar
+          </Button>
         </>
       }
     >

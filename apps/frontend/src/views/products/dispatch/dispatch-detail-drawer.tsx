@@ -181,6 +181,7 @@ const DispatchHeader = ({
         {guideDoc &&
           (guideDoc.status == DOC_STATUS.COMPLETED ? (
             <Button
+              type="primary"
               onClick={() => {
                 if (guideDoc.doc_efact_id != null) {
                   window.open(
@@ -199,11 +200,16 @@ const DispatchHeader = ({
             </Button>
           ) : guideDoc.status == DOC_STATUS.CREATED ||
             guideDoc.status == DOC_STATUS.SENT ? (
-            <Button size="small" icon={<LuClock4 className="w-4 h-auto" />}>
+            <Button
+              size="small"
+              type="primary"
+              icon={<LuClock4 className="w-4 h-auto" />}
+            >
               guia
             </Button>
           ) : guideDoc.status == DOC_STATUS.REJECTED ? (
             <Button
+              type="primary"
               size="small"
               icon={<FiInfo className="w-4 h-auto text-red-600" />}
             >
@@ -215,6 +221,7 @@ const DispatchHeader = ({
           dispatch.status,
         ) && (
           <Button
+            type="primary"
             size="small"
             onClick={() => OpenDivide()}
             className={onlyQuery ? 'hidden' : undefined}
@@ -226,6 +233,7 @@ const DispatchHeader = ({
         {invoiceDoc &&
           (invoiceDoc.status == DOC_STATUS.COMPLETED ? (
             <Button
+              type="primary"
               onClick={() => {
                 if (invoiceDoc.doc_efact_id != null) {
                   window.open(
@@ -258,6 +266,7 @@ const DispatchHeader = ({
         {dispatch.status == DISPATCH_STATUS.DISPATCHED && (
           <Button
             size="small"
+            type="primary"
             onClick={() => openModifyDispatch(dispatch.id)}
             className={onlyQuery ? 'hidden' : undefined}
           >
@@ -268,7 +277,7 @@ const DispatchHeader = ({
         <ReactToPrint
           trigger={() => {
             return (
-              <Button size="small" icon={<IoMdPrint />}>
+              <Button type="primary" size="small" icon={<IoMdPrint />}>
                 Items
               </Button>
             )
@@ -280,6 +289,7 @@ const DispatchHeader = ({
           dispatch.status,
         ) && (
           <Button
+            type="primary"
             size="small"
             icon={<FaTruck />}
             onClick={() => open(dispatch.id)}

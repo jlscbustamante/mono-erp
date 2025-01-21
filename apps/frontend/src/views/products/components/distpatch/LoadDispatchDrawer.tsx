@@ -82,7 +82,7 @@ export const LoadDispatchDrawer = () => {
           />
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 6 }}>
-          <Button type="default" onClick={loadDispatch} loading={loading}>
+          <Button type="primary" onClick={loadDispatch} loading={loading}>
             Cargar
           </Button>
         </Form.Item>

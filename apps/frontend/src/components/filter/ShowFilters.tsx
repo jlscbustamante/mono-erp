@@ -75,6 +75,7 @@ export const ShowFilters = <T,>(props: IComponentProps<T>) => {
               props.setUserFilters?.({})
             }}
             icon={<MdOutlineCleaningServices />}
+            type="primary"
           ></Button>
         )}
     </div>

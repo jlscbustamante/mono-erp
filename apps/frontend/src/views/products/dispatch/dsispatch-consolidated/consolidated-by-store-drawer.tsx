@@ -132,7 +132,9 @@ const DrawerContent = (data: Data) => {
             ],
           }}
         >
-          <Button size="small">Exportar</Button>
+          <Button size="small" type="primary">
+            Exportar
+          </Button>
         </Dropdown>
       </div>
       <Table

@@ -182,6 +182,7 @@ const ButtonUpload = () => {
   return (
     <>
       <Button
+        type="primary"
         onClick={() => {
           setIsOpen(true)
           setTypeUpload(PaymentUploadtype.Bank)
@@ -203,7 +204,9 @@ const ButtonUpload = () => {
       >
         <div className="flex items-center justify-center my-4 flex-col">
           <Upload {...props}>
-            <Button icon={<AiOutlineInbox />}>Agregar archivo</Button>
+            <Button icon={<AiOutlineInbox />} type="primary">
+              Agregar archivo
+            </Button>
             {fileList.length > 3 && (
               <div>
                 <p className="m-2">

@@ -62,7 +62,7 @@ export const FiltersComponent: React.FC<{
         />
       </div>
       {onExport && (
-        <Button onClick={handleExport} type="text">
+        <Button onClick={handleExport} type="primary">
           Exportar
         </Button>
       )}

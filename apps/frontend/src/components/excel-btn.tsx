@@ -13,6 +13,7 @@ export const ExcelExportBtn = ({
       className="flex items-center gap-2 font-semibold"
       onClick={onExport}
       size={small ? 'small' : 'middle'}
+      type="primary"
     >
       <RiFileExcel2Line className="w-5 h-5 items-center" />
       <span>Exportar</span>

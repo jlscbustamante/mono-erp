@@ -27,7 +27,7 @@ export const DispatchItemSelector = () => {
 
   return (
     <Popover content={content} placement="bottom" trigger={'click'}>
-      <Button>{selected.length} items observados</Button>
+      <Button type="primary">{selected.length} items observados</Button>
     </Popover>
   )
 }

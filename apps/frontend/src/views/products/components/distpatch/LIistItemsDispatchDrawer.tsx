@@ -153,6 +153,7 @@ export const ListItemsDispatchDrawer: React.FC<{
               }}
             />
             <Button
+              type="primary"
               onClick={() => {
                 addNewItem(selectedItem)
               }}

@@ -111,7 +111,7 @@ const CloseCashAccounts: React.FC<{ applyFilter: () => Promise<void> }> = ({
                 <Link onClick={selectedAll}>Seleccionar todo</Link>
                 <Link onClick={cleanSelected}>Limpiar</Link>
               </div>
-              <Button type="text" onClick={handlerCloseCashAccounts}>
+              <Button type="primary" onClick={handlerCloseCashAccounts}>
                 Aceptar
               </Button>
             </div>
@@ -140,7 +140,7 @@ const CloseCashAccounts: React.FC<{ applyFilter: () => Promise<void> }> = ({
         placement="bottomRight"
         arrow={false}
       >
-        <Button type="default">Cerrar cajas</Button>
+        <Button type="primary">Cerrar cajas</Button>
       </Popover>
     </div>
   )

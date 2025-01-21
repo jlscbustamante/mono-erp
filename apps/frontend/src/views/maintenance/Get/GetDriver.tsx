@@ -277,6 +277,7 @@ export const GetDriver = () => {
         onCancel={() => setDeleteConfirmationVisible(false)}
         footer={[
           <Button
+            danger
             key="cancel"
             onClick={() => setDeleteConfirmationVisible(false)}
           >
