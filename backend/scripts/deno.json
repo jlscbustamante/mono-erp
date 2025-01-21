@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "dayjs": "npm:dayjs@^1.11.13",
+    "drizzle-orm": "npm:drizzle-orm@^0.38.3",
+    "mysql2": "npm:mysql2@^3.12.0"
+  }
+}
