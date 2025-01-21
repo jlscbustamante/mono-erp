@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
+import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 
@@ -9,6 +10,7 @@ const app = new Hono();
 export const apiRouter = app
   .basePath("/api/view")
   .use(cors())
+  .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
   .use(session)
   .route("inventory", inventoryRouter);
