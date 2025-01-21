@@ -191,3 +191,6 @@ export type DispatchInsert = InferInsertModel<typeof dispatches>;
 export type DispatchSelect = InferSelectModel<typeof dispatches>;
 export type DispatchItemSelect = InferSelectModel<typeof dispatchesItems>;
 export type DispatchItemInsert = InferInsertModel<typeof dispatchesItems>;
+
+export type StockSelect = InferSelectModel<typeof stocks>;
+export type StockInsert = InferInsertModel<typeof stocks>;

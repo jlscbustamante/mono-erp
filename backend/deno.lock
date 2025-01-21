@@ -449,6 +449,13 @@
           "npm:mysql2@^3.12.0"
         ]
       },
+      "scripts": {
+        "dependencies": [
+          "npm:dayjs@^1.11.13",
+          "npm:drizzle-orm@~0.38.3",
+          "npm:mysql2@^3.12.0"
+        ]
+      },
       "shared": {
         "dependencies": [
           "jsr:@std/dotenv@~0.225.3",
