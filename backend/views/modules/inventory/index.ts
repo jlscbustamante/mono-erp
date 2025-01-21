@@ -1,5 +1,6 @@
 import { zValidator } from "@hono/zod-validator";
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import { dispatchOrderUC, dividerDispatchService } from "./dependencies.ts";
 
@@ -13,11 +14,12 @@ export const inventoryRouter = new Hono()
     try {
       data = await dividerDispatchService.readRelation();
     } catch (err: any) {
-      if (err.code == "ENOENT") {
+      if (err?.code == "ENOENT") {
         data = {
           data: {},
         };
       }
+      throw new HTTPException(400, { message: err.message });
     }
 
     return c.json(data);
