@@ -14,8 +14,7 @@ const jwtService = new JwtService(appConfig.jwt.secret);
 export const session = createMiddleware(async (c, next) => {
   const [, token] = c.req.header("Authorization")?.split(" ") ?? [];
   if (!token) {
-    // throw new Error("No autorizado");
-    console.log("normalmente");
+    throw new Error("No autorizado");
   } else {
     const parsed = await jwtService.decrypt<Session>(token);
     c.set("user", parsed);
