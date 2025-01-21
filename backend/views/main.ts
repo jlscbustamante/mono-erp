@@ -8,8 +8,8 @@ import { inventoryRouter } from "./modules/inventory/index.ts";
 const app = new Hono();
 
 export const apiRouter = app
+  .use("/api/*", cors())
   .basePath("/api/view")
-  .use(cors())
   .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
   .use(session)
