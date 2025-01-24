@@ -40,6 +40,8 @@ const handleSimpleExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.id,
     columnsTable.request_type,
     columnsTable.requested_at,
+    columnsTable.legal_name,
+    columnsTable.num_document,
     columnsTable.description,
     {
       title: 'Categoría',
