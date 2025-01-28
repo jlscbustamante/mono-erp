@@ -1,11 +1,10 @@
-import { db } from "#app/database.ts";
 import { Hono } from "hono";
 
 export const authRouter = new Hono().get("/me", async (c) => {
-  const data = await db.query.users.findMany({
-    with: {
-      role: true,
-    },
+  const user = c.get("user");
+  return c.json({
+    data: user,
   });
-  return c.json({ mesage: "na", data: data });
+
+  // return c.json({ mesage: "na", data: data });
 });

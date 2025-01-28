@@ -12,7 +12,7 @@ export class IamPermission {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", name: "role_id" })
   rol_id: number;
 
   @Column({ type: "int" })
