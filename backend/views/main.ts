@@ -1,3 +1,4 @@
+import { authRouter } from "#app/modules/auth/index.ts";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
@@ -13,7 +14,8 @@ export const apiRouter = app
   .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
   .use(session)
-  .route("inventory", inventoryRouter);
+  .route("inventory", inventoryRouter)
+  .route("auth", authRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

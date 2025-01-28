@@ -3,10 +3,12 @@ import {
   dispatchesItems,
   dispatchesRelation,
   dispatchItemRelation,
+  roles,
   templateItemsRelation,
   templateRelation,
   templates,
   templatesItems,
+  users,
 } from "@scope/pizzadb";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
@@ -24,6 +26,10 @@ export const db = drizzle(connection, {
   mode: "default",
   logger: false,
   schema: {
+    roles,
+    users,
+    // usersRelations,
+    // roleRelations,
     dispatches,
     dispatchesItems,
     dispatchesRelation,
