@@ -11,7 +11,11 @@ import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
 import { RecursosHumanosLayout } from '@/app/erp/modules/recursosHumanos/layout'
+import { ApprovedPage } from '@/app/erp/modules/requerimientos/approved/page'
+import { RequirementeCreation } from '@/app/erp/modules/requerimientos/creation/page'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
+import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
+import { RequirementReview } from '@/app/erp/modules/requerimientos/review/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
 import { PATHS } from '@/const/paths'
@@ -55,12 +59,10 @@ import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
 import Reports from '@/views/reports/Reports'
-import Approved from '@/views/requests/Approved'
 import BalanceCostCenter from '@/views/requests/balances/CostCenter'
 import DetailedBalance from '@/views/requests/balances/Detailed'
 import SummarizedBalance from '@/views/requests/balances/Summarized'
 import Rejected from '@/views/requests/Rejected'
-import Requested from '@/views/requests/Requested'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
 import PaymentMethods from '@/views/stores/PaymentMethods'
@@ -115,12 +117,20 @@ export const routerv2 = createBrowserRouter([
             element: <RequerimientosLayout />,
             children: [
               {
+                path: PATHS.erp.modulos.requerimientos.review,
+                element: <RequirementReview />,
+              },
+              {
+                path: PATHS.erp.modulos.requerimientos.creation,
+                element: <RequirementeCreation />,
+              },
+              {
                 path: PATHS.erp.modulos.requerimientos.solicitados,
-                element: <Requested />,
+                element: <PendingPage />,
               },
               {
                 path: PATHS.erp.modulos.requerimientos.aprobados,
-                element: <Approved />,
+                element: <ApprovedPage />,
               },
               {
                 path: PATHS.erp.modulos.requerimientos.rechazados,

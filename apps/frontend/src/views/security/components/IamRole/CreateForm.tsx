@@ -1,5 +1,5 @@
 import { Button, Checkbox, Form, Input, Select, Table } from 'antd'
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { NOTIFICATION } from '@/const/notification'
@@ -11,7 +11,7 @@ import {
   nameIamRol,
   updateRol,
 } from '@/data/security/IamRole/sdk'
-import { ICreateIamRole, IIamRole } from '@/data/security/IamRole/type/IamRole'
+import { ICreateIamRole } from '@/data/security/IamRole/type/IamRole'
 import { IamRoleStatus } from '@/data/security/IamRole/type/status'
 
 interface Permission {
@@ -37,13 +37,7 @@ type Funciones = {
 }
 const groupedResults: Record<number, any[]> = {}
 
-export const CreateForm: React.FC<{
-  iamRole: ICreateIamRole | null
-  setIamRole: Dispatch<SetStateAction<IIamRole | null>>
-  onClose: () => void
-  reload: () => void
-  showUnsign?: boolean
-}> = ({ onClose, reload }) => {
+export const CreateForm = () => {
   const [moduleData, setModuleData] = useState<any[]>([])
   const [form] = Form.useForm()
   const [selectedFunctions, setSelectedFunctions] = useState<Funciones[]>([])
@@ -121,13 +115,8 @@ export const CreateForm: React.FC<{
         render: 'Rol creado',
         ...NOTIFICATION.updateLoading,
       })
-      reload()
-
-      onClose()
     } catch (err: any) {
       toast.error(err.message, NOTIFICATION.error)
-      reload()
-      onClose()
     }
   }
 
