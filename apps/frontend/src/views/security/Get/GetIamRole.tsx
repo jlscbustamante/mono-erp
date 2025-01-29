@@ -109,10 +109,10 @@ export const GetIamRole = () => {
       >
         {isDrawerVisible && (
           <CreateForm
-            iamRole={selectedRequest}
-            setIamRole={setSelectedRequest}
-            onClose={handleDrawerClose}
-            reload={cleanFilters}
+          // iamRole={selectedRequest}
+          // setIamRole={setSelectedRequest}
+          // onClose={handleDrawerClose}
+          // reload={cleanFilters}
           />
         )}
       </Drawer>
