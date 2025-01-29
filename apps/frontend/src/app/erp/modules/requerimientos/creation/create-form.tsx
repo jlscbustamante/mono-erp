@@ -46,6 +46,12 @@ export function CreationForm() {
               <Select.Option>Proveedores</Select.Option>
             </Select>
           </Form.Item>
+          <Form.Item label="Referencia">
+            <Select placeholder="Requerimiento">
+              <Select.Option>Descripcion del requerimiento</Select.Option>
+              <Select.Option>Descripcion 2</Select.Option>
+            </Select>
+          </Form.Item>
           <Form.Item label="Descripcion">
             <Input.TextArea placeholder="Descripcion" rows={4} />
           </Form.Item>
@@ -119,6 +125,7 @@ interface Quota {
 const PaymentForm = () => {
   const [amount, setAmount] = useState(1)
   const [countQuotas, setCountQuotas] = useState(1)
+  const [dynamic, setDynamic] = useState(false)
   const [quotas, setQuotas] = useState<Quota[]>([
     {
       quota: 1,
@@ -128,22 +135,26 @@ const PaymentForm = () => {
   ])
 
   useEffect(() => {
-    const eachQuota = amount / countQuotas
-    const newquotas = Array.from({ length: countQuotas }, (_, i) => {
-      return {
-        quota: i + 1,
-        expiresAt: dayjs().add(i, 'month').format('YYYY-MM-DD'),
-        amount: +eachQuota.toFixed(2),
-      }
-    })
-    setQuotas(newquotas)
-  }, [amount, countQuotas])
+    if (dynamic) {
+      setQuotas([])
+    } else {
+      const eachQuota = amount / countQuotas
+      const newquotas = Array.from({ length: countQuotas }, (_, i) => {
+        return {
+          quota: i + 1,
+          expiresAt: dayjs().add(i, 'month').format('YYYY-MM-DD'),
+          amount: +eachQuota.toFixed(2),
+        }
+      })
+      setQuotas(newquotas)
+    }
+  }, [amount, countQuotas, dynamic])
   return (
     <div>
       <Form
         labelCol={{ span: 10 }}
         wrapperCol={{ span: 14 }}
-        className="max-w-96"
+        className="max-w-2xl"
       >
         <Form.Item label="Monto">
           <InputNumber
@@ -157,19 +168,27 @@ const PaymentForm = () => {
         </Form.Item>
         <Form.Item label="Cuotas">
           <InputNumber
+            disabled={dynamic}
             className="w-40"
             min={1}
-            value={countQuotas}
+            value={dynamic ? 1 : countQuotas}
             onChange={(e) => {
               if (e) setCountQuotas(e)
             }}
           />
+          <label className="inline-flex ml-2 gap-1 select-none">
+            <Checkbox
+              className=""
+              checked={dynamic}
+              onChange={(e) => setDynamic(e.target.checked)}
+            />
+            Variables
+          </label>
         </Form.Item>
       </Form>
       <Table
         pagination={false}
         dataSource={quotas}
-        className=""
         bordered
         size="small"
         columns={

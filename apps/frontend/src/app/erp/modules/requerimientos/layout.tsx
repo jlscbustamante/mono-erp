@@ -22,7 +22,7 @@ import {
 
 const menu: (MenuOption | MenuSeparator)[] = [
   gm('Solicitados', PATHS.erp.modulos.requerimientos.solicitados),
-  gm('Aprobados', PATHS.erp.modulos.requerimientos.aprobados),
+  gm('Pagados', PATHS.erp.modulos.requerimientos.aprobados),
   gm('Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
   separator(),
   gm('Consultas de caja', PATHS.erp.modulos.requerimientos.reportes.main, [

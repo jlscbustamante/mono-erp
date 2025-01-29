@@ -79,6 +79,12 @@ export function ReviewForm() {
                 <Select.Option>Proveedores</Select.Option>
               </Select>
             </Form.Item>
+            <Form.Item label="Referencia">
+              <Select placeholder="Requerimiento">
+                <Select.Option>Descripcion del requerimiento</Select.Option>
+                <Select.Option>Descripcion 2</Select.Option>
+              </Select>
+            </Form.Item>
             <Form.Item label="Proveedor">
               <Select placeholder="Proveedor"></Select>
             </Form.Item>
