@@ -11,6 +11,7 @@ export const createSchema = joi.object<RequestEntity>({
   category_move: joi.string().allow(null),
   amount: joi.number().required(),
   amount_net: joi.number().allow(null),
+  currency: joi.valid('USD', 'PEN'),
   amount_ret: joi.number().allow(null),
   cash_id: joi.number().required().allow(null),
   cash_account_id: joi.number().allow(null),

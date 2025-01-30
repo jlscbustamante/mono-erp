@@ -116,6 +116,9 @@ export class RequestEntity extends EntitiesTimeStamps {
   @JoinColumn({ name: 'cash_id' })
   cashAccount: CashAccount | null
 
+  @Column({ type: 'varchar', length: 3 })
+  currency: 'PEN' | 'USD'
+
   @ManyToOne(() => Category)
   @JoinColumn({ name: 'category_id' })
   category: Category | null

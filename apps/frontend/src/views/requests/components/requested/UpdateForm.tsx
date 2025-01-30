@@ -295,15 +295,30 @@ export const UpdateForm: React.FC<{
           />
         </Form.Item>
         <Form.Item label="Monto">
-          <InputNumber
-            step={0.01}
-            min={0.01}
-            prefix="S/ "
-            precision={2}
-            value={request.amount}
-            onChange={(e) => manageUpdate({ ...request, amount: e ?? 0 })}
-            className="w-36"
-          />
+          <div className="grid grid-cols-3">
+            <InputNumber
+              step={0.01}
+              min={0.01}
+              prefix={request.currency == 'PEN' ? 'S/ ' : '$ '}
+              precision={2}
+              value={request.amount}
+              onChange={(e) => manageUpdate({ ...request, amount: e ?? 0 })}
+              className="w-36 col-span-2"
+            />
+            <Select
+              className="w-20"
+              value={request.currency}
+              onChange={(val) => {
+                manageUpdate({
+                  ...request,
+                  currency: val,
+                })
+              }}
+            >
+              <Select.Option value="PEN">PEN</Select.Option>
+              <Select.Option value="USD">USD</Select.Option>
+            </Select>
+          </div>
         </Form.Item>
         <Form.Item label="Categoria" hidden={showCategoryCash || isTransfer}>
           <Select

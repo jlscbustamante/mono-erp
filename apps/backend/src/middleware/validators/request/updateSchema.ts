@@ -16,6 +16,7 @@ export const updateSchema = joi.object<RequestEntity>({
   status: joi.string().allow('', null),
   amount_ret: joi.number().allow(null),
   cash_id: joi.number().required().allow(null),
+  currency: joi.valid('USD', 'PEN'),
   cash_account_id: joi.number().allow(null),
   category_id: joi.number().required().allow(null),
   category_account_id: joi.number().allow(null),

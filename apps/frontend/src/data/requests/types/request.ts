@@ -24,6 +24,7 @@ export interface IRequest {
   category_account_id: number | string | null
   account_flow: AccountFlow
   cash_id: number | null
+  currency: 'PEN' | 'USD'
   cash_account_id: number | string | null
   status: RequestStatus
   created_by: string

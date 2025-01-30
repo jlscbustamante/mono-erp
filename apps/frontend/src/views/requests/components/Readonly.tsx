@@ -108,15 +108,18 @@ export const ReadOnlyForm: React.FC<{
           />
         </Form.Item>
         <Form.Item label="Monto">
-          <InputNumber
-            step={0.01}
-            min={0.01}
-            prefix="S/ "
-            precision={2}
-            value={request.amount}
-            className="w-36"
-            readOnly={true}
-          />
+          <div className="grid grid-cols-3">
+            <InputNumber
+              step={0.01}
+              min={0.01}
+              prefix="S/ "
+              precision={2}
+              value={request.amount}
+              className="w-36 col-span-2"
+              readOnly={true}
+            />
+            <Input value={request.currency} readOnly />
+          </div>
         </Form.Item>
         <Form.Item label="Categoria" hidden={showCategoryCash || isTransfer}>
           <Select

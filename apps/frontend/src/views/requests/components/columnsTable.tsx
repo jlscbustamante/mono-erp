@@ -158,6 +158,10 @@ export const columnsTable = {
     dataIndex: 'pay_method',
     key: 'pay_method',
   },
+  currency: {
+    title: 'Moneda',
+    dataIndex: 'currency',
+  },
   icon: {
     title: () => <BiSolidFilePdf className="w-6 h-auto" />,
     dataIndex: 'doc_url',
@@ -193,6 +197,7 @@ export const columnsApproved = {
     columnsTable.approved_by,
     columnsTable.approved_at,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
   transfer: [
@@ -204,6 +209,7 @@ export const columnsApproved = {
     columnsTable.approved_by,
     columnsTable.approved_at,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
   reportCostCenter: [
@@ -216,6 +222,7 @@ export const columnsApproved = {
     columnsTable.approved_by,
     columnsTable.approved_at,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
   default: [
@@ -230,6 +237,7 @@ export const columnsApproved = {
     columnsTable.approved_by,
     columnsTable.approved_at,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
 }
@@ -267,6 +275,7 @@ export const columnsRequested = {
     columnsTable.costCenter,
     columnsTable.requested_by,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
 }
