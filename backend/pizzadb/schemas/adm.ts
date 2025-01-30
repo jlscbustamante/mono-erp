@@ -1,4 +1,15 @@
-import { char, int, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import dayjs from "dayjs";
+import { relations } from "drizzle-orm";
+import {
+  char,
+  datetime,
+  int,
+  mysqlTable,
+  smallint,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
+import { decimalNumber } from "../drizzle-extend.ts";
 
 export const requirements = mysqlTable("adm_request", {
   id: int().autoincrement().notNull().primaryKey(),
@@ -19,4 +30,79 @@ export const requirements = mysqlTable("adm_request", {
   purchase_id: int(),
   movecash_id: int(),
   movecash_name: varchar({ length: 150 }),
+  costcenter_id: int(),
+  costcenter_name: varchar({ length: 150 }),
+  amount: decimalNumber(),
+  amount_net: decimalNumber(),
+  amount_ret: decimalNumber(),
+  /**
+   * @description CONTADO; CREDITO
+   */
+  pay_method: varchar({ length: 20 }),
+  nro_quotas: smallint(),
+  requested_at: datetime({ mode: "string", fsp: 2 }),
+  created_by: varchar({ length: 100 }),
+  /**
+   * @description S: Solicitado; A: Aprobado; R: Rechazado; P: Pagado
+   */
+  status: char({ length: 1 }).notNull(),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
+
+export const requirementItems = mysqlTable("adm_request_item", {
+  id: int().autoincrement().notNull().primaryKey(),
+  request_id: int(),
+  description: varchar({ length: 250 }),
+  purchase_id: int(),
+  /**
+   * @description 0:No tiene, 1:Si tiene
+   */
+  retention: char({ length: 1 }),
+  amount: decimalNumber(),
+  amount_net: decimalNumber(),
+  amount_ret: decimalNumber(),
+  doc_url: varchar({ length: 250 }),
+  /**
+   * @description Template para el asiento contable
+   */
+  tmplt_bookentry_id: int(),
+  cashbank_id: int(),
+  cashbank_name: varchar({ length: 150 }),
+  expires_at: datetime({ mode: "string", fsp: 2 }),
+  requested_at: datetime({ mode: "string", fsp: 2 }),
+  approved_at: datetime({ mode: "string", fsp: 2 }),
+  rejected_at: datetime({ mode: "string", fsp: 2 }),
+  created_by: varchar({ length: 100 }),
+  approved_by: varchar({ length: 100 }),
+  paid_by: varchar({ length: 100 }),
+  rejected_by: varchar({ length: 100 }),
+  /**
+   * @description S: Solicitado; A: Aprobado; R: Rechazado; P: Pagado
+   */
+  status: char({ length: 1 }),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
+export const requirementItemsRelation = relations(
+  requirementItems,
+  ({ one }) => ({
+    requirement: one(requirements, {
+      fields: [requirementItems.request_id],
+      references: [requirements.id],
+    }),
+  })
+);
+
+export const requirementRelation = relations(requirements, ({ many }) => ({
+  items: many(requirementItems),
+}));

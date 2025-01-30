@@ -86,7 +86,7 @@ export const RequerimientosLayout = () => {
   }, [])
 
   return (
-    <Layout>
+    <Layout className="">
       <Layout.Header
         defaultTitle="Requerimientos"
         classNameByPath={{

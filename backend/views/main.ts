@@ -1,21 +1,23 @@
-import { authRouter } from "#app/modules/auth/index.ts";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
+import { authRouter } from "./modules/auth/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
+import { requirementRouter } from "./modules/requirement/index.ts";
 
 const app = new Hono();
 
 export const apiRouter = app
   .use("/api/*", cors())
   .basePath("/api/view")
+  .use(session)
   .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
-  .use(session)
   .route("inventory", inventoryRouter)
-  .route("auth", authRouter);
+  .route("auth", authRouter)
+  .route("requirement", requirementRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

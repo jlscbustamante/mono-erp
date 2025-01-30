@@ -6,7 +6,6 @@ import {
 } from "drizzle-orm";
 import {
   char,
-  customType,
   datetime,
   int,
   mysqlTable,
@@ -14,21 +13,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
-
-const decimalNumber = customType<{
-  data: number;
-  config: {
-    precision: number;
-    scale: number;
-  };
-}>({
-  dataType(config) {
-    return `decimal(${config?.precision ?? 16}, ${config?.scale ?? 2})`;
-  },
-  fromDriver(value) {
-    return Number(value);
-  },
-});
+import { decimalNumber } from "../drizzle-extend.ts";
 
 export const dispatches = mysqlTable("inv_dispatch", {
   id: int().autoincrement().notNull().primaryKey(),
