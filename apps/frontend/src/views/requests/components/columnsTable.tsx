@@ -254,6 +254,7 @@ export const columnsRequested = {
     columnsTable.payMethod,
     columnsTable.requested_by,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.icon,
   ],
   transfer: [

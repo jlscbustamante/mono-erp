@@ -175,7 +175,7 @@ export const LiquidationForm = () => {
             <InputNumber
               step={0.01}
               min={0.01}
-              prefix="S/ "
+              prefix={simpleForm.currency == 'USD' ? '$' : 'S/'}
               precision={2}
               value={simpleForm.amount}
               onChange={(e) => setSimpleForm({ ...simpleForm, amount: e ?? 0 })}
@@ -265,7 +265,7 @@ export const LiquidationForm = () => {
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={simpleForm.currency == 'USD' ? '$' : 'S/'}
             precision={2}
             value={simpleForm.amount_net}
             onChange={(e) => handlerChangeRetention(e, 'net')}
@@ -279,7 +279,7 @@ export const LiquidationForm = () => {
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={simpleForm.currency == 'USD' ? '$' : 'S/'}
             precision={2}
             value={simpleForm.amount_ret}
             onChange={(e) => handlerChangeRetention(e, 'ret')}

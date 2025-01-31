@@ -62,6 +62,7 @@ const handleSimpleExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
+    columnsTable.currency,
   ]
 
   const requestsByTypes = pendingRequests.reduce(
@@ -168,6 +169,7 @@ const handleProviderExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
+    columnsTable.currency,
   ]
 
   const excel = new Excel()
@@ -241,6 +243,7 @@ const handleLiquidationExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
+    columnsTable.currency,
   ]
   const excel = new Excel()
   excel.addSheet('Liquidaciones')

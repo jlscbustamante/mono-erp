@@ -435,7 +435,7 @@ export const UpdateForm: React.FC<{
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={request.currency == 'USD' ? '$ ' : 'S/ '}
             precision={2}
             value={request.amount_net}
             onChange={(e) => handlerChangeRetention(e, 'net')}
@@ -449,7 +449,7 @@ export const UpdateForm: React.FC<{
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={request.currency == 'USD' ? '$ ' : 'S/ '}
             precision={2}
             value={request.amount_ret}
             onChange={(e) => handlerChangeRetention(e, 'ret')}

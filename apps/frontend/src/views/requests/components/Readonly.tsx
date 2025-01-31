@@ -112,7 +112,7 @@ export const ReadOnlyForm: React.FC<{
             <InputNumber
               step={0.01}
               min={0.01}
-              prefix="S/ "
+              prefix={request.currency == 'USD' ? '$' : 'S/'}
               precision={2}
               value={request.amount}
               className="w-36 col-span-2"
@@ -212,7 +212,7 @@ export const ReadOnlyForm: React.FC<{
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={request.currency == 'USD' ? '$' : 'S/'}
             precision={2}
             value={request.amount_net}
             className="w-36"
@@ -227,7 +227,7 @@ export const ReadOnlyForm: React.FC<{
             readOnly={true}
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={request.currency == 'USD' ? '$' : 'S/'}
             precision={2}
             value={request.amount_ret}
             className="w-36"

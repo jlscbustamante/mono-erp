@@ -56,6 +56,7 @@ const handleSimpleExport = (pendingRequests: IFilteredRequest[]) => {
     },
     columnsTable.requested_by,
     columnsTable.amount,
+    columnsTable.currency,
     columnsTable.amountRet,
     columnsTable.amountNet,
   ]
@@ -163,6 +164,7 @@ const handleProviderExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
+    columnsTable.currency,
   ]
 
   const excel = new Excel()
@@ -230,7 +232,9 @@ const handleLiquidationExport = (pendingRequests: IFilteredRequest[]) => {
     columnsTable.amount,
     columnsTable.amountRet,
     columnsTable.amountNet,
+    columnsTable.currency,
   ]
+
   const excel = new Excel()
   excel.addSheet('Liquidaciones')
   excel

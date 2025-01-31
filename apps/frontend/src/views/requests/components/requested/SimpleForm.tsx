@@ -330,7 +330,7 @@ export const SimpleForm = () => {
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={simpleForm.currency == 'USD' ? '$ ' : 'S/ '}
             precision={2}
             value={simpleForm.amount_net}
             onChange={(e) => handlerChangeRetention(e, 'net')}
@@ -344,7 +344,7 @@ export const SimpleForm = () => {
           <InputNumber
             step={0.01}
             min={0.01}
-            prefix="S/"
+            prefix={simpleForm.currency == 'USD' ? '$ ' : 'S/ '}
             precision={2}
             value={simpleForm.amount_ret}
             onChange={(e) => handlerChangeRetention(e, 'ret')}
