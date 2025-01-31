@@ -126,6 +126,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         supplierId: purchase.supplierId,
         numGuide: purchase.numGuide,
         numInvoice: purchase.numInvoice,
+        purchaseAt: purchase.purchaseAt,
         netValue,
         totalValue,
       })
