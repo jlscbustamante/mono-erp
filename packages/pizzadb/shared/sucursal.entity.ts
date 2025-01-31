@@ -85,6 +85,13 @@ export class Sucursal {
   @Column({ type: "smallint" })
   status: number;
 
+  @Column({
+    type: "decimal",
+    precision: 4,
+    scale: 2,
+  })
+  cfd_igv: number;
+
   @CreateDateColumn({
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP(6)",

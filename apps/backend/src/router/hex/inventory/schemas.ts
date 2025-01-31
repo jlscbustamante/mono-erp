@@ -379,6 +379,7 @@ export const updateSucursulasSchema = Joi.object({
         sede_razon_social: Joi.string().required(),
         efact_pass: Joi.string().required(),
         cfd_serie_fa: Joi.string().required(),
+        cfd_igv: Joi.string(),
         cfd_seql_fa: Joi.number(),
         cfd_serie_bo: Joi.string().required(),
         cfd_seql_bo: Joi.number(),

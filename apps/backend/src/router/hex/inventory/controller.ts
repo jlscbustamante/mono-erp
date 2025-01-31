@@ -807,6 +807,7 @@ export class HexInventoryController {
       sucursal.ubi_city = store.ubi_city || 'LIMA'
       sucursal.sede_nro_ruc = store.sede_nro_ruc
       sucursal.legalperson_name = store.sede_razon_social
+      sucursal.cfd_igv = store.cfd_igv ?? 0
       sucursal.efact_pass = store.efact_pass
       sucursal.cfd_serie = store.cfd_serie_fa
       if (store.cfd_seql_fa) sucursal.cfd_correlativo = store.cfd_seql_fa
