@@ -1,3 +1,4 @@
+import { differenceInDays, parseISO } from 'date-fns'
 import { In, Not } from 'typeorm'
 import config from '../../../../config/config'
 import { AppDataSource } from '../../../../config/database'
@@ -77,6 +78,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
       select: {
         id: true,
         totalValue: true,
+        purchaseAt: true,
       },
       where: {
         id: purchase.id,
@@ -117,6 +119,10 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
     })
 
     await AppDataSource.transaction(async (manager) => {
+      const diffDays = differenceInDays(
+        parseISO(purchase.purchaseAt),
+        parseISO(purchaseDb.purchaseAt),
+      )
       await manager.update(InvPurchase, purchase.id, {
         id: purchase.id,
         gloss: purchase.gloss,
@@ -126,7 +132,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         supplierId: purchase.supplierId,
         numGuide: purchase.numGuide,
         numInvoice: purchase.numInvoice,
-        purchaseAt: purchase.purchaseAt,
+        purchaseAt: diffDays > 2 ? purchaseDb.purchaseAt : purchase.purchaseAt,
         netValue,
         totalValue,
       })
