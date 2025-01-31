@@ -119,10 +119,13 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
     })
 
     await AppDataSource.transaction(async (manager) => {
-      const diffDays = differenceInDays(
-        parseISO(purchase.purchaseAt),
-        parseISO(purchaseDb.purchaseAt),
+      const diffDays = Math.abs(
+        differenceInDays(
+          parseISO(purchase.purchaseAt),
+          parseISO(purchaseDb.purchaseAt),
+        ),
       )
+      console.log('diff days. ', diffDays)
       await manager.update(InvPurchase, purchase.id, {
         id: purchase.id,
         gloss: purchase.gloss,
