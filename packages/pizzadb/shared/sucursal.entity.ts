@@ -16,6 +16,9 @@ export class Sucursal {
   @Column({ type: "varchar" })
   title: string;
 
+  @Column({ type: "varchar", length: 10 })
+  trademark_id: string;
+
   @Column({ type: "varchar" })
   codefis: string;
 

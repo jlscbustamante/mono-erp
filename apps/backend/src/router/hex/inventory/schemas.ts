@@ -371,6 +371,7 @@ export const updateSucursulasSchema = Joi.object({
     .items(
       Joi.object<UpdateSucursalDto>({
         id: Joi.string().required(),
+        trademark_id: Joi.string().required(),
         title: Joi.string().required(),
         ubi_address: Joi.string().required(),
         ubi_district: Joi.string().required(),

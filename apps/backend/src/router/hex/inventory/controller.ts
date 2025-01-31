@@ -801,6 +801,7 @@ export class HexInventoryController {
       const sucursal = new Sucursal()
       sucursal.id = store.id
       sucursal.title = store.title
+      sucursal.trademark_id = store.trademark_id
       sucursal.codefis = store.id
       sucursal.ubi_address = store.ubi_address
       sucursal.ubi_district = store.ubi_district
