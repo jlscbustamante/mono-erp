@@ -8,4 +8,8 @@ export class RequirementService {
     const data = await this.requirementRepository.filter(filters);
     return data;
   }
+
+  async createResources() {
+    //
+  }
 }
