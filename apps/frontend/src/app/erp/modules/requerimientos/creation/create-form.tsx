@@ -51,7 +51,11 @@ export function CreationForm() {
           </div>
           <div>
             <Form.Item label="Detalle" labelAlign="left" labelCol={{ span: 4 }}>
-              <Input.TextArea placeholder="Descripcion" rows={2} />
+              <Input.TextArea
+                placeholder="Descripcion"
+                rows={2}
+                className="resize-none"
+              />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -108,7 +112,7 @@ export function CreationForm() {
           <div>
             <Form.Item label="N° cuota" labelCol={{ span: 4 }}>
               <div className="flex gap-1">
-                <InputNumber />
+                <InputNumber readOnly min={1} />
                 <div className="flex gap-1 items-center">
                   <Button size="small">
                     <Plus className="w-4 text-slate-600" />

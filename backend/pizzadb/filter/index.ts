@@ -1,22 +1,18 @@
 type Mods = "DATE" | "CONCAT" | "LOWER";
 type ModsValue = "LOWER" | "NOSPACE" | string;
 export interface WhereOptionMod<T> {
+  key: string;
   field: keyof T | (keyof T | '" "')[];
   operator: string;
   value?: unknown;
-  useMods: true;
+  useMods?: boolean;
   mods?: {
     field?: Mods | Mods[];
     value?: ModsValue | ModsValue[];
   };
 }
-export interface WhereOptionNormal<T> {
-  field: keyof T;
-  operator: string;
-  value?: unknown;
-}
 
-export type WhereOption<T> = WhereOptionNormal<T> | WhereOptionMod<T>;
+export type WhereOption<T> = WhereOptionMod<T>;
 
 export interface Filter<T> {
   where?: WhereOption<T>[];

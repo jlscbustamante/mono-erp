@@ -26,9 +26,9 @@ export class Requirement {
   readonly id: number;
   readonly companyId: number;
   readonly companyName: string;
-  readonly supplierId: number;
-  readonly supplierRuc: string;
-  readonly supplierName: string;
+  readonly supplierId: number | null;
+  readonly supplierRuc: string | null;
+  readonly supplierName: string | null;
   readonly cashId: number;
   readonly cashName: string;
   readonly requestedAt: string;
@@ -45,12 +45,12 @@ export class Requirement {
   readonly hasRetation: boolean;
 
   constructor(props: RequirementSelect) {
-    this.id = 12;
+    this.id = props.id;
     this.supplierId = props.supplier_id;
-    this.supplierRuc = "";
+    this.supplierRuc = props.legal_number;
     this.companyId = 0;
     this.companyName = "";
-    this.supplierName = "na";
+    this.supplierName = props.legal_name;
     this.cashId = 0;
     this.cashName = "";
     this.typeDocument = REQUIREMENT_TYPE_DOCUMENT.BOLETA;

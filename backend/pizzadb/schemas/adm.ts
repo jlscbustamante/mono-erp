@@ -11,6 +11,24 @@ import {
 } from "drizzle-orm/mysql-core";
 import { decimalNumber } from "../drizzle-extend.ts";
 
+export const companies = mysqlTable("adm_company", {
+  id: varchar({ length: 10 }).notNull().primaryKey(),
+  title: varchar({ length: 150 }).notNull(),
+  company_ruc: varchar({ length: 15 }),
+  /**
+   * @description C: comercial
+   */
+  type_company: char({ length: 1 }).notNull(),
+  has_accounting: smallint().notNull().default(1),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
 export const requirements = mysqlTable("adm_request", {
   id: int().autoincrement().notNull().primaryKey(),
   company_id: varchar({ length: 10 }),

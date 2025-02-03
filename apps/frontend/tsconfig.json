@@ -24,7 +24,7 @@
     "paths": { 
       "@/*": ["./src/*"],
       "@pizzadb":["../../backend/pizzadb/types/index.ts"],
-    "@view":["../../backend/views/modules/types/index.ts"]
+      "@view":["../../backend/views/modules/types/index.ts"]
     }
   },
   "include": ["src"],

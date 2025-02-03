@@ -65,7 +65,7 @@ export const transformWhere = <T>(
       if (filter.operator == "contain") {
         const valStr = (filter.value + "").toLowerCase();
         val = operatorAndValue(field, filter.operator, `%${valStr}%`);
-      } else if (filter.operator == "between") {
+      } else if (filter.operator == "range") {
         const [start, end] = filter.value as string[];
         val = `BETWEEN '${start}' AND '${end}'`;
       } else {
@@ -105,7 +105,7 @@ export const operatorAndValue = (
     }
     return `${field} IN (${list.map((v) => `'${v}'`).join(", ")})`;
   }
-  if (operator == "between")
+  if (operator == "range")
     return `${field} BETWEEN '${(value as string[])[0]}' AND '${
       (value as string[])[1]
     }'`;

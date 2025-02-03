@@ -1,4 +1,5 @@
 import {
+  companies,
   dispatches,
   dispatchesItems,
   dispatchesRelation,
@@ -43,10 +44,10 @@ export const db = drizzle(connection, {
     templatesItems,
     templateItemsRelation,
     templateRelation,
-    // request
     requirementItems,
     requirementItemsRelation,
     requirementRelation,
     requirements,
+    companies,
   },
 });
