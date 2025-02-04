@@ -1,5 +1,7 @@
 import {
+  cashBanks,
   companies,
+  costCenters,
   dispatches,
   dispatchesItems,
   dispatchesRelation,
@@ -35,7 +37,7 @@ export const db = drizzle(connection, {
     roles,
     users,
     usersRelations,
-    // roleRelations,
+    costCenters,
     dispatches,
     dispatchesItems,
     dispatchesRelation,
@@ -49,5 +51,6 @@ export const db = drizzle(connection, {
     requirementRelation,
     requirements,
     companies,
+    cashBanks,
   },
 });
