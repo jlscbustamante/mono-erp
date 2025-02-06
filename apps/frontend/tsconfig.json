@@ -25,6 +25,7 @@
       "@/*": ["./src/*"],
       "@pizzadb":["./../../backend/pizzadb/types/index.ts"],
       "@view":["./../../backend/views/modules/types/index.ts"]
+      // "@view":["./view.ts"]
     }
   },
   "include": ["src"],
