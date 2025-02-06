@@ -1,4 +1,4 @@
-import type { RequirementSelect } from "@scope/pizzadb/types";
+import type { CompanySelect, RequirementSelect } from "@scope/pizzadb/types";
 import dayjs from "dayjs";
 
 export enum PAYMENT_METHOD {
@@ -24,13 +24,11 @@ export enum REQUIREMENT_TYPE_DOCUMENT {
 
 export class Requirement {
   readonly id: number;
-  readonly companyId: number;
+  readonly companyId: string;
   readonly companyName: string;
   readonly supplierId: number | null;
   readonly supplierRuc: string | null;
   readonly supplierName: string | null;
-  readonly cashId: number;
-  readonly cashName: string;
   readonly requestedAt: string;
   readonly numDoc: string | null;
   readonly description: string;
@@ -44,15 +42,19 @@ export class Requirement {
   readonly typeDocument: REQUIREMENT_TYPE_DOCUMENT;
   readonly hasRetation: boolean;
 
-  constructor(props: RequirementSelect) {
+  constructor({
+    props,
+    company,
+  }: {
+    props: RequirementSelect;
+    company: CompanySelect;
+  }) {
     this.id = props.id;
     this.supplierId = props.supplier_id;
     this.supplierRuc = props.legal_number;
-    this.companyId = 0;
-    this.companyName = "";
+    this.companyId = company.id;
+    this.companyName = company.title;
     this.supplierName = props.legal_name;
-    this.cashId = 0;
-    this.cashName = "";
     this.typeDocument = REQUIREMENT_TYPE_DOCUMENT.BOLETA;
     this.requestedAt = props.requested_at
       ? dayjs(props.requested_at).format("YYYY-MM-DD")

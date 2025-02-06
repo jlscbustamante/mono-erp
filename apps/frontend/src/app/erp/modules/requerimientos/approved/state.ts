@@ -8,11 +8,11 @@ interface Store {
   setFilters: (filters: WhereOption<RequirementItemSelect>[]) => void
 }
 
-export const usePendingStore = create<Store>((set) => ({
+export const useApprovedStore = create<Store>((set) => ({
   filters: [
     {
-      field: 'requested_at',
-      key: 'requested_at',
+      field: 'approved_at',
+      key: 'approved_at',
       operator: 'range',
       useMods: true,
       value: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
@@ -23,8 +23,8 @@ export const usePendingStore = create<Store>((set) => ({
     {
       field: 'status',
       key: 'status',
-      operator: 'equal',
-      value: REQUIREMENT_STATUS.PENDING,
+      operator: 'in',
+      value: [REQUIREMENT_STATUS.PAID, REQUIREMENT_STATUS.APPROVED],
     },
   ],
   setFilters: (filters) => {

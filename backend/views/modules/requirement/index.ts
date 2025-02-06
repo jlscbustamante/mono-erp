@@ -3,12 +3,15 @@ import {
   requirementResourceService,
   requirementService,
 } from "#app/modules/requirement/dependencies.ts";
-import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
+import { UpdateRequirementDto } from "#app/modules/types/index.ts";
+import { zValidator } from "@hono/zod-validator";
+import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
 import { Hono } from "hono";
+import { z } from "zod";
 
 export const requirementRouter = new Hono()
   .get("/filter", filtersMiddlaware, async (c) => {
-    const filters = c.get("filters") as WhereOption<RequirementSelect>[];
+    const filters = c.get("filters") as WhereOption<RequirementItemSelect>[];
 
     const data = await requirementService.filter(filters);
 
@@ -16,6 +19,20 @@ export const requirementRouter = new Hono()
       data,
     });
   })
+  .get(
+    "/requirement/:id",
+    zValidator(
+      "param",
+      z.object({
+        id: z.string(),
+      })
+    ),
+    async (c) => {
+      const id = +c.req.param("id");
+      const data = await requirementService.getRequirement(id);
+      return c.json({ data });
+    }
+  )
   .get("/resource/companies", async (c) => {
     const data = await requirementResourceService.companies();
     return c.json({ data });
@@ -24,11 +41,30 @@ export const requirementRouter = new Hono()
     const data = await requirementResourceService.costCenter();
     return c.json({ data });
   })
-  .get("/createResources", async (c) => {
-    const data = await requirementService.createResources();
-    return c.json({ data });
-  })
   .get("/resource/cashBanks", async (c) => {
     const data = await requirementResourceService.cashBank();
     return c.json({ data });
+  })
+  .get("/resource/suppliers", async (c) => {
+    const data = await requirementResourceService.suppliers();
+    return c.json({ data });
+  })
+  .post("/create", async (c) => {
+    const session = c.get("user");
+    const data = await c.req.json();
+    await requirementService.createRequirement(data, session.name);
+    return c.json({
+      message: "ok",
+    });
+  })
+  .post("/approve", async (c) => {
+    const session = c.get("user");
+    const data = await c.req.json();
+    await requirementService.saveAndApprove(
+      data as UpdateRequirementDto,
+      session.name
+    );
+    return c.json({
+      message: "ok",
+    });
   });

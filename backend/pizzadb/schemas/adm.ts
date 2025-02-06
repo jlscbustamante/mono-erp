@@ -74,7 +74,7 @@ export const requirements = mysqlTable("adm_request", {
 
 export const requirementItems = mysqlTable("adm_request_item", {
   id: int().autoincrement().notNull().primaryKey(),
-  request_id: int(),
+  request_id: int().notNull(),
   description: varchar({ length: 250 }),
   purchase_id: int(),
   /**

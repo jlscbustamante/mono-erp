@@ -172,6 +172,21 @@ export const templateRelation = relations(templates, ({ many }) => ({
   items: many(templatesItems),
 }));
 
+export const suppliers = mysqlTable("inv_supplier", {
+  id: int().autoincrement().notNull().primaryKey(),
+  supplier: varchar({ length: 150 }).notNull(),
+  legal_name: varchar({ length: 150 }),
+  legal_number: varchar({ length: 15 }),
+  type_supplier: char({ length: 1 }).default("M"),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
 export type DispatchInsert = InferInsertModel<typeof dispatches>;
 export type DispatchSelect = InferSelectModel<typeof dispatches>;
 export type DispatchItemSelect = InferSelectModel<typeof dispatchesItems>;

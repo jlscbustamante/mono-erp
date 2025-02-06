@@ -2,9 +2,14 @@ import { PATHS } from '@/const/paths'
 import { getNameByRuc } from '@/data/requests/sdk'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
-import { CashBankSelect, CompanySelect, CostCenterSelecet } from '@pizzadb'
+import {
+  CashBankSelect,
+  CompanySelect,
+  CostCenterSelecet,
+  SupplierSelect,
+} from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
+import { CreateRequirementDto, REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   Button,
   Checkbox,
@@ -16,12 +21,19 @@ import {
   Select,
 } from 'antd'
 import { ArrowLeft, Minus, Plus } from 'lucide-react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
 
 export function CreationForm() {
   const [form] = Form.useForm()
 
   const hasRetention = Form.useWatch('hasRetention', form)
+  const quota = Form.useWatch('quota', form)
+  const costCenterId = Form.useWatch('cost_center', form)
+  const supplierId = Form.useWatch('supplier', form)
+
+  const navigate = useNavigate()
 
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
@@ -30,6 +42,16 @@ export function CreationForm() {
         await viewClient.api.view.requirement.resource.companies.$get()
       const result = await request.json()
       return result.data as CompanySelect[]
+    },
+  })
+
+  const { data: suppliers } = useQuery({
+    queryKey: ['rq:suppliers'],
+    queryFn: async () => {
+      const request =
+        await viewClient.api.view.requirement.resource.suppliers.$get()
+      const result = await request.json()
+      return result.data as SupplierSelect[]
     },
   })
 
@@ -43,6 +65,31 @@ export function CreationForm() {
     },
   })
 
+  useEffect(() => {
+    const costCenter = costCenters?.find((el) => el.id === costCenterId)
+    if (costCenter) {
+      form.setFieldValue('cost_center_name', costCenter.costcenter)
+    } else {
+      form.setFieldValue('cost_center_name', '')
+    }
+  }, [costCenterId])
+
+  useEffect(() => {
+    const supplier = suppliers?.find((el) => el.id == supplierId)
+    if (supplier) {
+      // form.setFieldValue('legal_name',supplier.legal_name)
+      form.setFieldsValue({
+        legal_name: supplier.legal_name,
+        ruc: supplier.legal_number,
+      })
+    } else {
+      form.setFieldsValue({
+        legal_name: '',
+        ruc: '',
+      })
+    }
+  }, [supplierId])
+
   const getInfoRuc = useMutation({
     mutationFn: async (ruc: string) => {
       const result = await getNameByRuc(ruc)
@@ -52,6 +99,15 @@ export function CreationForm() {
       form.setFieldValue('legal_name', data.name)
     },
   })
+
+  const changeQuota = (increment: boolean) => {
+    if (increment) {
+      form.setFieldValue('quota', quota + 1)
+    } else {
+      if (quota === 1) return
+      form.setFieldValue('quota', quota - 1)
+    }
+  }
 
   const { data: cashBanks } = useQuery({
     queryKey: ['rq:cashBanks'],
@@ -63,11 +119,25 @@ export function CreationForm() {
     },
   })
 
-  const onFinish = (values: unknown) => {
-    console.log('create : ', values)
+  const createMt = useMutation({
+    mutationFn: async (data: CreateRequirementDto) => {
+      const result = await viewClient.api.view.requirement.create.$post({
+        json: data,
+      })
+      if (!result.ok) throw new Error('No se pudo crear el requerimiento')
+    },
+    onError: (error) => {
+      toast.error(error.message)
+    },
+    onSuccess: () => {
+      navigate(PATHS.erp.modulos.requerimientos.solicitados)
+    },
+  })
+
+  const onFinish = (values: CreateRequirementDto) => {
+    createMt.mutate(values)
   }
 
-  const navigate = useNavigate()
   return (
     <div className="flex justify-center gap-3">
       <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
@@ -85,13 +155,19 @@ export function CreationForm() {
           onFinish={onFinish}
           form={form}
           className="w-[800px]"
-          initialValues={{
-            quota: 1,
-            description: '',
-            amount: 1,
-            hasRetention: false,
-          }}
+          initialValues={
+            {
+              quota: 1,
+              description: '',
+              amount: 1,
+              hasRetention: false,
+              retention: 0,
+            } satisfies Partial<CreateRequirementDto>
+          }
         >
+          <Form.Item name={'cost_center_name'} className="hidden">
+            <Input />
+          </Form.Item>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
               label="Empresa"
@@ -109,6 +185,34 @@ export function CreationForm() {
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
+            <Form.Item label="Centro de costo" name="cost_center">
+              <Select
+                placeholder="Centro de costo"
+                showSearch
+                filterOption={filterSelectForm}
+              >
+                {costCenters?.map((costCenter) => (
+                  <Select.Option key={costCenter.id} value={costCenter.id}>
+                    {costCenter.costcenter}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Proveedor" name="supplier">
+              <Select
+                placeholder="Proveedor"
+                filterOption={filterSelectForm}
+                showSearch
+              >
+                {suppliers?.map((supplier) => (
+                  <Select.Option key={supplier.id} value={supplier.id}>
+                    {supplier.supplier}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+          </div>
+          <div className="grid-cols-2 gap-2 hidden">
             <Form.Item
               label="RUC proveedor"
               name="ruc"
@@ -186,17 +290,7 @@ export function CreationForm() {
               <Input />
             </Form.Item>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Centro de costo" name="cost_center">
-              <Select placeholder="Categoria">
-                {costCenters?.map((costCenter) => (
-                  <Select.Option key={costCenter.id} value={costCenter.id}>
-                    {costCenter.costcenter}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </div>
+
           <Divider />
           <h5>Datos del pago:</h5>
           <div className="grid grid-cols-2 gap-2">
@@ -213,18 +307,9 @@ export function CreationForm() {
             >
               <InputNumber min={0} className="w-full" />
             </Form.Item>
-            <Form.Item label="Caja" name={'cashbank'}>
-              <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Forma de pago">
+            <Form.Item label="Forma de pago" name={'payment_method'}>
               <Select placeholder="pago">
                 <Select.Option value="CONTADO">CONTADO</Select.Option>
                 <Select.Option value="CREDITO">CREDITO</Select.Option>
@@ -249,12 +334,12 @@ export function CreationForm() {
           <div>
             <Form.Item label="N° cuota" labelCol={{ span: 4 }} name={'quota'}>
               <div className="flex gap-1">
-                <InputNumber readOnly min={1} />
+                <InputNumber readOnly min={1} value={quota} />
                 <div className="flex gap-1 items-center">
-                  <Button size="small">
+                  <Button size="small" onClick={() => changeQuota(true)}>
                     <Plus className="w-4 text-slate-600" />
                   </Button>
-                  <Button size="small">
+                  <Button size="small" onClick={() => changeQuota(false)}>
                     <Minus className="w-4 text-slate-600" />
                   </Button>
                 </div>

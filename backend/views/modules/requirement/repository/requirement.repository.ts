@@ -1,28 +1,122 @@
 import { db } from "#app/database.ts";
-import { Requirement } from "#app/modules/requirement/entities/requirement.entity.ts";
-import { companies, requirements } from "@scope/pizzadb";
+import { RequirementDetail } from "#app/modules/requirement/entities/requirement-detail.entity.ts";
+import { RequirementPresentation } from "#app/modules/requirement/entities/requirement-item.entity.ts";
+import { REQUIREMENT_STATUS } from "#app/modules/requirement/entities/requirement.entity.ts";
+import { UpdateRequirementDto } from "#app/modules/requirement/entities/update-requirement.dto.ts";
+import { CreateRequirementDto } from "#app/modules/types/index.ts";
+import { requirementItems, requirements, suppliers } from "@scope/pizzadb";
 import { transformWhere } from "@scope/pizzadb/filter";
-import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
+import type {
+  RequirementInsert,
+  RequirementItemInsert,
+  RequirementItemSelect,
+  RequirementSelect,
+  SupplierSelect,
+  WhereOption,
+} from "@scope/pizzadb/types";
+import dayjs from "dayjs";
 import { aliasedTable, desc, eq, sql } from "drizzle-orm";
 
 export class RequirementRepository {
   async filter(
-    filters: WhereOption<RequirementSelect>[]
-  ): Promise<Requirement[]> {
-    const alias = aliasedTable(requirements, "req");
-    const query = transformWhere(filters, "req").join(" AND ");
+    filters: WhereOption<RequirementItemSelect>[]
+  ): Promise<RequirementPresentation[]> {
+    const alias = aliasedTable(requirementItems, "reqitem");
+    const query = transformWhere(filters, "reqitem").join(" AND ");
 
-    const result = await db
+    const result = (await db
       .select()
       .from(alias)
-      .leftJoin(companies, eq(companies.id, alias.company_id))
-      .limit(1)
+      .leftJoin(requirements, eq(requirements.id, alias.request_id))
+      .leftJoin(suppliers, eq(suppliers.id, requirements.supplier_id))
+      .limit(500)
       .where(query ? sql.raw(query) : undefined)
-      .orderBy(desc(alias.created_at));
+      .orderBy(desc(alias.request_id))) as unknown as {
+      reqitem: RequirementItemSelect;
+      adm_request: RequirementSelect;
+      inv_supplier: SupplierSelect;
+    }[];
 
-    console.log("result: ", result);
+    return result.map((el) => new RequirementPresentation(el));
+  }
 
-    // return result.map((el) => new Requirement(el));
-    return [];
+  async saveAndApprove(data: UpdateRequirementDto, userName: string) {
+    await db.transaction(async (manager) => {
+      await manager
+        .update(requirementItems)
+        .set({
+          cashbank_id: data.cashBankId,
+          cashbank_name: data.cashBankName,
+          expires_at: data.expiresAt,
+          status: REQUIREMENT_STATUS.APPROVED,
+          approved_by: userName,
+          approved_at: dayjs().format("YYYY-MM-DD"),
+        })
+        .where(eq(requirementItems.id, data.id));
+    });
+  }
+
+  async getRequirement(id: number) {
+    const result = (await db
+      .select()
+      .from(requirementItems)
+      .where(eq(requirementItems.id, id))
+      .leftJoin(requirements, eq(requirements.id, requirementItems.request_id))
+      .leftJoin(suppliers, eq(suppliers.id, requirements.supplier_id))) as any;
+
+    const req = result[0];
+    if (!req) throw new Error("Requerimiento no encontrado");
+    return new RequirementDetail({
+      adm_request: req.adm_request,
+      adm_request_item: req.adm_request_item,
+      inv_supplier: req.inv_supplier,
+    });
+  }
+
+  async createRequirement(data: CreateRequirementDto, name: string) {
+    const requirement: RequirementInsert = {
+      status: REQUIREMENT_STATUS.PENDING,
+      amount: data.amount,
+      company_id: data.company,
+      supplier_id: data.supplier,
+      legal_number: data.ruc,
+      legal_name: data.legal_name,
+      description: data.description,
+      type_document: data.document_type,
+      num_document: data.document_number,
+      costcenter_id: data.cost_center,
+      costcenter_name: data.cost_center_name,
+      nro_quotas: data.quota,
+      pay_method: data.payment_method,
+      requested_at: dayjs().format("YYYY-MM-DD"),
+      created_by: name,
+    };
+    const items: RequirementItemInsert[] = [];
+    const amountByQuota = +(data.amount / data.quota).toFixed(2);
+    for (let i = 0; i < data.quota; i++) {
+      items.push({
+        request_id: 0,
+        description: "",
+        amount: amountByQuota,
+        created_by: name,
+        status: REQUIREMENT_STATUS.PENDING,
+      });
+    }
+
+    await db.transaction(async (manager) => {
+      const result = await manager.insert(requirements).values(requirement);
+      const requirementId = result[0].insertId;
+      await manager.insert(requirementItems).values(
+        items.map((el) => ({
+          ...el,
+          request_id: requirementId,
+          requested_at: requirement.requested_at,
+        }))
+      );
+    });
+  }
+
+  async rejectRequirement(id: number) {
+    //
   }
 }

@@ -1,27 +1,11 @@
 import { PATHS } from '@/const/paths'
-import { viewClient } from '@/lib/rpc'
-import { useQuery } from '@tanstack/react-query'
-import type { Requirement } from '@view'
+import { fNumber } from '@/utils/formatNumber'
+import { RequirementPresentation } from '@view'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { FileText } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-export function DataTable() {
-  const { data = [] } = useQuery({
-    queryKey: ['requirements'],
-    queryFn: async () => {
-      const request = await viewClient.api.view.requirement.filter.$get({
-        query: {
-          filters: JSON.stringify([]),
-        },
-      })
-      const data = await request.json()
-
-      return data.data as Requirement[]
-    },
-  })
-
+export function DataTable({ data }: { data: RequirementPresentation[] }) {
   return (
     <div>
       <Table
@@ -38,7 +22,7 @@ export function DataTable() {
             },
             {
               title: 'Solicitado',
-              dataIndex: 'requested_at',
+              dataIndex: 'requestedAt',
             },
             {
               title: 'Proveedor',
@@ -46,43 +30,56 @@ export function DataTable() {
             },
             {
               title: 'N° Doc',
-              dataIndex: 'num_doc',
+              dataIndex: 'numDoc',
             },
             {
               title: 'Detalle',
-              dataIndex: 'detail',
+              dataIndex: 'description',
             },
             {
-              title: 'Cuota',
-              render: () => {
-                return '2/3'
-              },
-            },
-            {
-              title: 'Registrado por',
+              title: 'Centro de costo',
               dataIndex: 'costCenter',
+            },
+            {
+              title: 'Creado por',
+              dataIndex: 'createdBy',
+            },
+            {
+              title: 'F. Pago',
+              dataIndex: 'paymentMethod',
+            },
+            {
+              title: 'Cuotas',
+              dataIndex: 'numQuota',
             },
             {
               title: 'Monto',
               dataIndex: 'amount',
+              className: 'text-right',
+              render: (amount: number) => fNumber(amount),
             },
-            {
-              title: 'Doc',
-              render: () => {
-                return <FileText className="text-slate-600" size={18} />
-              },
-            },
+            // {
+            //   title: 'Doc',
+            //   render: () => {
+            //     return <FileText className="text-slate-500" size={18} />
+            //   },
+            // },
             {
               title: 'Acciones',
-              render: () => {
+              render: (_, record) => {
                 return (
-                  <Link to={PATHS.erp.modulos.requerimientos.review}>
+                  <Link
+                    to={
+                      PATHS.erp.modulos.requerimientos.review +
+                      `?id=${record.id}`
+                    }
+                  >
                     Revisar
                   </Link>
                 )
               },
             },
-          ] satisfies ColumnsType<Requirement>
+          ] satisfies ColumnsType<RequirementPresentation>
         }
       />
     </div>

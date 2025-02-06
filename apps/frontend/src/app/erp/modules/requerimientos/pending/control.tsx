@@ -1,9 +1,7 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
 import { PATHS } from '@/const/paths'
-import { viewClient } from '@/lib/rpc'
-import { RequirementSelect, WhereOption } from '@pizzadb'
-import { useMutation } from '@tanstack/react-query'
+import { RequirementItemSelect } from '@pizzadb'
 import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
@@ -12,7 +10,7 @@ import { usePendingStore } from './state'
 
 const { RangePicker } = DatePicker
 
-const menuOptions: FilterOption<RequirementSelect>[] = [
+const menuOptions: FilterOption<RequirementItemSelect>[] = [
   {
     key: 'id',
     label: 'Id',
@@ -39,14 +37,6 @@ const menuOptions: FilterOption<RequirementSelect>[] = [
     },
   },
   {
-    key: 'num_document',
-    label: 'N° doc.',
-    operators: ['contain', 'equal'],
-    whereOption: {
-      field: 'num_document',
-    },
-  },
-  {
     key: 'created_by',
     label: 'Creado por',
     operators: ['contain', 'equal'],
@@ -56,14 +46,14 @@ const menuOptions: FilterOption<RequirementSelect>[] = [
   },
 ]
 
-export function Control() {
+export function Control({ onRefetch }: { onRefetch?: () => void }) {
   const navigate = useNavigate()
   const filters = usePendingStore((st) => st.filters)
   const setFilters = usePendingStore((st) => st.setFilters)
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
-      (el) => el.key == ('requested_at' satisfies keyof RequirementSelect),
+      (el) => el.key == ('requested_at' satisfies keyof RequirementItemSelect),
     )
     if (dates) {
       const [start, end] = dates.value as [string, string]
@@ -76,7 +66,7 @@ export function Control() {
     const [start, end] = dates
 
     const newFilters = filters.filter(
-      (el) => el.key != ('requested_at' satisfies keyof RequirementSelect),
+      (el) => el.key != ('requested_at' satisfies keyof RequirementItemSelect),
     )
 
     setFilters([
@@ -94,20 +84,6 @@ export function Control() {
     ])
   }
 
-  const filterMutation = useMutation({
-    mutationFn: async (options: WhereOption<RequirementSelect>[]) => {
-      console.log('op : ', options)
-      const request = await viewClient.api.view.requirement.filter.$get({
-        query: {
-          filters: JSON.stringify(options),
-        },
-      })
-      const data = await request.json()
-      console.log('data : ', data)
-      return []
-    },
-  })
-
   return (
     <div className="flex justify-between items-center">
       <div className="flex-1 flex gap-1">
@@ -124,8 +100,8 @@ export function Control() {
           options={menuOptions}
           filters={filters}
           setFilters={setFilters}
-          onSearch={(filters) => {
-            filterMutation.mutate(filters)
+          onSearch={() => {
+            onRefetch?.()
           }}
         />
       </div>
