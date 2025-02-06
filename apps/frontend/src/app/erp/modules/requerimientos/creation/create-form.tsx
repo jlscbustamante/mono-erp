@@ -2,12 +2,7 @@ import { PATHS } from '@/const/paths'
 import { getNameByRuc } from '@/data/requests/sdk'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
-import {
-  CashBankSelect,
-  CompanySelect,
-  CostCenterSelecet,
-  SupplierSelect,
-} from '@pizzadb'
+import { CompanySelect, CostCenterSelecet, SupplierSelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { CreateRequirementDto, REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
@@ -108,16 +103,6 @@ export function CreationForm() {
       form.setFieldValue('quota', quota - 1)
     }
   }
-
-  const { data: cashBanks } = useQuery({
-    queryKey: ['rq:cashBanks'],
-    queryFn: async () => {
-      const request =
-        await viewClient.api.view.requirement.resource.cashBanks.$get()
-      const result = await request.json()
-      return result.data as CashBankSelect[]
-    },
-  })
 
   const createMt = useMutation({
     mutationFn: async (data: CreateRequirementDto) => {
