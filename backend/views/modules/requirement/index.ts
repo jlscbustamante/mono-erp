@@ -60,11 +60,22 @@ export const requirementRouter = new Hono()
   .post("/approve", async (c) => {
     const session = c.get("user");
     const data = await c.req.json();
+
     await requirementService.saveAndApprove(
       data as UpdateRequirementDto,
       session.name
     );
+
     return c.json({
       message: "ok",
     });
+  })
+  .put("/save", async (c) => {
+    const session = c.get("user");
+    const data = await c.req.json();
+
+    await requirementService.saveRequirement(
+      data as UpdateRequirementDto,
+      session.name
+    );
   });

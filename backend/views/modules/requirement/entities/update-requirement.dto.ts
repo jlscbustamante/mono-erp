@@ -5,6 +5,7 @@ export interface UpdateRequirementDto {
   cashBankName?: string;
   expiresAt?: string;
   createdBy: string;
+  description: string;
 
   globalId: number;
   globalCompanyId: string;

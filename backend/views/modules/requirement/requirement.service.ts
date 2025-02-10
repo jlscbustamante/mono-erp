@@ -1,9 +1,12 @@
+import { db } from "#app/database.ts";
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
   CreateRequirementDto,
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
+import { requirementItems, requirements } from "@scope/pizzadb";
 import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
+import { eq } from "drizzle-orm";
 
 export class RequirementService {
   constructor(private readonly requirementRepository: RequirementRepository) {}
@@ -25,5 +28,17 @@ export class RequirementService {
     await this.requirementRepository.saveAndApprove(data, userName);
   }
 
-  async rejectRequirement(id: number) {}
+  async saveRequirement(data: UpdateRequirementDto, userName: string) {
+    await this.requirementRepository.saveRequirement(data, userName);
+  }
+
+  async getRelatedRequirements(requirementId: number) {
+    const requirementItem = await db
+      .select()
+      .from(requirementItems)
+      .leftJoin(requirements, eq(requirements.id, requirementItems.request_id))
+      .where(eq(requirementItems.id, requirementId));
+
+    return [];
+  }
 }

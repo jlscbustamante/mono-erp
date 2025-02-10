@@ -1,11 +1,9 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
-import { PATHS } from '@/const/paths'
 import { RequirementItemSelect } from '@pizzadb'
-import { Button, DatePicker } from 'antd'
+import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
-import { useNavigate } from 'react-router'
 import { useApprovedStore } from './state'
 
 const { RangePicker } = DatePicker
@@ -47,7 +45,6 @@ const menuOptions: FilterOption<RequirementItemSelect>[] = [
 ]
 
 export function Control({ onRefetch }: { onRefetch?: () => void }) {
-  const navigate = useNavigate()
   const filters = useApprovedStore((st) => st.filters)
   const setFilters = useApprovedStore((st) => st.setFilters)
 
@@ -105,15 +102,6 @@ export function Control({ onRefetch }: { onRefetch?: () => void }) {
           }}
         />
       </div>
-      <Button
-        size="middle"
-        type="primary"
-        onClick={() => {
-          navigate(PATHS.erp.modulos.requerimientos.creation)
-        }}
-      >
-        Nuevo requerimiento
-      </Button>
     </div>
   )
 }

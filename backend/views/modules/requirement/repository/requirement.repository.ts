@@ -51,6 +51,23 @@ export class RequirementRepository {
           status: REQUIREMENT_STATUS.APPROVED,
           approved_by: userName,
           approved_at: dayjs().format("YYYY-MM-DD"),
+          description: data.description,
+        })
+        .where(eq(requirementItems.id, data.id));
+    });
+  }
+
+  async saveRequirement(data: UpdateRequirementDto, userName: string) {
+    await db.transaction(async (manager) => {
+      await manager
+        .update(requirementItems)
+        .set({
+          cashbank_id: data.cashBankId,
+          cashbank_name: data.cashBankName,
+          expires_at: data.expiresAt,
+          approved_by: userName,
+          // approved_at: dayjs().format("YYYY-MM-DD"),
+          description: data.description,
         })
         .where(eq(requirementItems.id, data.id));
     });

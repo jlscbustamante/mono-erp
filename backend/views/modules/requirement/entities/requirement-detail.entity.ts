@@ -23,6 +23,7 @@ export class RequirementDetail {
   readonly cashBankId: number | null;
   readonly cashBankName: string | null;
   readonly status: REQUIREMENT_STATUS;
+  readonly description: string;
 
   readonly globalAmount: number;
   readonly globalId: number;
@@ -45,6 +46,7 @@ export class RequirementDetail {
     this.costCenterId = adm_request.costcenter_id ?? 0;
     this.costCenterName = adm_request.costcenter_name ?? "";
     this.supplierId = inv_supplier.id;
+    this.description = adm_request_item.description ?? "";
     this.supplierName = inv_supplier.supplier;
     this.supplierRuc = inv_supplier.legal_number ?? "";
     this.globalDescription = adm_request.description ?? "";

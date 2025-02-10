@@ -71,7 +71,7 @@ export function DataTable({ data }: { data: RequirementPresentation[] }) {
                   <Link
                     to={
                       PATHS.erp.modulos.requerimientos.review +
-                      `?id=${record.id}`
+                      `?id=${record.id}&bf=${PATHS.erp.modulos.requerimientos.aprobados}`
                     }
                   >
                     Revisar
