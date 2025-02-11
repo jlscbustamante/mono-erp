@@ -23,7 +23,7 @@
     "noFallthroughCasesInSwitch": true,
     "paths": { 
       "@/*": ["./src/*"],
-      "@viewrpc": ["./../../backend/views/rpc.ts"],
+      "@viewrpc": ["./src/rpc.mock.ts"],
       "@pizzadb":["./../../backend/pizzadb/types/index.ts"],
       "@view":["./../../backend/views/modules/types/index.ts"]
     }

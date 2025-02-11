@@ -5,9 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc -p tsconfig.build.json && vite build",
     "prettier": "prettier --write src",
-    "lint": "tsc --noEmit && eslint src --fix",
+    "lint": "tsc --noEmit -p tsconfig.build.json  && eslint src --fix",
     "preview": "vite preview"
   },
   "dependencies": {

@@ -1,11 +1,12 @@
+import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
 import {
   RequirementItemSelect,
   RequirementSelect,
   SupplierSelect,
 } from "@scope/pizzadb/types";
-import { REQUIREMENT_STATUS } from "./requirement.entity.ts";
+import { IRequirementDetail } from "../interfaces/requirement-detail.interface.ts";
 
-export class RequirementDetail {
+export class RequirementDetail implements IRequirementDetail {
   readonly id: number;
   readonly companyId: string;
   readonly companyName: string;

@@ -1,0 +1,20 @@
+export enum PAYMENT_METHOD {
+  CREDIT = "CREDITO",
+  CASH = "CONTADO",
+}
+export enum REQUIREMENT_STATUS {
+  APPROVED = "A",
+  PENDING = "S",
+  PAID = "P",
+  CANCELLED = "R",
+}
+
+export enum REQUIREMENT_TYPE_DOCUMENT {
+  FACTURA = "01",
+  BOLETA = "03",
+  TICKET_SALIDA = "04",
+  NOTA_CREDITO = "07",
+  NOTA_DEBITO = "08",
+  GUIA_REMISION = "09",
+  GUIA_TRANSPORTISTA = "31",
+}

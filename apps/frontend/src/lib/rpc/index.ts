@@ -1,12 +1,12 @@
 import { appConfig } from '@/const/config'
 import { hc } from 'hono/client'
-import type { ViewType } from '../../../../../backend/views/rpc'
+import type { ClientType, ViewType } from '@viewrpc'
 
 const getToken = () => {
   return localStorage.getItem('tk_admin') ?? ''
 }
 
-export const viewClient = hc<ViewType>(appConfig.clients.view, {
+export const viewClient: ClientType = hc<ViewType>(appConfig.clients.view, {
   fetch: (req: RequestInfo | URL, init?: RequestInit) =>
     fetch(req, {
       ...init,

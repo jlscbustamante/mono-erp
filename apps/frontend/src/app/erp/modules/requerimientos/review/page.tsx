@@ -1,6 +1,6 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { RequirementDetail } from '@view'
+import { IRequirementDetail } from '@view'
 import { ReviewForm } from './review-form'
 
 export function RequirementReview() {
@@ -20,7 +20,7 @@ export function RequirementReview() {
       })
 
       const data = await result.json()
-      return data.data as RequirementDetail
+      return data.data as IRequirementDetail
     },
   })
   return (

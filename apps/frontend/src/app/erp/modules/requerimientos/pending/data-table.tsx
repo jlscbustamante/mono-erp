@@ -1,11 +1,11 @@
 import { PATHS } from '@/const/paths'
 import { fNumber } from '@/utils/formatNumber'
-import { RequirementPresentation } from '@view'
+import { IRequirementPresentation } from '@view'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 
-export function DataTable({ data }: { data: RequirementPresentation[] }) {
+export function DataTable({ data }: { data: IRequirementPresentation[] }) {
   return (
     <div>
       <Table
@@ -79,7 +79,7 @@ export function DataTable({ data }: { data: RequirementPresentation[] }) {
                 )
               },
             },
-          ] satisfies ColumnsType<RequirementPresentation>
+          ] satisfies ColumnsType<IRequirementPresentation>
         }
       />
     </div>

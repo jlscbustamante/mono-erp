@@ -1,6 +1,6 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import type { RequirementPresentation } from '@view'
+import type { IRequirementPresentation } from '@view'
 import { Control } from './control'
 import { DataTable } from './data-table'
 import { NavRequest } from './nav'
@@ -18,7 +18,7 @@ export function PendingPage() {
         },
       })
       const data = await request.json()
-      return data.data as RequirementPresentation[]
+      return data.data as IRequirementPresentation[]
     },
   })
 

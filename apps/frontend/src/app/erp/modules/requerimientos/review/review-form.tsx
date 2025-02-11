@@ -10,8 +10,8 @@ import {
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
+  IRequirementDetail,
   REQUIREMENT_TYPE_DOCUMENT,
-  RequirementDetail,
   UpdateRequirementDto,
 } from '@view'
 import { Button, Divider, Form, Input, InputNumber, Modal, Select } from 'antd'
@@ -24,7 +24,7 @@ export function ReviewForm({
   data,
   beforeUrl,
 }: {
-  data: RequirementDetail
+  data: IRequirementDetail
   beforeUrl?: string | null
 }) {
   const [form] = Form.useForm()
@@ -125,20 +125,20 @@ export function ReviewForm({
     },
   })
 
-  const saveRequirementMt = useMutation({
-    mutationFn: async (data: UpdateRequirementDto) => {
-      const result = await viewClient.api.view.requirement.save.$put({
-        json: data,
-      })
-      if (!result.ok) throw new Error('No se pudo guardar el requerimiento')
-    },
-    onError: (err) => {
-      toast.error(err.message)
-    },
-    onSuccess: () => {
-      navigate(PATHS.erp.modulos.requerimientos.solicitados)
-    },
-  })
+  // const saveRequirementMt = useMutation({
+  //   mutationFn: async (data: UpdateRequirementDto) => {
+  //     const result = await viewClient.api.view.requirement.save.$put({
+  //       json: data,
+  //     })
+  //     if (!result.ok) throw new Error('No se pudo guardar el requerimiento')
+  //   },
+  //   onError: (err) => {
+  //     toast.error(err.message)
+  //   },
+  //   onSuccess: () => {
+  //     navigate(PATHS.erp.modulos.requerimientos.solicitados)
+  //   },
+  // })
 
   const onSave = () => {
     const values = form.getFieldsValue()

@@ -1,10 +1,11 @@
+import { IRequirementPresentation } from "#app/modules/requirement/interfaces/requirement-presentation.interface.ts";
 import {
   RequirementItemSelect,
   RequirementSelect,
   SupplierSelect,
 } from "@scope/pizzadb/types";
 
-export class RequirementPresentation {
+export class RequirementPresentation implements IRequirementPresentation {
   readonly id: number;
   readonly supplier: string;
   readonly requestedAt: string;
