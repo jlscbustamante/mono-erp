@@ -91,7 +91,13 @@ export const getLegalDocs = async (docs: string[]): Promise<DocResponse[]> => {
           error: 'a',
         } satisfies DocResponse
       }
-      const error = JSON.parse(JSON.parse(el.prc_response))
+      let error
+      const firstParse = JSON.parse(el.prc_response)
+      if (typeof firstParse === 'string') {
+        error = JSON.parse(firstParse)
+      } else {
+        error = firstParse
+      }
       return {
         ...el,
         error: error?.description ?? '',
