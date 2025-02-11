@@ -1,9 +1,11 @@
 import { db } from "#app/database.ts";
 import { RequirementDetail } from "#app/modules/requirement/entities/requirement-detail.entity.ts";
 import { RequirementPresentation } from "#app/modules/requirement/entities/requirement-item.entity.ts";
-import { REQUIREMENT_STATUS } from "#app/modules/requirement/entities/requirement.entity.ts";
-import { UpdateRequirementDto } from "#app/modules/requirement/entities/update-requirement.dto.ts";
-import { CreateRequirementDto } from "#app/modules/types/index.ts";
+import {
+  CreateRequirementDto,
+  REQUIREMENT_STATUS,
+  UpdateRequirementDto,
+} from "#app/modules/types/index.ts";
 import { requirementItems, requirements, suppliers } from "@scope/pizzadb";
 import { transformWhere } from "@scope/pizzadb/filter";
 import type {
@@ -59,6 +61,13 @@ export class RequirementRepository {
 
   async saveRequirement(data: UpdateRequirementDto, userName: string) {
     await db.transaction(async (manager) => {
+      await manager
+        .update(requirements)
+        .set({
+          description: data.globalDescription,
+        })
+        .where(eq(requirements.id, data.globalId));
+
       await manager
         .update(requirementItems)
         .set({

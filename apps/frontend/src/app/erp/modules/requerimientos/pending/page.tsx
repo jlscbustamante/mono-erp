@@ -9,7 +9,12 @@ import { usePendingStore } from './state'
 export function PendingPage() {
   const filters = usePendingStore((st) => st.filters)
 
-  const { data = [], refetch } = useQuery({
+  const {
+    data = [],
+    refetch,
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ['requirements'],
     queryFn: async () => {
       const request = await viewClient.api.view.requirement.filter.$get({
@@ -25,6 +30,7 @@ export function PendingPage() {
   return (
     <div className="p-3">
       <Control
+        loading={isLoading || isFetching}
         onRefetch={() => {
           refetch()
         }}

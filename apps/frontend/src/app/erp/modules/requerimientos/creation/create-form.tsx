@@ -321,11 +321,19 @@ export function CreationForm() {
               <div className="flex gap-1">
                 <InputNumber readOnly min={1} value={quota} />
                 <div className="flex gap-1 items-center">
-                  <Button size="small" onClick={() => changeQuota(true)}>
-                    <Plus className="w-4 text-slate-600" />
+                  <Button
+                    size="small"
+                    onClick={() => changeQuota(true)}
+                    type="primary"
+                  >
+                    <Plus className="w-4 text-white" />
                   </Button>
-                  <Button size="small" onClick={() => changeQuota(false)}>
-                    <Minus className="w-4 text-slate-600" />
+                  <Button
+                    size="small"
+                    onClick={() => changeQuota(false)}
+                    type="primary"
+                  >
+                    <Minus className="w-4 text-white" />
                   </Button>
                 </div>
               </div>

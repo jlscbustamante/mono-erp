@@ -50,7 +50,7 @@ export function Control({ onRefetch }: { onRefetch?: () => void }) {
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
-      (el) => el.key == ('requested_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key == ('approved_at' satisfies keyof RequirementItemSelect),
     )
     if (dates) {
       const [start, end] = dates.value as [string, string]
@@ -63,14 +63,14 @@ export function Control({ onRefetch }: { onRefetch?: () => void }) {
     const [start, end] = dates
 
     const newFilters = filters.filter(
-      (el) => el.key != ('requested_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key != ('approved_at' satisfies keyof RequirementItemSelect),
     )
 
     setFilters([
       ...newFilters,
       {
-        field: 'requested_at',
-        key: 'requested_at',
+        field: 'approved_at',
+        key: 'approved_at',
         operator: 'range',
         useMods: true,
         value: [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')],

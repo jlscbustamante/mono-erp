@@ -46,7 +46,13 @@ const menuOptions: FilterOption<RequirementItemSelect>[] = [
   },
 ]
 
-export function Control({ onRefetch }: { onRefetch?: () => void }) {
+export function Control({
+  onRefetch,
+  loading,
+}: {
+  onRefetch?: () => void
+  loading?: boolean
+}) {
   const navigate = useNavigate()
   const filters = usePendingStore((st) => st.filters)
   const setFilters = usePendingStore((st) => st.setFilters)
@@ -97,6 +103,7 @@ export function Control({ onRefetch }: { onRefetch?: () => void }) {
           }}
         />
         <FilterComponent
+          loading={loading}
           options={menuOptions}
           filters={filters}
           setFilters={setFilters}

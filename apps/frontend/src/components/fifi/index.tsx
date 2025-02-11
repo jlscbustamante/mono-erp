@@ -12,11 +12,13 @@ export function FilterComponent<T>({
   filters = [],
   setFilters,
   onSearch,
+  loading,
 }: {
   options?: FilterOption<T>[]
   filters?: WhereOption<T>[]
   setFilters?: (filters: WhereOption<T>[]) => void
   onSearch?: (filters: WhereOption<T>[]) => void
+  loading?: boolean
 }) {
   const changeFilter = (newFilter: WhereOption<T>) => {
     if (setFilters) {
@@ -105,6 +107,7 @@ export function FilterComponent<T>({
           type="primary"
           icon={<Search className="w-4 h-4" />}
           className="p-3 h-8 w-8"
+          loading={loading}
           onClick={() => {
             onSearch?.(filters)
           }}

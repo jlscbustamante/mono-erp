@@ -2,6 +2,7 @@ import { db } from "#app/database.ts";
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
   CreateRequirementDto,
+  REQUIREMENT_STATUS,
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
@@ -30,6 +31,15 @@ export class RequirementService {
 
   async saveRequirement(data: UpdateRequirementDto, userName: string) {
     await this.requirementRepository.saveRequirement(data, userName);
+  }
+
+  async undoApproval(id: number) {
+    await db
+      .update(requirementItems)
+      .set({
+        status: REQUIREMENT_STATUS.PENDING,
+      })
+      .where(eq(requirementItems.id, id));
   }
 
   async getRelatedRequirements(requirementId: number) {

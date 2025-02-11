@@ -64,7 +64,11 @@ export const transformWhere = <T>(
       const field = fieldToStr(filter.field as string, alias);
       if (filter.operator == "contain") {
         const valStr = (filter.value + "").toLowerCase();
-        val = operatorAndValue(field, filter.operator, `%${valStr}%`);
+        val = operatorAndValue(
+          `LOWER(${field})`,
+          filter.operator,
+          `%${valStr}%`
+        );
       } else if (filter.operator == "range") {
         const [start, end] = filter.value as string[];
         val = `BETWEEN '${start}' AND '${end}'`;

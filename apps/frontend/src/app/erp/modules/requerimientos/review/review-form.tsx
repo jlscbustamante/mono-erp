@@ -1,7 +1,8 @@
+import { RejectModal } from '@/app/erp/modules/requerimientos/review/reject-modal'
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
-import { filterSelectForm } from '@/utils'
+import { cn, filterSelectForm } from '@/utils'
 import {
   CashBankSelect,
   CompanySelect,
@@ -11,10 +12,11 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   IRequirementDetail,
+  REQUIREMENT_STATUS,
   REQUIREMENT_TYPE_DOCUMENT,
   UpdateRequirementDto,
 } from '@view'
-import { Button, Divider, Form, Input, InputNumber, Modal, Select } from 'antd'
+import { Button, Divider, Form, Input, InputNumber, Select } from 'antd'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -30,6 +32,8 @@ export function ReviewForm({
   const [form] = Form.useForm()
 
   const [openModal, setOpenModal] = useState(false)
+
+  const [isEditing, setIsEditing] = useState(false)
 
   const supplierId = Form.useWatch('globalSupplierId', form)
   const costCenterId = Form.useWatch('globalCostCenterId', form)
@@ -125,40 +129,56 @@ export function ReviewForm({
     },
   })
 
-  // const saveRequirementMt = useMutation({
-  //   mutationFn: async (data: UpdateRequirementDto) => {
-  //     const result = await viewClient.api.view.requirement.save.$put({
-  //       json: data,
-  //     })
-  //     if (!result.ok) throw new Error('No se pudo guardar el requerimiento')
-  //   },
-  //   onError: (err) => {
-  //     toast.error(err.message)
-  //   },
-  //   onSuccess: () => {
-  //     navigate(PATHS.erp.modulos.requerimientos.solicitados)
-  //   },
-  // })
+  const saveRequirementMt = useMutation({
+    mutationFn: async (data: UpdateRequirementDto) => {
+      const result = await viewClient.api.view.requirement.save.$put({
+        json: data,
+      })
+      if (!result.ok) throw new Error('No se pudo guardar el requerimiento')
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
 
-  const onSave = () => {
+  const undoApproveMt = useMutation({
+    mutationFn: async (id: number) => {
+      const result = await viewClient.api.view.requirement.undoApproval[
+        ':id'
+      ].$put({
+        param: {
+          id: id.toString(),
+        },
+      })
+      if (!result.ok) throw new Error('No se pudo deshacer la aprobación')
+    },
+    onSuccess: () => {
+      navigate(PATHS.erp.modulos.requerimientos.aprobados)
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
+  const onSave = async () => {
     const values = form.getFieldsValue()
-    console.log(values)
+    await saveRequirementMt.mutateAsync(values)
+    setIsEditing(false)
   }
 
-  const onFinish = (values: UpdateRequirementDto) => {
+  const onFinish = () => {
+    const values = form.getFieldsValue()
     saveAndApproveMt.mutate(values)
+  }
+
+  const cancelEdit = () => {
+    form.resetFields()
+    setIsEditing(false)
   }
 
   return (
     <>
-      <Modal
-        title="Rechazar"
-        onCancel={() => setOpenModal(false)}
-        open={openModal}
-        footer={null}
-      >
-        <p>content</p>
-      </Modal>
+      <RejectModal onChange={setOpenModal} open={openModal} id={data.id} />
       <div className="flex justify-center gap-3">
         <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
           <div
@@ -176,7 +196,10 @@ export function ReviewForm({
             labelAlign="left"
             name="rq-create-form"
             labelCol={{ span: 8 }}
-            onFinish={onFinish}
+            onFinish={() => null}
+            onValuesChange={() => {
+              setIsEditing(true)
+            }}
             form={form}
             className="w-[800px]"
             initialValues={
@@ -205,6 +228,9 @@ export function ReviewForm({
               } satisfies UpdateRequirementDto
             }
           >
+            <Form.Item name={'globalId'} className="hidden">
+              <Input />
+            </Form.Item>
             <Form.Item name={'globalSupplierRuc'} className="hidden">
               <Input />
             </Form.Item>
@@ -376,9 +402,49 @@ export function ReviewForm({
                 <Input readOnly />
               </Form.Item>
             </div>
-            <Form.Item labelCol={{ span: 4 }} className="flex justify-end">
-              <div className="flex gap-1">
-                <Button onClick={() => onSave()}>Guardar</Button>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              className={cn('flex justify-end', {
+                hidden: data.status != REQUIREMENT_STATUS.APPROVED,
+              })}
+            >
+              <div>
+                <Button
+                  danger
+                  onClick={() => undoApproveMt.mutate(data.id)}
+                  loading={undoApproveMt.isPending}
+                >
+                  Deshacer aprobación
+                </Button>
+              </div>
+            </Form.Item>
+            <Form.Item
+              labelCol={{ span: 4 }}
+              className={cn('flex justify-end', {
+                hidden: data.status != REQUIREMENT_STATUS.PENDING,
+              })}
+            >
+              <div
+                className={cn('flex gap-1', {
+                  hidden: !isEditing,
+                })}
+              >
+                <Button onClick={cancelEdit} danger type="primary">
+                  Cancelar
+                </Button>
+                <Button
+                  type="primary"
+                  onClick={() => onSave()}
+                  loading={saveRequirementMt.isPending}
+                >
+                  Guardar cambios
+                </Button>
+              </div>
+              <div
+                className={cn('flex gap-1', {
+                  hidden: isEditing,
+                })}
+              >
                 <Button
                   danger
                   type="primary"
@@ -386,7 +452,12 @@ export function ReviewForm({
                 >
                   Rechazar
                 </Button>
-                <Button type="primary" htmlType="submit" className="">
+                <Button
+                  loading={saveAndApproveMt.isPending}
+                  type="primary"
+                  className=""
+                  onClick={() => onFinish()}
+                >
                   Aprobar
                 </Button>
               </div>

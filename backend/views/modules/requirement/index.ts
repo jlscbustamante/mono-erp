@@ -78,4 +78,16 @@ export const requirementRouter = new Hono()
       data as UpdateRequirementDto,
       session.name
     );
-  });
+    return c.json({
+      message: "ok",
+    });
+  })
+  .put(
+    "/undoApproval/:id",
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const id = +c.req.valid("param").id;
+      await requirementService.undoApproval(id);
+      return c.json({ message: "ok" });
+    }
+  );
