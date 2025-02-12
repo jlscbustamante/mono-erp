@@ -90,4 +90,29 @@ export const requirementRouter = new Hono()
       await requirementService.undoApproval(id);
       return c.json({ message: "ok" });
     }
+  )
+  .get(
+    "/requirementRelated/:id",
+    zValidator("param", z.object({ id: z.string() })),
+    async (c) => {
+      const id = +c.req.valid("param").id;
+      const data = await requirementService.getRelatedRequirements(id);
+      return c.json({ data });
+    }
+  )
+  .post(
+    "/rejectRequirement",
+    zValidator(
+      "json",
+      z.object({
+        ids: z.array(z.number()),
+      })
+    ),
+    async (c) => {
+      const { ids } = c.req.valid("json");
+
+      await requirementService.rejectRequirements(ids);
+
+      return c.json({ message: "ok" });
+    }
   );

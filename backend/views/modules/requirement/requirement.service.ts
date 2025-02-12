@@ -1,4 +1,5 @@
 import { db } from "#app/database.ts";
+import { IRelatedRequirement } from "#app/modules/requirement/interfaces/related-requirements.interface.ts";
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
   CreateRequirementDto,
@@ -7,7 +8,7 @@ import {
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
 import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
-import { eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 export class RequirementService {
   constructor(private readonly requirementRepository: RequirementRepository) {}
@@ -42,13 +43,41 @@ export class RequirementService {
       .where(eq(requirementItems.id, id));
   }
 
-  async getRelatedRequirements(requirementId: number) {
+  async getRelatedRequirements(
+    requirementId: number
+  ): Promise<IRelatedRequirement[]> {
     const requirementItem = await db
       .select()
-      .from(requirementItems)
-      .leftJoin(requirements, eq(requirements.id, requirementItems.request_id))
-      .where(eq(requirementItems.id, requirementId));
+      .from(requirements)
+      .leftJoin(
+        requirementItems,
+        eq(requirements.id, requirementItems.request_id)
+      )
+      .where(
+        and(
+          eq(requirements.id, requirementId),
+          eq(requirementItems.status, REQUIREMENT_STATUS.PENDING)
+        )
+      );
 
-    return [];
+    return requirementItem
+      .map((el) => {
+        if (!el.adm_request_item || !el.adm_request) return null;
+        return {
+          id: el.adm_request_item.id,
+          quota: el.adm_request.nro_quotas ?? 1,
+          value: el.adm_request_item.amount ?? 0,
+        } satisfies IRelatedRequirement;
+      })
+      .filter((el) => el) as IRelatedRequirement[];
+  }
+
+  async rejectRequirements(ids: number[]) {
+    await db
+      .update(requirementItems)
+      .set({
+        status: REQUIREMENT_STATUS.CANCELLED,
+      })
+      .where(inArray(requirementItems.id, ids));
   }
 }

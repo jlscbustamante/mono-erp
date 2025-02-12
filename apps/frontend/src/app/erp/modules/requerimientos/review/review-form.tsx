@@ -178,7 +178,12 @@ export function ReviewForm({
 
   return (
     <>
-      <RejectModal onChange={setOpenModal} open={openModal} id={data.id} />
+      <RejectModal
+        onChange={setOpenModal}
+        open={openModal}
+        id={data.globalId}
+        requestId={data.id}
+      />
       <div className="flex justify-center gap-3">
         <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
           <div
@@ -251,7 +256,6 @@ export function ReviewForm({
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 label="Empresa"
-                className=""
                 name="globalCompanyId"
                 rules={[{ required: true }]}
               >
