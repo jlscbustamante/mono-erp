@@ -23,7 +23,8 @@ export const ErpLayout = () => {
         if (location.pathname != PATHS.erp.modulos.mercaderia.stockAlmacen) {
           if (
             location.pathname != PATHS.erp.auth.otpLogin &&
-            location.pathname != PATHS.erp.auth.main
+            location.pathname != PATHS.erp.auth.main &&
+            location.pathname != PATHS.erp.auth.recover
           )
             navigate(PATHS.erp.auth.main)
         }
@@ -54,7 +55,8 @@ export const ErpLayout = () => {
   if (
     user.userId == -1 &&
     location.pathname != PATHS.erp.auth.main &&
-    location.pathname != PATHS.erp.auth.otpLogin
+    location.pathname != PATHS.erp.auth.otpLogin &&
+    location.pathname != PATHS.erp.auth.recover
   )
     return (
       <div className="bg-slate-100 h-screen flex items-center justify-center font-semibold text-lg">

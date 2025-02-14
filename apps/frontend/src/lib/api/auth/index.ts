@@ -39,10 +39,38 @@ export class AuthApi {
   }
 
   @axiosCatch
+  async resetPassword(email: string) {
+    const result = await this.client.post<{ data: string }>(
+      'auth/resetPassword',
+      {
+        email,
+      },
+    )
+
+    return result.data.data
+  }
+
+  @axiosCatch
   async validateLogin(data: { otp: string; token: string }) {
     const result = await this.client.post<{
       data: { session: Session; token: string }
     }>('auth/validate-login', data)
+    return result.data.data
+  }
+
+  @axiosCatch
+  async validateOtp(data: { otp: string; token: string }) {
+    const result = await this.client.post<{
+      data: string
+    }>('auth/validate-otp-recover', data)
+    return result.data.data
+  }
+
+  @axiosCatch
+  async changePassword(data: { password: string; token: string }) {
+    const result = await this.client.post<{
+      data: { session: Session; token: string }
+    }>('auth/changePassword', data)
     return result.data.data
   }
 

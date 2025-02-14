@@ -4,7 +4,7 @@ import { Button, Form, Input } from 'antd'
 import { useState } from 'react'
 import { AiOutlineUser } from 'react-icons/ai'
 import { RiLockPasswordLine } from 'react-icons/ri'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { ReactComponent as Logo } from '@/assets/logo.svg'
@@ -90,7 +90,8 @@ const FormLogin = () => {
         />
       </Form.Item>
       <div className="mb-3">
-        {/* ¿Olvidaste tu contraseña? <Link to={}>Recupérala aqui</Link> */}
+        ¿Olvidaste tu contraseña?{' '}
+        <Link to={PATHS.erp.auth.recover}>Recupérala aqui</Link>
       </div>
       <Form.Item className="text-center">
         <Button type="primary" htmlType="submit" loading={loginMt.isPending}>

@@ -4,6 +4,7 @@ export const PATHS = {
     auth: {
       main: '/erp/auth/login',
       otpLogin: '/erp/auth/otp-login',
+      recover: '/erp/auth/recuperar-contrasena',
     },
     modulos: {
       main: '/erp/modulos',

@@ -1,5 +1,6 @@
 import { NotFound } from '@/app/404'
 import { OtpLoginPage } from '@/app/erp/auth/otp-login'
+import { RecoverPasswordPage } from '@/app/erp/auth/recover-password'
 import { ErpLayout } from '@/app/erp/layout'
 import { DigitalizacionLayout } from '@/app/erp/modules/digitalizacion/layout'
 import { MantenimientoLayout } from '@/app/erp/modules/mantenimiento/layout'
@@ -84,6 +85,10 @@ export const routerv2 = createBrowserRouter([
       {
         path: PATHS.erp.auth.otpLogin,
         element: <OtpLoginPage />,
+      },
+      {
+        path: PATHS.erp.auth.recover,
+        element: <RecoverPasswordPage />,
       },
       {
         path: PATHS.erp.modulos.main,

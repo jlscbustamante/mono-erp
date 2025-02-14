@@ -141,6 +141,87 @@ export class AuthService {
     return token
   }
 
+  async resetPassword({ email }: { email: string }): Promise<string> {
+    const user = await this.iamUserRepository.findOne({
+      where: {
+        email,
+      },
+      relations: {
+        role: true,
+      },
+    })
+    if (!user) throw badRequest('El usuario no existe')
+
+    if (user.status == 0) throw badRequest('El usuario no esta activo')
+
+    await this.emailService.clearEmail(email)
+    await this.emailService.sendOtp(user.name, email)
+    const token = jwt.sign(
+      { email, name: user.name },
+      this.configService.get<string>('auth.jwtLoginSecret'),
+      {
+        expiresIn: '5m',
+      },
+    )
+
+    return token
+  }
+
+  async changePassword({
+    token: tokenReset,
+    password,
+  }: {
+    token: string
+    password: string
+  }) {
+    const dataToken = jwt.verify(
+      tokenReset,
+      this.configService.get('auth.jwtLoginSecret'),
+    )
+
+    if (!dataToken) throw badRequest('Token invalido')
+    const { secure, email } = dataToken as {
+      email: string
+      secure: boolean
+    }
+    if (!secure) throw badRequest('Token invalido')
+
+    const user = await this.iamUserRepository.findOne({
+      where: {
+        email,
+      },
+    })
+    if (!user) throw badRequest('El usuario no existe')
+
+    const encrypted = await bcrypt.hash(password, 10)
+    await this.iamUserRepository.update(
+      {
+        id: user.id,
+      },
+      {
+        password: encrypted,
+      },
+    )
+
+    const data: IToken = {
+      id: user.id,
+      name: user.name,
+      granted: 1,
+      mail: user.email,
+      rol_id: user.rol_id,
+      status: 'A',
+    }
+
+    const tokenLogin = jwt.sign(data, this.configService.get('auth.jwtSecret'))
+
+    const session: Session = await this.userValidate(user.id)
+
+    return {
+      token: tokenLogin,
+      session,
+    }
+  }
+
   async resendOtp(token: string) {
     try {
       const isValid = jwt.verify(
@@ -183,6 +264,7 @@ export class AuthService {
         rol_id: user.rol_id,
         status: 'A',
       }
+
       const tokenLogin = jwt.sign(
         data,
         this.configService.get('auth.jwtSecret'),
@@ -197,6 +279,49 @@ export class AuthService {
     } catch (err: any) {
       if (err.message == 'jwt expired')
         throw badRequest('Tiempo de inicio de sesión agotado')
+      throw badRequest(err.message)
+    }
+  }
+
+  async validateOtpToRecover({
+    token,
+    otp,
+  }: {
+    token: string
+    otp: string
+  }): Promise<string> {
+    try {
+      const isValid = jwt.verify(
+        token,
+        this.configService.get('auth.jwtLoginSecret'),
+      )
+      if (!isValid) throw badRequest('Token invalido')
+      const { email } = isValid as { email: string }
+
+      const user = await this.iamUserRepository.findOne({
+        where: {
+          email,
+        },
+      })
+      if (!user) throw badRequest('El usuario no existe')
+      const isValidOtp = this.otpService.validate(email, otp)
+
+      if (!isValidOtp) throw badRequest('El OTP es incorrecto')
+
+      const newToken = jwt.sign(
+        { email, name: user.name, secure: true },
+        this.configService.get<string>('auth.jwtLoginSecret'),
+        {
+          expiresIn: '3m',
+        },
+      )
+
+      return newToken
+    } catch (err: any) {
+      if (err.message == 'jwt expired')
+        throw badRequest(
+          'El tiempo para cambiar la contraseña ha expirado. Vuelve a intentarlo',
+        )
       throw badRequest(err.message)
     }
   }

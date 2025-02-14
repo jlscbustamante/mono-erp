@@ -117,6 +117,10 @@ export class EmailService {
     }
   }
 
+  async clearEmail(email: string) {
+    delete this.register[email]
+  }
+
   async sendOtp(name: string, email: string) {
     this.checkRegister(email)
 

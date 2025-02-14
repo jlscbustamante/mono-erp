@@ -49,10 +49,36 @@ export class AuthController {
     return await this.authService.login({ email, password })
   }
 
+  @Post('/auth/resetPassword')
+  async resetPassword(req: Request) {
+    const { email } = req.body
+    return await this.authService.resetPassword({ email })
+  }
+
+  @Post('/auth/changePassword')
+  async changePassword(req: Request) {
+    const { password, token } = req.body
+
+    return await this.authService.changePassword({
+      token: token,
+      password: password,
+    })
+  }
+
   @Post('/auth/validate-login')
   async validateLogin(req: Request) {
     const { token, otp } = req.body
     const data = await this.authService.validateEmailAndLogin({
+      otp,
+      token,
+    })
+    return data
+  }
+
+  @Post('/auth/validate-otp-recover')
+  async validateOtp(req: Request) {
+    const { token, otp } = req.body
+    const data = await this.authService.validateOtpToRecover({
       otp,
       token,
     })
