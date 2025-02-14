@@ -323,12 +323,42 @@ const Filters = () => {
 const TableFiles = () => {
   const files = useRecoilValue(paymentFilesBankSt)
   const columns: ColumnsType<IPaymentFile> = [
-    { title: 'Id', dataIndex: 'id', key: 'id' },
-    { title: 'Nombre', dataIndex: 'file_name', key: 'file_name' },
-    { title: 'Folder', dataIndex: 'folder', key: 'folder' },
-    { title: 'Subido por', dataIndex: 'upload_by', key: 'upload_by' },
-    { title: 'Tipo de archivo', dataIndex: 'file_type', key: 'file_type' },
-    { title: 'fecha de subida', dataIndex: 'created_at', key: 'created_at' },
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      key: 'id',
+      sorter: (a, b) => a.id! - b.id!,
+    },
+    {
+      title: 'Nombre',
+      dataIndex: 'file_name',
+      key: 'file_name',
+      sorter: (a, b) => a.file_name.localeCompare(b.file_name),
+    },
+    {
+      title: 'Folder',
+      dataIndex: 'folder',
+      key: 'folder',
+      sorter: (a, b) => a.folder.localeCompare(b.folder),
+    },
+    {
+      title: 'Subido por',
+      dataIndex: 'upload_by',
+      key: 'upload_by',
+      sorter: (a, b) => a.upload_by.localeCompare(b.upload_by),
+    },
+    {
+      title: 'Tipo de archivo',
+      dataIndex: 'file_type',
+      key: 'file_type',
+      sorter: (a, b) => a.file_type.localeCompare(b.file_type),
+    },
+    {
+      title: 'fecha de subida',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      sorter: (a, b) => a.created_at.localeCompare(b.created_at),
+    },
   ]
   return (
     <Table

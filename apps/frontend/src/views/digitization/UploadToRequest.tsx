@@ -65,12 +65,15 @@ const RequirementsFound: React.FC<{
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Fecha solicitada',
       dataIndex: 'requested_at',
       key: 'date',
       render: (text: string) => text.split(' ')[0],
+      sorter: (a, b) =>
+        dayjs(a.requested_at).unix() - dayjs(b.requested_at).unix(),
     },
     {
       title: 'Tipo',
@@ -82,23 +85,29 @@ const RequirementsFound: React.FC<{
         else if (type == RequestType.Transfer) return 'Transferencia'
         else if (type == RequestType.Liquidation) return 'Liquidación'
       },
+      sorter: (a, b) => a.request_type.localeCompare(b.request_type),
     },
     {
       title: 'Detalle',
       dataIndex: 'description',
+      sorter: (a, b) => a.description.localeCompare(b.description),
     },
     {
       title: 'Proveedor',
       dataIndex: 'legal_name',
+      sorter: (a, b) => a.legal_name?.localeCompare(b.legal_name ?? '') ?? -1,
     },
     {
       title: 'N° Doc',
       dataIndex: 'legal_number',
+      sorter: (a, b) =>
+        a.legal_number?.localeCompare(b.legal_number ?? '') ?? -1,
     },
     {
       title: 'Monto',
       dataIndex: 'amount',
       render: (amount: number) => fCurrency(amount),
+      sorter: (a, b) => a.amount - b.amount,
     },
     {
       title: <FaFilePdf className="w-4 h-auto" />,

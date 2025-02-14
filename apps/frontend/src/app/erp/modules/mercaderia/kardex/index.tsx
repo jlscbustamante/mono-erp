@@ -15,7 +15,7 @@ export const KardexPage = () => {
 
   const getKardex = useMutation({
     mutationFn: (filters: Fillime<InvKardex>) =>
-      kardexApi.filterKardex(filters),
+      kardexApi.filterKardex(filters) as Promise<IKardex[]>,
     onSuccess: (data) => {
       setData(data)
     },
@@ -37,35 +37,44 @@ export const KardexPage = () => {
             {
               title: 'Id',
               dataIndex: 'id',
+              sorter: (a, b) => a.id - b.id,
             },
             {
               title: 'Fecha',
               dataIndex: 'move_at',
               render: (val) => dayjs(val).format('YYYY-MM-DD HH:mm'),
+              sorter: (a, b) =>
+                dayjs(a.move_at).unix() - dayjs(b.move_at).unix(),
             },
             {
               title: 'Item',
               dataIndex: 'item_name',
+              sorter: (a, b) => a.item_name.localeCompare(b.item_name),
             },
             {
               title: 'Presentacion',
               dataIndex: 'presentation_name',
+              sorter: (a, b) =>
+                a.presentation_name?.localeCompare(b.presentation_name),
             },
             {
               title: 'Cantidad',
               dataIndex: 'quantity',
               align: 'right',
               render: (val: number) => fNumber(val),
+              sorter: (a, b) => a.quantity - b.quantity,
             },
             {
               title: 'Precio',
               dataIndex: 'unit_price',
               align: 'center',
+              sorter: (a, b) => a.unit_price - b.unit_price,
             },
             {
               title: 'Costo',
               dataIndex: 'unit_purchase',
               align: 'center',
+              sorter: (a, b) => a.unit_purchase - b.unit_purchase,
             },
             {
               title: 'Tipo',
@@ -73,10 +82,13 @@ export const KardexPage = () => {
               render: (val) => {
                 return val == KARDEX_MOVE_FLOW.IN ? 'Entrada' : 'Salida'
               },
+              sorter: (a, b) => a.move_flow?.localeCompare(b.move_flow),
             },
             {
               title: 'Tienda',
               dataIndex: ['warehouse', 'title'],
+              sorter: (a, b) =>
+                a.warehouse?.title.localeCompare(b.warehouse?.title),
             },
           ] satisfies ColumnsType<IKardex>
         }

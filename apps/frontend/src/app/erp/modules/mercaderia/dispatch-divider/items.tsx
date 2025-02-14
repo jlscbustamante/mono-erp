@@ -158,15 +158,18 @@ export const ListItems = () => {
             {
               title: 'Id',
               dataIndex: 'id',
+              sorter: (a, b) => a.id - b.id,
             },
             {
               title: 'Nombre',
               dataIndex: 'itemName',
+              sorter: (a, b) => a.itemName.localeCompare(b.itemName),
             },
             {
               title: 'Almacen',
               dataIndex: 'storeCode',
               render: (val) => sucursalName[val] ?? val,
+              sorter: (a, b) => a.storeCode?.localeCompare(b.storeCode ?? ''),
             },
             {
               title: '',

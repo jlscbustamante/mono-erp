@@ -12,10 +12,11 @@ import {
   filterCategorySt,
   filterIFilterCategory,
 } from '@/data/category/state/category'
-import { ICategory } from '@/data/category/types'
+import { ICategory, IFilterCategory } from '@/data/category/types'
 import { transformFilterToValidCategory } from '@/data/category/utils'
 import { Filters } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/Category/forms/Create'
 import { RequestsFilters } from '../components/Category/forms/FilterControl'
 import { UpdateForm } from '../components/Category/forms/UpdateForm'
@@ -152,28 +153,39 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 25,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
       width: 380,
+      sorter: (a, b) => a.name?.localeCompare(b.name ?? '') ?? -1,
     },
     {
       title: 'Cuenta',
       dataIndex: ['account', 'account'],
       key: 'account_id',
       width: 120,
+      sorter: (a: any, b: any) =>
+        (a.account?.account as string)?.localeCompare(
+          b.account?.account ?? '',
+        ) ?? -1,
     },
     {
       dataIndex: 'account_id',
       key: 'account_id',
+      sorter: (a: any, b: any) => (a.account_id ?? 0) - (b.account_id ?? 0),
     },
     {
       title: 'Tipo de categoria',
       dataIndex: ['categoryType', 'name'],
       key: 'type_category_id',
       width: 120,
+      sorter: (a: any, b: any) =>
+        (a.categeoryType?.name as string)?.localeCompare(
+          b.categeoryType?.name ?? '',
+        ) ?? -1,
     },
     {
       title: 'Flujo contable',
@@ -229,6 +241,7 @@ const RequirementsFound: React.FC<{
       render: (text: string) => (
         <span>{text == 'A' ? 'Activo' : 'Inactivo'}</span>
       ),
+      sorter: (a, b) => a.status?.localeCompare(b.status ?? '') ?? -1,
     },
 
     {
@@ -248,7 +261,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<IFilterCategory>
   return (
     <Table
       pagination={false}

@@ -82,12 +82,23 @@ const Files: React.FC<{
   handlerDelete: safeAny
 }> = ({ admFiles, setSelectedFile, handlerDelete: onDelete }) => {
   const columns: ColumnsType<IAdmFile> = [
-    { title: 'Id', dataIndex: 'id', key: 'id' },
-    { title: 'Tipo', dataIndex: 'doc_type', key: 'type' },
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      key: 'id',
+      sorter: (a, b) => a.id! - b.id!,
+    },
+    {
+      title: 'Tipo',
+      dataIndex: 'doc_type',
+      key: 'type',
+      sorter: (a, b) => a.doc_type.localeCompare(b.doc_type),
+    },
     {
       title: 'Fecha de escaneo',
       dataIndex: 'doc_date',
       key: 'date',
+      sorter: (a, b) => dayjs(a.doc_date).unix() - dayjs(b.doc_date).unix(),
       render: (date: string) => {
         return date.split(' ')[0]
       },
@@ -96,15 +107,24 @@ const Files: React.FC<{
       title: 'Id req.',
       dataIndex: 'doc_request',
       key: 'idRequerimiento',
+      sorter: (a, b) =>
+        a.doc_request
+          ?.toString()
+          .localeCompare(b.doc_request?.toString() ?? '') ?? -1,
     },
     {
       title: 'Detalle req.',
       dataIndex: ['requirement', 'description'],
+      sorter: (a: any, b: any) =>
+        a.requirement?.description.localeCompare(
+          b.requirement?.description ?? '',
+        ),
     },
     {
       title: 'Subido por',
       dataIndex: 'created_by',
       key: 'created_by',
+      sorter: (a, b) => a.created_by.localeCompare(b.created_by),
     },
     {
       title: <FaFilePdf className="w-4 h-auto" />,

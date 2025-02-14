@@ -56,37 +56,47 @@ export const EmployeesTable = ({
             {
               title: 'Id',
               dataIndex: 'id',
+              sorter: (a, b) => a.id - b.id,
             },
             {
               title: 'Nombre',
               render: (_, record: RhEmployee) => {
                 return `${record.first_name} ${record.last_name}`
               },
+              sorter: (a, b) => a.first_name.localeCompare(b.first_name),
             },
             {
               title: 'Doc.',
               dataIndex: 'doc_number',
+              sorter: (a, b) => a.doc_number.localeCompare(b.doc_number),
             },
             {
               title: 'Telefono',
               dataIndex: 'phone',
+              sorter: (a, b) => a.phone?.localeCompare(b.phone ?? ''),
             },
             {
               title: 'Email',
               dataIndex: 'email',
+              sorter: (a, b) => a.email?.localeCompare(b.email ?? ''),
             },
             {
               title: 'Tienda',
               dataIndex: ['sucursal', 'title'],
+              sorter: (a, b) =>
+                a.sucursal?.title?.localeCompare(b.sucursal?.title ?? '') ?? -1,
             },
             {
               title: 'Cargo',
               dataIndex: ['jobtitle', 'name'],
+              sorter: (a, b) =>
+                a.jobtitle?.name?.localeCompare(b.jobtitle?.name ?? ''),
             },
             {
               title: 'Estado',
               dataIndex: 'status',
               render: (status) => (status == 1 ? 'Activo' : 'Inactivo'),
+              sorter: (a, b) => a.status - b.status,
             },
             {
               title: '',

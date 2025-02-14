@@ -13,10 +13,14 @@ import {
   filterCashAccountSt,
 } from '@/data/cashAccount/state/cashAccount'
 import { CashAccountStatus } from '@/data/cashAccount/types'
-import { ICashAccount } from '@/data/cashAccount/types/cashAccount'
+import {
+  ICashAccount,
+  IFilterCashAccount,
+} from '@/data/cashAccount/types/cashAccount'
 import { transformFilterToValid } from '@/data/cashAccount/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateFormCash } from '../components/CashAccount/forms/CreateForm'
 import { RequestsFilters } from '../components/CashAccount/forms/FiltersControl'
 import { UpdateFormCash } from '../components/CashAccount/forms/UpdateForm'
@@ -166,11 +170,13 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
+      sorter: (a, b) => a.name?.localeCompare(b.name ?? '') ?? -1,
     },
 
     {
@@ -178,16 +184,25 @@ const RequirementsFound: React.FC<{
       dataIndex: ['account', 'account'],
       key: 'account_id',
       width: 200,
+      sorter: (a: any, b: any) =>
+        (a.account?.account as string).localeCompare(
+          b.account?.account ?? '',
+        ) ?? -1,
     },
     {
       dataIndex: 'account_id',
       key: 'account_id',
+      sorter: (a: any, b: any) => (a.account_id ?? 0) - (b.account_id ?? 0),
     },
     {
       title: 'Tipo de caja',
       dataIndex: ['cash_account_type', 'name'],
       key: 'type_cash_id',
       width: 150,
+      sorter: (a: any, b: any) =>
+        (a.cash_account_type?.name as string)?.localeCompare(
+          b.cash_account_type?.name ?? '',
+        ) ?? -1,
     },
 
     {
@@ -198,6 +213,7 @@ const RequirementsFound: React.FC<{
       render: (text: string) => (
         <span>{text == 'A' ? 'Activo' : 'Inactivo'}</span>
       ),
+      sorter: (a, b) => a.status?.localeCompare(b.status ?? '') ?? -1,
     },
     {
       title: '',
@@ -216,7 +232,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<IFilterCashAccount>
 
   return (
     <div>

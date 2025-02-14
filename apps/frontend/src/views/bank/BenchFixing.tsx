@@ -36,7 +36,11 @@ export const TablePendings = () => {
   }
 
   const columns: ColumnsType<IBankReconciliation> = [
-    { title: 'Fecha', dataIndex: 'bnk_date' },
+    {
+      title: 'Fecha',
+      dataIndex: 'bnk_date',
+      sorter: (a, b) => a.bnk_date.localeCompare(b.bnk_date),
+    },
     {
       title: 'Descripción',
       dataIndex: 'bnk_reference',

@@ -22,10 +22,12 @@ export const JobsTable = ({
           {
             title: 'Id',
             dataIndex: 'id',
+            sorter: (a, b) => a.id - b.id,
           },
           {
             title: 'Nombre',
             dataIndex: 'name',
+            sorter: (a, b) => a.name.localeCompare(b.name),
           },
           {
             title: 'Descripción',

@@ -18,25 +18,32 @@ export const AsistenciaPage = () => {
     {
       title: 'Id',
       dataIndex: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: 'Empleado',
       render: (_, record: Attendance) => {
         return `${record.employee.first_name} ${record.employee.last_name}`
       },
+      sorter: (a, b) =>
+        a.employee.first_name.localeCompare(b.employee.first_name),
     },
     {
       title: 'Evento',
       dataIndex: 'event',
+      sorter: (a, b) => a.event?.localeCompare(b.event ?? ''),
     },
     {
       title: 'Fecha',
       dataIndex: 'attendance_at',
       render: (text: string) => format(parseISO(text), 'yyyy-MM-dd HH:mm:ss'),
+      sorter: (a, b) => a.attendance_at.localeCompare(b.attendance_at),
     },
     {
       title: 'Tienda',
       dataIndex: ['sucursal', 'title'],
+      sorter: (a, b) =>
+        a.sucursal?.title?.localeCompare(b.sucursal?.title ?? '') ?? -1,
     },
     {
       title: 'Imagen',
