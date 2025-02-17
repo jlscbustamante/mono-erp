@@ -10,10 +10,8 @@ import { PATHS } from '@/const/paths'
 import { useNavigate } from 'react-router'
 import { useDispatchBetweenStoresQuery } from '../../state/useDispatch'
 import { useStore } from '../useStore'
-import { useViewMoveDrawer } from './view-move-drawer'
 
 export const TableMoves = () => {
-  const { open } = useViewMoveDrawer()
   const filterDescription = useStore((st) => st.filterDescription)
   const query = useDispatchBetweenStoresQuery()
   const navigate = useNavigate()
