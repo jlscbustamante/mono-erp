@@ -7,6 +7,7 @@ export interface IRequirementPresentation {
   costCenter: string;
   createdBy: string;
   approvedBy: string;
+  rejectedBy: string;
   paymentMethod: string;
   numQuota: number;
   expiresAt: string;

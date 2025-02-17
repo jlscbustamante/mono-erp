@@ -21,6 +21,7 @@ import {
   FaFileInvoiceDollar,
   FaFileUpload,
   FaFilter,
+  FaRegCalendarAlt,
 } from 'react-icons/fa'
 import {
   FaBoxesPacking,
@@ -100,6 +101,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.requerimientos.reportes.detallado]: null,
   [PATHS.erp.modulos.requerimientos.reportes.resumido]: null,
   [PATHS.erp.modulos.requerimientos.reportes.porCentroCosto]: null,
+  [PATHS.erp.modulos.requerimientos.reportes.porFecha]: FaRegCalendarAlt,
 
   [PATHS.erp.modulos.digitalizacion.documentos]: GiConfirmed,
   [PATHS.erp.modulos.digitalizacion.escaneo]: FaFileUpload,

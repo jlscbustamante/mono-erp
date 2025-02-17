@@ -15,6 +15,8 @@ import { ApprovedPage } from '@/app/erp/modules/requerimientos/approved/page'
 import { RequirementeCreation } from '@/app/erp/modules/requerimientos/creation/page'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
+import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
+import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
 import { RequirementReview } from '@/app/erp/modules/requerimientos/review/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
@@ -62,7 +64,6 @@ import Reports from '@/views/reports/Reports'
 import BalanceCostCenter from '@/views/requests/balances/CostCenter'
 import DetailedBalance from '@/views/requests/balances/Detailed'
 import SummarizedBalance from '@/views/requests/balances/Summarized'
-import Rejected from '@/views/requests/Rejected'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
 import PaymentMethods from '@/views/stores/PaymentMethods'
@@ -134,11 +135,15 @@ export const routerv2 = createBrowserRouter([
               },
               {
                 path: PATHS.erp.modulos.requerimientos.rechazados,
-                element: <Rejected />,
+                element: <RejectPage />,
               },
               {
                 path: PATHS.erp.modulos.requerimientos.reportes.main,
                 children: [
+                  {
+                    path: PATHS.erp.modulos.requerimientos.reportes.porFecha,
+                    element: <ReportByDatePage />,
+                  },
                   {
                     path: PATHS.erp.modulos.requerimientos.reportes.detallado,
                     element: <DetailedBalance />,

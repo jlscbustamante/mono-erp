@@ -18,6 +18,7 @@ export class RequirementPresentation implements IRequirementPresentation {
   readonly numQuota: number;
   readonly expiresAt: string;
   readonly amount: number;
+  readonly rejectedBy: string;
 
   constructor(props: {
     reqitem: RequirementItemSelect;
@@ -30,6 +31,7 @@ export class RequirementPresentation implements IRequirementPresentation {
     this.numDoc = props.adm_request.num_document ?? "";
     this.description = props.reqitem.description ?? "";
     this.costCenter = props.adm_request.costcenter_name ?? "";
+    this.rejectedBy = props.reqitem.rejected_by ?? "sys";
     this.createdBy = props.adm_request.created_by ?? "";
     this.paymentMethod = props.adm_request.pay_method ?? "";
     this.numQuota = props.adm_request.nro_quotas ?? 1;

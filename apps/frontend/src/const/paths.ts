@@ -28,6 +28,7 @@ export const PATHS = {
           resumido: '/erp/modulos/requerimientos/reportes/resumido',
           porCentroCosto:
             '/erp/modulos/requerimientos/reportes/por-centro-costo',
+          porFecha: '/erp/modulos/requerimientos/reportes/por-fecha',
         },
       },
       digitalizacion: {

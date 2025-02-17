@@ -15,4 +15,8 @@ export interface CreateRequirementDto {
   hasRetention: boolean;
   retention: number;
   quota: number;
+  detailQuotas: {
+    number: number;
+    amount: number;
+  }[];
 }

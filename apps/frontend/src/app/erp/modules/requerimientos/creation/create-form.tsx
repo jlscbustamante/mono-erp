@@ -16,7 +16,7 @@ import {
   Select,
 } from 'antd'
 import { ArrowLeft, Minus, Plus } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 
@@ -26,7 +26,10 @@ export function CreationForm() {
   const hasRetention = Form.useWatch('hasRetention', form)
   const quota = Form.useWatch('quota', form)
   const costCenterId = Form.useWatch('cost_center', form)
+  const totalAmount = Form.useWatch('amount', form)
   const supplierId = Form.useWatch('supplier', form)
+  const retation = Form.useWatch('retention', form)
+  const [quotas, setQuotas] = useState<{ number: number; amount: number }[]>([])
 
   const navigate = useNavigate()
 
@@ -120,8 +123,23 @@ export function CreationForm() {
   })
 
   const onFinish = (values: CreateRequirementDto) => {
-    createMt.mutate(values)
+    createMt.mutate({
+      ...values,
+      detailQuotas: quotas,
+    })
   }
+
+  useEffect(() => {
+    const total = totalAmount - (hasRetention ? retation : 0)
+    const amountByQuota = +(total / quota).toFixed(2)
+
+    setQuotas(
+      Array.from({ length: quota }).map((_, index) => ({
+        number: index + 1,
+        amount: amountByQuota,
+      })),
+    )
+  }, [quota, totalAmount, retation, hasRetention])
 
   return (
     <div className="flex justify-center gap-3">
@@ -318,27 +336,48 @@ export function CreationForm() {
           </div>
           <div>
             <Form.Item label="N° cuota" labelCol={{ span: 4 }} name={'quota'}>
-              <div className="flex gap-1">
-                <InputNumber readOnly min={1} value={quota} />
-                <div className="flex gap-1 items-center">
-                  <Button
-                    size="small"
-                    onClick={() => changeQuota(true)}
-                    type="primary"
-                  >
-                    <Plus className="w-4 text-white" />
-                  </Button>
-                  <Button
-                    size="small"
-                    onClick={() => changeQuota(false)}
-                    type="primary"
-                  >
-                    <Minus className="w-4 text-white" />
-                  </Button>
-                </div>
-              </div>
+              <InputNumber readOnly min={1} value={quota} />
             </Form.Item>
           </div>
+          <Form.Item wrapperCol={{ span: 6, offset: 4 }}>
+            <div>
+              <div className="grid grid-cols-2 font-semibold mb-2">
+                <p>N° cuota</p>
+                <p>Monto</p>
+              </div>
+              {quotas.map((el) => {
+                return (
+                  <div key={el.number} className="flex items-center relative">
+                    <div className="grid grid-cols-2 my-2 gap-2">
+                      <InputNumber readOnly value={el.number} />
+                      <InputNumber readOnly value={el.amount} />
+                    </div>
+                    {el.number == 1 && (
+                      <div className="absolute left-full">
+                        {' '}
+                        <div className="flex gap-1 items-center">
+                          <Button
+                            size="small"
+                            onClick={() => changeQuota(true)}
+                            type="primary"
+                          >
+                            <Plus className="w-4 text-white" />
+                          </Button>
+                          <Button
+                            size="small"
+                            onClick={() => changeQuota(false)}
+                            type="primary"
+                          >
+                            <Minus className="w-4 text-white" />
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          </Form.Item>
           <Form.Item labelCol={{ span: 4 }} className="flex justify-end">
             <Button type="primary" htmlType="submit">
               Crear

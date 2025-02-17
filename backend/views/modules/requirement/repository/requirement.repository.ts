@@ -118,12 +118,11 @@ export class RequirementRepository {
       created_by: name,
     };
     const items: RequirementItemInsert[] = [];
-    const amountByQuota = +(data.amount / data.quota).toFixed(2);
-    for (let i = 0; i < data.quota; i++) {
+    for (const quotaDetail of data.detailQuotas) {
       items.push({
         request_id: 0,
         description: "",
-        amount: amountByQuota,
+        amount: quotaDetail.amount,
         created_by: name,
         status: REQUIREMENT_STATUS.PENDING,
       });

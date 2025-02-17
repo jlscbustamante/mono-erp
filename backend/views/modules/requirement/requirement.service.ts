@@ -8,6 +8,7 @@ import {
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
 import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
+import dayjs from "dayjs";
 import { and, eq, inArray } from "drizzle-orm";
 
 export class RequirementService {
@@ -77,6 +78,7 @@ export class RequirementService {
       .update(requirementItems)
       .set({
         status: REQUIREMENT_STATUS.CANCELLED,
+        rejected_at: dayjs().format("YYYY-MM-DD"),
       })
       .where(inArray(requirementItems.id, ids));
   }
