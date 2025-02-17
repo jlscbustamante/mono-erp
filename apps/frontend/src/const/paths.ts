@@ -119,4 +119,6 @@ export const PATHS_MAIN = [
   PATHS.erp.modulos.mercaderia.main,
   PATHS.erp.modulos.reportes.main,
   PATHS.erp.modulos.recursosHumanos.main,
+  PATHS.erp.modulos.mercaderia.despachos.review,
+  PATHS.erp.modulos.mercaderia.despachos.reviewStore,
 ]
