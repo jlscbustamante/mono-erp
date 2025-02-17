@@ -29,7 +29,7 @@ export const DispatchRoutesControl = ({
 }) => {
   const query = useCategories()
   return (
-    <div className="flex gap-2 items-center justify-between">
+    <div className="flex gap-2 items-center">
       <div className="flex items-center gap-2">
         <DatePicker
           className="w-52"
