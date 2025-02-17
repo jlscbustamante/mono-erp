@@ -54,6 +54,19 @@ export class AuthService {
     return token
   }
 
+  async loginWsp(phone: string) {
+    validatePhone(phone)
+    const users = await AppDataSource.query(
+      'SELECT id FROM iam_user WHERE phone = ?',
+      [phone],
+    )
+    const user = users[0]
+    if (!user)
+      throw new Error('No existe un usuario con este numero de telefono')
+    const token = await this.otpService.sendSms(phone)
+    return token
+  }
+
   async validateOtp(otp: string, token: string) {
     const phoneUser = this.otpService.validateOtp(otp, token)
     if (!phoneUser) throw badRequest('Otp invalido')

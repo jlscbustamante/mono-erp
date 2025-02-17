@@ -17,6 +17,12 @@ export class AuthController {
     })
   }
 
+  // @catchError
+  // async loginWsp(req: Request, res: Response) {
+  //   // const { phone } = req.body
+  //   // const token = await authService.loginPhone
+  // }
+
   @catchError
   async validateOtp(req: Request, res: Response) {
     const { otp, token } = req.body

@@ -88,6 +88,53 @@ export class OtpService {
       throw new Error('No se pudo enviar SMS')
     }
   }
+
+  async sendWsp(phone: string) {
+    this.clear()
+    this.clearPhone(phone)
+    const { data } = await axios.get(
+      `http://ec2-34-239-124-25.compute-1.amazonaws.com/api/OTPUX/${phone}`,
+    )
+    const otpData: {
+      otp: string
+      expires: number
+      phone: string
+      token: string
+      validate: boolean
+    } = data.result
+    this.vault.push({
+      generatedAt: new Date(),
+      otp: otpData.otp,
+      phone: phone,
+      token: otpData.token,
+    })
+    const phoneNumber = `+51${otpData.phone}`
+    const command = new SendMessagesCommand({
+      ApplicationId: config.aws.pinpoint.applicationId,
+      MessageRequest: {
+        Addresses: {
+          [phoneNumber]: {
+            ChannelType: 'SMS',
+          },
+        },
+        MessageConfiguration: {
+          SMSMessage: {
+            Body:
+              'Tu codigo de inicio de sesion para el Erp es : ' + otpData.otp,
+            MessageType: 'TRANSACTIONAL',
+          },
+        },
+      },
+    })
+    try {
+      await this.pinpointClient.send(command)
+      return otpData.token
+    } catch (err: any) {
+      console.log('error sms : ', err.message)
+      console.log('error sms response: ', err.$response)
+      throw new Error('No se pudo enviar SMS')
+    }
+  }
   validateOtp(otp: string, token: string): string | null {
     const relation = this.vault.find((el) => el.token === token)
     if (!relation) throw badRequest('Token expirado')
