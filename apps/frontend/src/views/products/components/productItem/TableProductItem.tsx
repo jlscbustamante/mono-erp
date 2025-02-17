@@ -60,6 +60,7 @@ export const TableProductItem = () => {
       title: 'Estado',
       dataIndex: 'status',
       key: 'status',
+      sorter: () => -1,
       render: (status) => {
         if (status == 1) {
           return <Tag color="green">Activo</Tag>

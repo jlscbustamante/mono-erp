@@ -49,11 +49,13 @@ export const TableMoves = () => {
       width: 300,
       dataIndex: 'gloss',
       key: 'gloss',
+      sorter: (a, b) => a.gloss.localeCompare(b.gloss),
     },
     {
       title: 'Guia',
       dataIndex: 'numGuide',
       key: 'numGuide',
+      sorter: () => -1,
     },
     {
       title: 'Total',

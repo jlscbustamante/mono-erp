@@ -29,6 +29,7 @@ export const TableProduct = () => {
       title: 'Categoría',
       dataIndex: ['category', 'category'],
       key: 'categoryId',
+      sorter: () => -1,
     },
     {
       title: 'UM',

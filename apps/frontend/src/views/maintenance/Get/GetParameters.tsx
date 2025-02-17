@@ -17,6 +17,7 @@ import { ParametersStatus } from '@/data/maintenance/Parameters/type/status'
 import { transformFilterToValidParameter } from '@/data/maintenance/Parameters/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/Parameters/forms/Create'
 import { RequestsFilters } from '../components/Parameters/forms/FilterControl'
 import { UpdateForm } from '../components/Parameters/forms/Update'
@@ -163,35 +164,41 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Tipo',
       dataIndex: 'type',
       key: 'type',
       width: 600,
+      sorter: (a, b) => a.type?.localeCompare(b.type ?? '') ?? -1,
     },
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
+      sorter: (a, b) => a.name?.localeCompare(b.name ?? '') ?? -1,
     },
     {
       title: 'Valor',
       dataIndex: 'value',
       key: 'value',
       width: 110,
+      sorter: () => -1,
     },
     {
       title: 'Rol',
       dataIndex: 'role',
       key: 'role',
       width: 80,
+      sorter: (a, b) => a.role?.localeCompare(b.role ?? '') ?? -1,
     },
     {
       title: 'Estado',
       dataIndex: 'status',
       key: 'status',
       width: 80,
+      sorter: (a, b) => a.status?.localeCompare(b.status ?? '') ?? -1,
       render: (text: string) => (
         <span>{text == '1' ? 'Activo' : 'Inactivo'}</span>
       ),
@@ -213,7 +220,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<IParameter>
 
   return (
     <div>

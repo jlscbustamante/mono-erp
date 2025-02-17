@@ -20,6 +20,7 @@ import {
 import { transformFilterToValid } from '@/data/category/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/CategoryTye/forms/Create'
 import { RequestsFilters } from '../components/CategoryTye/forms/FilterControl'
 import { UpdateForm } from '../components/CategoryTye/forms/Update'
@@ -156,17 +157,20 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
+      sorter: (a, b) => a.name?.localeCompare(b.name ?? '') ?? -1,
     },
     {
       title: 'Tipo ID',
       dataIndex: 'type_id',
       key: 'type_id',
       width: 150,
+      sorter: () => -1,
       render: (text: string, record: IFilterTypeCategory) => {
         const label = `${record.name} / ${text}`
         return <span>{label}</span>
@@ -178,6 +182,7 @@ const RequirementsFound: React.FC<{
       dataIndex: 'status',
       key: 'status',
       width: 80,
+      sorter: () => -1,
       render: (text: string) => (
         <span>{text == 'A' ? 'Activo' : 'Inactivo'}</span>
       ),
@@ -200,7 +205,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<ITypeCategory>
 
   return (
     <div>

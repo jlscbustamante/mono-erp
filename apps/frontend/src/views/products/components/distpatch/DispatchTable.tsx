@@ -163,10 +163,14 @@ export const DispatchTable = ({
       title: 'Origen',
       dataIndex: ['wareFrom', 'name'],
       key: 'wareFrom',
+      sorter: (a, b) =>
+        a.wareFrom?.name.localeCompare(b.wareFrom?.name ?? '') ?? -1,
     },
     {
       title: 'Destino',
       dataIndex: ['wareTo', 'name'],
+      sorter: (a, b) =>
+        a.wareTo?.name.localeCompare(b.wareTo?.name ?? '') ?? -1,
       key: 'wareTo',
       render: (text, record) => {
         const itemIds = record.items?.map((el) => el.itemId) ?? []
@@ -186,10 +190,12 @@ export const DispatchTable = ({
       width: 300,
       dataIndex: 'gloss',
       key: 'gloss',
+      sorter: (a, b) => a.gloss.localeCompare(b.gloss),
     },
     {
       title: 'Guia',
       align: 'center',
+      sorter: () => -1,
       render: (_: unknown, record) => {
         const doc = record.numGuide ? docsData[record.numGuide] : undefined
 
@@ -232,6 +238,7 @@ export const DispatchTable = ({
     {
       title: 'Factura',
       align: 'center',
+      sorter: () => -1,
       render: (_: unknown, record) => {
         const doc = record.numInvoice ? docsData[record.numInvoice] : undefined
 
@@ -283,6 +290,7 @@ export const DispatchTable = ({
       width: 110,
       key: 'status',
       render: (status: DISPATCH_STATUS) => <StatusTag status={status} />,
+      sorter: () => -1,
     },
     {
       title: '',

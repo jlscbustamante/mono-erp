@@ -10,11 +10,13 @@ export const columnsTable = {
     title: 'Id',
     dataIndex: 'id',
     key: 'id',
+    sorter: (a: any, b: any) => a.id - b.id,
   },
   requested_at: {
     title: 'Solicitado',
     dataIndex: 'requested_at',
     key: 'requested_at',
+    sorter: () => -1,
     render: (date: string) => {
       return <p className="min-w-max">{fDate(date)}</p>
     },
@@ -23,6 +25,7 @@ export const columnsTable = {
     title: 'Tipo de solicitud',
     dataIndex: 'request_type',
     key: 'request_type',
+    sorter: () => -1,
   },
   legal_name: {
     title: 'Proveedor',
@@ -32,26 +35,31 @@ export const columnsTable = {
       return <p className="max-w-80">{text}</p>
     },
     excelRender: (text: string) => text,
+    sorter: () => -1,
   },
   legal_number: {
     title: 'Número legal',
     dataIndex: 'legal_number',
     key: 'legal_number',
+    sorter: () => -1,
   },
   num_document: {
     title: 'N° Doc',
     dataIndex: 'num_document',
     key: 'num_document',
+    sorter: () => -1,
   },
   description: {
     title: 'Detalle',
     dataIndex: 'description',
     key: 'description',
+    sorter: () => -1,
   },
   category: {
     title: 'Categoria',
     dataIndex: ['category', 'name'],
     // dataIndex: 'category',
+    sorter: () => -1,
     render: (category: string | undefined, record: IFilteredRequest) => {
       return (
         <p>
@@ -66,6 +74,7 @@ export const columnsTable = {
   cash: {
     title: 'Caja',
     dataIndex: ['cashAccount', 'name'],
+    sorter: () => -1,
     render: (cashAccount: string | undefined) => {
       return <p>{cashAccount ?? ''}</p>
     },
@@ -74,6 +83,7 @@ export const columnsTable = {
   cashOrigin: {
     title: 'Caja Origen',
     dataIndex: 'cashAccountCategory',
+    sorter: () => -1,
     render: (cashAccountCategory: { name: string }) => {
       return <p>{cashAccountCategory?.name}</p>
     },
@@ -82,6 +92,7 @@ export const columnsTable = {
   cashDst: {
     title: 'Caja Destino',
     dataIndex: 'cashAccount',
+    sorter: () => -1,
     render: (cashAccount: { name: string }) => {
       return <p>{cashAccount?.name}</p>
     },
@@ -91,21 +102,25 @@ export const columnsTable = {
     title: 'Registrado por',
     dataIndex: 'created_by',
     key: 'requested_by',
+    sorter: () => -1,
   },
   approved_by: {
     title: 'Aprobado por',
     dataIndex: 'approved_by',
     key: 'approved_by',
+    sorter: () => -1,
   },
   rejected_by: {
     title: 'Rechazado por',
     dataIndex: 'rejected_by',
     key: 'rejected_by',
+    sorter: () => -1,
   },
   approved_at: {
     title: 'Aprobado',
     dataIndex: 'approved_at',
     key: 'approved_at',
+    sorter: () => -1,
     render: (date: string) => {
       return <p className="min-w-max">{fDate(date)}</p>
     },
@@ -114,6 +129,7 @@ export const columnsTable = {
     title: 'Rechazado',
     dataIndex: 'rejected_at',
     key: 'rejected_at',
+    sorter: () => -1,
     render: (date: string) => {
       return <p>{fDate(date)}</p>
     },
@@ -121,6 +137,7 @@ export const columnsTable = {
   amount: {
     title: 'Monto',
     dataIndex: 'amount',
+    sorter: () => -1,
     key: 'amount',
     __cellType__: 'TypeNumeric',
     render: (amount: number) => {
@@ -143,6 +160,7 @@ export const columnsTable = {
     title: 'Retencion',
     dataIndex: 'amount_ret',
     key: 'amount_ret',
+    sorter: () => -1,
     __cellType__: 'TypeNumeric',
     excelRender: (amount: number) => {
       return amount
@@ -152,15 +170,18 @@ export const columnsTable = {
     title: 'Centro de costo',
     dataIndex: ['costCenter', 'origin'],
     key: 'cost_center',
+    sorter: () => -1,
   },
   payMethod: {
     title: 'Metodo de pago',
     dataIndex: 'pay_method',
     key: 'pay_method',
+    sorter: () => -1,
   },
   currency: {
     title: 'Moneda',
     dataIndex: 'currency',
+    sorter: () => -1,
   },
   icon: {
     title: () => <BiSolidFilePdf className="w-6 h-auto" />,

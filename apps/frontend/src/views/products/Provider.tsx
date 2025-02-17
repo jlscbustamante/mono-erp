@@ -48,36 +48,43 @@ const TableProvider = () => {
       title: '#',
       dataIndex: 'id',
       key: 'id',
+      sorter: (a, b) => a.id - b.id,
     },
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
+      sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
       title: 'Razón Social',
       dataIndex: 'legal_name',
       key: 'legal_name',
+      sorter: (a, b) => a.legal_name.localeCompare(b.legal_name),
     },
     {
       title: 'RUC',
       dataIndex: 'ruc',
       key: 'ruc',
+      sorter: (a, b) => a.ruc.localeCompare(b.ruc),
     },
     {
       title: 'Dirección',
       dataIndex: 'direction',
       key: 'direction',
+      sorter: (a, b) => a.direction.localeCompare(b.direction),
     },
     {
       title: 'Fecha',
       dataIndex: 'date',
       key: 'date',
+      sorter: (a, b) => a.date.localeCompare(b.date),
     },
     {
       title: 'Estado',
       dataIndex: 'state',
       key: 'state',
+      sorter: () => -1,
     },
   ]
   const datasource: IProvider[] = [

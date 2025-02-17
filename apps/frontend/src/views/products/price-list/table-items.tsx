@@ -18,18 +18,22 @@ export const PrincipalListTable = () => {
           {
             title: 'Id',
             dataIndex: 'id',
+            sorter: (a, b) => a.id - b.id,
           },
           {
             title: 'Nombre',
             dataIndex: 'itemName',
+            sorter: (a, b) => a.itemName.localeCompare(b.itemName),
           },
           {
             title: 'Costo',
             dataIndex: 'unitCost',
+            sorter: (a, b) => a.unitCost - b.unitCost,
           },
           {
             title: 'Precio',
             dataIndex: 'unitPrice',
+            sorter: (a, b) => a.unitPrice - b.unitPrice,
           },
           {
             title: 'Acciones',

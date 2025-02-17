@@ -25,6 +25,7 @@ import { ICourrier } from '@/data/maintenance/Courrier/type/Courrier'
 import { transformFilterToValidCourrier } from '@/data/maintenance/Courrier/utils'
 import { Filters } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/Driver/CreateForm'
 import { RequestsFilters } from '../components/Driver/FiltersControl'
 import { UpdateForm } from '../components/Driver/UpdateForm'
@@ -314,18 +315,21 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 25,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Nombres',
       dataIndex: 'name',
       key: 'name',
       width: 300,
+      sorter: (a, b) => a.name?.localeCompare(b.name ?? '') ?? -1,
     },
     {
       title: 'Correo',
       dataIndex: 'email',
       key: 'email',
       width: 120,
+      sorter: (a, b) => a.email?.localeCompare(b.email ?? '') ?? -1,
     },
     {
       title: 'Teléfono',
@@ -405,7 +409,7 @@ const RequirementsFound: React.FC<{
         </div>
       ),
     },
-  ]
+  ] satisfies ColumnsType<ICourrier>
 
   return (
     <Table

@@ -86,7 +86,7 @@ const handleSimpleExport = (pendingRequests: IFilteredRequest[]) => {
       dataIndex: '',
     },
   ])
-  excel.addColumns(columnsToExport).addDataSource(
+  excel.addColumns(columnsToExport as any).addDataSource(
     requestsByTypes.simple.map((el) => {
       const record = Object.assign({}, el)
       const categoryName = record.category?.name ?? ''
@@ -170,7 +170,7 @@ const handleProviderExport = (pendingRequests: IFilteredRequest[]) => {
   const excel = new Excel()
   excel.addSheet('Proveedores').addRow()
   excel
-    .addColumns(columnsToExport)
+    .addColumns(columnsToExport as any)
     .addDataSource(pendingRequests)
     .saveAs('requerimientos-pendientes-proveedores.xlsx')
 }
@@ -238,7 +238,7 @@ const handleLiquidationExport = (pendingRequests: IFilteredRequest[]) => {
   const excel = new Excel()
   excel.addSheet('Liquidaciones')
   excel
-    .addColumns(columnsToExport)
+    .addColumns(columnsToExport as any)
     .addDataSource(pendingRequests)
     .saveAs('requerimientos-pendientes-liquidaciones.xlsx')
 }

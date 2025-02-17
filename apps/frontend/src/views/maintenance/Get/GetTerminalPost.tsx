@@ -17,6 +17,7 @@ import { ITerminalPost } from '@/data/maintenance/TerminalPost/type/TerminalPost
 import { transformFilterToValidTerminalPost } from '@/data/maintenance/TerminalPost/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/TerminalPost/forms/Create'
 import { RequestsFilters } from '../components/TerminalPost/forms/FilterControl'
 import { UpdateForm } from '../components/TerminalPost/forms/Update'
@@ -159,23 +160,27 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Terminal',
       dataIndex: 'terminal',
       key: 'terminal',
+      sorter: (a, b) => a.terminal.localeCompare(b.terminal),
     },
     {
       title: 'Tienda',
       dataIndex: ['sucursal', 'title'],
       key: 'sucursal_id',
       width: 150,
+      sorter: () => -1,
     },
     {
       title: 'Proveedor',
       dataIndex: 'supplier',
       key: 'supplier',
       width: 200,
+      sorter: (a, b) => a.supplier.localeCompare(b.supplier),
     },
 
     {
@@ -183,6 +188,7 @@ const RequirementsFound: React.FC<{
       dataIndex: 'status',
       key: 'status',
       width: 80,
+      sorter: () => -1,
       render: (text: string) => (
         <span>{text == '1' ? 'Activo' : 'Inactivo'}</span>
       ),
@@ -192,6 +198,7 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'editar',
       width: 15,
+      sorter: () => -1,
       render: (_text: any, record: any) => (
         <MdEdit
           onClick={() => handleEditClick(record)}
@@ -204,7 +211,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<ITerminalPost>
   return (
     <div>
       <Table

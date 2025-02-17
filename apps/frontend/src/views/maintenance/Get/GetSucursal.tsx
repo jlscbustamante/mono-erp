@@ -17,6 +17,7 @@ import { ISucursal } from '@/data/maintenance/Sucursal/type/Sucursal'
 import { transformFilterToValid } from '@/data/maintenance/Sucursal/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/Sucursal/forms/Create'
 import { RequestsFilters } from '../components/Sucursal/forms/FilterControl'
 import { UpdateForm } from '../components/Sucursal/forms/Update'
@@ -159,45 +160,53 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id.localeCompare(b.id),
     },
     {
       title: 'Tienda',
       dataIndex: 'title',
       key: 'title',
+      sorter: (a, b) => a.title.localeCompare(b.title),
     },
 
     {
       title: 'Direccion',
       dataIndex: 'ubi_address',
       key: 'ubi_address',
+      sorter: () => -1,
     },
 
     {
       title: 'Distrito',
       dataIndex: 'ubi_district',
       key: 'ubi_district',
+      sorter: () => -1,
     },
     {
       title: 'Tipo de tienda',
       dataIndex: 'type_sede',
       key: 'type_sede',
+      sorter: () => -1,
     },
     {
       title: 'Persona contrato',
       dataIndex: 'legalperson_name',
       key: 'legalperson_name',
+      sorter: () => -1,
     },
 
     {
       title: 'Banco',
       dataIndex: 'legalperson_account_bco',
       key: 'legalpeson-account_bco',
+      sorter: () => -1,
     },
     {
       title: 'Número de cuenta',
       dataIndex: 'legalperson_account_num',
       key: 'legalperson_account_num',
       width: 200,
+      sorter: () => -1,
     },
 
     {
@@ -208,12 +217,14 @@ const RequirementsFound: React.FC<{
       render: (text: string) => (
         <span>{text == '1' ? 'Activo' : 'Inactivo'}</span>
       ),
+      sorter: () => -1,
     },
     {
       title: '',
       dataIndex: 'id',
       key: 'editar',
       width: 15,
+      sorter: () => -1,
       render: (_text: any, record: any) => (
         <MdEdit
           onClick={() => handleEditClick(record)}
@@ -226,7 +237,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<ISucursal>
   return (
     <Table
       columns={columns}

@@ -17,6 +17,8 @@ import { ICostCenter } from '@/data/maintenance/CostCenter/type/CostCenter'
 import { transformFilterToValidCostCenter } from '@/data/maintenance/CostCenter/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { IFilterCostCenter } from '@/data/costCenter/types'
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/CostCenter/forms/Create'
 import { RequestsFilters } from '../components/CostCenter/forms/FilterControl'
 import { UpdateForm } from '../components/CostCenter/forms/Update'
@@ -159,12 +161,14 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Centro de costo',
       dataIndex: 'origin',
       key: 'origin',
       width: 400,
+      sorter: (a, b) => a.origin?.localeCompare(b.origin ?? '') ?? -1,
     },
     {
       title: 'Cuenta de tienda',
@@ -199,6 +203,8 @@ const RequirementsFound: React.FC<{
       render: (text: string) => (
         <span>{text == '1' ? 'Activo' : 'Inactivo'}</span>
       ),
+      sorter: (a, b) =>
+        a.status?.toString().localeCompare(b.status?.toString() ?? '') ?? -1,
     },
     {
       title: '',
@@ -217,7 +223,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<IFilterCostCenter>
   return (
     <Table
       pagination={false}

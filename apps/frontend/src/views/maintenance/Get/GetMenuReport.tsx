@@ -13,9 +13,10 @@ import {
   menuReportSt,
 } from '@/data/maintenance/MenuReport/state/menuReport'
 import { transformFilterToValid } from '@/data/maintenance/MenuReport/utils'
-import { IReport } from '@/data/reports/types/report'
+import { IFilterMenuReport, IReport } from '@/data/reports/types/report'
 import { Filters } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/MenuReport/forms/Create'
 import { RequestsFilters } from '../components/MenuReport/forms/FilterControl'
 import { UpdateForm } from '../components/MenuReport/forms/Update'
@@ -153,46 +154,53 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Nombre',
       dataIndex: 'rpt_name',
       key: 'rpt_name',
+      sorter: (a, b) => a.rpt_name?.localeCompare(b.rpt_name ?? '') ?? -1,
     },
     {
       title: 'URL',
       dataIndex: 'rpt_url',
       key: 'rpt_url',
+      sorter: () => -1,
     },
     {
       title: 'Token',
       dataIndex: 'rpt_token',
       key: 'rpt_token',
+      sorter: () => -1,
     },
     {
       title: 'Key Report',
       dataIndex: 'key_report',
       key: 'key_report',
+      sorter: () => -1,
     },
     {
       title: 'Key Workspace',
       dataIndex: 'key_workspc',
       key: 'key_workspc',
+      sorter: () => -1,
     },
     {
       title: 'Mostrar',
       dataIndex: 'show_in',
       key: 'show_in',
       width: 200,
+      sorter: () => -1,
       render: (text: number) => (
         <span>
           {text === 1
             ? 'Todos'
             : text === 2
-            ? 'Solo Web'
-            : text === 3
-            ? 'Solo App'
-            : ''}
+              ? 'Solo Web'
+              : text === 3
+                ? 'Solo App'
+                : ''}
         </span>
       ),
     },
@@ -201,6 +209,7 @@ const RequirementsFound: React.FC<{
       dataIndex: 'priority',
       key: 'priority',
       width: 60,
+      sorter: (a, b) => a.priority! - b.priority!,
     },
     {
       title: '',
@@ -219,7 +228,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<IFilterMenuReport>
 
   return (
     <Table

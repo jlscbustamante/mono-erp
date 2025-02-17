@@ -1,5 +1,4 @@
 import '@/views/maintenance/components/Driver/style.css'
-import '@/views/maintenance/components/Driver/style.css'
 
 import { Button, Drawer, Table } from 'antd'
 import { useEffect, useState } from 'react'
@@ -18,6 +17,7 @@ import { ISupplier } from '@/data/maintenance/Supplier/type/Supplier'
 import { transformFilterToValid } from '@/data/maintenance/Supplier/utils'
 import { Filters, OpFilter } from '@/data/types/Filters'
 
+import { ColumnsType } from 'antd/es/table'
 import { CreateForm } from '../components/Supplier/forms/Create'
 import { RequestsFilters } from '../components/Supplier/forms/FilterControl'
 import { UpdateForm } from '../components/Supplier/forms/Update'
@@ -163,36 +163,43 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       width: 60,
+      sorter: (a, b) => a.id! - b.id!,
     },
     {
       title: 'Proveedor',
       dataIndex: 'supplier',
       key: 'supplier',
+      sorter: (a, b) => a.supplier.localeCompare(b.supplier),
     },
     {
       title: 'Nombre',
       dataIndex: 'legal_name',
       key: 'legal_name',
+      sorter: () => -1,
     },
     {
       title: 'RUC',
       dataIndex: 'legal_number',
       key: 'legal_number',
+      sorter: () => -1,
     },
     {
       title: 'Banco',
       dataIndex: 'legal_account_bco',
       key: 'legal_account_bco',
+      sorter: () => -1,
     },
     {
       title: 'Número de cuenta',
       dataIndex: 'legal_account_num',
       key: 'legal_account_num',
+      sorter: () => -1,
     },
     {
       title: 'Estado',
       dataIndex: 'status',
       key: 'status',
+      sorter: () => -1,
       width: 40,
       render: (text: string) => (
         <span>{text == '1' ? 'Activo' : 'Inactivo'}</span>
@@ -215,7 +222,7 @@ const RequirementsFound: React.FC<{
         />
       ),
     },
-  ]
+  ] satisfies ColumnsType<ISupplier>
 
   return (
     <div>

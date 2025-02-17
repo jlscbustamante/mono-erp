@@ -56,6 +56,7 @@ export const TablePurchase = () => {
       dataIndex: 'purchaseAt',
       key: 'purchaseAt',
       width: 144,
+      sorter: (a, b) => a.purchaseAt.localeCompare(b.purchaseAt),
       render: (text: string) => {
         return text.split(' ')[0]
       },
@@ -64,6 +65,7 @@ export const TablePurchase = () => {
       title: 'Glosa',
       dataIndex: 'gloss',
       key: 'gloss',
+      sorter: (a, b) => a.gloss.localeCompare(b.gloss),
       render: (text) => {
         if (!text) return '(sin descripción)'
         return text
@@ -72,11 +74,13 @@ export const TablePurchase = () => {
     {
       title: 'Razón social',
       dataIndex: 'supplierName',
+      sorter: (a, b) => a.supplierName.localeCompare(b.supplierName),
       key: 'id',
     },
     {
       title: 'Factura',
       dataIndex: 'numInvoice',
+      sorter: (a, b) => a.numInvoice?.localeCompare(b.numInvoice ?? '') ?? -1,
       key: 'numInvoice',
     },
 
@@ -85,20 +89,24 @@ export const TablePurchase = () => {
       dataIndex: 'netValue',
       key: 'netValue',
       render: (value: number) => fNumber(value),
+      sorter: (a, b) => a.netValue - b.netValue,
     },
     {
       title: 'IGV',
       dataIndex: 'taxValue',
       key: 'igv',
+      sorter: () => -1,
     },
     {
       title: 'Valor total',
       dataIndex: 'totalValue',
       key: 'totalValue',
+      sorter: (a, b) => a.totalValue - b.totalValue,
     },
     {
       title: 'Estado',
       dataIndex: 'status',
+      sorter: () => -1,
       render: (val) => {
         return getTagStatus(val)
       },

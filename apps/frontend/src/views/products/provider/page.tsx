@@ -41,9 +41,8 @@ export default function Provider() {
       const legalNumber: string | undefined = (filters as any)
         ?.legal_number?.[1]
       if (legalNumber) {
-        initialData = initialData.filter(
-          (item) =>
-            item.legalNumber?.toLowerCase().includes(legalNumber.toLowerCase()),
+        initialData = initialData.filter((item) =>
+          item.legalNumber?.toLowerCase().includes(legalNumber.toLowerCase()),
         )
       }
     }
@@ -121,6 +120,7 @@ const TableProvider = ({
       title: 'RUC',
       dataIndex: 'legalNumber',
       key: 'ruc',
+      sorter: (a, b) => a.legalNumber?.localeCompare(b.legalNumber),
     },
     {
       title: 'Nombre',
