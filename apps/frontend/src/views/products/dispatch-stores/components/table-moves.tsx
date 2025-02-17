@@ -6,6 +6,8 @@ import { MdRemoveRedEye } from 'react-icons/md'
 import { DispatchStatus, IDispatch } from '@/data/products/types'
 import { fNumber } from '@/utils/formatNumber'
 
+import { PATHS } from '@/const/paths'
+import { useNavigate } from 'react-router'
 import { useDispatchBetweenStoresQuery } from '../../state/useDispatch'
 import { useStore } from '../useStore'
 import { useViewMoveDrawer } from './view-move-drawer'
@@ -14,6 +16,7 @@ export const TableMoves = () => {
   const { open } = useViewMoveDrawer()
   const filterDescription = useStore((st) => st.filterDescription)
   const query = useDispatchBetweenStoresQuery()
+  const navigate = useNavigate()
   const columns: ColumnsType<IDispatch> = [
     {
       title: 'Id',
@@ -97,7 +100,12 @@ export const TableMoves = () => {
             <div
               className="cursor-pointer"
               onClick={() => {
-                open(record.id)
+                // open(record.id)
+                navigate(
+                  PATHS.erp.modulos.mercaderia.despachos.reviewStore +
+                    '?id=' +
+                    record.id,
+                )
               }}
             >
               <MdRemoveRedEye className="w-5 h-auto" />

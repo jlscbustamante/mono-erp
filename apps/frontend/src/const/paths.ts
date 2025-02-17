@@ -61,6 +61,8 @@ export const PATHS = {
         main: '/erp/modulos/mercaderia',
         despachos: {
           main: '/erp/modulos/mercaderia/despachos',
+          review: '/erp/modulos/mercaderia/despachos/review',
+          reviewStore: '/erp/modulos/mercaderia/despachos/review-store',
           deAlmacen: '/erp/modulos/mercaderia/despachos/alamacen',
           entreTiendas: '/erp/modulos/mercaderia/despachos/entre-tiendas',
           porRuta: '/erp/modulos/mercaderia/despachos/por-ruta',

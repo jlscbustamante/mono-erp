@@ -301,7 +301,7 @@ const CreateDrawer = ({
               'bg-slate-50 p-2 border border-dashed border-slate-200 rounded-md mb-3',
             )}
           >
-            <p>Presentaciones similares: </p>
+            <p>Presentaciones existentes: </p>
             {values.map((el) => {
               return (
                 <p key={el.name} className="font-bold text-slate-800">
@@ -417,7 +417,7 @@ const EditDrawer = ({
               'bg-slate-50 p-2 border border-dashed border-slate-200 rounded-md mb-3',
             )}
           >
-            <p>Presentaciones similares: </p>
+            <p>Presentaciones existentes: </p>
             {coincidences.map((el) => {
               return (
                 <p key={el.name} className="font-bold text-slate-800">

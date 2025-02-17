@@ -1,6 +1,6 @@
 import { Button, Drawer, Form, Input, Select } from 'antd'
 import Search from 'antd/es/input/Search'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 import { NOTIFICATION } from '@/const/notification'
@@ -8,6 +8,8 @@ import { NOTIFICATION } from '@/const/notification'
 import { createSupplier } from '@/data/products/sdk'
 import { IInvSupplier } from '@/data/products/types'
 import * as sdkRequest from '@/data/requests/sdk'
+import { cn } from '@/utils'
+import { useSupplierQuery } from './useSupplierQuery'
 
 export const CreateProviderDrawer = ({
   open,
@@ -21,6 +23,9 @@ export const CreateProviderDrawer = ({
 }) => {
   const [loadingRuc, setLoadingRuc] = useState(false)
   const [form] = Form.useForm()
+  const query = useSupplierQuery()
+  const ruc = Form.useWatch('legalNumber', form)
+  const [message, setMessage] = useState('')
   const names: Record<keyof IInvSupplier, string> = {
     address: 'address',
     id: 'id',
@@ -66,6 +71,15 @@ export const CreateProviderDrawer = ({
     }
   }
 
+  useEffect(() => {
+    const suplier = query.data?.find((el) => el.legalNumber === ruc)
+    if (suplier) {
+      setMessage('El proveedor ya existe')
+    } else {
+      setMessage('')
+    }
+  }, [ruc])
+
   return (
     <Drawer
       title="Crear Proveedor"
@@ -88,6 +102,7 @@ export const CreateProviderDrawer = ({
         <Form.Item
           name={names.legalNumber}
           label="RUC"
+          className={cn(message ? 'mb-0' : undefined)}
           rules={
             [
               // () => ({
@@ -116,6 +131,11 @@ export const CreateProviderDrawer = ({
             loading={loadingRuc}
           />
         </Form.Item>
+        {message ? (
+          <Form.Item wrapperCol={{ offset: 10 }} className="my-0">
+            <p style={{ color: 'red', marginBottom: 0 }}>{message}</p>
+          </Form.Item>
+        ) : null}
         <Form.Item
           name={names.legalName}
           label="Razón Social"
@@ -128,6 +148,7 @@ export const CreateProviderDrawer = ({
         >
           <Input placeholder="Ingresa el RUC" />
         </Form.Item>
+
         <Form.Item
           name={names.supplier}
           label="Nombre"

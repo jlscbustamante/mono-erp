@@ -83,7 +83,7 @@ export const EditProviderDrawer = ({ onUpdate }: { onUpdate?: () => void }) => {
 
   return (
     <Drawer
-      title="Crear Proveedor"
+      title="Editar Proveedor"
       keyboard={false}
       width={500}
       open={isOpen}

@@ -5,7 +5,6 @@ import { CreateDispatchDrawer } from './components/distpatch/CreateDispatchDrawe
 import { DispatchTable } from './components/distpatch/DispatchTable'
 import { WarehouseAlert } from './components/distpatch/warehouse_alert'
 import { DispatchDetailDrawer } from './dispatch/dispatch-detail-drawer'
-import { DispatchEditDrawer } from './dispatch/dispatch-edit-drawer'
 import { useDispatch, useDispatchQuery } from './state/useDispatch'
 
 export default function Dispatch() {
@@ -34,7 +33,7 @@ export default function Dispatch() {
       {/* <LoadDispatchDrawer /> */}
       {/* <InfoDispatchDrawer /> */}
       <DispatchDetailDrawer onUpdate={() => refetch()} />
-      <DispatchEditDrawer onUpdate={() => refetch()} />
+      {/* <DispatchEditDrawer onUpdate={() => refetch()} /> */}
     </div>
   )
 }

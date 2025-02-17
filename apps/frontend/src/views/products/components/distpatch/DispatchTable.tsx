@@ -12,6 +12,7 @@ import { DispatchStatus, DispatchType, IDispatch } from '@/data/products/types'
 import { cn, filterSelectForm } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
+import { PATHS } from '@/const/paths'
 import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
@@ -23,7 +24,7 @@ import { SquareSplitVertical } from 'lucide-react'
 import { FiAlertTriangle, FiInfo } from 'react-icons/fi'
 import { LuClock4 } from 'react-icons/lu'
 import { RxReset } from 'react-icons/rx'
-import { useDispatchDetailDrawer } from '../../dispatch/dispatch-detail-drawer'
+import { useNavigate } from 'react-router'
 import { ProcessMultipleDispatch } from '../../dispatch/process-multiple-dispatch'
 import { StatusTag } from '../../dispatch/status-tag'
 import { useDocs } from '../../hooks/use-docs'
@@ -37,7 +38,7 @@ export const DispatchTable = ({
   onUpdate: () => void
   onlyQuery?: boolean
 }) => {
-  const { open } = useDispatchDetailDrawer()
+  const navigate = useNavigate()
   const query = useDispatchQuery()
   const queryDocs = useDocs()
   // const today = format(new Date(), 'yyyy-MM-dd')
@@ -372,7 +373,12 @@ export const DispatchTable = ({
               className="cursor-pointer"
               onClick={() => {
                 // store.openInfoDrawer(record.id)
-                open(record.id)
+                // open(record.id)
+                navigate(
+                  PATHS.erp.modulos.mercaderia.despachos.review +
+                    '?dispatchId=' +
+                    record.id,
+                )
               }}
             >
               <MdRemoveRedEye className="w-4 h-auto" />

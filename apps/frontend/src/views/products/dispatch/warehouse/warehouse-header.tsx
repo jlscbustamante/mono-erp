@@ -1,6 +1,6 @@
 import { AddFilterButton } from '@/components/filter/AddFilterButton'
 import { FiltersOption, ShowFilters } from '@/components/filter/ShowFilters'
-import { Button } from 'antd'
+import { Button, Input } from 'antd'
 import { useAtom, useSetAtom } from 'jotai'
 import { Sucursal } from 'pizzadb'
 import { FiSearch } from 'react-icons/fi'
@@ -14,11 +14,6 @@ const filtersOptions: FiltersOption<Sucursal>[] = [
     label: 'Codigo',
     key: 'id',
     options: [OpFilter.Equal, OpFilter.Contain],
-  },
-  {
-    label: 'Tienda',
-    key: 'title',
-    options: [OpFilter.Contain, OpFilter.Equal],
   },
   {
     label: 'Direccion',
@@ -55,6 +50,35 @@ export const WarehouseHeader = () => {
   return (
     <div className="flex justify-between items-center mb-3">
       <div className="flex items-center gap-1">
+        <Input
+          addonBefore="Nombre"
+          placeholder="Buscar nombre"
+          className="w-56"
+          value={filters.title?.[1] ?? ''}
+          onChange={(e) => {
+            if (e.target.value == '')
+              // store.setFilters({ ...store.filters, itemName: undefined })
+              setFilters({
+                ...filters,
+                // driverFirstName: [OpFilter.Contain, e.target.value],
+                title: undefined,
+              })
+            else
+              setFilters({
+                ...filters,
+                title: [OpFilter.Contain, e.target.value],
+              })
+            // store.setFilters({
+            //   ...store.filters,
+            //   itemName: [OpFilter.Contain, e.target.value],
+            // })
+            // setFirstTime(false)
+          }}
+          onPressEnter={() => {
+            // setEditFilters(editFilters + 1)
+            setController((val) => val + 1)
+          }}
+        />
         <AddFilterButton
           items={filtersOptions as any}
           setUserFilters={setFilters as any}
@@ -70,7 +94,9 @@ export const WarehouseHeader = () => {
           type="primary"
           shape="circle"
           icon={<FiSearch />}
-          onClick={() => setController((val) => val + 1)}
+          onClick={() => {
+            setController((val) => val + 1)
+          }}
         />
         <Button
           type="primary"

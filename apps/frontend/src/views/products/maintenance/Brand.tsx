@@ -289,7 +289,7 @@ const CreateDrawer = ({
             )}
           >
             <p>
-              Marcas similares:{' '}
+              Marcas existentes:{' '}
               <span className="font-bold text-slate-800">
                 {values.map((el) => el.name).join(', ')}
               </span>
@@ -403,7 +403,7 @@ const EditDrawer = ({
               'bg-slate-50 p-2 border border-dashed border-slate-200 rounded-md mb-3',
             )}
           >
-            <p>Presentaciones similares: </p>
+            <p>Presentaciones existentes: </p>
             {coincidences.map((el) => {
               return (
                 <p key={el.name} className="font-bold text-slate-800">
