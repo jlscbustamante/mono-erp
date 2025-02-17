@@ -25,7 +25,9 @@ export const CreateProviderDrawer = ({
   const [form] = Form.useForm()
   const query = useSupplierQuery()
   const ruc = Form.useWatch('legalNumber', form)
+  const name = Form.useWatch('supplier', form)
   const [message, setMessage] = useState('')
+  const [messageName, setMessageName] = useState('')
   const names: Record<keyof IInvSupplier, string> = {
     address: 'address',
     id: 'id',
@@ -79,6 +81,16 @@ export const CreateProviderDrawer = ({
       setMessage('')
     }
   }, [ruc])
+
+  useEffect(() => {
+    const suplier = query.data?.find((el) => el.supplier === name)
+    console.log('supplier : ', name)
+    if (suplier) {
+      setMessageName('El proveedor ya existe')
+    } else {
+      setMessageName('')
+    }
+  }, [name])
 
   return (
     <Drawer
@@ -152,6 +164,7 @@ export const CreateProviderDrawer = ({
         <Form.Item
           name={names.supplier}
           label="Nombre"
+          className={cn(messageName ? 'mb-0' : undefined)}
           rules={[
             {
               required: true,
@@ -165,6 +178,11 @@ export const CreateProviderDrawer = ({
         >
           <Input />
         </Form.Item>
+        {messageName ? (
+          <Form.Item wrapperCol={{ offset: 10 }} className="my-0">
+            <p style={{ color: 'red', marginBottom: 0 }}>{messageName}</p>
+          </Form.Item>
+        ) : null}
         <Form.Item
           name={names.address}
           label="Direccion"
