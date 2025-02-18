@@ -24,7 +24,10 @@ export class AuthController {
 
     return res.json({
       message: 'Codigo enviado',
-      token,
+      data: {
+        phone,
+        token,
+      },
     })
   }
 
