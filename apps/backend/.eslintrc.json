@@ -28,8 +28,6 @@
         "argsIgnorePattern": "^_"
       }
     ],
-    // "simple-import-sort/imports": "error",
-    // "simple-import-sort/exports": "error",
     "no-extra-semi": "off"
   }
 }

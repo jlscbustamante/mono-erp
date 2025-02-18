@@ -1,36 +1,21 @@
-import { viewClient } from '@/lib/rpc'
-import { useQuery } from '@tanstack/react-query'
-import { IRequirementPresentation } from '@view'
-import { Control } from './control'
-import { DataTable } from './data-table'
-import { NavRequest } from './nav'
-import { useApprovedStore } from './state'
+import { useState } from 'react'
+import { ViewCalendar } from './view-calendar'
+import { ViewTable } from './view-table'
 
 export function RejectPage() {
-  const filters = useApprovedStore((st) => st.filters)
+  const [view, setView] = useState<'list' | 'calendar'>('list')
 
-  const { data = [], refetch } = useQuery({
-    queryKey: ['rq:rejeceted-req'],
-    queryFn: async () => {
-      const request = await viewClient.api.view.requirement.filter.$get({
-        query: {
-          filters: JSON.stringify(filters),
-        },
-      })
-      const data = await request.json()
-      return data.data as IRequirementPresentation[]
-    },
-  })
+  const toggleView = () => {
+    setView(view === 'list' ? 'calendar' : 'list')
+  }
 
   return (
     <div className="p-3">
-      <Control
-        onRefetch={() => {
-          refetch()
-        }}
-      />
-      <NavRequest />
-      <DataTable data={data} />
+      {view === 'list' ? (
+        <ViewTable toggleView={toggleView} />
+      ) : (
+        <ViewCalendar toggleView={toggleView} />
+      )}
     </div>
   )
 }

@@ -3,6 +3,7 @@ import {
   requirementResourceService,
   requirementService,
 } from "#app/modules/requirement/dependencies.ts";
+import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
 import { UpdateRequirementDto } from "#app/modules/types/index.ts";
 import { zValidator } from "@hono/zod-validator";
 import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
@@ -114,5 +115,42 @@ export const requirementRouter = new Hono()
       await requirementService.rejectRequirements(ids);
 
       return c.json({ message: "ok" });
+    }
+  )
+  .get(
+    "/requirementAmountsMonth",
+    zValidator(
+      "query",
+      z.object({
+        month: z.string(),
+        fieldDate: z.enum(["pending", "approved", "rejected"]),
+        status: z.union([
+          z.enum([
+            REQUIREMENT_STATUS.APPROVED,
+            REQUIREMENT_STATUS.PENDING,
+            REQUIREMENT_STATUS.PAID,
+            REQUIREMENT_STATUS.CANCELLED,
+          ]),
+          z.array(
+            z.enum([
+              REQUIREMENT_STATUS.APPROVED,
+              REQUIREMENT_STATUS.PENDING,
+              REQUIREMENT_STATUS.PAID,
+              REQUIREMENT_STATUS.CANCELLED,
+            ])
+          ),
+        ]),
+      })
+    ),
+    async (c) => {
+      const { month, status, fieldDate } = c.req.valid("query");
+      const statusArr = typeof status == "string" ? [status] : status;
+      const data = await requirementService.requirementAmountsMont(
+        month,
+        statusArr,
+        fieldDate
+      );
+
+      return c.json({ message: "ok", data });
     }
   );

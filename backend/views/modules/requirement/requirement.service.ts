@@ -82,4 +82,28 @@ export class RequirementService {
       })
       .where(inArray(requirementItems.id, ids));
   }
+
+  async requirementAmountsMont(
+    month: string,
+    status: REQUIREMENT_STATUS[],
+    fieldDate: "pending" | "approved" | "rejected"
+  ) {
+    const statusQuery = status.map((el) => `"${el}"`).join(",");
+    const fieldName =
+      fieldDate == "pending"
+        ? "requested_at"
+        : fieldDate == "approved"
+        ? "approved_at"
+        : "rejected_at";
+    const [result] =
+      await db.execute(`SELECT ari.${fieldName} date,SUM(ari.amount) total FROM adm_request_item ari
+WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} GROUP BY DAY(ari.${fieldName})`);
+
+    return (result as any).map((el: any) => {
+      return {
+        date: el.date.split(" ")[0],
+        total: Number(el.total),
+      };
+    });
+  }
 }

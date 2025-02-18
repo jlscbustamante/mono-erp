@@ -4,6 +4,7 @@ import { PATHS } from '@/const/paths'
 import { RequirementItemSelect } from '@pizzadb'
 import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
+import { Calendar, Logs } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { usePendingStore } from './state'
@@ -49,9 +50,11 @@ const menuOptions: FilterOption<RequirementItemSelect>[] = [
 export function Control({
   onRefetch,
   loading,
+  toggleView,
 }: {
   onRefetch?: () => void
   loading?: boolean
+  toggleView?: () => void
 }) {
   const navigate = useNavigate()
   const filters = usePendingStore((st) => st.filters)
@@ -91,7 +94,7 @@ export function Control({
   }
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center gap-">
       <div className="flex-1 flex gap-1">
         <RangePicker
           value={dates}
@@ -121,6 +124,17 @@ export function Control({
       >
         Nuevo requerimiento
       </Button>
+      <div className="flex border border-solid border-slate-300 rounded-md ml-2">
+        <div className="bg-slate-200 p-1 flex items-center justify-center">
+          <Logs className="w-5 h-auto" />
+        </div>
+        <div
+          className="px-2 py-1 flex items-center justify-center cursor-pointer"
+          onClick={toggleView}
+        >
+          <Calendar className="w-5 h-auto" />
+        </div>
+      </div>
     </div>
   )
 }
