@@ -4,6 +4,9 @@ dotenv.config()
 
 export default {
   purchasegeneratederivate: process.env.PURCHASE_GENERATE_DERIVATE == 'true',
+  messages: {
+    wsp: process.env.WSP_CODE as string,
+  },
   aws: {
     glue: {
       region: process.env.AWS_GLUE_REGION_S3 as string,

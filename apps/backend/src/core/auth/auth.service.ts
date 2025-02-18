@@ -41,7 +41,7 @@ const validatePhone = (phone: string) => {
 export class AuthService {
   constructor(private readonly otpService: OtpService) {}
 
-  async loginPhone(phone: string) {
+  async loginPhone(phone: string, code?: string) {
     validatePhone(phone)
     const users = await AppDataSource.query(
       'SELECT id FROM iam_user WHERE phone = ?',
@@ -50,11 +50,11 @@ export class AuthService {
     const user = users[0]
     if (!user)
       throw new Error('No existe un usuario con este numero de telefono')
-    const token = await this.otpService.sendSms(phone)
+    const token = await this.otpService.sendSms(phone, code)
     return token
   }
 
-  async loginWsp(phone: string) {
+  async loginWsp(phone: string, code?: string) {
     validatePhone(phone)
     const users = await AppDataSource.query(
       'SELECT id FROM iam_user WHERE phone = ?',
@@ -63,7 +63,7 @@ export class AuthService {
     const user = users[0]
     if (!user)
       throw new Error('No existe un usuario con este numero de telefono')
-    const token = await this.otpService.sendSms(phone)
+    const token = await this.otpService.sendWsp(phone, code)
     return token
   }
 

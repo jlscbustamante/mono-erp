@@ -3,6 +3,9 @@ import { loadGlobalEnv } from "@scope/shared/env";
 await loadGlobalEnv();
 
 export const appConfig = {
+  messages: {
+    wsp: Deno.env.get("WSP_CODE") as string,
+  },
   jwt: {
     secret: Deno.env.get("JWT_APP") as string,
   },

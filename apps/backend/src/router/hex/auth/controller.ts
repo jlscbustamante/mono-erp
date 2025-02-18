@@ -6,8 +6,8 @@ import { authService } from '../dependencies'
 export class AuthController {
   @catchError
   async loginPhone(req: Request, res: Response) {
-    const { phone } = req.body
-    const token = await authService.loginPhone(phone)
+    const { phone, code } = req.body
+    const token = await authService.loginPhone(phone, code)
     return res.json({
       message: 'Sms enviado',
       data: {
@@ -17,11 +17,16 @@ export class AuthController {
     })
   }
 
-  // @catchError
-  // async loginWsp(req: Request, res: Response) {
-  //   // const { phone } = req.body
-  //   // const token = await authService.loginPhone
-  // }
+  @catchError
+  async loginWsp(req: Request, res: Response) {
+    const { phone, code } = req.body as { phone: string; code?: string }
+    const token = await authService.loginWsp(phone, code)
+
+    return res.json({
+      message: 'Codigo enviado',
+      token,
+    })
+  }
 
   @catchError
   async validateOtp(req: Request, res: Response) {

@@ -5,6 +5,7 @@ export const loadGlobalEnv = async () => {
 
   const parsed = parse(env);
 
+  Deno.env.set("WSP_CODE", parsed.WSP_CODE);
   Deno.env.set("JWT_APP", parsed.JWT_APP);
   Deno.env.set("DB_HOST", parsed.DB_HOST);
   Deno.env.set("DB_USER", parsed.DB_USER);

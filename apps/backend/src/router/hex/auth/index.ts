@@ -13,6 +13,12 @@ export const authEndpoints = (app: Application): void => {
   )
 
   app.post(
+    '/api/hex/auth/loginWsp',
+    validateSchema(loginWithPhoneSchema),
+    controller.loginWsp,
+  )
+
+  app.post(
     '/api/hex/auth/validateLoginPhone',
     validateSchema(validateLoginSchema),
     controller.validateOtp,
