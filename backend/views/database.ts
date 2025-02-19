@@ -6,6 +6,7 @@ import {
   dispatchesItems,
   dispatchesRelation,
   dispatchItemRelation,
+  finMoveCash,
   requirementItems,
   requirementItemsRelation,
   requirementRelation,
@@ -33,8 +34,9 @@ const connection = mysql.createPool({
 
 export const db = drizzle(connection, {
   mode: "default",
-  logger: true,
+  logger: false,
   schema: {
+    finMoveCash,
     suppliers,
     roles,
     users,

@@ -48,3 +48,20 @@ export const cashBanks = mysqlTable("fin_cashbank", {
     .notNull()
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
+
+export const finMoveCash = mysqlTable("fin_movecash", {
+  id: int().autoincrement().notNull().primaryKey(),
+  movecash: varchar({ length: 150 }).notNull(),
+  account_id: varchar({ length: 15 }).notNull(),
+  used_to: smallint().notNull().default(1),
+  origin_from: char({ length: 1 }).notNull().default("G"),
+  cash_flow: char({ length: 1 }).notNull().default("S"),
+  account_flow: char({ length: 1 }).notNull().default("S"),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});

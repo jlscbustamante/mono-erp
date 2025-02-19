@@ -5,7 +5,7 @@ import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { Calendar, Logs } from 'lucide-react'
 import { useMemo } from 'react'
-import { useApprovedStore } from './state'
+import { useRejectedStore } from './state'
 
 const { RangePicker } = DatePicker
 
@@ -52,8 +52,8 @@ export function Control({
   onRefetch?: () => void
   toggleView?: () => void
 }) {
-  const filters = useApprovedStore((st) => st.filters)
-  const setFilters = useApprovedStore((st) => st.setFilters)
+  const filters = useRejectedStore((st) => st.filters)
+  const setFilters = useRejectedStore((st) => st.setFilters)
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(

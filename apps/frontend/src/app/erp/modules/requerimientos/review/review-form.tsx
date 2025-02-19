@@ -7,6 +7,7 @@ import {
   CashBankSelect,
   CompanySelect,
   CostCenterSelecet,
+  MoveCashSelect,
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -68,6 +69,17 @@ export function ReviewForm({
         await viewClient.api.view.requirement.resource.costCenters.$get()
       const result = await request.json()
       return result.data as CostCenterSelecet[]
+    },
+  })
+
+  const { data: movesCash } = useQuery({
+    queryKey: ['rq:moveCash'],
+    queryFn: async () => {
+      const request =
+        await viewClient.api.view.requirement.resource.movescash.$get()
+      const result = await request.json()
+      console.log('result . data', result)
+      return result.data as MoveCashSelect[]
     },
   })
 
@@ -236,12 +248,7 @@ export function ReviewForm({
             <Form.Item name={'globalId'} className="hidden">
               <Input />
             </Form.Item>
-            <Form.Item name={'globalSupplierRuc'} className="hidden">
-              <Input />
-            </Form.Item>
-            <Form.Item name={'globalSupplierName'} className="hidden">
-              <Input />
-            </Form.Item>
+
             <Form.Item className="hidden" name={'globalCostCenterName'}>
               <Input />
             </Form.Item>
@@ -269,19 +276,6 @@ export function ReviewForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Centro de costo" name="globalCostCenterId">
-                <Select
-                  placeholder="Centro de costo"
-                  showSearch
-                  filterOption={filterSelectForm}
-                >
-                  {costCenters?.map((costCenter) => (
-                    <Select.Option key={costCenter.id} value={costCenter.id}>
-                      {costCenter.costcenter}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
               <Form.Item label="Proveedor" name="globalSupplierId">
                 <Select
                   placeholder="Proveedor"
@@ -295,7 +289,14 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
+              <Form.Item name={'globalSupplierName'} className="hidden">
+                <Input />
+              </Form.Item>
+              <Form.Item name={'globalSupplierRuc'} className="">
+                <Input />
+              </Form.Item>
             </div>
+
             <div>
               <Form.Item
                 label="Detalle"
@@ -353,7 +354,34 @@ export function ReviewForm({
                 <Input />
               </Form.Item>
             </div>
-
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item label="Centro de costo" name="globalCostCenterId">
+                <Select
+                  placeholder="Centro de costo"
+                  showSearch
+                  filterOption={filterSelectForm}
+                >
+                  {costCenters?.map((costCenter) => (
+                    <Select.Option key={costCenter.id} value={costCenter.id}>
+                      {costCenter.costcenter}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label="Categoria" name="category_id">
+                <Select
+                  placeholder="Categorias"
+                  showSearch
+                  filterOption={filterSelectForm}
+                >
+                  {movesCash?.map((moveCash) => (
+                    <Select.Option key={moveCash.id} value={moveCash.id}>
+                      {moveCash.movecash}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </div>
             <Divider />
             <h5>Datos del pago:</h5>
             <div className="grid grid-cols-2 gap-2">

@@ -4,10 +4,10 @@ import { IRequirementPresentation } from '@view'
 import { Control } from './control'
 import { DataTable } from './data-table'
 import { NavRequest } from './nav'
-import { useApprovedStore } from './state'
+import { useRejectedStore } from './state'
 
 export function ViewTable({ toggleView }: { toggleView?: () => void }) {
-  const filters = useApprovedStore((st) => st.filters)
+  const filters = useRejectedStore((st) => st.filters)
 
   const { data = [], refetch } = useQuery({
     queryKey: ['rq:rejeceted-req'],

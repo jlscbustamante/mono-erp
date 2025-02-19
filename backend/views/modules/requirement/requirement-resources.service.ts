@@ -1,5 +1,5 @@
 import { db } from "#app/database.ts";
-import { cashBanks, costCenters, suppliers } from "@scope/pizzadb";
+import { cashBanks, costCenters, finMoveCash, suppliers } from "@scope/pizzadb";
 import { asc } from "drizzle-orm";
 
 export class RequirementResourceService {
@@ -26,6 +26,13 @@ export class RequirementResourceService {
   async suppliers() {
     const data = await db.query.suppliers.findMany({
       orderBy: asc(suppliers.supplier),
+    });
+    return data;
+  }
+
+  async movesCash() {
+    const data = await db.query.finMoveCash.findMany({
+      orderBy: asc(finMoveCash.movecash),
     });
     return data;
   }

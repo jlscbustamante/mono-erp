@@ -19,6 +19,7 @@ export class RequirementPresentation implements IRequirementPresentation {
   readonly expiresAt: string;
   readonly amount: number;
   readonly rejectedBy: string;
+  readonly category: string;
 
   constructor(props: {
     reqitem: RequirementItemSelect;
@@ -27,7 +28,8 @@ export class RequirementPresentation implements IRequirementPresentation {
   }) {
     this.id = props.reqitem.id;
     this.supplier = props.inv_supplier.supplier;
-    this.requestedAt = props.reqitem.requested_at ?? "";
+    this.requestedAt = props.reqitem.requested_at?.split(" ")[0] ?? "";
+    this.category = props.adm_request.movecash_name ?? "";
     this.numDoc = props.adm_request.num_document ?? "";
     this.description = props.reqitem.description ?? "";
     this.costCenter = props.adm_request.costcenter_name ?? "";

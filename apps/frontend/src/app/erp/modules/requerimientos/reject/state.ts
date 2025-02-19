@@ -8,7 +8,7 @@ interface Store {
   setFilters: (filters: WhereOption<RequirementItemSelect>[]) => void
 }
 
-export const useApprovedStore = create<Store>((set) => ({
+export const useRejectedStore = create<Store>((set) => ({
   filters: [
     {
       field: 'rejected_at',

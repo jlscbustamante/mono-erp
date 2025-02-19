@@ -10,6 +10,8 @@ export interface CreateRequirementDto {
   cost_center_name: string;
   amount: number;
   cashbank: number;
+  category_id: number;
+  category_name: string;
   payment_method: string;
   expiration_date: string;
   hasRetention: boolean;

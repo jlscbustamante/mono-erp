@@ -1,4 +1,5 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
+import { finMoveCash } from "../index.ts";
 import type {
   companies,
   requirementItems,
@@ -19,3 +20,4 @@ export type RequirementItemInsert = InferInsertModel<typeof requirementItems>;
 export type CompanySelect = InferSelectModel<typeof companies>;
 export type CostCenterSelecet = InferSelectModel<typeof costCenters>;
 export type CashBankSelect = InferSelectModel<typeof cashBanks>;
+export type MoveCashSelect = InferSelectModel<typeof finMoveCash>;

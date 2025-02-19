@@ -1,8 +1,12 @@
 import { PATHS } from '@/const/paths'
-import { getNameByRuc } from '@/data/requests/sdk'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
-import { CompanySelect, CostCenterSelecet, SupplierSelect } from '@pizzadb'
+import {
+  CompanySelect,
+  CostCenterSelecet,
+  MoveCashSelect,
+  SupplierSelect,
+} from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { CreateRequirementDto, REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
@@ -28,6 +32,7 @@ export function CreationForm() {
   const costCenterId = Form.useWatch('cost_center', form)
   const totalAmount = Form.useWatch('amount', form)
   const supplierId = Form.useWatch('supplier', form)
+  const categoryId = Form.useWatch('category_id', form)
   const retation = Form.useWatch('retention', form)
   const [quotas, setQuotas] = useState<{ number: number; amount: number }[]>([])
 
@@ -63,6 +68,18 @@ export function CreationForm() {
     },
   })
 
+  const { data: movesCash } = useQuery({
+    queryKey: ['rq:moveCash'],
+    queryFn: async () => {
+      const request =
+        await viewClient.api.view.requirement.resource.movescash.$get()
+      const result = await request.json()
+      console.log('result . data', result)
+      return result.data as MoveCashSelect[]
+    },
+  })
+  //
+
   useEffect(() => {
     const costCenter = costCenters?.find((el) => el.id === costCenterId)
     if (costCenter) {
@@ -73,9 +90,17 @@ export function CreationForm() {
   }, [costCenterId])
 
   useEffect(() => {
+    const category = movesCash?.find((el) => el.id === categoryId)
+    if (category) {
+      form.setFieldValue('category_name', category.movecash)
+    } else {
+      form.setFieldValue('category_name', '')
+    }
+  }, [categoryId])
+
+  useEffect(() => {
     const supplier = suppliers?.find((el) => el.id == supplierId)
     if (supplier) {
-      // form.setFieldValue('legal_name',supplier.legal_name)
       form.setFieldsValue({
         legal_name: supplier.legal_name,
         ruc: supplier.legal_number,
@@ -88,15 +113,15 @@ export function CreationForm() {
     }
   }, [supplierId])
 
-  const getInfoRuc = useMutation({
-    mutationFn: async (ruc: string) => {
-      const result = await getNameByRuc(ruc)
-      return result
-    },
-    onSuccess: (data) => {
-      form.setFieldValue('legal_name', data.name)
-    },
-  })
+  // const getInfoRuc = useMutation({
+  //   mutationFn: async (ruc: string) => {
+  //     const result = await getNameByRuc(ruc)
+  //     return result
+  //   },
+  //   onSuccess: (data) => {
+  //     form.setFieldValue('legal_name', data.name)
+  //   },
+  // })
 
   const changeQuota = (increment: boolean) => {
     if (increment) {
@@ -171,6 +196,9 @@ export function CreationForm() {
           <Form.Item name={'cost_center_name'} className="hidden">
             <Input />
           </Form.Item>
+          <Form.Item name={'category_name'} className="hidden">
+            <Input />
+          </Form.Item>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
               label="Empresa"
@@ -188,20 +216,11 @@ export function CreationForm() {
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Centro de costo" name="cost_center">
-              <Select
-                placeholder="Centro de costo"
-                showSearch
-                filterOption={filterSelectForm}
-              >
-                {costCenters?.map((costCenter) => (
-                  <Select.Option key={costCenter.id} value={costCenter.id}>
-                    {costCenter.costcenter}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="Proveedor" name="supplier">
+            <Form.Item
+              label="Proveedor"
+              name="supplier"
+              rules={[{ required: true }]}
+            >
               <Select
                 placeholder="Proveedor"
                 filterOption={filterSelectForm}
@@ -214,21 +233,22 @@ export function CreationForm() {
                 ))}
               </Select>
             </Form.Item>
-          </div>
-          <div className="grid-cols-2 gap-2 hidden">
             <Form.Item
               label="RUC proveedor"
               name="ruc"
               rules={[{ required: true }]}
             >
-              <Input.Search
+              <Input
                 placeholder="RUC proveedor"
-                loading={getInfoRuc.isPending}
-                onSearch={(ruc) => {
-                  getInfoRuc.mutate(ruc.trim())
-                }}
+                // loading={getInfoRuc.isPending}
+                readOnly
+                // onSearch={(ruc) => {
+                //   getInfoRuc.mutate(ruc.trim())
+                // }}
               />
             </Form.Item>
+          </div>
+          <div className="grid-cols-2 gap-2 hidden">
             <Form.Item
               label="R. social"
               name="legal_name"
@@ -291,6 +311,34 @@ export function CreationForm() {
             </Form.Item>
             <Form.Item label="N° doc." name="document_number">
               <Input />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            <Form.Item label="Centro de costo" name="cost_center">
+              <Select
+                placeholder="Centro de costo"
+                showSearch
+                filterOption={filterSelectForm}
+              >
+                {costCenters?.map((costCenter) => (
+                  <Select.Option key={costCenter.id} value={costCenter.id}>
+                    {costCenter.costcenter}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Categoria" name="category_id">
+              <Select
+                placeholder="Categorias"
+                showSearch
+                filterOption={filterSelectForm}
+              >
+                {movesCash?.map((moveCash) => (
+                  <Select.Option key={moveCash.id} value={moveCash.id}>
+                    {moveCash.movecash}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </div>
 

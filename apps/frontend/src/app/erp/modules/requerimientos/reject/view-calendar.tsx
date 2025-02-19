@@ -5,9 +5,12 @@ import { format, parseISO } from 'date-fns'
 import { Calendar, Logs } from 'lucide-react'
 import { useState } from 'react'
 import { CalendarComponent } from '../calendar'
+import { useRejectedStore } from './state'
 
 export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const filters = useRejectedStore((st) => st.filters)
+  const setFilter = useRejectedStore((st) => st.setFilters)
 
   const query = useQuery({
     queryKey: ['rq:reject-calendar', date],
@@ -18,7 +21,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
           query: {
             month: month.toString(),
             status: [REQUIREMENT_STATUS.CANCELLED],
-            fieldDate: 'reject',
+            fieldDate: 'rejected',
           },
         })
 
@@ -27,10 +30,26 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
     },
   })
 
+  const handleClick = (date: string) => {
+    setFilter(
+      filters.map((el) => {
+        if (el.field == 'rejected_at') {
+          return {
+            ...el,
+            value: [date, date],
+          }
+        }
+        return el
+      }),
+    )
+    toggleView?.()
+  }
+
   return (
     <div>
       <CalendarComponent
         date={date}
+        onClick={handleClick}
         setDate={setDate}
         events={query.data?.map((d) => ({
           date: d.date,

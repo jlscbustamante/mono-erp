@@ -107,6 +107,8 @@ export class RequirementRepository {
       supplier_id: data.supplier,
       legal_number: data.ruc,
       legal_name: data.legal_name,
+      movecash_id: data.category_id,
+      movecash_name: data.category_name,
       description: data.description,
       type_document: data.document_type,
       num_document: data.document_number,

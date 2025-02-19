@@ -5,9 +5,12 @@ import { format, parseISO } from 'date-fns'
 import { Calendar, Logs } from 'lucide-react'
 import { useState } from 'react'
 import { CalendarComponent } from '../calendar'
+import { useApprovedStore } from './state'
 
 export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const filters = useApprovedStore((st) => st.filters)
+  const setFilter = useApprovedStore((st) => st.setFilters)
 
   const query = useQuery({
     queryKey: ['rq:approved-calendar', date],
@@ -27,9 +30,25 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
     },
   })
 
+  const handleClick = (date: string) => {
+    setFilter(
+      filters.map((el) => {
+        if (el.field == 'approved_at') {
+          return {
+            ...el,
+            value: [date, date],
+          }
+        }
+        return el
+      }),
+    )
+    toggleView?.()
+  }
+
   return (
     <div>
       <CalendarComponent
+        onClick={handleClick}
         date={date}
         setDate={setDate}
         events={query.data?.map((d) => ({

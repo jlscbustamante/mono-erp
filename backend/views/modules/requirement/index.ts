@@ -50,6 +50,10 @@ export const requirementRouter = new Hono()
     const data = await requirementResourceService.suppliers();
     return c.json({ data });
   })
+  .get("resource/movescash", async (c) => {
+    const data = await requirementResourceService.movesCash();
+    return c.json({ data });
+  })
   .post("/create", async (c) => {
     const session = c.get("user");
     const data = await c.req.json();

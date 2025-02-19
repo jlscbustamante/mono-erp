@@ -5,6 +5,7 @@ export interface IRequirementPresentation {
   numDoc: string;
   description: string;
   costCenter: string;
+  category: string;
   createdBy: string;
   approvedBy: string;
   rejectedBy: string;

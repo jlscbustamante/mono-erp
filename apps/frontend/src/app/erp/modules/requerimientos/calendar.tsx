@@ -1,5 +1,7 @@
+import { EventClickArg } from '@fullcalendar/core/index.js'
 import esLocale from '@fullcalendar/core/locales/es'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import interactionPlugin, { DateClickArg } from '@fullcalendar/interaction'
 import FullCalendar from '@fullcalendar/react'
 import { Button } from 'antd'
 import { format, parseISO } from 'date-fns'
@@ -26,6 +28,7 @@ export const CalendarComponent = ({
   date,
   setDate,
   events,
+  onClick,
 }: {
   addons?: React.ReactNode
   date: string
@@ -34,6 +37,7 @@ export const CalendarComponent = ({
     date: string
   }[]
   setDate: (date: string) => void
+  onClick?: (date: string) => void
 }) => {
   const calendarRef = useRef<any>(null)
   // const [currentDate, setCurrentDate] = useState(new Date())
@@ -61,6 +65,18 @@ export const CalendarComponent = ({
     setCurrentDate(calendarApi.getDate())
   }
 
+  const handleDateClick = (arg: DateClickArg) => {
+    const date = format(arg.date, 'yyyy-MM-dd')
+    onClick?.(date)
+  }
+
+  const handleEventClick = (info: EventClickArg) => {
+    if (info.event.start) {
+      const date = format(info.event.start, 'yyyy-MM-dd')
+      onClick?.(date)
+    }
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -76,8 +92,11 @@ export const CalendarComponent = ({
         {addons}
       </div>
       <FullCalendar
+        dayCellClassNames={'cursor-pointer'}
+        dateClick={handleDateClick}
+        eventClick={handleEventClick}
         ref={calendarRef}
-        plugins={[dayGridPlugin]}
+        plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={false}
         initialView="dayGridMonth"
         height={'auto'}
@@ -86,6 +105,7 @@ export const CalendarComponent = ({
           return {
             title: el.title,
             date: el.date,
+
             className: 'bg-transparent border border-none text-center',
             textColor: 'black',
           }

@@ -5,9 +5,12 @@ import { format, parseISO } from 'date-fns'
 import { Calendar, Logs } from 'lucide-react'
 import { useState } from 'react'
 import { CalendarComponent } from '../calendar'
+import { usePendingStore } from './state'
 
 export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const filters = usePendingStore((st) => st.filters)
+  const setFilter = usePendingStore((st) => st.setFilters)
 
   const query = useQuery({
     queryKey: ['rq:pending-calendar', date],
@@ -27,14 +30,30 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
     },
   })
 
+  const handleClick = (date: string) => {
+    setFilter(
+      filters.map((el) => {
+        if (el.field == 'requested_at') {
+          return {
+            ...el,
+            value: [date, date],
+          }
+        }
+        return el
+      }),
+    )
+    toggleView?.()
+  }
+
   return (
     <div>
       <CalendarComponent
+        onClick={handleClick}
         date={date}
         setDate={setDate}
         events={query.data?.map((d) => ({
           date: d.date,
-          title: `S/ ${d.total}<br >Pendientes`,
+          title: `S/ ${d.total}<br >Solicitados`,
         }))}
         addons={
           <div className="flex border border-solid border-slate-300 rounded-md ml-2">
