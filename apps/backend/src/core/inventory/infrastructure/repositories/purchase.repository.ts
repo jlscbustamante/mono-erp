@@ -44,6 +44,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
           id: el.id,
           itemId: el.itemId,
           itemName: el.itemName,
+          // supplierId: el.sup
           presentationId: el.presentationId,
           presentationName: el.presentationName,
           purchaseId: el.purchaseId,
@@ -57,6 +58,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
       id: purchaseDb.id,
       gloss: purchaseDb?.gloss ?? '',
       supplierId: purchaseDb.supplierId,
+      supplierName: purchaseDb.supplierName,
       purchaseAt: purchaseDb.purchaseAt.split(' ')[0],
       status: purchaseDb.status as PURCHASE_STATUS,
       warehouseId: purchaseDb.warehouseId ?? '',
@@ -125,7 +127,6 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
           parseISO(purchaseDb.purchaseAt),
         ),
       )
-      console.log('diff days. ', diffDays)
       await manager.update(InvPurchase, purchase.id, {
         id: purchase.id,
         gloss: purchase.gloss,
@@ -133,6 +134,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         discount: purchase.discount,
         taxValue: purchase.taxValue ?? 0,
         supplierId: purchase.supplierId,
+        supplierName: purchase.supplierName ?? '',
         numGuide: purchase.numGuide,
         numInvoice: purchase.numInvoice,
         purchaseAt: diffDays > 2 ? purchaseDb.purchaseAt : purchase.purchaseAt,
@@ -162,10 +164,24 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         )
       }
       if (requirement) {
-        await manager.query(
-          'UPDATE adm_request SET description=?, num_document=?,amount=?,retention=0 WHERE id=?',
-          [purchase.gloss, purchase.numInvoice, totalValue, requirement.id],
-        )
+        if (purchase.supplierRuc) {
+          await manager.query(
+            'UPDATE adm_request SET description=?, num_document=?,amount=?,retention=0,legal_number=?,legal_name=? WHERE id=?',
+            [
+              purchase.gloss,
+              purchase.numInvoice,
+              totalValue,
+              purchase.supplierRuc,
+              purchase.supplierName,
+              requirement.id,
+            ],
+          )
+        } else {
+          await manager.query(
+            'UPDATE adm_request SET description=?, num_document=?,amount=?,retention=0 WHERE id=?',
+            [purchase.gloss, purchase.numInvoice, totalValue, requirement.id],
+          )
+        }
       }
     })
   }

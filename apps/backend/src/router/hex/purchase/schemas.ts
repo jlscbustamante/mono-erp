@@ -21,6 +21,8 @@ export const updatePurchaseSchema = Joi.object<PurchaseUpdaetDto>({
   numInvoice: Joi.string().allow('').required(),
   status: Joi.string().equal(PURCHASE_STATUS.NEW).required(),
   supplierId: Joi.number().required(),
+  supplierName: Joi.string(),
+  supplierRuc: Joi.string(),
   items: Joi.array()
     .items(
       Joi.object<PurchaseItemUpdate>({

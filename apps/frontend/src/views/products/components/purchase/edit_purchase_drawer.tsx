@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import * as sdk from '@/data/products/sdk'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   Button,
@@ -165,6 +166,14 @@ const PurchaseBody = ({
     queryFn: getItemsActive,
   })
 
+  const querySuppliers = useQuery({
+    queryKey: ['suppliers-purchase'],
+    queryFn: async () => {
+      const suppliers = await sdk.suppliers()
+      return suppliers
+    },
+  })
+
   useEffect(() => {
     //
     const netValue = purchase.items.reduce((acc, el) => acc + el.totalValue, 0)
@@ -187,6 +196,31 @@ const PurchaseBody = ({
         >
           <Form.Item label="Id">
             <Input readOnly value={purchase.id} />
+          </Form.Item>
+          <Form.Item label="Proveedor">
+            <Select
+              placeholder="Proveedor"
+              showSearch={true}
+              filterOption={filterSelectForm}
+              value={purchase.supplierId}
+              onChange={(id) => {
+                const pp = querySuppliers.data?.find((el) => el.id == id)
+                setPurchase({
+                  ...purchase,
+                  supplierId: id,
+                  supplierName: pp?.supplier ?? '',
+                  supplierRuc: pp?.legalNumber,
+                })
+              }}
+            >
+              {querySuppliers.data
+                ?.filter((el) => el.status == 1)
+                .map((supplier) => (
+                  <Select.Option key={supplier.id} value={supplier.id}>
+                    {supplier.legalName ?? supplier.supplier}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item label="Número de factura">
             <Input
@@ -367,9 +401,9 @@ const EditItems = ({
             presentationId: item.presentationId,
             presentationName: item.presentationName,
             purchaseId: el.purchaseId,
-            quantity: 0,
-            totalValue: 0,
-            unitValue: 0,
+            quantity: el.quantity,
+            totalValue: el.totalValue,
+            unitValue: el.unitValue,
           } satisfies PurchaseItemUpdate
         }
         return el

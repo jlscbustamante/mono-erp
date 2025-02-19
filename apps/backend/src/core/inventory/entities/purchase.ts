@@ -8,6 +8,7 @@ export interface Purchase {
   gloss: string
   items: PurchaseItem[]
   supplierId: number
+  supplierName: string
   purchaseAt: string
   status: PURCHASE_STATUS
   numInvoice: string

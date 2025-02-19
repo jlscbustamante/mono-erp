@@ -5,5 +5,7 @@ export interface PurchaseItemUpdate extends Omit<PurchaseItem, 'id'> {
 }
 
 export interface PurchaseUpdaetDto extends Omit<Purchase, 'items'> {
+  supplierName: string
+  supplierRuc?: string
   items: PurchaseItemUpdate[]
 }

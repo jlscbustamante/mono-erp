@@ -131,6 +131,8 @@ export interface Purchase {
   id: number
   gloss: string
   items: PurchaseItem[]
+  supplierId: number
+  supplierName: string
   purchaseAt: string
   status: PURCHASE_STATUS
   numInvoice: string
@@ -160,6 +162,8 @@ export interface PurchaseItemUpdate
 }
 
 export interface PurchaseUpdaetDto extends Omit<Purchase, 'items'> {
+  supplierName: string
+  supplierRuc?: string
   items: PurchaseItemUpdate[]
 }
 
