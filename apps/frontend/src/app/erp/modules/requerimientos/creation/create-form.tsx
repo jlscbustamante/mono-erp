@@ -2,6 +2,7 @@ import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 import {
+  CashBankSelect,
   CompanySelect,
   CostCenterSelecet,
   MoveCashSelect,
@@ -32,6 +33,7 @@ export function CreationForm() {
   const costCenterId = Form.useWatch('cost_center', form)
   const totalAmount = Form.useWatch('amount', form)
   const supplierId = Form.useWatch('supplier', form)
+  const cashbankId = Form.useWatch('cashbank', form)
   const categoryId = Form.useWatch('category_id', form)
   const retation = Form.useWatch('retention', form)
   const [quotas, setQuotas] = useState<{ number: number; amount: number }[]>([])
@@ -78,6 +80,17 @@ export function CreationForm() {
       return result.data as MoveCashSelect[]
     },
   })
+
+  const { data: cashBanks } = useQuery({
+    queryKey: ['rq:cashBanks'],
+    queryFn: async () => {
+      const request =
+        await viewClient.api.view.requirement.resource.cashBanks.$get()
+      const result = await request.json()
+      return result.data as CashBankSelect[]
+    },
+  })
+
   //
 
   useEffect(() => {
@@ -88,6 +101,15 @@ export function CreationForm() {
       form.setFieldValue('cost_center_name', '')
     }
   }, [costCenterId])
+
+  useEffect(() => {
+    const cashBank = cashBanks?.find((el) => el.id === cashbankId)
+    if (cashBank) {
+      form.setFieldValue('cashbank_name', cashBank.cashbank)
+    } else {
+      form.setFieldValue('cashbank_name', '')
+    }
+  }, [cashbankId])
 
   useEffect(() => {
     const category = movesCash?.find((el) => el.id === categoryId)
@@ -314,19 +336,6 @@ export function CreationForm() {
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Centro de costo" name="cost_center">
-              <Select
-                placeholder="Centro de costo"
-                showSearch
-                filterOption={filterSelectForm}
-              >
-                {costCenters?.map((costCenter) => (
-                  <Select.Option key={costCenter.id} value={costCenter.id}>
-                    {costCenter.costcenter}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
             <Form.Item label="Categoria" name="category_id">
               <Select
                 placeholder="Categorias"
@@ -336,6 +345,19 @@ export function CreationForm() {
                 {movesCash?.map((moveCash) => (
                   <Select.Option key={moveCash.id} value={moveCash.id}>
                     {moveCash.movecash}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item label="Centro de costo" name="cost_center">
+              <Select
+                placeholder="Centro de costo"
+                showSearch
+                filterOption={filterSelectForm}
+              >
+                {costCenters?.map((costCenter) => (
+                  <Select.Option key={costCenter.id} value={costCenter.id}>
+                    {costCenter.costcenter}
                   </Select.Option>
                 ))}
               </Select>
@@ -357,6 +379,28 @@ export function CreationForm() {
               ]}
             >
               <InputNumber min={0} className="w-full" />
+            </Form.Item>
+            <Form.Item label="Caja" name={'cashbank'}>
+              <Select placeholder="Caja">
+                {cashBanks?.map((cashBank) => (
+                  <Select.Option key={cashBank.id} value={cashBank.id}>
+                    {cashBank.cashbank}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              label="CajaNombre"
+              name={'cashbank_name'}
+              className="hidden"
+            >
+              <Select placeholder="Caja">
+                {cashBanks?.map((cashBank) => (
+                  <Select.Option key={cashBank.id} value={cashBank.id}>
+                    {cashBank.cashbank}
+                  </Select.Option>
+                ))}
+              </Select>
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">

@@ -12,6 +12,8 @@ export interface IRequirementDetail {
   globalDescription: string;
   documentType: string;
   documentNumber: string;
+  categoryId: number;
+  categoryName: string;
 
   amount: number;
   expiresAt: string | null;

@@ -7,6 +7,8 @@ export interface UpdateRequirementDto {
   createdBy: string;
   description: string;
 
+  globalCategoryId: number;
+  globalCategoryName: string;
   globalId: number;
   globalCompanyId: string;
   globalCostCenterId: number;
@@ -18,4 +20,5 @@ export interface UpdateRequirementDto {
   globalDocumentType: string;
   globalDocumentNumber: string;
   globalAmount: number;
+  approvedAt: string;
 }

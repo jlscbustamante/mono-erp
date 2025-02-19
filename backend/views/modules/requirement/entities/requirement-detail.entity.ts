@@ -18,6 +18,8 @@ export class RequirementDetail implements IRequirementDetail {
   readonly globalDescription: string;
   readonly documentType: string;
   readonly documentNumber: string;
+  readonly categoryId: number;
+  readonly categoryName: string;
 
   readonly amount: number;
   readonly expiresAt: string | null;
@@ -32,6 +34,9 @@ export class RequirementDetail implements IRequirementDetail {
   readonly createdBy: string;
   readonly createdAt: string;
 
+  readonly approvedBy: string | null;
+  readonly approvedAt: string | null;
+
   constructor({
     adm_request,
     adm_request_item,
@@ -44,6 +49,8 @@ export class RequirementDetail implements IRequirementDetail {
     this.id = adm_request_item.id;
     this.companyId = adm_request.company_id ?? "";
     this.companyName = adm_request.costcenter_name ?? "";
+    this.categoryId = adm_request.movecash_id ?? 0;
+    this.categoryName = adm_request.movecash_name ?? "";
     this.costCenterId = adm_request.costcenter_id ?? 0;
     this.costCenterName = adm_request.costcenter_name ?? "";
     this.supplierId = inv_supplier.id;
@@ -62,5 +69,7 @@ export class RequirementDetail implements IRequirementDetail {
     this.status = adm_request_item.status as REQUIREMENT_STATUS;
     this.cashBankId = adm_request_item.cashbank_id;
     this.cashBankName = adm_request_item.cashbank_name;
+    this.approvedBy = adm_request_item.approved_by;
+    this.approvedAt = adm_request_item.approved_at;
   }
 }

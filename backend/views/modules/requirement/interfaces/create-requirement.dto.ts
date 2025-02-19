@@ -9,7 +9,8 @@ export interface CreateRequirementDto {
   cost_center: number;
   cost_center_name: string;
   amount: number;
-  cashbank: number;
+  cashbank?: number;
+  cashbank_name?: string;
   category_id: number;
   category_name: string;
   payment_method: string;

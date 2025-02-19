@@ -1,4 +1,5 @@
 import { RejectModal } from '@/app/erp/modules/requerimientos/review/reject-modal'
+import { useSession } from '@/app/erp/use-session'
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
@@ -18,6 +19,7 @@ import {
   UpdateRequirementDto,
 } from '@view'
 import { Button, Divider, Form, Input, InputNumber, Select } from 'antd'
+import { format } from 'date-fns'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -35,6 +37,8 @@ export function ReviewForm({
   const [openModal, setOpenModal] = useState(false)
 
   const [isEditing, setIsEditing] = useState(false)
+
+  const session = useSession((st) => st.user)
 
   const supplierId = Form.useWatch('globalSupplierId', form)
   const costCenterId = Form.useWatch('globalCostCenterId', form)
@@ -78,7 +82,6 @@ export function ReviewForm({
       const request =
         await viewClient.api.view.requirement.resource.movescash.$get()
       const result = await request.json()
-      console.log('result . data', result)
       return result.data as MoveCashSelect[]
     },
   })
@@ -137,7 +140,7 @@ export function ReviewForm({
       toast.error(err.message)
     },
     onSuccess: () => {
-      navigate(PATHS.erp.modulos.requerimientos.solicitados)
+      // navigate(PATHS.erp.modulos.requerimientos.solicitados)
     },
   })
 
@@ -241,8 +244,12 @@ export function ReviewForm({
                 id: data.id,
                 createdBy: data.createdBy,
                 description: data.description,
+                globalCategoryId: data.categoryId,
+                globalCategoryName: data.categoryName,
+                approvedBy: session?.userName ?? '',
+                approvedAt: format(new Date(), 'yyyy-MM-dd'),
                 // quota: 1 ,
-              } satisfies UpdateRequirementDto
+              } satisfies UpdateRequirementDto & { approvedBy: string }
             }
           >
             <Form.Item name={'globalId'} className="hidden">
@@ -273,6 +280,9 @@ export function ReviewForm({
                     </Select.Option>
                   ))}
                 </Select>
+              </Form.Item>
+              <Form.Item>
+                <Input readOnly value={'Simple'} />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
@@ -355,6 +365,19 @@ export function ReviewForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
+              <Form.Item label="Categoria" name="globalCategoryId">
+                <Select
+                  placeholder="Categorias"
+                  showSearch
+                  filterOption={filterSelectForm}
+                >
+                  {movesCash?.map((moveCash) => (
+                    <Select.Option key={moveCash.id} value={moveCash.id}>
+                      {moveCash.movecash}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
               <Form.Item label="Centro de costo" name="globalCostCenterId">
                 <Select
                   placeholder="Centro de costo"
@@ -368,20 +391,25 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Categoria" name="category_id">
-                <Select
-                  placeholder="Categorias"
-                  showSearch
-                  filterOption={filterSelectForm}
-                >
-                  {movesCash?.map((moveCash) => (
-                    <Select.Option key={moveCash.id} value={moveCash.id}>
-                      {moveCash.movecash}
-                    </Select.Option>
-                  ))}
-                </Select>
+
+              <Form.Item
+                label="Categoria name"
+                name="globalCategoryName"
+                className="hidden"
+              >
+                <Input />
               </Form.Item>
             </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item label="Asiento contable">
+                <Select
+                  placeholder="Asiento contable"
+                  showSearch
+                  filterOption={filterSelectForm}
+                ></Select>
+              </Form.Item>
+            </div>
+
             <Divider />
             <h5>Datos del pago:</h5>
             <div className="grid grid-cols-2 gap-2">
@@ -413,25 +441,48 @@ export function ReviewForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
+              <Form.Item label="Forma de pago" name={'payment_method'}>
+                <Select placeholder="pago">
+                  <Select.Option value="CONTADO">CONTADO</Select.Option>
+                  <Select.Option value="CREDITO">CREDITO</Select.Option>
+                </Select>
+              </Form.Item>
               <Form.Item label="Vencimiento" name={'expiresAt'}>
-                <CustomDatePicker />
+                <CustomDatePicker className="w-full" />
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item label="N° cuota">
+                <InputNumber readOnly min={1} />
               </Form.Item>
               <Form.Item label="Valor quota" name={'amount'}>
                 <InputNumber min={0} className="w-full" />
               </Form.Item>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Detalle del pago" name={'description'}>
-                <Input.TextArea rows={2}></Input.TextArea>
-              </Form.Item>
-              <Form.Item label="N° cuota">
-                <InputNumber readOnly min={1} />
-              </Form.Item>
-            </div>
+            <Form.Item
+              label="Detalle del pago"
+              name={'description'}
+              labelCol={{ span: 4 }}
+            >
+              <Input.TextArea rows={2}></Input.TextArea>
+            </Form.Item>
             <Divider />
             <div className="grid grid-cols-2 gap-2">
               <Form.Item name={'createdBy'} label="Creado por">
                 <Input readOnly />
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item name={'approvedBy'} label="Aprobado por">
+                <Input readOnly />
+              </Form.Item>
+              <Form.Item name={'approvedAt'} label="Fecha de aprobación">
+                <CustomDatePicker
+                  className="w-full"
+                  props={{
+                    allowClear: false,
+                  }}
+                />
               </Form.Item>
             </div>
             <Form.Item

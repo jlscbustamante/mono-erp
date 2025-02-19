@@ -124,6 +124,8 @@ export class RequirementRepository {
       items.push({
         request_id: 0,
         description: "",
+        cashbank_id: data.cashbank,
+        cashbank_name: data.cashbank_name,
         amount: quotaDetail.amount,
         created_by: name,
         status: REQUIREMENT_STATUS.PENDING,
