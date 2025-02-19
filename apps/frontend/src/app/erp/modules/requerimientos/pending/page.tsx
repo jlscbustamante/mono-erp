@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { usePendingStore } from './state'
 import { ViewCalendar } from './view-calendar'
 import { ViewTable } from './view-table'
 
 export function PendingPage() {
-  const [view, setView] = useState<'list' | 'calendar'>('list')
+  const view = usePendingStore((st) => st.view)
+  const setView = usePendingStore((st) => st.setView)
 
   const toggleView = () => {
     setView(view === 'list' ? 'calendar' : 'list')

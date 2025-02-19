@@ -19,26 +19,38 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
             {
               title: 'Id',
               dataIndex: 'id',
-            },
-            {
-              title: 'Solicitado',
-              dataIndex: 'requestedAt',
+              sorter: (a, b) => a.id - b.id,
             },
             {
               title: 'Proveedor',
               dataIndex: 'supplier',
+              sorter: (a, b) => a.supplier?.localeCompare(b.supplier ?? ''),
+            },
+            {
+              title: 'Solicitado',
+              dataIndex: 'requestedAt',
+              sorter: (a, b) => +(a.requestedAt > b.requestedAt),
             },
             {
               title: 'N° Doc',
               dataIndex: 'numDoc',
+              sorter: (a, b) => +(a.requestedAt > b.requestedAt),
             },
             {
               title: 'Detalle',
               dataIndex: 'description',
+              sorter: (a, b) =>
+                a.description?.localeCompare(b.description ?? ''),
             },
             {
               title: 'Centro de costo',
               dataIndex: 'costCenter',
+              sorter: (a, b) => a.costCenter?.localeCompare(b.costCenter ?? ''),
+            },
+            {
+              title: 'Categoria',
+              dataIndex: 'category',
+              sorter: (a, b) => a.category?.localeCompare(b.category ?? ''),
             },
             {
               title: 'Rechazado por',
@@ -49,21 +61,17 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               dataIndex: 'paymentMethod',
             },
             {
-              title: 'Cuotas',
+              title: 'N° Q',
               dataIndex: 'numQuota',
+              sorter: (a, b) => a.numQuota - b.numQuota,
             },
             {
               title: 'Monto',
               dataIndex: 'amount',
               className: 'text-right',
               render: (amount: number) => fNumber(amount),
+              sorter: (a, b) => a.amount - b.amount,
             },
-            // {
-            //   title: 'Doc',
-            //   render: () => {
-            //     return <FileText className="text-slate-500" size={18} />
-            //   },
-            // },
             {
               title: 'Acciones',
               render: (_, record) => {

@@ -3,12 +3,19 @@ import { REQUIREMENT_STATUS } from '@view'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 
+export type ViewType = 'list' | 'calendar'
 interface Store {
   filters: WhereOption<RequirementItemSelect>[]
   setFilters: (filters: WhereOption<RequirementItemSelect>[]) => void
+  view: ViewType
+  setView: (view: ViewType) => void
 }
 
 export const usePendingStore = create<Store>((set) => ({
+  view: 'list',
+  setView: (view) => {
+    return set({ view })
+  },
   filters: [
     {
       field: 'requested_at',
