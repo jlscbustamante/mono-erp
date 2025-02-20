@@ -33,16 +33,16 @@ import { AppDataSource } from '../../config/database'
 import { OtpService } from '../services/otp.service'
 
 // validate number 9 digits
-const validatePhone = (phone: string) => {
-  if (/^([0-9]{9})$/.test(phone)) return true
-  throw badRequest('Numero de telefono invalido')
-}
+// const validatePhone = (phone: string) => {
+//   if (/^([0-9]{9})$/.test(phone)) return true
+//   throw badRequest('Numero de telefono invalido')
+// }
 
 export class AuthService {
   constructor(private readonly otpService: OtpService) {}
 
   async loginPhone(phone: string, code?: string) {
-    validatePhone(phone)
+    // validatePhone(phone)
     const users = await AppDataSource.query(
       'SELECT id FROM iam_user WHERE phone = ?',
       [phone],
@@ -55,7 +55,7 @@ export class AuthService {
   }
 
   async loginWsp(phone: string, code?: string) {
-    validatePhone(phone)
+    // validatePhone(phone)
     const users = await AppDataSource.query(
       'SELECT id FROM iam_user WHERE phone = ?',
       [phone],
