@@ -69,16 +69,16 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               sorter: (a, b) => a.numQuota - b.numQuota,
             },
             // 17:43-> 17:50
-            {
-              title: 'Vencimiento',
-              dataIndex: 'expiresAt',
-              // sorter: (a, b) => +(a.expiresAt > b.expiresAt),
-              sorter: (a, b) => {
-                if (!a.expiresAt) return -1
-                if (!b.expiresAt) return 1
-                return +(a.expiresAt > b.expiresAt)
-              },
-            },
+            // {
+            //   title: 'Vencimiento',
+            //   dataIndex: 'expiresAt',
+            //   // sorter: (a, b) => +(a.expiresAt > b.expiresAt),
+            //   sorter: (a, b) => {
+            //     if (!a.expiresAt) return -1
+            //     if (!b.expiresAt) return 1
+            //     return +(a.expiresAt > b.expiresAt)
+            //   },
+            // },
             {
               title: 'Monto',
               dataIndex: 'amount',

@@ -1,30 +1,35 @@
-import { REQUIREMENT_STATUS } from "./enums.ts";
+import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
+
+export interface IRequirementDetailItem {
+  id: number;
+  amount: number;
+  hasRetention: boolean;
+  retention: number;
+  netAmount: number;
+  cashbankId: number | null;
+  cashbankName: string | null;
+  paymentMethod: string;
+  expiresAt: string | null;
+  description: string;
+}
 
 export interface IRequirementDetail {
   id: number;
+  amount: number;
   companyId: string;
-  companyName: string;
-  costCenterId: number;
-  costCenterName: string;
   supplierId: number;
-  supplierName: string;
-  supplierRuc: string;
-  globalDescription: string;
+  paymentMethod: string;
+  ruc: string;
+  legalName: string;
+  description: string;
   documentType: string;
   documentNumber: string;
-  categoryId: number;
-  categoryName: string;
-
-  amount: number;
-  expiresAt: string | null;
-  cashBankId: number | null;
-  cashBankName: string | null;
+  categoryId: number | null;
+  categoryName: string | null;
+  costCenterId: number | null;
+  costCenterName: string | null;
+  numQuotas: number;
   status: REQUIREMENT_STATUS;
-  description: string;
-
-  globalAmount: number;
-  globalId: number;
-
   createdBy: string;
-  createdAt: string;
+  items: IRequirementDetailItem[];
 }

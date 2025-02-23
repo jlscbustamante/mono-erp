@@ -1,75 +1,75 @@
 import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
 import {
+  CashBankSelect,
   RequirementItemSelect,
   RequirementSelect,
   SupplierSelect,
 } from "@scope/pizzadb/types";
-import { IRequirementDetail } from "../interfaces/requirement-detail.interface.ts";
+import {
+  IRequirementDetail,
+  IRequirementDetailItem,
+} from "../interfaces/requirement-detail.interface.ts";
 
 export class RequirementDetail implements IRequirementDetail {
   readonly id: number;
   readonly companyId: string;
-  readonly companyName: string;
-  readonly costCenterId: number;
-  readonly costCenterName: string;
   readonly supplierId: number;
-  readonly supplierName: string;
-  readonly supplierRuc: string;
-  readonly globalDescription: string;
+  readonly amount: number;
+  readonly ruc: string;
+  readonly legalName: string;
+  readonly description: string;
   readonly documentType: string;
   readonly documentNumber: string;
-  readonly categoryId: number;
-  readonly categoryName: string;
-
-  readonly amount: number;
-  readonly expiresAt: string | null;
-  readonly cashBankId: number | null;
-  readonly cashBankName: string | null;
-  readonly status: REQUIREMENT_STATUS;
-  readonly description: string;
-
-  readonly globalAmount: number;
-  readonly globalId: number;
-
+  readonly categoryId: number | null;
+  readonly categoryName: string | null;
+  readonly costCenterName: string | null;
+  readonly numQuotas: number;
   readonly createdBy: string;
-  readonly createdAt: string;
-
-  readonly approvedBy: string | null;
-  readonly approvedAt: string | null;
+  readonly paymentMethod: string;
+  readonly status: REQUIREMENT_STATUS;
+  readonly costCenterId: number | null;
+  readonly items: IRequirementDetailItem[];
 
   constructor({
-    adm_request,
-    adm_request_item,
-    inv_supplier,
+    requirement,
+    items,
+    supplier,
   }: {
-    adm_request: RequirementSelect;
-    adm_request_item: RequirementItemSelect;
-    inv_supplier: SupplierSelect;
+    requirement: RequirementSelect;
+    items: (RequirementItemSelect & { cashbank: CashBankSelect | null })[];
+    supplier: SupplierSelect;
   }) {
-    this.id = adm_request_item.id;
-    this.companyId = adm_request.company_id ?? "";
-    this.companyName = adm_request.costcenter_name ?? "";
-    this.categoryId = adm_request.movecash_id ?? 0;
-    this.categoryName = adm_request.movecash_name ?? "";
-    this.costCenterId = adm_request.costcenter_id ?? 0;
-    this.costCenterName = adm_request.costcenter_name ?? "";
-    this.supplierId = inv_supplier.id;
-    this.description = adm_request_item.description ?? "";
-    this.supplierName = inv_supplier.supplier;
-    this.supplierRuc = inv_supplier.legal_number ?? "";
-    this.globalDescription = adm_request.description ?? "";
-    this.documentType = adm_request.type_document ?? "";
-    this.documentNumber = adm_request.num_document ?? "";
-    this.globalAmount = adm_request.amount ?? 0;
-    this.globalId = adm_request.id;
-    this.createdBy = adm_request.created_by ?? "";
-    this.createdAt = adm_request.requested_at ?? "";
-    this.amount = adm_request_item.amount ?? 0;
-    this.expiresAt = adm_request_item.expires_at ?? null;
-    this.status = adm_request_item.status as REQUIREMENT_STATUS;
-    this.cashBankId = adm_request_item.cashbank_id;
-    this.cashBankName = adm_request_item.cashbank_name;
-    this.approvedBy = adm_request_item.approved_by;
-    this.approvedAt = adm_request_item.approved_at;
+    this.id = requirement.id;
+    this.companyId = requirement.company_id!;
+    this.amount = requirement.amount!;
+    this.supplierId = supplier.id;
+    this.ruc = supplier.legal_number!;
+    this.legalName = supplier.legal_name!;
+    this.description = requirement.description ?? "";
+    this.documentType = requirement.type_document ?? "";
+    this.documentNumber = requirement.num_document ?? "";
+    this.paymentMethod = requirement.pay_method!;
+    this.numQuotas = requirement.nro_quotas ?? 1;
+    this.costCenterId = requirement.costcenter_id ?? null;
+    this.costCenterName = requirement.costcenter_name ?? null;
+    this.categoryId = requirement.movecash_id ?? null;
+    this.categoryName = requirement.movecash_name ?? null;
+    this.status = requirement.status as REQUIREMENT_STATUS;
+    this.createdBy = requirement.created_by!;
+    this.items = items.map((item) => {
+      const hasRetention = item.retention == "1";
+      return {
+        id: item.id,
+        amount: item.amount!,
+        hasRetention,
+        retention: hasRetention ? item.amount_ret! : 0,
+        netAmount: hasRetention ? item.amount_net! : item.amount!,
+        cashbankId: item.cashbank_id ?? null,
+        paymentMethod: requirement.pay_method!,
+        description: item.description ?? "",
+        expiresAt: item.expires_at?.split(" ")[0] ?? null,
+        cashbankName: item.cashbank?.cashbank ?? null,
+      } satisfies IRequirementDetailItem;
+    });
   }
 }

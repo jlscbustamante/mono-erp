@@ -1,24 +1,29 @@
-export interface UpdateRequirementDto {
+export interface UpdateRequirementItemDto {
   id: number;
   amount: number;
-  cashBankId?: number;
-  cashBankName?: string;
+  cashbankId?: number;
+  cashbankName?: string;
   expiresAt?: string;
-  createdBy: string;
+  hasRetention: boolean;
+  retention: number;
   description: string;
+}
 
-  globalCategoryId: number;
-  globalCategoryName: string;
-  globalId: number;
-  globalCompanyId: string;
-  globalCostCenterId: number;
-  globalCostCenterName: string;
-  globalSupplierId: number;
-  globalSupplierName: string;
-  globalSupplierRuc: string;
-  globalDescription: string;
-  globalDocumentType: string;
-  globalDocumentNumber: string;
-  globalAmount: number;
-  approvedAt: string;
+export interface UpdateRequirementDto {
+  id: number;
+  companyId: string;
+  supplierId: number;
+  supplierName: string;
+  ruc: string;
+  description: string;
+  documentType: string;
+  paymentMethod: string;
+  documentNumber: string;
+  categoryId?: number;
+  categoryName?: string;
+  costCenterId?: number;
+  costCenterName?: string;
+  amount: number;
+
+  items: UpdateRequirementItemDto[];
 }

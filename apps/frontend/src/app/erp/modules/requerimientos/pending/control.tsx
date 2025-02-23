@@ -1,7 +1,7 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
 import { PATHS } from '@/const/paths'
-import { RequirementItemSelect } from '@pizzadb'
+import { RequirementSelect } from '@pizzadb'
 import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { Calendar, Logs } from 'lucide-react'
@@ -11,7 +11,7 @@ import { usePendingStore } from './state'
 
 const { RangePicker } = DatePicker
 
-const menuOptions: FilterOption<RequirementItemSelect>[] = [
+const menuOptions: FilterOption<RequirementSelect>[] = [
   {
     key: 'id',
     label: 'Id',
@@ -62,7 +62,7 @@ export function Control({
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
-      (el) => el.key == ('requested_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key == ('requested_at' satisfies keyof RequirementSelect),
     )
     if (dates) {
       const [start, end] = dates.value as [string, string]
@@ -75,7 +75,7 @@ export function Control({
     const [start, end] = dates
 
     const newFilters = filters.filter(
-      (el) => el.key != ('requested_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key != ('requested_at' satisfies keyof RequirementSelect),
     )
 
     setFilters([

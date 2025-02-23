@@ -10,6 +10,8 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 import { decimalNumber } from "../drizzle-extend.ts";
+import { cashBanks } from "./fin.ts";
+import { suppliers } from "./inv.ts";
 
 export const companies = mysqlTable("adm_company", {
   id: varchar({ length: 10 }).notNull().primaryKey(),
@@ -118,9 +120,17 @@ export const requirementItemsRelation = relations(
       fields: [requirementItems.request_id],
       references: [requirements.id],
     }),
+    cashbank: one(cashBanks, {
+      fields: [requirementItems.cashbank_id],
+      references: [cashBanks.id],
+    }),
   })
 );
 
-export const requirementRelation = relations(requirements, ({ many }) => ({
+export const requirementRelation = relations(requirements, ({ many, one }) => ({
   items: many(requirementItems),
+  supplier: one(suppliers, {
+    fields: [requirements.supplier_id],
+    references: [suppliers.id],
+  }),
 }));

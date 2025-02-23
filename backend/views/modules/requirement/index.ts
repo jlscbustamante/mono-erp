@@ -6,13 +6,13 @@ import {
 import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
 import { UpdateRequirementDto } from "#app/modules/types/index.ts";
 import { zValidator } from "@hono/zod-validator";
-import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
+import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
 import { Hono } from "hono";
 import { z } from "zod";
 
 export const requirementRouter = new Hono()
   .get("/filter", filtersMiddlaware, async (c) => {
-    const filters = c.get("filters") as WhereOption<RequirementItemSelect>[];
+    const filters = c.get("filters") as WhereOption<RequirementSelect>[];
 
     const data = await requirementService.filter(filters);
 
@@ -66,22 +66,19 @@ export const requirementRouter = new Hono()
     const session = c.get("user");
     const data = await c.req.json();
 
-    await requirementService.saveAndApprove(
-      data as UpdateRequirementDto,
-      session.name
-    );
+    await requirementService.approve(data.id as number, session.name);
 
     return c.json({
       message: "ok",
     });
   })
   .put("/save", async (c) => {
-    const session = c.get("user");
+    // const session = c.get("user");
     const data = await c.req.json();
 
     await requirementService.saveRequirement(
-      data as UpdateRequirementDto,
-      session.name
+      data as UpdateRequirementDto
+      // session.name
     );
     return c.json({
       message: "ok",

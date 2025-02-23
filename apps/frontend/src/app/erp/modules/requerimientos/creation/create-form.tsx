@@ -1,3 +1,4 @@
+import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
@@ -19,9 +20,11 @@ import {
   Input,
   InputNumber,
   Select,
+  Switch,
 } from 'antd'
+import dayjs from 'dayjs'
 import { ArrowLeft, Minus, Plus } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 
@@ -35,8 +38,10 @@ export function CreationForm() {
   const supplierId = Form.useWatch('supplier', form)
   const cashbankId = Form.useWatch('cashbank', form)
   const categoryId = Form.useWatch('category_id', form)
-  const retation = Form.useWatch('retention', form)
-  const [quotas, setQuotas] = useState<{ number: number; amount: number }[]>([])
+  const [quotas, setQuotas] = useState<
+    { number: number; amount: number; expiresAt?: string }[]
+  >([])
+  const [hasQuota, setHasQuota] = useState(false)
 
   const navigate = useNavigate()
 
@@ -76,7 +81,6 @@ export function CreationForm() {
       const request =
         await viewClient.api.view.requirement.resource.movescash.$get()
       const result = await request.json()
-      console.log('result . data', result)
       return result.data as MoveCashSelect[]
     },
   })
@@ -91,7 +95,15 @@ export function CreationForm() {
     },
   })
 
-  //
+  const isTotalAmountMatched = useMemo(() => {
+    let total = 0
+    quotas.forEach((el) => {
+      total += el.amount
+    })
+
+    const diffAbs = Math.abs(+(total - totalAmount).toFixed(2))
+    return diffAbs <= 0.01
+  }, [quotas])
 
   useEffect(() => {
     const costCenter = costCenters?.find((el) => el.id === costCenterId)
@@ -154,6 +166,21 @@ export function CreationForm() {
     }
   }
 
+  const changeQuotaAmount = (
+    numQuota: number,
+    amount: number,
+    expiresAt?: string,
+  ) => {
+    const newQuotas = quotas.map((el) => {
+      if (el.number === numQuota) {
+        el.amount = amount
+        el.expiresAt = expiresAt
+      }
+      return el
+    })
+    setQuotas(newQuotas)
+  }
+
   const createMt = useMutation({
     mutationFn: async (data: CreateRequirementDto) => {
       const result = await viewClient.api.view.requirement.create.$post({
@@ -177,7 +204,19 @@ export function CreationForm() {
   }
 
   useEffect(() => {
-    const total = totalAmount - (hasRetention ? retation : 0)
+    if (!hasQuota) {
+      setQuotas([
+        {
+          number: 1,
+          amount: totalAmount,
+        },
+      ])
+      form.setFieldValue('quota', 1)
+    }
+  }, [hasQuota])
+
+  useEffect(() => {
+    const total = totalAmount
     const amountByQuota = +(total / quota).toFixed(2)
 
     setQuotas(
@@ -186,7 +225,7 @@ export function CreationForm() {
         amount: amountByQuota,
       })),
     )
-  }, [quota, totalAmount, retation, hasRetention])
+  }, [quota, totalAmount])
 
   return (
     <div className="flex justify-center gap-3">
@@ -411,7 +450,7 @@ export function CreationForm() {
               </Select>
             </Form.Item>
             <Form.Item label="Vencimiento" name={'expiration_date'}>
-              <DatePicker className="w-full" />
+              <CustomDatePicker className="w-full" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
@@ -423,30 +462,78 @@ export function CreationForm() {
               <Checkbox />
             </Form.Item>
             <Form.Item label="Retencion" name={'retention'}>
-              <InputNumber placeholder="0.0" disabled={!hasRetention} />
+              <InputNumber placeholder="0.0" disabled={!hasRetention} min={0} />
             </Form.Item>
           </div>
-          <div>
-            <Form.Item label="N° cuota" labelCol={{ span: 4 }} name={'quota'}>
-              <InputNumber readOnly min={1} value={quota} />
-            </Form.Item>
+          <div className="grid grid-cols-[repeat(24,1fr)] grid-rows-1 mb-4">
+            <label htmlFor="" className="col-span-4">
+              Pago al crédito
+            </label>
+            <div className="col-span-9 flex items-center gap-8">
+              <Switch
+                checkedChildren="Si"
+                unCheckedChildren="No"
+                onChange={() => {
+                  setHasQuota(!hasQuota)
+                }}
+                checked={hasQuota}
+              />
+              <Form.Item
+                label="N° cuota"
+                name={'quota'}
+                className="mb-0 "
+                // labelCol={{ span: 1 }}
+                labelCol={{ span: 10 }}
+              >
+                <InputNumber
+                  readOnly
+                  min={1}
+                  value={quota}
+                  disabled={true}
+                  className="!text-slate-800"
+                />
+              </Form.Item>
+            </div>
           </div>
-          <Form.Item wrapperCol={{ span: 6, offset: 4 }}>
+          <Form.Item wrapperCol={{ span: 14, offset: 4 }} hidden={!hasQuota}>
             <div>
-              <div className="grid grid-cols-2 font-semibold mb-2">
+              <div className="grid grid-cols-[120px_120px_1fr] font-semibold mb-2 gap-3">
                 <p>N° cuota</p>
                 <p>Monto</p>
+                <p>Vencimiento</p>
               </div>
               {quotas.map((el) => {
                 return (
                   <div key={el.number} className="flex items-center relative">
-                    <div className="grid grid-cols-2 my-2 gap-2">
+                    <div className="grid grid-cols-[120px_120px_1fr] my-2 gap-3 w-full">
                       <InputNumber readOnly value={el.number} />
-                      <InputNumber readOnly value={el.amount} />
+                      <InputNumber
+                        value={el.amount}
+                        min={0.01}
+                        onChange={(value) => {
+                          if (value)
+                            changeQuotaAmount(el.number, value, el.expiresAt)
+                        }}
+                      />
+                      <DatePicker
+                        className=""
+                        allowClear={true}
+                        value={el.expiresAt ? dayjs(el.expiresAt) : null}
+                        onChange={(val) => {
+                          if (val) {
+                            changeQuotaAmount(
+                              el.number,
+                              el.amount,
+                              val.format('YYYY-MM-DD'),
+                            )
+                          } else {
+                            changeQuotaAmount(el.number, el.amount)
+                          }
+                        }}
+                      />
                     </div>
                     {el.number == 1 && (
-                      <div className="absolute left-full">
-                        {' '}
+                      <div className="absolute left-full ml-2">
                         <div className="flex gap-1 items-center">
                           <Button
                             size="small"
@@ -469,10 +556,22 @@ export function CreationForm() {
                 )
               })}
             </div>
+            <div>
+              {isTotalAmountMatched ? (
+                ''
+              ) : (
+                <span className="text-red-500">El total no coincide</span>
+              )}
+            </div>
           </Form.Item>
           <Form.Item labelCol={{ span: 4 }} className="flex justify-end">
-            <Button type="primary" htmlType="submit">
-              Crear
+            <Button
+              type="primary"
+              htmlType="submit"
+              loading={createMt.isPending}
+              disabled={!isTotalAmountMatched}
+            >
+              Guardar
             </Button>
           </Form.Item>
         </Form>

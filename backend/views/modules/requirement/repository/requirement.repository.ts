@@ -1,101 +1,164 @@
 import { db } from "#app/database.ts";
 import { RequirementDetail } from "#app/modules/requirement/entities/requirement-detail.entity.ts";
-import { RequirementPresentation } from "#app/modules/requirement/entities/requirement-item.entity.ts";
 import {
   CreateRequirementDto,
   REQUIREMENT_STATUS,
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
-import { requirementItems, requirements, suppliers } from "@scope/pizzadb";
+import { requirementItems, requirements } from "@scope/pizzadb";
 import { transformWhere } from "@scope/pizzadb/filter";
 import type {
   RequirementInsert,
   RequirementItemInsert,
-  RequirementItemSelect,
   RequirementSelect,
-  SupplierSelect,
   WhereOption,
 } from "@scope/pizzadb/types";
 import dayjs from "dayjs";
-import { aliasedTable, desc, eq, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
+import { RequirementPresentation } from "../entities/requirement-presentation.entity.ts";
 
 export class RequirementRepository {
   async filter(
-    filters: WhereOption<RequirementItemSelect>[]
+    filters: WhereOption<RequirementSelect>[]
   ): Promise<RequirementPresentation[]> {
-    const alias = aliasedTable(requirementItems, "reqitem");
-    const query = transformWhere(filters, "reqitem").join(" AND ");
+    const query = transformWhere(filters).join(" AND ");
 
-    const result = (await db
-      .select()
-      .from(alias)
-      .leftJoin(requirements, eq(requirements.id, alias.request_id))
-      .leftJoin(suppliers, eq(suppliers.id, requirements.supplier_id))
-      .limit(500)
-      .where(query ? sql.raw(query) : undefined)
-      .orderBy(desc(alias.request_id))) as unknown as {
-      reqitem: RequirementItemSelect;
-      adm_request: RequirementSelect;
-      inv_supplier: SupplierSelect;
-    }[];
+    const result = await db.query.requirements.findMany({
+      where: query ? sql.raw(query) : undefined,
+      with: {
+        items: true,
+        supplier: true,
+      },
+      limit: 500,
+    });
 
-    return result.map((el) => new RequirementPresentation(el));
+    return result.map((el) => {
+      const { items, supplier, ...reqitem } = el;
+      return new RequirementPresentation({
+        reqitem,
+        items,
+        inv_supplier: supplier,
+      });
+    });
   }
 
   async saveAndApprove(data: UpdateRequirementDto, userName: string) {
     await db.transaction(async (manager) => {
       await manager
-        .update(requirementItems)
+        .update(requirements)
         .set({
-          cashbank_id: data.cashBankId,
-          cashbank_name: data.cashBankName,
-          expires_at: data.expiresAt,
-          status: REQUIREMENT_STATUS.APPROVED,
-          approved_by: userName,
-          approved_at: dayjs().format("YYYY-MM-DD"),
+          company_id: data.companyId,
+          supplier_id: data.supplierId,
+          legal_name: data.supplierName,
+          legal_number: data.ruc,
           description: data.description,
+          type_document: data.documentType,
+          num_document: data.documentNumber,
+          movecash_id: data.categoryId,
+          movecash_name: data.categoryName,
+          amount: data.amount,
+          pay_method: data.paymentMethod,
         })
-        .where(eq(requirementItems.id, data.id));
+        .where(eq(requirements.id, data.id));
+
+      const promises = [];
+      for (const item of data.items) {
+        promises.push(
+          manager
+            .update(requirementItems)
+            .set({
+              amount: item.amount,
+              retention: item.hasRetention ? "1" : "0",
+              amount_ret: item.retention,
+              amount_net: item.amount - item.retention,
+              cashbank_id: item.cashbankId,
+              cashbank_name: item.cashbankName,
+              description: item.description,
+            })
+            .where(eq(requirementItems.id, item.id))
+        );
+      }
+      await Promise.all(promises);
     });
   }
 
-  async saveRequirement(data: UpdateRequirementDto, userName: string) {
+  async approve(id: number, userName: string) {
     await db.transaction(async (manager) => {
       await manager
         .update(requirements)
         .set({
-          description: data.globalDescription,
+          status: REQUIREMENT_STATUS.APPROVED,
         })
-        .where(eq(requirements.id, data.globalId));
-
+        .where(eq(requirements.id, id));
       await manager
         .update(requirementItems)
         .set({
-          cashbank_id: data.cashBankId,
-          cashbank_name: data.cashBankName,
-          expires_at: data.expiresAt,
-          approved_by: userName,
-          // approved_at: dayjs().format("YYYY-MM-DD"),
-          description: data.description,
+          status: REQUIREMENT_STATUS.APPROVED,
         })
-        .where(eq(requirementItems.id, data.id));
+        .where(eq(requirementItems.request_id, id));
+    });
+  }
+
+  async saveRequirement(data: UpdateRequirementDto) {
+    await db.transaction(async (manager) => {
+      await manager
+        .update(requirements)
+        .set({
+          company_id: data.companyId,
+          supplier_id: data.supplierId,
+          legal_name: data.supplierName,
+          legal_number: data.ruc,
+          description: data.description,
+          type_document: data.documentType,
+          num_document: data.documentNumber,
+          movecash_id: data.categoryId,
+          movecash_name: data.categoryName,
+          amount: data.amount,
+          pay_method: data.paymentMethod,
+        })
+        .where(eq(requirements.id, data.id));
+
+      const promises = [];
+      for (const item of data.items) {
+        promises.push(
+          manager
+            .update(requirementItems)
+            .set({
+              amount: item.amount,
+              retention: item.hasRetention ? "1" : "0",
+              amount_ret: item.retention,
+              amount_net: item.amount - item.retention,
+              cashbank_id: item.cashbankId,
+              cashbank_name: item.cashbankName,
+              description: item.description,
+            })
+            .where(eq(requirementItems.id, item.id))
+        );
+      }
+      await Promise.all(promises);
     });
   }
 
   async getRequirement(id: number) {
-    const result = (await db
-      .select()
-      .from(requirementItems)
-      .where(eq(requirementItems.id, id))
-      .leftJoin(requirements, eq(requirements.id, requirementItems.request_id))
-      .leftJoin(suppliers, eq(suppliers.id, requirements.supplier_id))) as any;
+    const result = await db.query.requirements.findFirst({
+      where: eq(requirements.id, id),
+      with: {
+        items: {
+          with: {
+            cashbank: true,
+          },
+        },
+        supplier: true,
+      },
+    });
 
-    const req = result[0];
-    if (!req) throw new Error("Requerimiento no encontrado");
+    if (!result) throw new Error("Requerimiento no encontrado");
+
+    const { supplier, items, ...requirement } = result;
     return new RequirementDetail({
-      adm_request: req.adm_request,
-      adm_request_item: req.adm_request_item,
-      inv_supplier: req.inv_supplier,
+      requirement,
+      items,
+      supplier,
     });
   }
 
@@ -120,6 +183,7 @@ export class RequirementRepository {
       created_by: name,
     };
     const items: RequirementItemInsert[] = [];
+    const initialExpiresAt = data.quota == 1 ? data.expiration_date : null;
     for (const quotaDetail of data.detailQuotas) {
       items.push({
         request_id: 0,
@@ -129,6 +193,10 @@ export class RequirementRepository {
         amount: quotaDetail.amount,
         created_by: name,
         status: REQUIREMENT_STATUS.PENDING,
+        expires_at: initialExpiresAt ?? quotaDetail.expiresAt,
+        retention: data.hasRetention ? "1" : "2",
+        amount_net: data.hasRetention ? data.amount - data.retention : 0,
+        amount_ret: data.hasRetention ? data.retention : 0,
       });
     }
 

@@ -13,32 +13,28 @@ export class RequirementPresentation implements IRequirementPresentation {
   readonly description: string;
   readonly costCenter: string;
   readonly createdBy: string;
-  readonly approvedBy: string;
   readonly paymentMethod: string;
   readonly numQuota: number;
-  readonly expiresAt: string;
   readonly amount: number;
-  readonly rejectedBy: string;
   readonly category: string;
 
   constructor(props: {
-    reqitem: RequirementItemSelect;
-    adm_request: RequirementSelect;
+    reqitem: RequirementSelect;
+    // adm_request: RequirementSelect;
+    // 17
+    items: RequirementItemSelect[];
     inv_supplier: SupplierSelect;
   }) {
     this.id = props.reqitem.id;
     this.supplier = props.inv_supplier.supplier;
     this.requestedAt = props.reqitem.requested_at?.split(" ")[0] ?? "";
-    this.category = props.adm_request.movecash_name ?? "";
-    this.numDoc = props.adm_request.num_document ?? "";
+    this.category = props.reqitem.movecash_name ?? "";
+    this.numDoc = props.reqitem.num_document ?? "";
     this.description = props.reqitem.description ?? "";
-    this.costCenter = props.adm_request.costcenter_name ?? "";
-    this.rejectedBy = props.reqitem.rejected_by ?? "sys";
-    this.createdBy = props.adm_request.created_by ?? "";
-    this.paymentMethod = props.adm_request.pay_method ?? "";
-    this.numQuota = props.adm_request.nro_quotas ?? 1;
-    this.expiresAt = props.reqitem.expires_at ?? "";
+    this.costCenter = props.reqitem.costcenter_name ?? "";
+    this.createdBy = props.reqitem.created_by ?? "";
+    this.paymentMethod = props.reqitem.pay_method ?? "";
+    this.numQuota = props.reqitem.nro_quotas ?? 1;
     this.amount = props.reqitem.amount ?? 0;
-    this.approvedBy = props.reqitem.approved_by ?? "sys";
   }
 }

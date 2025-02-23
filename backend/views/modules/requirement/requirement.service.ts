@@ -7,14 +7,14 @@ import {
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
-import type { RequirementItemSelect, WhereOption } from "@scope/pizzadb/types";
+import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
 import dayjs from "dayjs";
 import { and, eq, inArray } from "drizzle-orm";
 
 export class RequirementService {
   constructor(private readonly requirementRepository: RequirementRepository) {}
 
-  async filter(filters: WhereOption<RequirementItemSelect>[]) {
+  async filter(filters: WhereOption<RequirementSelect>[]) {
     const data = await this.requirementRepository.filter(filters);
     return data;
   }
@@ -31,8 +31,12 @@ export class RequirementService {
     await this.requirementRepository.saveAndApprove(data, userName);
   }
 
-  async saveRequirement(data: UpdateRequirementDto, userName: string) {
-    await this.requirementRepository.saveRequirement(data, userName);
+  async approve(id: number, userName: string) {
+    await this.requirementRepository.approve(id, userName);
+  }
+
+  async saveRequirement(data: UpdateRequirementDto) {
+    await this.requirementRepository.saveRequirement(data);
   }
 
   async undoApproval(id: number) {

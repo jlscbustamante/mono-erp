@@ -17,9 +17,9 @@ import {
   REQUIREMENT_STATUS,
   REQUIREMENT_TYPE_DOCUMENT,
   UpdateRequirementDto,
+  UpdateRequirementItemDto,
 } from '@view'
-import { Button, Divider, Form, Input, InputNumber, Select } from 'antd'
-import { format } from 'date-fns'
+import { Button, Divider, Form, Input, InputNumber, Select, Switch } from 'antd'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -34,15 +34,29 @@ export function ReviewForm({
 }) {
   const [form] = Form.useForm()
 
+  const [item, setItem] = useState<UpdateRequirementItemDto>({
+    id: data.items[0].id,
+    amount: data.items[0].amount,
+    hasRetention: data.items[0].hasRetention,
+    retention: data.items[0].retention,
+    cashbankId: data.items[0].cashbankId ?? undefined,
+    cashbankName: data.items[0].cashbankName ?? undefined,
+    expiresAt: data.items[0].expiresAt ?? undefined,
+    description: data.items[0].description,
+  })
+
+  const [errors, setErrors] = useState<Record<string, string | null>>({
+    cashbankId: null,
+  })
+
   const [openModal, setOpenModal] = useState(false)
 
   const [isEditing, setIsEditing] = useState(false)
 
   const session = useSession((st) => st.user)
 
-  const supplierId = Form.useWatch('globalSupplierId', form)
-  const costCenterId = Form.useWatch('globalCostCenterId', form)
-  const cashBankId = Form.useWatch('cashBankId', form)
+  const supplierId = Form.useWatch('supplierId', form)
+  const costCenterId = Form.useWatch('costCenterId', form)
 
   const navigate = useNavigate()
 
@@ -99,9 +113,9 @@ export function ReviewForm({
   useEffect(() => {
     const costCenter = costCenters?.find((el) => el.id === costCenterId)
     if (costCenter) {
-      form.setFieldValue('globalCostCenterName', costCenter.costcenter)
+      form.setFieldValue('costCenterName', costCenter.costcenter)
     } else {
-      form.setFieldValue('globalCostCenterName', undefined)
+      form.setFieldValue('costCenterName', undefined)
     }
   }, [costCenterId])
 
@@ -120,19 +134,10 @@ export function ReviewForm({
     }
   }, [supplierId])
 
-  useEffect(() => {
-    const cashBank = cashBanks?.find((el) => el.id == cashBankId)
-    if (cashBank) {
-      form.setFieldValue('cashBankName', cashBank.cashbank)
-    } else {
-      form.setFieldValue('cashBankName', '')
-    }
-  }, [cashBankId])
-
-  const saveAndApproveMt = useMutation({
-    mutationFn: async (data: UpdateRequirementDto) => {
+  const approveMt = useMutation({
+    mutationFn: async (data: number) => {
       const result = await viewClient.api.view.requirement.approve.$post({
-        json: data,
+        json: { id: data },
       })
       if (!result.ok) throw new Error('No se pudo aprobar el requerimiento')
     },
@@ -177,18 +182,45 @@ export function ReviewForm({
 
   const onSave = async () => {
     const values = form.getFieldsValue()
-    await saveRequirementMt.mutateAsync(values)
+    await saveRequirementMt.mutateAsync({
+      ...values,
+      items: [item],
+    })
     setIsEditing(false)
   }
 
   const onFinish = () => {
-    const values = form.getFieldsValue()
-    saveAndApproveMt.mutate(values)
+    console.log('user')
+    form.validateFields()
+    if (item.cashbankId) {
+      //
+    } else {
+      setErrors({
+        ...errors,
+        cashbankId: 'Seleccione una cuenta bancaria',
+      })
+    }
+    // const values = form.getFieldsValue()
+    // approveMt.mutate(data.id)
+  }
+
+  const setItemWrapper = (editedItem: UpdateRequirementItemDto) => {
+    setIsEditing(true)
+    setItem(editedItem)
   }
 
   const cancelEdit = () => {
     form.resetFields()
     setIsEditing(false)
+    setItem({
+      id: data.items[0].id,
+      amount: data.items[0].amount,
+      hasRetention: data.items[0].hasRetention,
+      retention: data.items[0].retention,
+      cashbankId: data.items[0].cashbankId ?? undefined,
+      expiresAt: data.items[0].expiresAt ?? undefined,
+      description: data.items[0].description,
+    })
   }
 
   return (
@@ -196,7 +228,7 @@ export function ReviewForm({
       <RejectModal
         onChange={setOpenModal}
         open={openModal}
-        id={data.globalId}
+        id={data.id}
         requestId={data.id}
       />
       <div className="flex justify-center gap-3">
@@ -224,39 +256,28 @@ export function ReviewForm({
             className="w-[800px]"
             initialValues={
               {
-                globalId: data.globalId,
-                globalCompanyId: data.companyId,
-                globalCostCenterId: data.costCenterId,
-                globalCostCenterName: data.costCenterName,
-                globalDescription: data.globalDescription,
-                globalDocumentType: data.documentType,
-                globalDocumentNumber: data.documentNumber,
-                globalSupplierId: data.supplierId,
-                globalSupplierName: data.supplierName,
-                globalSupplierRuc: data.supplierRuc,
-
-                amount: data.amount,
-                cashBankId: data.cashBankId ?? undefined,
-                cashBankName: data.cashBankName ?? undefined,
-                expiresAt: data.expiresAt ?? undefined,
-                globalAmount: data.globalAmount,
-
                 id: data.id,
-                createdBy: data.createdBy,
+                companyId: data.companyId,
+                supplierId: data.supplierId,
+                ruc: data.ruc,
                 description: data.description,
-                globalCategoryId: data.categoryId,
-                globalCategoryName: data.categoryName,
-                approvedBy: session?.userName ?? '',
-                approvedAt: format(new Date(), 'yyyy-MM-dd'),
-                // quota: 1 ,
-              } satisfies UpdateRequirementDto & { approvedBy: string }
+                documentNumber: data.documentNumber,
+                documentType: data.documentType,
+                categoryId: data.categoryId ?? undefined,
+                costCenterId: data.costCenterId ?? undefined,
+                categoryName: data.categoryName ?? undefined,
+                costCenterName: data.costCenterName ?? undefined,
+                supplierName: data.legalName,
+                paymentMethod: data.paymentMethod,
+                amount: data.amount,
+              } satisfies Partial<UpdateRequirementDto>
             }
           >
-            <Form.Item name={'globalId'} className="hidden">
+            <Form.Item name={'id'} className="hidden">
               <Input />
             </Form.Item>
 
-            <Form.Item className="hidden" name={'globalCostCenterName'}>
+            <Form.Item className="hidden" name={'costCenterName'}>
               <Input />
             </Form.Item>
             <Form.Item className="hidden" name={'cashBankName'}>
@@ -270,7 +291,7 @@ export function ReviewForm({
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 label="Empresa"
-                name="globalCompanyId"
+                name="companyId"
                 rules={[{ required: true }]}
               >
                 <Select placeholder="Empresa">
@@ -286,7 +307,7 @@ export function ReviewForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Proveedor" name="globalSupplierId">
+              <Form.Item label="Proveedor" name="supplierId">
                 <Select
                   placeholder="Proveedor"
                   filterOption={filterSelectForm}
@@ -299,10 +320,10 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item name={'globalSupplierName'} className="hidden">
+              <Form.Item name={'supplierName'} className="hidden">
                 <Input />
               </Form.Item>
-              <Form.Item name={'globalSupplierRuc'} className="">
+              <Form.Item name={'ruc'} className="">
                 <Input />
               </Form.Item>
             </div>
@@ -312,7 +333,7 @@ export function ReviewForm({
                 label="Detalle"
                 labelAlign="left"
                 labelCol={{ span: 4 }}
-                name="globalDescription"
+                name="description"
               >
                 <Input.TextArea
                   placeholder="Descripcion"
@@ -324,7 +345,7 @@ export function ReviewForm({
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 label="Tipo doc."
-                name="globalDocumentType"
+                name="documentType"
                 rules={[{ required: true }]}
               >
                 <Select
@@ -360,12 +381,12 @@ export function ReviewForm({
                   </Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="N° doc." name="globalDocumentNumber">
+              <Form.Item label="N° doc." name="documentNumber">
                 <Input />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Categoria" name="globalCategoryId">
+              <Form.Item label="Categoria" name="categoryId">
                 <Select
                   placeholder="Categorias"
                   showSearch
@@ -378,7 +399,7 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Centro de costo" name="globalCostCenterId">
+              <Form.Item label="Centro de costo" name="costCenterId">
                 <Select
                   placeholder="Centro de costo"
                   showSearch
@@ -394,7 +415,7 @@ export function ReviewForm({
 
               <Form.Item
                 label="Categoria name"
-                name="globalCategoryName"
+                name="categoryName"
                 className="hidden"
               >
                 <Input />
@@ -415,7 +436,7 @@ export function ReviewForm({
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 label="Monto"
-                name="globalAmount"
+                name="amount"
                 rules={[
                   { required: true },
                   {
@@ -426,55 +447,121 @@ export function ReviewForm({
               >
                 <InputNumber min={0} className="w-full" />
               </Form.Item>
-              <Form.Item
-                label="Caja"
-                name={'cashBankId'}
-                rules={[{ required: true }]}
-              >
-                <Select placeholder="Caja">
-                  {cashBanks?.map((cashBank) => (
-                    <Select.Option key={cashBank.id} value={cashBank.id}>
-                      {cashBank.cashbank}
-                    </Select.Option>
-                  ))}
-                </Select>
+              <Form.Item label="Caja" rules={[{ required: true }]} required>
+                <div>
+                  <Select
+                    placeholder="Caja"
+                    // status={errors.cashbankId ? 'error' : undefined}
+                    value={item.cashbankId}
+                    onChange={(val) => {
+                      const cashBank = cashBanks?.find(
+                        (cashBank) => cashBank.id === val,
+                      )
+                      if (cashBank)
+                        setItemWrapper({
+                          ...item,
+                          cashbankId: cashBank.id,
+                          cashbankName: cashBank.cashbank,
+                        })
+                    }}
+                  >
+                    {cashBanks?.map((cashBank) => (
+                      <Select.Option key={cashBank.id} value={cashBank.id}>
+                        {cashBank.cashbank}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </div>
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Forma de pago" name={'payment_method'}>
+              <Form.Item
+                label="Forma de pago"
+                name={'paymentMethod'}
+                rules={[{ required: true }]}
+              >
                 <Select placeholder="pago">
                   <Select.Option value="CONTADO">CONTADO</Select.Option>
                   <Select.Option value="CREDITO">CREDITO</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Vencimiento" name={'expiresAt'}>
-                <CustomDatePicker className="w-full" />
+              <Form.Item label="Vencimiento">
+                <CustomDatePicker
+                  className="w-full"
+                  value={item.expiresAt}
+                  onChange={(val) => {
+                    if (val) setItemWrapper({ ...item, expiresAt: val })
+                  }}
+                />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <Form.Item label="N° cuota">
                 <InputNumber readOnly min={1} />
               </Form.Item>
-              <Form.Item label="Valor quota" name={'amount'}>
-                <InputNumber min={0} className="w-full" />
+              <Form.Item label="Valor quota">
+                <InputNumber
+                  min={0}
+                  className="w-full"
+                  value={item.amount}
+                  onChange={(val) => {
+                    if (val) setItemWrapper({ ...item, amount: val })
+                  }}
+                />
               </Form.Item>
             </div>
-            <Form.Item
-              label="Detalle del pago"
-              name={'description'}
-              labelCol={{ span: 4 }}
-            >
-              <Input.TextArea rows={2}></Input.TextArea>
+            <Form.Item label="Detalle del pago" labelCol={{ span: 4 }}>
+              <Input.TextArea
+                rows={2}
+                value={item.description}
+                onChange={(e) =>
+                  setItemWrapper({ ...item, description: e.target.value })
+                }
+              ></Input.TextArea>
             </Form.Item>
+            <Form.Item
+              label="Tiene retencion"
+              labelCol={{ span: 4 }}
+              className="mb-2"
+            >
+              <Switch
+                checked={item.hasRetention}
+                onChange={(val) =>
+                  setItemWrapper({ ...item, hasRetention: val })
+                }
+              />
+            </Form.Item>
+            <div
+              className={cn('grid grid-cols-[repeat(24,1fr)] grid-rows-1', {
+                hidden: !item.hasRetention,
+              })}
+            >
+              <label htmlFor="" className="col-span-4"></label>
+              <div className="col-span-12 flex items-center gap-2">
+                <div className="flex items-center gap-2">
+                  <label htmlFor="">Retencion</label>
+                  <InputNumber
+                    value={item.retention}
+                    onChange={(val) => {
+                      if (val) setItemWrapper({ ...item, retention: val })
+                    }}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  <label htmlFor="">Monto neto</label>
+                  <Input readOnly value={item.amount - item.retention} />
+                </div>
+              </div>
+            </div>
             <Divider />
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item name={'createdBy'} label="Creado por">
-                <Input readOnly />
+              <Form.Item label="Creado por">
+                <Input readOnly value={data.createdBy} />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item name={'approvedBy'} label="Aprobado por">
-                <Input readOnly />
+              <Form.Item label="Aprobado por">
+                <Input readOnly value={session.userName} />
               </Form.Item>
               <Form.Item name={'approvedAt'} label="Fecha de aprobación">
                 <CustomDatePicker
@@ -536,7 +623,7 @@ export function ReviewForm({
                   Rechazar
                 </Button>
                 <Button
-                  loading={saveAndApproveMt.isPending}
+                  loading={approveMt.isPending}
                   type="primary"
                   className=""
                   onClick={() => onFinish()}

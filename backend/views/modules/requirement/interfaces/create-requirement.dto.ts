@@ -14,12 +14,13 @@ export interface CreateRequirementDto {
   category_id: number;
   category_name: string;
   payment_method: string;
-  expiration_date: string;
+  expiration_date?: string;
   hasRetention: boolean;
   retention: number;
   quota: number;
   detailQuotas: {
     number: number;
     amount: number;
+    expiresAt?: string;
   }[];
 }
