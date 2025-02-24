@@ -1,5 +1,4 @@
-import { REQUIREMENT_STATUS } from "#app/modules/types/index.ts";
-
+import { REQUIREMENT_STATUS } from "./enums.ts";
 export interface IRelatedRequirement {
   id: number;
   quota: number;

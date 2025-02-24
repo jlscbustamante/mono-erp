@@ -1,4 +1,4 @@
-import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
+import { REQUIREMENT_STATUS } from "./enums.ts";
 
 export interface IRequirementDetailItem {
   id: number;

@@ -19,7 +19,7 @@ export const useApprovedStore = create<Store>((set) => ({
   filters: [
     {
       field: 'requested_at',
-      key: 'approved_at',
+      key: 'requested_at',
       operator: 'range',
       useMods: true,
       value: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
