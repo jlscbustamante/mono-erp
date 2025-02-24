@@ -1,14 +1,16 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
-import { logger } from "hono/logger";
 import { invetarioRouter } from "./router/inventario.ts";
 
 const app = new Hono();
 
 app
   .use(cors())
-  .use(logger())
+  .use(async (c, next) => {
+    console.log(`[${c.req.method}] ${c.req.path} ${new Date().toISOString()}`);
+    await next();
+  })
   .basePath("/api/xpos")
   .get("/", (c) => c.json({ message: "api pos" }))
   .route("inventario", invetarioRouter);
