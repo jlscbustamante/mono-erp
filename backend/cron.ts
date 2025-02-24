@@ -1,3 +1,5 @@
+console.log("Iniciando cron");
+
 const callApi = async () => {
   try {
     console.log("llamando api");
