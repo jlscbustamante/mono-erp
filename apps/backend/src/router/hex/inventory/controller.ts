@@ -54,6 +54,16 @@ import { FileService } from './file.service'
 
 const fileService = new FileService()
 
+const clearCache = async (warehouse: string, date: string) => {
+  try {
+    await fetch(
+      `https://erpraul.com/api/xpos/inventario/clearcache?warehouse=${warehouse}&date=${date}`,
+    )
+  } catch (err) {
+    //
+  }
+}
+
 export class HexInventoryController {
   async checkTemplates(req: Request, res: Response) {
     const listErrorsTiendas: string[] = []
@@ -362,6 +372,7 @@ export class HexInventoryController {
       warehouse: string
     }
     await saveStockUseCase.run(stock, date, warehouse, true)
+    await clearCache(warehouse, date)
     return res.json({
       message: 'ok',
     })
