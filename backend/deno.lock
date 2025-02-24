@@ -12,6 +12,7 @@
     "npm:dayjs@^1.11.13": "1.11.13",
     "npm:drizzle-kit@~0.30.1": "0.30.1_esbuild@0.19.12",
     "npm:drizzle-orm@~0.38.3": "0.38.3_mysql2@3.12.0",
+    "npm:hono-rate-limiter@~0.4.2": "0.4.2_hono@4.6.16",
     "npm:hono@^4.6.16": "4.6.16",
     "npm:mysql2@^3.12.0": "3.12.0",
     "npm:zod@^3.24.1": "3.24.1"
@@ -309,6 +310,12 @@
         "resolve-pkg-maps"
       ]
     },
+    "hono-rate-limiter@0.4.2_hono@4.6.16": {
+      "integrity": "sha512-AAtFqgADyrmbDijcRTT/HJfwqfvhalya2Zo+MgfdrMPas3zSMD8SU03cv+ZsYwRU1swv7zgVt0shwN059yzhjw==",
+      "dependencies": [
+        "hono"
+      ]
+    },
     "hono@4.6.16": {
       "integrity": "sha512-iE6xOPwDYlfnZFwk6BfIMMIH4WZm3pPhz6rc1uJM/OPew0pjG5K6p8WTLaMBY1/szF/T0TaEjprMpwn16BA0NQ=="
     },
@@ -480,6 +487,7 @@
           "npm:date-fns@^4.1.0",
           "npm:dayjs@^1.11.13",
           "npm:drizzle-orm@~0.38.3",
+          "npm:hono-rate-limiter@~0.4.2",
           "npm:hono@^4.6.16",
           "npm:mysql2@^3.12.0",
           "npm:zod@^3.24.1"

@@ -1,28 +1,38 @@
 import { Hono } from "hono";
+import { rateLimiter } from "hono-rate-limiter";
 import { stockRepository } from "../repository/dependencies.ts";
 
 export const invetarioRouter = new Hono()
-  .get("/info", async (c) => {
-    const props = c.req.query() as {
-      warehouse: string;
-      end: string;
-      start: string;
-      company?: string;
-    };
-    if (!props.warehouse || !props.start || !props.end) {
-      throw new Error("Faltan parametros");
-    }
-    const stock = await stockRepository.getStockWrapper({
-      end: props.end,
-      start: props.start,
-      storeId: props.warehouse,
-      companyId: props.company ? props.company : undefined,
-    });
+  .get(
+    "/info",
+    rateLimiter({
+      windowMs: 1000 * 5,
+      limit: 3,
+      standardHeaders: "draft-6",
+      keyGenerator: (c) => c.req.query()?.warehouse ?? "",
+    }),
+    async (c) => {
+      const props = c.req.query() as {
+        warehouse: string;
+        end: string;
+        start: string;
+        company?: string;
+      };
+      if (!props.warehouse || !props.start || !props.end) {
+        throw new Error("Faltan parametros");
+      }
+      const stock = await stockRepository.getStockWrapper({
+        end: props.end,
+        start: props.start,
+        storeId: props.warehouse,
+        companyId: props.company ? props.company : undefined,
+      });
 
-    return c.json({
-      data: stock,
-    });
-  })
+      return c.json({
+        data: stock,
+      });
+    }
+  )
   .get("/stock", async (c) => {
     const props = c.req.query() as {
       warehouse: string;
