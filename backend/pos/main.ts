@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
@@ -8,7 +9,12 @@ const app = new Hono();
 app
   .use(cors())
   .use(async (c, next) => {
-    console.log(`[${c.req.method}] ${c.req.path} ${new Date().toISOString()}`);
+    console.log(
+      `[${c.req.method}] ${c.req.path} ${format(
+        new Date(),
+        "yyyy-MM-dd HH:mm:ss"
+      )}`
+    );
     await next();
   })
   .basePath("/api/xpos")
