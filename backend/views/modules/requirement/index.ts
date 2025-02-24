@@ -123,8 +123,8 @@ export const requirementRouter = new Hono()
     zValidator(
       "query",
       z.object({
+        filters: z.string().optional(),
         month: z.string(),
-        fieldDate: z.enum(["pending", "approved", "rejected"]),
         status: z.union([
           z.enum([
             REQUIREMENT_STATUS.APPROVED,
@@ -144,12 +144,15 @@ export const requirementRouter = new Hono()
       })
     ),
     async (c) => {
-      const { month, status, fieldDate } = c.req.valid("query");
+      const { month, status, filters } = c.req.valid("query");
+      const requirementFilters: WhereOption<RequirementSelect>[] = filters
+        ? JSON.parse(filters)
+        : undefined;
       const statusArr = typeof status == "string" ? [status] : status;
       const data = await requirementService.requirementAmountsMont(
         month,
         statusArr,
-        fieldDate
+        requirementFilters
       );
 
       return c.json({ message: "ok", data });

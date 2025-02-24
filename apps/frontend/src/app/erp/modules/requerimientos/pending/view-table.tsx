@@ -33,7 +33,6 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
         toggleView={toggleView}
         loading={isLoading || isFetching}
         onRefetch={() => {
-          console.log('noto')
           refetch()
         }}
       />

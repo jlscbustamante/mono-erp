@@ -155,6 +155,9 @@ function FilterButton<T>({
   clearFilter: (key: string) => void
 }) {
   let Component: (props: FilterComponentProps) => React.ReactNode
+  let ComponentView:
+    | ((props: FilterComponentProps) => React.ReactNode)
+    | undefined = undefined
 
   if (!option) {
     Component = componentType.default
@@ -165,6 +168,10 @@ function FilterButton<T>({
       const typeDefault = option.type ?? 'default'
       const components = componentType[typeDefault]
       Component = components[filter.operator] ?? components.default
+    }
+
+    if (option.view) {
+      ComponentView = option.view
     }
   }
 
@@ -206,7 +213,15 @@ function FilterButton<T>({
           className="flex justify-between px-1 gap-2"
         >
           <span className="flex-1">
-            {option?.label ?? filter.key}: {printValue(filter.value)}
+            {option?.label ?? filter.key} :{' '}
+            {ComponentView ? (
+              <ComponentView
+                operator={filter.operator}
+                fiValue={filter.value}
+              />
+            ) : (
+              printValue(filter.value)
+            )}
           </span>
           <CircleX
             className="text-slate-500 w-4 h-4"

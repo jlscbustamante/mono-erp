@@ -10,6 +10,7 @@ import { requirementItems, requirements } from "@scope/pizzadb";
 import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
 import { and, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
+import { transformWhere } from "../../../pizzadb/filter/transform.ts";
 
 export class RequirementService {
   constructor(private readonly requirementRepository: RequirementRepository) {}
@@ -133,18 +134,18 @@ export class RequirementService {
   async requirementAmountsMont(
     month: string,
     status: REQUIREMENT_STATUS[],
-    fieldDate: "pending" | "approved" | "rejected"
+    filters?: WhereOption<RequirementSelect>[]
   ) {
     const statusQuery = status.map((el) => `"${el}"`).join(",");
-    const fieldName =
-      fieldDate == "pending"
-        ? "requested_at"
-        : fieldDate == "approved"
-          ? "approved_at"
-          : "rejected_at";
+    const fieldName = "requested_at";
+    const query = filters
+      ? transformWhere<RequirementSelect>(filters, "ari")
+      : "";
     const [result] =
-      await db.execute(`SELECT ari.${fieldName} date,SUM(ari.amount) total FROM adm_request_item ari
-WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} GROUP BY DAY(ari.${fieldName})`);
+      await db.execute(`SELECT ari.${fieldName} date,SUM(ari.amount) total FROM adm_request ari
+WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
+        query ? `AND ${query}` : ""
+      } GROUP BY DAY(ari.${fieldName})`);
 
     return (result as any).map((el: any) => {
       return {

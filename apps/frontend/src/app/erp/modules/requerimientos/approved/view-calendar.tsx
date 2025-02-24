@@ -1,11 +1,12 @@
 import { viewClient } from '@/lib/rpc'
+import { filterSelectForm } from '@/utils'
 import { SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
 import { Button, Select } from 'antd'
 import { format, parseISO } from 'date-fns'
 import { Calendar, Logs, Search, X } from 'lucide-react'
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
 import { useApprovedStore } from './state'
 
@@ -13,9 +14,11 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const filters = useApprovedStore((st) => st.filters)
   const setFilter = useApprovedStore((st) => st.setFilters)
+  const [supplierId, setSupplierId] = useState<number | undefined>(undefined)
+  const [control, setControl] = useReducer((c) => c + 1, 0)
 
   const query = useQuery({
-    queryKey: ['rq:approved-calendar', date],
+    queryKey: ['rq:approved-calendar', control],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const request =
@@ -24,6 +27,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
             month: month.toString(),
             status: [REQUIREMENT_STATUS.APPROVED],
             fieldDate: 'approved',
+            supplierId,
           },
         })
 
@@ -71,7 +75,13 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
           <div className="flex gap-1 items-center">
             <Select
               className="w-64"
+              value={supplierId}
+              onChange={(val) => {
+                setSupplierId(val ?? undefined)
+              }}
               placeholder="Filtrar por proveedor"
+              filterOption={filterSelectForm}
+              showSearch={true}
               allowClear
             >
               {suppliers?.map((s) => (
@@ -82,25 +92,23 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
             </Select>
             <div className="flex items-center gap-1">
               <Button
-                // variant={'filled'}
                 type="primary"
                 icon={<Search className="w-4 h-4" />}
                 // className="p-3 h-8 w-8"
                 className="rounded-full"
-                // loading={loading}
                 onClick={() => {
-                  // onSearch?.(filters)
+                  setControl()
                 }}
-              >
-                {/* <Search className="w-4 h-4" /> */}
-              </Button>
+              ></Button>
               <Button
                 variant={'filled'}
-                // className="p-3 h-8 w-8"
                 className="rounded-full"
                 danger
                 type="primary"
-                // onClick={clearFilters}
+                onClick={() => {
+                  setSupplierId(undefined)
+                  setControl()
+                }}
                 icon={<X className="w-4 h-4" />}
               ></Button>
             </div>

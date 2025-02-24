@@ -7,6 +7,10 @@ import dayjs from 'dayjs'
 import { Calendar, Logs } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
+import {
+  SupplierSelectForm,
+  SupplierTitleForm,
+} from '../components/supplier-select'
 import { usePendingStore } from './state'
 
 const { RangePicker } = DatePicker
@@ -43,6 +47,23 @@ const menuOptions: FilterOption<RequirementSelect>[] = [
     operators: ['contain', 'equal'],
     whereOption: {
       field: 'created_by',
+    },
+  },
+  {
+    key: 'supplier_id',
+    label: 'Proveedor',
+    operators: ['equal'],
+    whereOption: {
+      field: 'supplier_id',
+    },
+    view: ({ fiValue }) => <SupplierTitleForm supplierId={fiValue as number} />,
+    render: ({ fiValue, onFiChange }) => {
+      return (
+        <SupplierSelectForm
+          supplierId={fiValue as number}
+          setSupplierId={(val) => onFiChange?.(val)}
+        />
+      )
     },
   },
 ]

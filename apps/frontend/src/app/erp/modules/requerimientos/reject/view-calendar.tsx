@@ -1,11 +1,12 @@
 import { viewClient } from '@/lib/rpc'
+import { filterSelectForm } from '@/utils'
 import { SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
 import { Button, Select } from 'antd'
 import { format, parseISO } from 'date-fns'
 import { Calendar, Logs, Search, X } from 'lucide-react'
-import { useState } from 'react'
+import { useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
 import { useRejectedStore } from './state'
 
@@ -13,9 +14,11 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const filters = useRejectedStore((st) => st.filters)
   const setFilter = useRejectedStore((st) => st.setFilters)
+  const [supplierId, setSupplierId] = useState<number | undefined>(undefined)
+  const [control, setControl] = useReducer((c) => c + 1, 0)
 
   const query = useQuery({
-    queryKey: ['rq:reject-calendar', date],
+    queryKey: ['rq:reject-calendar', control],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const request =
@@ -24,6 +27,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
             month: month.toString(),
             status: [REQUIREMENT_STATUS.CANCELLED],
             fieldDate: 'rejected',
+            supplierId,
           },
         })
 
@@ -68,6 +72,12 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
             <Select
               className="w-64"
               placeholder="Filtrar por proveedor"
+              value={supplierId}
+              onChange={(val) => {
+                setSupplierId(val ?? undefined)
+              }}
+              filterOption={filterSelectForm}
+              showSearch={true}
               allowClear
             >
               {suppliers?.map((s) => (
@@ -83,9 +93,8 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
                 icon={<Search className="w-4 h-4" />}
                 // className="p-3 h-8 w-8"
                 className="rounded-full"
-                // loading={loading}
                 onClick={() => {
-                  // onSearch?.(filters)
+                  setControl()
                 }}
               >
                 {/* <Search className="w-4 h-4" /> */}
@@ -96,7 +105,10 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
                 className="rounded-full"
                 danger
                 type="primary"
-                // onClick={clearFilters}
+                onClick={() => {
+                  setSupplierId(undefined)
+                  setControl()
+                }}
                 icon={<X className="w-4 h-4" />}
               ></Button>
             </div>
