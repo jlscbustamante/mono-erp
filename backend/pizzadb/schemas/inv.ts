@@ -187,6 +187,48 @@ export const templateRelation = relations(templates, ({ many }) => ({
   items: many(templatesItems),
 }));
 
+export const presentationTable = mysqlTable("inv_presentation", {
+  id: int().autoincrement().notNull().primaryKey(),
+  presentation: varchar({ length: 50 }).notNull(),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+export const itemTable = mysqlTable("inv_item", {
+  id: int().autoincrement().notNull().primaryKey(),
+  item_name: varchar({ length: 150 }).notNull(),
+  item_type: varchar({ length: 50 }).notNull(),
+  product_id: int().notNull(),
+  brand_id: int().notNull(),
+  presentation_id: int().notNull(),
+  supplier_id: int().notNull(),
+  measure_id: int().notNull(),
+  unit_cost: decimalNumber({ precision: 16, scale: 2 }).notNull().default(0),
+  unit_price: decimalNumber({ precision: 16, scale: 2 }).notNull().default(0),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
+export const itemTableRelation = relations(itemTable, ({ one }) => ({
+  presentation: one(presentationTable, {
+    fields: [itemTable.presentation_id],
+    references: [presentationTable.id],
+  }),
+}));
+
+export type PresentationSelect = InferSelectModel<typeof presentationTable>;
+
+export type ItemSelect = InferSelectModel<typeof itemTable>;
+
 export type DispatchInsert = InferInsertModel<typeof dispatches>;
 export type DispatchSelect = InferSelectModel<typeof dispatches>;
 export type DispatchItemSelect = InferSelectModel<typeof dispatchesItems>;
