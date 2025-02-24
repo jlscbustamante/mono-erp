@@ -63,4 +63,20 @@ export const invetarioRouter = new Hono()
       companyId: "PIZZA",
     });
     return c.json({ data });
+  })
+  .get("/cachear", async (c) => {
+    const stores = await stockRepository.stores();
+    const date = format(new Date(), "yyyy-MM-dd");
+    console.log("generando cache para tiendas");
+    for (const store of stores) {
+      await stockRepository.getStockWrapper({
+        end: date,
+        start: date,
+        storeId: store.id,
+        companyId: store.trademark_id == "PIZZAM" ? "PIZZAM" : "PIZZA",
+      });
+    }
+    return c.json({
+      message: "ok",
+    });
   });

@@ -8,6 +8,10 @@ export const sucursalTable = mysqlTable("adm_sucursal", {
    * @description T: Tienda, A: Almacén, O: Sucursal
    */
   type_sede: char({ length: 1 }).notNull(),
+  /**
+   * @description [PIZZARAUL,PIZZAM]
+   */
+  trademark_id: varchar({ length: 10 }).notNull(),
 });
 
 export type SucursalSelect = InferSelectModel<typeof sucursalTable>;
