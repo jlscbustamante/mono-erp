@@ -29,8 +29,10 @@ export const CalendarComponent = ({
   setDate,
   events,
   onClick,
+  beforeAddons,
 }: {
   addons?: React.ReactNode
+  beforeAddons?: React.ReactNode
   date: string
   events?: {
     title: string
@@ -88,6 +90,7 @@ export const CalendarComponent = ({
           <Button onClick={goNext} size="small">
             <ChevronRight className="text-slate-600" />
           </Button>
+          {beforeAddons}
         </div>
         {addons}
       </div>

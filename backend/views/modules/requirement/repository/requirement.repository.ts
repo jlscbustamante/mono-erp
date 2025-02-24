@@ -42,7 +42,7 @@ export class RequirementRepository {
     });
   }
 
-  async saveAndApprove(data: UpdateRequirementDto, userName: string) {
+  async saveAndApprove(data: UpdateRequirementDto) {
     await db.transaction(async (manager) => {
       await manager
         .update(requirements)
@@ -94,6 +94,8 @@ export class RequirementRepository {
         .update(requirementItems)
         .set({
           status: REQUIREMENT_STATUS.APPROVED,
+          approved_by: userName,
+          approved_at: dayjs().format("YYYY-MM-DD"),
         })
         .where(eq(requirementItems.request_id, id));
     });

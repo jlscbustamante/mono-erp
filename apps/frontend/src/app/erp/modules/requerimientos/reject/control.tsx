@@ -1,6 +1,6 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
-import { RequirementItemSelect } from '@pizzadb'
+import { RequirementSelect } from '@pizzadb'
 import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { Calendar, Logs } from 'lucide-react'
@@ -9,7 +9,7 @@ import { useRejectedStore } from './state'
 
 const { RangePicker } = DatePicker
 
-const menuOptions: FilterOption<RequirementItemSelect>[] = [
+const menuOptions: FilterOption<RequirementSelect>[] = [
   {
     key: 'id',
     label: 'Id',
@@ -57,7 +57,7 @@ export function Control({
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
-      (el) => el.key == ('approved_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key == ('requested_at' satisfies keyof RequirementSelect),
     )
     if (dates) {
       const [start, end] = dates.value as [string, string]
@@ -70,14 +70,14 @@ export function Control({
     const [start, end] = dates
 
     const newFilters = filters.filter(
-      (el) => el.key != ('approved_at' satisfies keyof RequirementItemSelect),
+      (el) => el.key != ('requested_at' satisfies keyof RequirementSelect),
     )
 
     setFilters([
       ...newFilters,
       {
-        field: 'approved_at',
-        key: 'approved_at',
+        field: 'requested_at',
+        key: 'requested_at',
         operator: 'range',
         useMods: true,
         value: [start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD')],

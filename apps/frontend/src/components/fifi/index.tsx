@@ -106,7 +106,8 @@ export function FilterComponent<T>({
           // variant={'filled'}
           type="primary"
           icon={<Search className="w-4 h-4" />}
-          className="p-3 h-8 w-8"
+          // className="p-3 h-8 w-8"
+          className="rounded-full"
           loading={loading}
           onClick={() => {
             onSearch?.(filters)
@@ -116,7 +117,10 @@ export function FilterComponent<T>({
         </Button>
         <Button
           variant={'filled'}
-          className="p-3 h-8 w-8"
+          // className="p-3 h-8 w-8"
+          className="rounded-full"
+          danger
+          type="primary"
           onClick={clearFilters}
           icon={<X className="w-4 h-4" />}
         ></Button>

@@ -1,7 +1,7 @@
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { IRelatedRequirement } from '@view'
+import { IRelatedRequirement, REQUIREMENT_STATUS } from '@view'
 import { Button, Modal, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { TableRowSelection } from 'antd/es/table/interface'
@@ -50,6 +50,9 @@ export function RejectModal({
   const rowSelection: TableRowSelection<IRelatedRequirement> = {
     selectedRowKeys,
     onChange: onSelectChange,
+    getCheckboxProps: (record: IRelatedRequirement) => ({
+      disabled: record.status != REQUIREMENT_STATUS.PENDING, // Column configuration not to be checked
+    }),
   }
 
   const rejectMt = useMutation({
@@ -93,8 +96,8 @@ export function RejectModal({
               dataIndex: 'id',
             },
             {
-              title: 'Cuota',
-              dataIndex: 'quota',
+              title: 'Descripción',
+              dataIndex: 'description',
             },
             {
               title: 'Monto',

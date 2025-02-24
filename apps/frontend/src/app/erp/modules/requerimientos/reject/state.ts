@@ -1,12 +1,12 @@
-import { RequirementItemSelect, WhereOption } from '@pizzadb'
+import { RequirementSelect, WhereOption } from '@pizzadb'
 import { REQUIREMENT_STATUS } from '@view'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 
 export type ViewType = 'list' | 'calendar'
 interface Store {
-  filters: WhereOption<RequirementItemSelect>[]
-  setFilters: (filters: WhereOption<RequirementItemSelect>[]) => void
+  filters: WhereOption<RequirementSelect>[]
+  setFilters: (filters: WhereOption<RequirementSelect>[]) => void
   view: ViewType
   setView: (view: ViewType) => void
 }
@@ -18,8 +18,8 @@ export const useRejectedStore = create<Store>((set) => ({
   },
   filters: [
     {
-      field: 'rejected_at',
-      key: 'rejected_at',
+      field: 'requested_at',
+      key: 'requested_at',
       operator: 'range',
       useMods: true,
       value: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],

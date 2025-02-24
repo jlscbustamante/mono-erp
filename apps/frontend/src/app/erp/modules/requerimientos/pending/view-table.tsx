@@ -15,7 +15,7 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
     isLoading,
     isFetching,
   } = useQuery({
-    queryKey: ['requirements'],
+    queryKey: ['rq:pending-req'],
     queryFn: async () => {
       const request = await viewClient.api.view.requirement.filter.$get({
         query: {
@@ -33,6 +33,7 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
         toggleView={toggleView}
         loading={isLoading || isFetching}
         onRefetch={() => {
+          console.log('noto')
           refetch()
         }}
       />

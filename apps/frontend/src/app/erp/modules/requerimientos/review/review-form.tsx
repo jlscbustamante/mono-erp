@@ -145,7 +145,7 @@ export function ReviewForm({
       toast.error(err.message)
     },
     onSuccess: () => {
-      // navigate(PATHS.erp.modulos.requerimientos.solicitados)
+      navigate(PATHS.erp.modulos.requerimientos.solicitados)
     },
   })
 
@@ -190,18 +190,16 @@ export function ReviewForm({
   }
 
   const onFinish = () => {
-    console.log('user')
     form.validateFields()
     if (item.cashbankId) {
-      //
+      approveMt.mutate(data.id)
     } else {
+      toast.error('Seleccione caja')
       setErrors({
         ...errors,
         cashbankId: 'Seleccione una cuenta bancaria',
       })
     }
-    // const values = form.getFieldsValue()
-    // approveMt.mutate(data.id)
   }
 
   const setItemWrapper = (editedItem: UpdateRequirementItemDto) => {
