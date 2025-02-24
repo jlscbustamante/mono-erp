@@ -362,7 +362,7 @@ export class MaintenanceController {
   @catchError
   async listTemplateBase(req: Request, res: Response) {
     const data = await AppDataSource.query(
-      'select id,sucursal_type name,used_to type from inv_dispatchbase where status=1',
+      'select id,sucursal_type name,used_to type from inv_tmplt_dispatch where status=1',
     )
     res.json({
       // data: data.map((el: any) => ({ ...el, type: getTypeTemplate(el.type) })),

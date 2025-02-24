@@ -12,7 +12,7 @@ import { DateTransformer } from '../config/transformers/dateTransformer'
 import { CostCenterStatus } from '../types/costCenter'
 import { Account } from './Account'
 
-@Entity({ name: 'cost_center' })
+@Entity({ name: 'fin_costcenter' })
 export class CostCenter {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number

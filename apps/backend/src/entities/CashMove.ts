@@ -15,7 +15,7 @@ import { Account } from './Account'
 import { CashAccount } from './CashAccount'
 import { Category } from './Category'
 
-@Entity({ name: 'adm_cash_account_move' })
+@Entity({ name: 'adm_sucursal_move' })
 export class CashMove {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number | null

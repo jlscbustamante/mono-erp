@@ -85,17 +85,17 @@ export class PaymentMethodsService {
       : ''
     if (method == 'izipay') {
       return await this.extPagosCulqiRepository.query(
-        `SELECT transactionkey id,sucursalcode,codigo terminal,ac.name,ei.fechadetransaccion date,ei.fechadeabono dateabono, ei.importe,ei.comision,ei.igv igv,ei.importeneto importeneto, ei.numdetarjeta numtarjeta,ei.estado estado FROM ext_pagos_izipay ei INNER JOIN adm_cash_account ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadetransaccion)=? ${excludeStatusQuery}`,
+        `SELECT transactionkey id,sucursalcode,codigo terminal,ac.name,ei.fechadetransaccion date,ei.fechadeabono dateabono, ei.importe,ei.comision,ei.igv igv,ei.importeneto importeneto, ei.numdetarjeta numtarjeta,ei.estado estado FROM ext_pagos_izipay ei INNER JOIN fin_cashbank ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadetransaccion)=? ${excludeStatusQuery}`,
         [sucursalcode, date],
       )
     } else if (method == 'culqi') {
       return await this.extPagosCulqiRepository.query(
-        `SELECT transactionkey id,sucursalcode, ei.terminal,ac.name,ei.fechadelatransaccion date,ei.fechadeabono dateabono, ei.montoventa importe,ei.comisionventa,ei.igvventa igv,ei.montoventa importeneto,ei.nrotarjeta numtarjeta,ei.estado estado FROM ext_pagos_culqi ei INNER JOIN adm_cash_account ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadelatransaccion)=? AND aplicacion='pos' ${excludeStatusQuery}`,
+        `SELECT transactionkey id,sucursalcode, ei.terminal,ac.name,ei.fechadelatransaccion date,ei.fechadeabono dateabono, ei.montoventa importe,ei.comisionventa,ei.igvventa igv,ei.montoventa importeneto,ei.nrotarjeta numtarjeta,ei.estado estado FROM ext_pagos_culqi ei INNER JOIN fin_cashbank ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadelatransaccion)=? AND aplicacion='pos' ${excludeStatusQuery}`,
         [sucursalcode, date],
       )
     } else if (method == 'online') {
       return await this.extPagosCulqiRepository.query(
-        `SELECT transactionkey id,sucursalcode, ei.terminal,ac.name,ei.fechadelatransaccion date,ei.fechadeabono dateabono, ei.montoventa importe,ei.comisionventa,ei.igvventa igv,ei.montoventa importeneto, ei.nrotarjeta numtarjeta,ei.estado estado FROM ext_pagos_culqi ei INNER JOIN adm_cash_account ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadelatransaccion)=? AND aplicacion='online' ${excludeStatusQuery}`,
+        `SELECT transactionkey id,sucursalcode, ei.terminal,ac.name,ei.fechadelatransaccion date,ei.fechadeabono dateabono, ei.montoventa importe,ei.comisionventa,ei.igvventa igv,ei.montoventa importeneto, ei.nrotarjeta numtarjeta,ei.estado estado FROM ext_pagos_culqi ei INNER JOIN fin_cashbank ac ON ei.sucursalcode=ac.sucursal_id WHERE sucursalcode=? AND DATE(ei.fechadelatransaccion)=? AND aplicacion='online' ${excludeStatusQuery}`,
         [sucursalcode, date],
       )
     }

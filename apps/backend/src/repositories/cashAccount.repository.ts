@@ -27,7 +27,7 @@ const cashAccountRepository = AppDataSource.getRepository(CashAccount).extend({
       .join(' AND ')
 
     const query = this.createQueryBuilder('cashAccount')
-      .leftJoin('cashAccount.account', 'account')
+      .leftJoin('cashAccount.account', 'fin_account')
       .where(combinedWhereClause)
       .select()
 

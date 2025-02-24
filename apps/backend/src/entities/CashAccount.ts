@@ -13,7 +13,7 @@ import { CashAccountStatus } from '../types/cashAccount'
 import { Account } from './Account'
 import { CashAccountType } from './CashAccountType'
 
-@Entity({ name: 'adm_cash_account' })
+@Entity({ name: 'fin_cashbank' })
 export class CashAccount {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number

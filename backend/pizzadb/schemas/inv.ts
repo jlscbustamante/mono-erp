@@ -133,7 +133,7 @@ export const stocks = mysqlTable("inv_stock", {
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
 
-export const templates = mysqlTable("inv_dispatchbase", {
+export const templates = mysqlTable("inv_tmplt_dispatch", {
   id: int().autoincrement().notNull().primaryKey(),
   sucursal_type: varchar({ length: 15 }).notNull(),
   used_to: char({ length: 1 }).notNull(),
@@ -146,7 +146,7 @@ export const templates = mysqlTable("inv_dispatchbase", {
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
 
-export const templatesItems = mysqlTable("inv_dispatchbase_item", {
+export const templatesItems = mysqlTable("inv_tmplt_dispatch_item", {
   id: int().autoincrement().notNull().primaryKey(),
   dispatch_id: int().notNull(),
   item_move_id: int().notNull(),

@@ -8,7 +8,7 @@ import {
 
 import { DateTransformer } from '../config/transformers/dateTransformer'
 
-@Entity({ name: 'account' })
+@Entity({ name: 'fin_account' })
 export class Account {
   @PrimaryColumn({ type: 'int' })
   id: number

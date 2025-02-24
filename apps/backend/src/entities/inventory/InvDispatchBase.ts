@@ -8,7 +8,7 @@ export enum DispatchUsedTo {
   Warehouse = 'W',
 }
 
-@Entity({ name: 'inv_dispatchbase' })
+@Entity({ name: 'inv_tmplt_dispatch' })
 export class InvDispatchBase extends EntitiesTimeStamps {
   @PrimaryGeneratedColumn()
   id: number
@@ -16,7 +16,7 @@ export class InvDispatchBase extends EntitiesTimeStamps {
   @Column({ type: 'smallint', default: 1, nullable: false })
   status: 0 | 1
 
-  @Column({ type: 'varchar', length: 15 })
+  @Column({ type: 'varchar', length: 15, name: 'company_id' })
   sucursal_type: string
 
   @Column({ type: 'char' })

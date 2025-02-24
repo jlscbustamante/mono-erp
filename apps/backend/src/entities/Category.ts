@@ -14,7 +14,7 @@ import {
 import { Account } from './Account'
 import { CategoryType } from './CategoryType'
 
-@Entity({ name: 'adm_category_expense' })
+@Entity({ name: 'fin_movecash' })
 export class Category {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number

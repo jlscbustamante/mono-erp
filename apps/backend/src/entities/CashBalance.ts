@@ -5,7 +5,7 @@ import { DecimalTransformer } from '../config/transformers/decimalTransformer'
 import { BalanceStatus } from '../types/balance'
 
 @Entity({
-  name: 'adm_cash_balance',
+  name: 'fin_cashbank_balance',
 })
 export class CashBalance {
   @PrimaryGeneratedColumn({ type: 'int' })

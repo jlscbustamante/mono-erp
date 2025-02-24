@@ -16,7 +16,7 @@ export class Sucursal {
   @Column({ type: "varchar" })
   title: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", name: "id" })
   codefis: string;
 
   @Column({ type: "varchar" })

@@ -9,7 +9,7 @@ import {
 import { Item, Measure } from 'pizzadb'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
 
-@Entity({ name: 'inv_dispatchbase_item' })
+@Entity({ name: 'inv_tmplt_dispatch_item' })
 export class InvDispatchBaseItem {
   @PrimaryGeneratedColumn()
   id: number

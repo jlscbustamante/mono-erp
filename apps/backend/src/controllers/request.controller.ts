@@ -2,14 +2,18 @@ import { Request, Response } from 'express'
 import { In } from 'typeorm'
 
 import { AppDataSource } from '../config/database'
-import { RequestEntity as RequestEntity } from '../entities/Request'
+import { RequestEntity } from '../entities/Request'
 import cashAccountRepository from '../repositories/cashAccount.repository'
 import cashBalanceRepository from '../repositories/cashBalance.repository'
 import categoryRepository from '../repositories/category.repository'
-import CostCenterRepository from '../repositories/costCenter.repository'
-import costCenterRepository from '../repositories/costCenter.repository'
-import RequestRepository from '../repositories/request.repository'
-import requestRepository from '../repositories/request.repository'
+import {
+  default as CostCenterRepository,
+  default as costCenterRepository,
+} from '../repositories/costCenter.repository'
+import {
+  default as RequestRepository,
+  default as requestRepository,
+} from '../repositories/request.repository'
 import { RequestService } from '../services/Request.service'
 import rucService from '../services/ruc.service'
 import { IToken } from '../types'
@@ -148,7 +152,7 @@ export class RequestController {
   async reportCostCenter(req: Request, response: Response): Promise<void> {
     const { start, end } = req.query
     const report = await AppDataSource.query(
-      `SELECT cost_center_id costCenterId,cc.origin name,SUM(amount) total FROM adm_request ar LEFT JOIN cost_center cc ON cc.id=ar.cost_center_id
+      `SELECT cost_center_id costCenterId,cc.origin name,SUM(amount) total FROM adm_request ar LEFT JOIN fin_costcenter cc ON cc.id=ar.cost_center_id
     WHERE DATE(approved_at) BETWEEN ? AND ? AND ar.status IN ('A','C','T')
     GROUP BY cost_center_id,origin ORDER BY name`,
       [start, end],

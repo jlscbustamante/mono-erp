@@ -7,7 +7,6 @@ import { CategoryStatus, CategoryTypeId } from '../types/category'
 import { Filter3Method, IUserFilter3, OpFilter } from '../types/filter'
 import { filters3Adapter, filtersAdapterNt } from '../utils/filtersAdapter'
 import { safeAny } from '../utils/someAny'
-import { filter3Base } from './filter3base'
 
 export interface CategoryRepository extends Repository<Category> {
   filterNt(filters: EnvFilters<Category>): Promise<Category[]>
@@ -28,7 +27,7 @@ const categoryRepository = AppDataSource.getRepository(Category).extend({
       .join(' AND ')
 
     const query = this.createQueryBuilder('cashAccount')
-      .leftJoin('cashAccount.account', 'account')
+      .leftJoin('cashAccount.account', 'fin_account')
       .where(combinedWhereClause)
       .select()
 

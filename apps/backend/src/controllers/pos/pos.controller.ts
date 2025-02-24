@@ -59,7 +59,7 @@ export class PosController {
 
     await AppDataSource.transaction(async (manager) => {
       await manager.query(
-        `DELETE FROM adm_cash_account_move WHERE cash_id = ${cashId} AND DATE(requested_at) = '${date}'`,
+        `DELETE FROM adm_sucursal_move WHERE cash_id = ${cashId} AND DATE(requested_at) = '${date}'`,
       )
       await manager.query(
         `DELETE FROM sls_sucursal_sales WHERE store_id = '${sucursal.id}' AND DATE(sales_at) = '${date}'`,
