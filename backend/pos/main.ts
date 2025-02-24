@@ -10,10 +10,9 @@ app
   .use(cors())
   .use(async (c, next) => {
     console.log(
-      `[${c.req.method}] ${c.req.path} ${format(
-        new Date(),
-        "yyyy-MM-dd HH:mm:ss"
-      )}`
+      `[${c.req.method}] ${c.req.path} ${Object.values(
+        c.req.query()
+      )} - ${format(new Date(), "dd HH:mm:ss")}`
     );
     await next();
   })
