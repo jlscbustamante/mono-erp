@@ -7,7 +7,7 @@ export const invetarioRouter = new Hono()
     "/info",
     rateLimiter({
       windowMs: 1000 * 5,
-      limit: 3,
+      limit: 1,
       standardHeaders: "draft-6",
       keyGenerator: (c) => c.req.query()?.warehouse ?? "",
     }),
