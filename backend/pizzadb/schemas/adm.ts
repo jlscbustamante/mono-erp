@@ -1,9 +1,13 @@
 import { InferSelectModel } from "drizzle-orm";
-import { mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import { char, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 export const sucursalTable = mysqlTable("adm_sucursal", {
   id: varchar({ length: 10 }).notNull().primaryKey(),
   title: varchar({ length: 150 }).notNull(),
+  /**
+   * @description T: Tienda, A: Almacén, O: Sucursal
+   */
+  type_sede: char({ length: 1 }).notNull(),
 });
 
 export type SucursalSelect = InferSelectModel<typeof sucursalTable>;
