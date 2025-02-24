@@ -10,6 +10,7 @@ import { DispatchStoreReviewPage } from '@/app/erp/modules/mercaderia/dispatch-s
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
+import { PurchaseEditPage } from '@/app/erp/modules/mercaderia/purchase/edit/page'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
@@ -199,7 +200,10 @@ export const routerv2 = createBrowserRouter([
                 path: PATHS.erp.modulos.mercaderia.compra,
                 element: <Purchase />,
               },
-
+              {
+                path: PATHS.erp.modulos.mercaderia.editCompra,
+                element: <PurchaseEditPage />,
+              },
               {
                 path: PATHS.erp.modulos.mercaderia.reportes.main,
                 children: [

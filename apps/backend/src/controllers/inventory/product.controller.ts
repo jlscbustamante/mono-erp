@@ -11,6 +11,7 @@ import { RequestEntity } from '../../entities/Request'
 import { brandRepository } from '../../repositories/inventory/brand.repository'
 import { invDispatchBaseItemRepository } from '../../repositories/inventory/dispatchBaseLast.repository'
 import { invDispatchItemRepository } from '../../repositories/inventory/dispatchItem.repository'
+import { invStockRepository } from '../../repositories/inventory/invStock.repository'
 import { productItemRepository } from '../../repositories/inventory/item.repository'
 import { measureRepository } from '../../repositories/inventory/measure.repository'
 import { presentationRepository } from '../../repositories/inventory/presentation.repository'
@@ -238,28 +239,38 @@ export class ProductController {
   async deleteItem(req: Request, res: Response) {
     const { id } = req.body
 
-    const [countDispatch, countPurchase, countInTemplate] = await Promise.all([
-      invDispatchItemRepository.count({
-        where: {
-          itemId: id,
-        },
-      }),
-      invPurchaseItemRepository.count({
-        where: {
-          itemId: id,
-        },
-      }),
-      invDispatchBaseItemRepository.count({
-        where: [
-          {
-            item_move_id: id,
+    const [countInventario, countDispatch, countPurchase, countInTemplate] =
+      await Promise.all([
+        invStockRepository.count({
+          where: {
+            item_id: id,
           },
-          {
-            item_stock_id: id,
+        }),
+        invDispatchItemRepository.count({
+          where: {
+            itemId: id,
           },
-        ],
-      }),
-    ])
+        }),
+        invPurchaseItemRepository.count({
+          where: {
+            itemId: id,
+          },
+        }),
+        invDispatchBaseItemRepository.count({
+          where: [
+            {
+              item_move_id: id,
+            },
+            {
+              item_stock_id: id,
+            },
+          ],
+        }),
+      ])
+
+    if (countInventario > 0) {
+      throw badRequest('Item usado en inventario. No se puede eliminar')
+    }
 
     if (countInTemplate > 0) {
       throw badRequest(

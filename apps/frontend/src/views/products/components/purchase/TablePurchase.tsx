@@ -8,15 +8,18 @@ import * as sdk from '@/data/products/sdk'
 import { IInvPurchase } from '@/data/products/types/purchase'
 import { fNumber } from '@/utils/formatNumber'
 
+import { PATHS } from '@/const/paths'
 import { revertStorePurchase } from '@/data/hex/inventory'
 import { PURCHASE_STATUS } from '@/data/hex/types'
 import { cn } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
 import { RxReset } from 'react-icons/rx'
+import { useNavigate } from 'react-router'
 import { usePurchaseStore } from '../../state/usePurchase'
 
 export const TablePurchase = () => {
   const store = usePurchaseStore()
+  const navigate = useNavigate()
 
   const deletePurchase = async (id: number) => {
     try {
@@ -142,7 +145,10 @@ export const TablePurchase = () => {
             <div
               className="cursor-pointer"
               onClick={() => {
-                store.setInfoDrawer(record.id)
+                // store.setInfoDrawer(record.id)
+                navigate(
+                  PATHS.erp.modulos.mercaderia.editCompra + `?id=${record.id}`,
+                )
               }}
             >
               <MdRemoveRedEye className="w-5 h-auto" />

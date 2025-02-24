@@ -71,6 +71,7 @@ export const PATHS = {
         divider: '/erp/modulos/mercaderia/divider',
         notaCredito: '/erp/modulos/mercaderia/nota-credito',
         compra: '/erp/modulos/mercaderia/compra',
+        editCompra: '/erp/modulos/mercaderia/compra/edit',
         stockAlmacen: '/erp/modulos/mercaderia/stock-almacen',
         reportes: {
           main: '/erp/modulos/mercaderia/reportes',

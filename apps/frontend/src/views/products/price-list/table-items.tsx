@@ -1,19 +1,36 @@
-import { Table } from 'antd'
+import { Input, Table } from 'antd'
+import { useMemo, useState } from 'react'
 import { MdEdit } from 'react-icons/md'
 import { useEditPrice } from './edit-price'
 import { usePrincipalItems } from './use-principal'
 
 export const PrincipalListTable = () => {
   const { open } = useEditPrice()
+  const [search, setSearch] = useState('')
 
   const query = usePrincipalItems()
 
+  const data = useMemo(() => {
+    return query.data?.filter((item) => {
+      return item.itemName.toLowerCase().includes(search.toLowerCase())
+    })
+  }, [query.data, search])
+
   return (
     <>
+      <div className="flex justify-start mb-3">
+        <Input
+          placeholder="Item"
+          addonBefore="Nombre"
+          className="w-96"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       <Table
         size="small"
         pagination={false}
-        dataSource={query.data}
+        dataSource={data}
         columns={[
           {
             title: 'Id',
