@@ -258,6 +258,8 @@ export class HexInventoryController {
     const token: IToken = req.headers.token as unknown as IToken
     const movement = req.body as MoveBetweenStoresDto
     await dispatchUtil.saveMoveBetweenStores(movement, token.name)
+    clearCache(movement.storeFrom, movement.moveAt)
+    clearCache(movement.storeToId, movement.moveAt)
     // await moveBetweenStoresUseCase.run(movement)
     return res.json({
       message: 'ok',
