@@ -139,8 +139,9 @@ export class RequirementService {
     const statusQuery = status.map((el) => `"${el}"`).join(",");
     const fieldName = "requested_at";
     const query = filters
-      ? transformWhere<RequirementSelect>(filters, "ari")
+      ? transformWhere<RequirementSelect>(filters, "ari").join(" AND ")
       : "";
+    console.log("query : ", query);
     const [result] =
       await db.execute(`SELECT ari.${fieldName} date,SUM(ari.amount) total FROM adm_request ari
 WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${

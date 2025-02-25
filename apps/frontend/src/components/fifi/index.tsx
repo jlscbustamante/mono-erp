@@ -89,7 +89,7 @@ export function FilterComponent<T>({
       <div className="flex flex-wrap gap-1">
         {filters.map((el) => {
           const option = options.find((opt) => opt.key == el.key)
-          if (!option) return null
+          if (!option || option.hide) return null
           return (
             <FilterButton
               key={el.key}

@@ -15,7 +15,7 @@ import { usePendingStore } from './state'
 
 const { RangePicker } = DatePicker
 
-const menuOptions: FilterOption<RequirementSelect>[] = [
+export const menuOptions: FilterOption<RequirementSelect>[] = [
   {
     key: 'id',
     label: 'Id',

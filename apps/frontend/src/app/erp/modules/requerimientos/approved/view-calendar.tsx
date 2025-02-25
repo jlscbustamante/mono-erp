@@ -1,33 +1,74 @@
+import { FilterComponent } from '@/components/fifi'
 import { viewClient } from '@/lib/rpc'
-import { filterSelectForm } from '@/utils'
-import { SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
-import { Button, Select } from 'antd'
 import { format, parseISO } from 'date-fns'
-import { Calendar, Logs, Search, X } from 'lucide-react'
-import { useReducer, useState } from 'react'
+import { Calendar, Logs } from 'lucide-react'
+import { useMemo, useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
+import { SupplierSelectForm } from '../components/supplier-select'
+import { menuOptions } from './control'
 import { useApprovedStore } from './state'
 
 export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const filters = useApprovedStore((st) => st.filters)
   const setFilter = useApprovedStore((st) => st.setFilters)
-  const [supplierId, setSupplierId] = useState<number | undefined>(undefined)
   const [control, setControl] = useReducer((c) => c + 1, 0)
+
+  const supplierId = useMemo(() => {
+    return filters.find((el) => el.field == 'supplier_id')?.value as
+      | number
+      | undefined
+  }, [filters])
+
+  const changeSupplierId = (id: number | undefined) => {
+    const exist = filters.find((el) => el.field == 'supplier_id')
+    if (id == undefined) {
+      setFilter(filters.filter((el) => el.field != 'supplier_id'))
+      return
+    }
+    if (exist) {
+      setFilter(
+        filters.map((el) => {
+          if (el.field == 'supplier_id') {
+            return {
+              ...el,
+              value: id,
+            }
+          }
+          return el
+        }),
+      )
+    } else {
+      setFilter([
+        ...filters,
+        {
+          field: 'supplier_id',
+          key: 'supplier_id',
+          operator: 'equal',
+          value: id,
+        },
+      ])
+    }
+  }
 
   const query = useQuery({
     queryKey: ['rq:approved-calendar', control],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
+      const filtersWithoutDate = filters.filter(
+        (el) => el.field != 'requested_at',
+      )
       const request =
         await viewClient.api.view.requirement.requirementAmountsMonth.$get({
           query: {
             month: month.toString(),
             status: [REQUIREMENT_STATUS.APPROVED],
-            fieldDate: 'approved',
-            supplierId,
+            filters:
+              filtersWithoutDate.length > 0
+                ? JSON.stringify(filtersWithoutDate)
+                : undefined,
           },
         })
 
@@ -51,16 +92,6 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
     toggleView?.()
   }
 
-  const { data: suppliers } = useQuery({
-    queryKey: ['rq:suppliers'],
-    queryFn: async () => {
-      const request =
-        await viewClient.api.view.requirement.resource.suppliers.$get()
-      const result = await request.json()
-      return result.data as SupplierSelect[]
-    },
-  })
-
   return (
     <div>
       <CalendarComponent
@@ -73,45 +104,26 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
         }))}
         beforeAddons={
           <div className="flex gap-1 items-center">
-            <Select
-              className="w-64"
-              value={supplierId}
-              onChange={(val) => {
-                setSupplierId(val ?? undefined)
+            <SupplierSelectForm
+              supplierId={supplierId}
+              setSupplierId={changeSupplierId}
+            />
+            <FilterComponent
+              options={menuOptions.map((el) => {
+                if (el.key == 'supplier_id') {
+                  return {
+                    ...el,
+                    hide: true,
+                  }
+                }
+                return el
+              })}
+              filters={filters}
+              setFilters={setFilter}
+              onSearch={() => {
+                setControl()
               }}
-              placeholder="Filtrar por proveedor"
-              filterOption={filterSelectForm}
-              showSearch={true}
-              allowClear
-            >
-              {suppliers?.map((s) => (
-                <Select.Option key={s.id} value={s.id}>
-                  {s.supplier}
-                </Select.Option>
-              ))}
-            </Select>
-            <div className="flex items-center gap-1">
-              <Button
-                type="primary"
-                icon={<Search className="w-4 h-4" />}
-                // className="p-3 h-8 w-8"
-                className="rounded-full"
-                onClick={() => {
-                  setControl()
-                }}
-              ></Button>
-              <Button
-                variant={'filled'}
-                className="rounded-full"
-                danger
-                type="primary"
-                onClick={() => {
-                  setSupplierId(undefined)
-                  setControl()
-                }}
-                icon={<X className="w-4 h-4" />}
-              ></Button>
-            </div>
+            />
           </div>
         }
         addons={
