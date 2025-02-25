@@ -1,8 +1,9 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
 import { CostCenterSelecet } from '@pizzadb'
-import { Input, Select } from 'antd'
+import { Button, Input, Select } from 'antd'
 import { useMemo } from 'react'
+import { useCreateCostCenter } from './drawers/create'
 import { useCostCenter } from './state'
 
 export const menuOptions: FilterOption<CostCenterSelecet>[] = [
@@ -49,6 +50,7 @@ export const menuOptions: FilterOption<CostCenterSelecet>[] = [
 export function Control() {
   const filters = useCostCenter((st) => st.filters)
   const setFilters = useCostCenter((st) => st.setFilters)
+  const { open } = useCreateCostCenter()
 
   const name = useMemo(() => {
     const element = filters.find((el) => el.field == 'costcenter')
@@ -87,19 +89,25 @@ export function Control() {
   }
 
   return (
-    <div className="flex space-x-3">
-      <Input
-        value={name}
-        placeholder="Centro de costo"
-        className="w-64"
-        onChange={(ev) => changeName(ev.target.value ?? '')}
-      />
-      <FilterComponent
-        filters={filters}
-        setFilters={setFilters}
-        options={menuOptions}
-        onSearch={onSearch}
-      />
+    <div className="flex justify-between items-center">
+      <div className="flex space-x-3">
+        <Input
+          value={name}
+          placeholder="Centro de costo"
+          className="w-72"
+          onChange={(ev) => changeName(ev.target.value ?? '')}
+          addonBefore="Nombre"
+        />
+        <FilterComponent
+          filters={filters}
+          setFilters={setFilters}
+          options={menuOptions}
+          // onSearch={onSearch}
+        />
+      </div>
+      <Button onClick={() => open()} type="primary">
+        Nuevo centro de costo
+      </Button>
     </div>
   )
 }
