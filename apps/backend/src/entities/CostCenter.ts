@@ -17,19 +17,19 @@ export class CostCenter {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', name: 'costcenter' })
   origin: string
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'account_link1' })
   account_caja: number
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'account_link2' })
   account_ajuste: number
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'account_link3' })
   account_merca: number
 
-  @Column({ type: 'smallint' })
+  // @Column({ type: 'smallint' })
   is_cash: 0 | 1
 
   @Column({ type: 'smallint' })

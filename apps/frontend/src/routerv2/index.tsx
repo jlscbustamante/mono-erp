@@ -14,6 +14,7 @@ import { RecursosHumanosLayout } from '@/app/erp/modules/recursosHumanos/layout'
 import { ApprovedPage } from '@/app/erp/modules/requerimientos/approved/page'
 import { RequirementeCreation } from '@/app/erp/modules/requerimientos/creation/page'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
+import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costCenter/page'
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
 import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
 import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
@@ -156,6 +157,21 @@ export const routerv2 = createBrowserRouter([
                     path: PATHS.erp.modulos.requerimientos.reportes
                       .porCentroCosto,
                     element: <BalanceCostCenter />,
+                  },
+                ],
+              },
+              {
+                path: PATHS.erp.modulos.requerimientos.mantenimiento.main,
+                children: [
+                  {
+                    path: PATHS.erp.modulos.requerimientos.mantenimiento
+                      .supplier,
+                    element: <Provider />,
+                  },
+                  {
+                    path: PATHS.erp.modulos.requerimientos.mantenimiento
+                      .costCenter,
+                    element: <CostCenterPage />,
                   },
                 ],
               },

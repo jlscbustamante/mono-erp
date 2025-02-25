@@ -28,6 +28,14 @@ const menu: (MenuOption | MenuSeparator)[] = [
       ),
     ],
   ),
+  gm('Mantenimiento', PATHS.erp.modulos.requerimientos.mantenimiento.main, [
+    gm('Proveedor', PATHS.erp.modulos.requerimientos.mantenimiento.supplier),
+    gm('Caja y banco', PATHS.erp.modulos.requerimientos.mantenimiento.cashbank),
+    gm(
+      'Centro de costo',
+      PATHS.erp.modulos.requerimientos.mantenimiento.costCenter,
+    ),
+  ]),
   // gm('Consultas de caja', PATHS.erp.modulos.requerimientos.reportes.main, [
   //   gm('Detallado', PATHS.erp.modulos.requerimientos.reportes.detallado),
   //   gm('Resumido', PATHS.erp.modulos.requerimientos.reportes.resumido),

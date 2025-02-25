@@ -4,6 +4,7 @@ import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
 import { authRouter } from "./modules/auth/index.ts";
+import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
 
@@ -17,7 +18,8 @@ export const apiRouter = app
   .get("/", (c) => c.json({ message: "api view" }))
   .route("inventory", inventoryRouter)
   .route("auth", authRouter)
-  .route("requirement", requirementRouter);
+  .route("requirement", requirementRouter)
+  .route("costcenter", costCenterRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

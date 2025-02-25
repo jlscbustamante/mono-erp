@@ -22,6 +22,12 @@ export const PATHS = {
         creation: '/erp/modulos/requerimientos/creation',
         aprobados: '/erp/modulos/requerimientos/aprobados',
         rechazados: '/erp/modulos/requerimientos/rechazados',
+        mantenimiento: {
+          supplier: '/erp/modulos/requerimientos/mantenimiento/proveedor',
+          cashbank: '/erp/modulos/requerimientos/mantenimiento/caja-banco',
+          costCenter: '/erp/modulos/requerimientos/mantenimiento/centro-costo',
+          main: '/erp/modulos/requerimientos/mantenimiento',
+        },
         reportes: {
           main: '/erp/modulos/requerimientos/reportes',
           detallado: '/erp/modulos/requerimientos/reportes/detallado',
