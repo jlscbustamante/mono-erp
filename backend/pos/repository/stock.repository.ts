@@ -34,6 +34,10 @@ interface OldResponseStock {
   quantityOutSale: number;
 }
 
+interface StockSelectWithCategory extends StockSelect {
+  categoryName?: string;
+}
+
 export class StockRepository {
   async stores(): Promise<SucursalSelect[]> {
     const cached = cache.get("stores");
@@ -63,7 +67,7 @@ export class StockRepository {
         id: s.id,
         itemId: s.item_id,
         totalInitial: s.total_last,
-        categoryName: "",
+        categoryName: s.categoryName ?? "",
         itemName: s.item_name,
         presentationId: s.presentation_id,
         presentationName: s.presentation_name,
@@ -111,7 +115,7 @@ export class StockRepository {
     start: string;
     end: string;
     companyId?: string;
-  }): Promise<StockSelect[]> {
+  }): Promise<StockSelectWithCategory[]> {
     const company = props.companyId ?? "PIZZA";
     if (props.start === props.end) {
       return await this.stock(props.storeId, props.start, company);
@@ -128,8 +132,9 @@ export class StockRepository {
     storeId: string,
     date: string,
     companyId = "PIZZA"
-  ): Promise<StockSelect[]> {
+  ): Promise<StockSelectWithCategory[]> {
     const chached = cache.get("stock:" + storeId + ":" + date);
+
     if (chached) return JSON.parse(chached);
     const stores = await this.stores();
     const store = stores.find((s) => s.id === storeId);
@@ -161,13 +166,13 @@ export class StockRepository {
     start: string,
     end: string,
     companyId = "PIZZA"
-  ): Promise<StockSelect[]> {
+  ): Promise<StockSelectWithCategory[]> {
     const dates = eachDayOfInterval({
       start: parseISO(start),
       end: parseISO(end),
     }).map((el) => format(el, "yyyy-MM-dd"));
 
-    const stocks: StockSelect[][] = await Promise.all(
+    const stocks: StockSelectWithCategory[][] = await Promise.all(
       dates.map(async (date) => {
         return await this.stock(storeId, date, companyId);
       })
@@ -178,9 +183,9 @@ export class StockRepository {
   }
 
   private flatStock(
-    stocksArray: StockSelect[][],
+    stocksArray: StockSelectWithCategory[][],
     props: { start: string; end: string }
-  ): StockSelect[] {
+  ): StockSelectWithCategory[] {
     const initial = stocksArray[0];
     const final = stocksArray[stocksArray.length - 1];
     const container: Record<number, StockSelect> = stocksArray[0].reduce(
@@ -243,12 +248,15 @@ export class StockRepository {
     template: ItemSelectRelations[],
     stock: StockSelect[],
     props: { date: string; warehouseId: string }
-  ): StockSelect[] {
-    const allStock: StockSelect[] = [];
+  ): StockSelectWithCategory[] {
+    const allStock: StockSelectWithCategory[] = [];
     for (const item of template) {
       const stockItem = stock.find((s) => s.item_id === item.id);
       if (stockItem) {
-        allStock.push(stockItem);
+        allStock.push({
+          ...stockItem,
+          categoryName: item.product.category.category ?? "",
+        });
       } else {
         allStock.push({
           id: 0,
@@ -275,6 +283,7 @@ export class StockRepository {
           unit_value: item.unit_price,
           status: 1,
           updated_at: format(new Date(), "yyyy-MM-dd"),
+          categoryName: item.product.category.category ?? "",
           // created_at: format,
         });
       }

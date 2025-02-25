@@ -1,4 +1,5 @@
 import {
+  CategorySelect,
   ItemSelect,
   itemTable,
   PresentationSelect,
@@ -10,6 +11,9 @@ import { db } from "../database.ts";
 
 export interface ItemSelectRelations extends ItemSelect {
   presentation: PresentationSelect;
+  product: {
+    category: CategorySelect;
+  };
 }
 
 export class TemplateRepository {
@@ -42,6 +46,11 @@ export class TemplateRepository {
       where: inArray(itemTable.id, uniqueItemIds),
       with: {
         presentation: true,
+        product: {
+          with: {
+            category: true,
+          },
+        },
       },
     });
 

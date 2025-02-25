@@ -1,4 +1,5 @@
 import {
+  categoryTable,
   dispatches,
   dispatchesItems,
   dispatchesRelation,
@@ -6,6 +7,8 @@ import {
   itemTable,
   itemTableRelation,
   presentationTable,
+  productTable,
+  productTableRelation,
   stocks,
   sucursalTable,
   templateItemsRelation,
@@ -29,6 +32,9 @@ export const db = drizzle(connection, {
   mode: "default",
   logger: false,
   schema: {
+    categoryTable,
+    productTable,
+    productTableRelation,
     stocks,
     dispatches,
     dispatchesItems,

@@ -198,6 +198,18 @@ export const presentationTable = mysqlTable("inv_presentation", {
     .notNull()
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
+
+export const categoryTable = mysqlTable("inv_category", {
+  id: int().autoincrement().notNull().primaryKey(),
+  category: varchar({ length: 50 }).notNull(),
+});
+
+export const productTable = mysqlTable("inv_product", {
+  id: int().autoincrement().notNull().primaryKey(),
+  product: varchar({ length: 50 }).notNull(),
+  category_id: int().notNull(),
+});
+
 export const itemTable = mysqlTable("inv_item", {
   id: int().autoincrement().notNull().primaryKey(),
   item_name: varchar({ length: 150 }).notNull(),
@@ -218,12 +230,26 @@ export const itemTable = mysqlTable("inv_item", {
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
 
+export const productTableRelation = relations(productTable, ({ one }) => ({
+  category: one(categoryTable, {
+    fields: [productTable.category_id],
+    references: [categoryTable.id],
+  }),
+}));
+
 export const itemTableRelation = relations(itemTable, ({ one }) => ({
   presentation: one(presentationTable, {
     fields: [itemTable.presentation_id],
     references: [presentationTable.id],
   }),
+  product: one(productTable, {
+    fields: [itemTable.product_id],
+    references: [productTable.id],
+  }),
 }));
+
+export type CategorySelect = InferSelectModel<typeof categoryTable>;
+export type ProductSelect = InferSelectModel<typeof productTable>;
 
 export type PresentationSelect = InferSelectModel<typeof presentationTable>;
 
