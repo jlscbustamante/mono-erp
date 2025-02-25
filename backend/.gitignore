@@ -1,4 +1,3 @@
 .env
 
-stress.ts
 test-local.ts
