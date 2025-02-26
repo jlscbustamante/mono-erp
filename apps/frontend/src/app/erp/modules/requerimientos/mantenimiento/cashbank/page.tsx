@@ -1,24 +1,24 @@
 import { viewClient } from '@/lib/rpc'
-import { CostCenterSelecet } from '@pizzadb'
+import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Control } from './control'
 import { DataTable } from './data-table'
 import { CreateCostCenter } from './drawers/create'
-import { UpdateCostCenter } from './drawers/edit'
-import { useCostCenter } from './state'
+import { useCashBank } from './state'
 
-export default function CostCenterPage() {
-  const filters = useCostCenter((st) => st.filters)
+export default function CashBankPage() {
+  const filters = useCashBank((st) => st.filters)
+
   const { data, refetch } = useQuery({
     queryKey: ['req:cost-center'],
     queryFn: async () => {
-      const data = await viewClient.api.view.costcenter.filter.$get({
+      const data = await viewClient.api.view.cashbank.filter.$get({
         query: {
           filters: JSON.stringify(filters),
         },
       })
       const body = await data.json()
-      return body.data as CostCenterSelecet[]
+      return body.data as CashBankSelect[]
     },
   })
 
@@ -27,11 +27,6 @@ export default function CostCenterPage() {
       <Control onSearch={() => refetch?.()} />
       <DataTable data={data ?? []} />
       <CreateCostCenter
-        onUpdate={() => {
-          refetch()
-        }}
-      />
-      <UpdateCostCenter
         onUpdate={() => {
           refetch()
         }}

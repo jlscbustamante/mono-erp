@@ -1,6 +1,14 @@
 import { db } from "#app/database.ts";
-import { cashBanks, costCenters, finMoveCash, suppliers } from "@scope/pizzadb";
-import { asc } from "drizzle-orm";
+import { CreateCostCenterDto } from "#app/modules/requirement/interfaces/create-costcenter.dto.ts";
+import {
+  cashBanks,
+  costCenters,
+  finMoveCash,
+  storeTable,
+  suppliers,
+} from "@scope/pizzadb";
+import { asc, eq } from "drizzle-orm";
+import { CostCenterSelecet } from "../../../pizzadb/types/index.ts";
 
 export class RequirementResourceService {
   async companies() {
@@ -13,6 +21,35 @@ export class RequirementResourceService {
       orderBy: asc(costCenters.costcenter),
     });
     return data;
+  }
+
+  async createCostCenter(data: CreateCostCenterDto) {
+    await db.insert(costCenters).values({
+      costcenter: data.costcenter,
+      company_id: data.company_id,
+      type_cc: data.type_cc,
+      sucursal_id: data.sucursal_id,
+      account_link1: data.account_link1,
+      account_link2: data.account_link2,
+      account_link3: data.account_link3,
+      status: data.status,
+    });
+  }
+
+  async updateCostCenter(data: CostCenterSelecet) {
+    await db
+      .update(costCenters)
+      .set({
+        costcenter: data.costcenter,
+        company_id: data.company_id,
+        type_cc: data.type_cc,
+        sucursal_id: data.sucursal_id,
+        account_link1: data.account_link1,
+        account_link2: data.account_link2,
+        account_link3: data.account_link3,
+        status: data.status,
+      })
+      .where(eq(costCenters.id, data.id));
   }
 
   async cashBank() {
@@ -34,6 +71,14 @@ export class RequirementResourceService {
     const data = await db.query.finMoveCash.findMany({
       orderBy: asc(finMoveCash.movecash),
     });
+    return data;
+  }
+
+  async stores() {
+    const data = await db.query.storeTable.findMany({
+      orderBy: asc(storeTable.title),
+    });
+
     return data;
   }
 }

@@ -7,3 +7,6 @@ export type {
   UpdateRequirementDto,
   UpdateRequirementItemDto,
 } from "../requirement/interfaces/update-requirement.dto.ts";
+
+export type { CreateCashBankDto } from "../cashbank/interfaces/create-cashbank.dto.ts";
+export type { CreateCostCenterDto } from "../requirement/interfaces/create-costcenter.dto.ts";

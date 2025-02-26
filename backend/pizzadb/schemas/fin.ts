@@ -12,8 +12,8 @@ import {
 export const costCenters = mysqlTable("fin_costcenter", {
   id: int().autoincrement().notNull().primaryKey(),
   costcenter: varchar({ length: 150 }).notNull(),
-  company_id: varchar({ length: 10 }).notNull(),
-  sucursal_id: varchar({ length: 10 }).notNull(),
+  company_id: varchar({ length: 10 }),
+  sucursal_id: varchar({ length: 10 }),
   /**
    * @description T: Tienda; A: Area oficina
    */

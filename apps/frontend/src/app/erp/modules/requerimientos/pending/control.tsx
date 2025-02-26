@@ -60,8 +60,8 @@ export const menuOptions: FilterOption<RequirementSelect>[] = [
     render: ({ fiValue, onFiChange }) => {
       return (
         <SupplierSelectForm
-          supplierId={fiValue as number}
-          setSupplierId={(val) => onFiChange?.(val)}
+          value={fiValue as number}
+          onChange={(val) => onFiChange?.(val)}
         />
       )
     },

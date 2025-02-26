@@ -12,6 +12,7 @@ import {
   requirementRelation,
   requirements,
   roles,
+  storeTable,
   suppliers,
   templateItemsRelation,
   templateRelation,
@@ -36,6 +37,7 @@ export const db = drizzle(connection, {
   mode: "default",
   logger: false,
   schema: {
+    storeTable,
     finMoveCash,
     suppliers,
     roles,

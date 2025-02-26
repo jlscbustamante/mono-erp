@@ -1,32 +1,32 @@
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
-import { SupplierSelect } from '@pizzadb'
+import { CompanySelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Select } from 'antd'
 
-const useSupplierRequirements = () => {
+const useCompanies = () => {
   const query = useQuery({
-    queryKey: ['rq:suppliers'],
+    queryKey: ['rq:companies'],
     staleTime: Infinity,
     queryFn: async () => {
       const request =
-        await viewClient.api.view.requirement.resource.suppliers.$get()
+        await viewClient.api.view.requirement.resource.companies.$get()
       const result = await request.json()
-      return result.data as SupplierSelect[]
+      return result.data as CompanySelect[]
     },
   })
 
   return query
 }
 
-export function SupplierSelectForm({
+export function CompanySelectForm({
   value,
   onChange,
 }: {
-  value?: number
-  onChange?: (id: number | undefined) => void
+  value?: string
+  onChange?: (id: string | undefined) => void
 }) {
-  const { data: suppliers } = useSupplierRequirements()
+  const { data: companies } = useCompanies()
 
   return (
     <Select
@@ -35,14 +35,14 @@ export function SupplierSelectForm({
       onChange={(val) => {
         onChange?.(val ?? undefined)
       }}
-      placeholder="Filtrar por proveedor"
+      placeholder="Compañias"
       filterOption={filterSelectForm}
       showSearch={true}
       allowClear
     >
-      {suppliers?.map((s) => (
+      {companies?.map((s) => (
         <Select.Option key={s.id} value={s.id}>
-          {s.supplier}
+          {s.title}
         </Select.Option>
       ))}
     </Select>
@@ -50,11 +50,11 @@ export function SupplierSelectForm({
 }
 
 export function SupplierTitleForm({
-  supplierId,
+  companyId,
 }: {
-  supplierId: number | undefined
+  companyId: string | undefined
 }) {
-  const { data: suppliers } = useSupplierRequirements()
+  const { data: companies } = useCompanies()
 
-  return suppliers?.find((s) => s.id == supplierId)?.supplier ?? undefined
+  return companies?.find((s) => s.id == companyId)?.title ?? undefined
 }

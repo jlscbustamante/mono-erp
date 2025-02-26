@@ -1,12 +1,12 @@
 import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
-import { CostCenterSelecet } from '@pizzadb'
+import { CashBankSelect } from '@pizzadb'
 import { Button, Input, Select } from 'antd'
 import { useMemo } from 'react'
 import { useCreateCostCenter } from './drawers/create'
-import { useCostCenter } from './state'
+import { useCashBank } from './state'
 
-export const menuOptions: FilterOption<CostCenterSelecet>[] = [
+export const menuOptions: FilterOption<CashBankSelect>[] = [
   {
     key: 'id',
     label: 'Id',
@@ -17,12 +17,12 @@ export const menuOptions: FilterOption<CostCenterSelecet>[] = [
     },
   },
   {
-    key: 'costcenter',
+    key: 'cashbank',
     hide: true,
     label: 'Nombre',
     operators: ['contain'],
     whereOption: {
-      field: 'costcenter',
+      field: 'cashbank',
     },
   },
   {
@@ -48,26 +48,26 @@ export const menuOptions: FilterOption<CostCenterSelecet>[] = [
 ]
 
 export function Control({ onSearch }: { onSearch?: () => void }) {
-  const filters = useCostCenter((st) => st.filters)
-  const setFilters = useCostCenter((st) => st.setFilters)
+  const filters = useCashBank((st) => st.filters)
+  const setFilters = useCashBank((st) => st.setFilters)
   const { open } = useCreateCostCenter()
 
   const name = useMemo(() => {
-    const element = filters.find((el) => el.field == 'costcenter')
+    const element = filters.find((el) => el.field == 'cashbank')
 
     return (element?.value as string) ?? ''
   }, [filters])
 
   const changeName = (value: string) => {
     if (value === '') {
-      setFilters(filters.filter((el) => el.field !== 'costcenter'))
+      setFilters(filters.filter((el) => el.field !== 'cashbank'))
       return
     }
-    const exist = filters.find((el) => el.field == 'costcenter')
+    const exist = filters.find((el) => el.field == 'cashbank')
     if (exist) {
       setFilters(
         filters.map((el) =>
-          el.field == 'costcenter'
+          el.field == 'cashbank'
             ? {
                 ...el,
                 value,
@@ -79,7 +79,7 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
       setFilters([
         ...filters,
         {
-          field: 'costcenter',
+          field: 'cashbank',
           operator: 'contain',
           value,
           key: 'costcenter',
@@ -106,7 +106,7 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
         />
       </div>
       <Button onClick={() => open()} type="primary">
-        Nuevo centro de costo
+        Nueva caja
       </Button>
     </div>
   )

@@ -134,3 +134,13 @@ export const requirementRelation = relations(requirements, ({ many, one }) => ({
     references: [suppliers.id],
   }),
 }));
+
+export const storeTable = mysqlTable("adm_sucursal", {
+  id: varchar({ length: 11 }).notNull().primaryKey(),
+  title: varchar({ length: 150 }).notNull(),
+  company_id: varchar({ length: 10 }),
+  /**
+   * @description T: Tienda, A: Almacen, O: Oficina
+   */
+  type_sede: char({ length: 1 }).notNull(),
+});

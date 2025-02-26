@@ -101,8 +101,8 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
         beforeAddons={
           <div className="flex gap-1 items-center">
             <SupplierSelectForm
-              supplierId={supplierId}
-              setSupplierId={changeSupplierId}
+              value={supplierId}
+              onChange={changeSupplierId}
             />
             <FilterComponent
               options={menuOptions.map((el) => {

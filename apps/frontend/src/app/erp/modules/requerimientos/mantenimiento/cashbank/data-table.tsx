@@ -1,4 +1,4 @@
-import { CostCenterSelecet } from '@pizzadb'
+import { CashBankSelect } from '@pizzadb'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { StoreTitleForm } from '../../components/stores-select'
@@ -8,24 +8,28 @@ const columns = [
   {
     title: 'Id',
     dataIndex: 'id',
-    sorter: (a: CostCenterSelecet, b: CostCenterSelecet) => a.id - b.id,
+    sorter: (a: CashBankSelect, b: CashBankSelect) => a.id - b.id,
   },
   {
     title: 'Nombre',
-    dataIndex: 'costcenter',
-    sorter: (a: CostCenterSelecet, b: CostCenterSelecet) =>
-      a.costcenter.localeCompare(b.costcenter),
+    dataIndex: 'cashbank',
+    sorter: (a: CashBankSelect, b: CashBankSelect) =>
+      a.cashbank.localeCompare(b.cashbank),
+  },
+  {
+    title: 'Cuenta',
+    dataIndex: 'account_id',
   },
   {
     title: 'Compañia',
     dataIndex: 'company_id',
-    sorter: (a: CostCenterSelecet, b: CostCenterSelecet) =>
+    sorter: (a: CashBankSelect, b: CashBankSelect) =>
       a.company_id?.localeCompare(b.company_id ?? '') ?? -1,
   },
   {
     title: 'Tienda',
     dataIndex: 'sucursal_id',
-    sorter: (a: CostCenterSelecet, b: CostCenterSelecet) =>
+    sorter: (a: CashBankSelect, b: CashBankSelect) =>
       a.sucursal_id?.localeCompare(b.sucursal_id ?? '') ?? -1,
     render: (storeCode) => {
       return <StoreTitleForm storeId={storeCode} />
@@ -33,13 +37,24 @@ const columns = [
   },
   {
     title: 'Tipo',
-    dataIndex: 'type_cc',
-    sorter: (a, b) => a.type_cc?.localeCompare(b.type_cc ?? '') ?? -1,
-    render: (type: string) => (type === 'T' ? 'Tienda' : 'Otro'),
+    dataIndex: 'type_cash',
+    render: (type) => {
+      return type == 1
+        ? 'Tiendas'
+        : type == 3
+          ? 'Bancos'
+          : type == 4
+            ? 'Central'
+            : type == 5
+              ? 'Corales'
+              : type == 6
+                ? 'Liquidadora'
+                : ''
+    },
   },
-] satisfies ColumnsType<CostCenterSelecet>
+] satisfies ColumnsType<CashBankSelect>
 
-export function DataTable({ data }: { data: CostCenterSelecet[] }) {
+export function DataTable({ data }: { data: CashBankSelect[] }) {
   const { open } = useUpdateCostCenter()
 
   return (
