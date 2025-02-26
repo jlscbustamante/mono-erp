@@ -75,6 +75,27 @@ export class DispatchUtil {
     })
   }
 
+  async resetAndDeleteMovement(dispatchId: number) {
+    const { stock, date, sucursales } =
+      await this.getRemovedMovement(dispatchId)
+    await AppDataSource.transaction(async (manager) => {
+      await manager.query(
+        'DELETE FROM inv_kardex WHERE move_type=? AND move_id=?',
+        [KARDEX_ORIGIN.DISPATCH, dispatchId],
+      )
+
+      await manager.query(
+        'DELETE FROM inv_stock WHERE DATE(stock_at) = ? AND warehouse_id IN (?)',
+        [date, sucursales],
+      )
+      await manager.insert(InvStock, stock)
+      await manager.query('UPDATE inv_dispatch SET status = ? WHERE id = ?', [
+        DISPATCH_STATUS.CANCELLED,
+        dispatchId,
+      ])
+    })
+  }
+
   async resetAndDeleteDispatch(dispatchId: number) {
     const { stock, date, sucursales } =
       await this.getRemovedDispatch(dispatchId)
@@ -487,6 +508,66 @@ export class DispatchUtil {
     }
   }
 
+  async getRemovedMovement(dispatchId: number) {
+    const dispatch = await this.dispatchRepository.findOne({
+      where: {
+        id: dispatchId,
+      },
+      relations: {
+        items: true,
+      },
+    })
+    if (!dispatch) throw new Error('Despacho no encontrado')
+    const date = dispatch.moveAt.split(' ')[0]
+
+    const getStock = (storeCode: string | null, date: string) =>
+      storeCode
+        ? this.invStockRepository.find({
+            where: {
+              warehouse_id: storeCode,
+              stock_at: Raw((alias) => `DATE(${alias}) = '${date}'`),
+            },
+          })
+        : Promise.resolve([])
+
+    const [from, to] = await Promise.all([
+      getStock(dispatch.wareFromId, date),
+      getStock(dispatch.wareToId, date),
+    ])
+
+    const { from: relationsFrom, to: relationsTo } =
+      await this.generateCountDispatched(dispatch)
+
+    const newStockFrom = dispatch.wareFromId
+      ? this.removeStockFromStoreOriginMove(from, relationsFrom)
+      : []
+    const newStockTo = dispatch.wareToId
+      ? this.removeStockFromStoreDestinyMove(to, relationsTo)
+      : []
+
+    const invStocks: InvStock[] = [...newStockFrom, ...newStockTo]
+
+    const cleanInvStocks = invStocks.filter((el) => {
+      const total =
+        el.quantity_in_dp +
+        el.quantity_out_dp +
+        el.quantity_in_mv +
+        el.quantity_out_mv +
+        el.quantity_out_sl +
+        Math.abs(el.stock_current) +
+        el.stock_last +
+        el.stock_physical +
+        el.quantity_in_pu
+      return total > 0
+    })
+
+    return {
+      stock: cleanInvStocks,
+      date: date,
+      sucursales: [dispatch.wareFromId, dispatch.wareToId].filter((el) => el),
+    }
+  }
+
   removeStockFromWarehouse(stock: InvStock[], relations: ItemRelation[]) {
     const newStock: InvStock[] = []
     for (const item of stock) {
@@ -519,7 +600,7 @@ export class DispatchUtil {
       {} as Record<number, InvStock>,
     )
 
-    const trackedItemIds:number[]=[]
+    const trackedItemIds: number[] = []
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemDispatchId,
@@ -572,7 +653,7 @@ export class DispatchUtil {
       },
       {} as Record<number, InvStock>,
     )
-    const trackedItemIds:number[]=[]
+    const trackedItemIds: number[] = []
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemStockId,
@@ -626,7 +707,7 @@ export class DispatchUtil {
       {} as Record<number, InvStock>,
     )
 
-    const trackedItemIds: number[]=[]
+    const trackedItemIds: number[] = []
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemStockId,
@@ -678,8 +759,8 @@ export class DispatchUtil {
       },
       {} as Record<number, InvStock>,
     )
-    
-    const trackedItemIds: number[]=[]
+
+    const trackedItemIds: number[] = []
     for (const itemTemplate of template.items) {
       const itemDispatch = items.find(
         (el) => el.itemId == itemTemplate.itemDispatchId,
@@ -728,6 +809,43 @@ export class DispatchUtil {
         newStock.push({
           ...item,
           quantity_in_dp: item.quantity_in_dp - relation.quantity,
+          stock_current: item.stock_current - relation.quantity,
+        })
+      }
+    }
+    return newStock
+  }
+
+  removeStockFromStoreOriginMove(stock: InvStock[], relations: ItemRelation[]) {
+    const newStock: InvStock[] = []
+    for (const item of stock) {
+      const relation = relations.find((el) => el.itemId == item.item_id)
+      if (!relation) {
+        newStock.push(item)
+      } else {
+        newStock.push({
+          ...item,
+          quantity_out_mv: item.quantity_out_mv - relation.quantity,
+          stock_current: item.stock_current + relation.quantity,
+        })
+      }
+    }
+    return newStock
+  }
+
+  removeStockFromStoreDestinyMove(
+    stock: InvStock[],
+    relations: ItemRelation[],
+  ) {
+    const newStock: InvStock[] = []
+    for (const item of stock) {
+      const relation = relations.find((el) => el.itemId == item.item_id)
+      if (!relation) {
+        newStock.push(item)
+      } else {
+        newStock.push({
+          ...item,
+          quantity_in_mv: item.quantity_in_mv - relation.quantity,
           stock_current: item.stock_current - relation.quantity,
         })
       }

@@ -371,6 +371,15 @@ export const loadHexInventoryEndpoints = (app: Application): void => {
     controller.resetDispatch,
   )
   app.put(
+    '/api/hex/dispatch/movement/resetAndDelete',
+    validateSchema(
+      Joi.object({
+        id: Joi.number().required(),
+      }),
+    ),
+    controller.resetAndDeleteMovement,
+  )
+  app.put(
     '/api/hex/dispatch/reset-and-delete',
     validateSchema(
       Joi.object({

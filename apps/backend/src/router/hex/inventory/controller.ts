@@ -858,6 +858,15 @@ export class HexInventoryController {
   }
 
   @catchError
+  async resetAndDeleteMovement(req: Request, res: Response) {
+    const { id } = req.body as { id: number }
+
+    await dispatchUtil.resetAndDeleteMovement(id)
+
+    return res.json({ message: 'ok' })
+  }
+
+  @catchError
   async resetAndDeleteDispatch(req: Request, res: Response) {
     const { id } = req.body as { id: number }
 
