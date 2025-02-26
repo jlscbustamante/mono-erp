@@ -27,6 +27,16 @@ import { PURCHASE_STATUS } from './entities/purchase'
 import { TemplateRepository } from './entities/repositories/template.repository'
 import { Template } from './entities/template'
 
+const clearCache = async (warehouse: string, date: string) => {
+  try {
+    await fetch(
+      `https://erpraul.com/api/xpos/inventario/clearcache?warehouse=${warehouse}&date=${date}`,
+    )
+  } catch (err) {
+    //
+  }
+}
+
 interface DispatchUpdate {
   dispatchId: number
   toCreate: DispatchItemAddDto[]
@@ -94,6 +104,8 @@ export class DispatchUtil {
         dispatchId,
       ])
     })
+    if (sucursales[0]) clearCache(sucursales[0], date)
+    if (sucursales[1]) clearCache(sucursales[1], date)
   }
 
   async resetAndDeleteDispatch(dispatchId: number) {

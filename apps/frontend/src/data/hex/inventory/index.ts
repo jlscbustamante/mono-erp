@@ -386,6 +386,15 @@ export const resetDispatch = async (dispatchId: number) => {
   })
 }
 
+export const resetAndDeleteMovement = async (dispatchId: number) => {
+  return baseUrl<void>('hex/dispatch/movement/resetAndDelete', {
+    method: 'PUT',
+    body: {
+      id: dispatchId,
+    },
+  })
+}
+
 export const resetAndDeleteDispatch = async (dispatchId: number) => {
   return baseUrl<void>('hex/dispatch/reset-and-delete', {
     method: 'PUT',

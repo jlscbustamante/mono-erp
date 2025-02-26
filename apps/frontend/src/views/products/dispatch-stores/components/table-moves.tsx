@@ -1,13 +1,16 @@
-import { Tag } from 'antd'
+import { Button, Modal, Tag } from 'antd'
 import Table, { ColumnsType } from 'antd/es/table'
 import { useMemo } from 'react'
-import { MdRemoveRedEye } from 'react-icons/md'
+import { MdDelete, MdRemoveRedEye } from 'react-icons/md'
 
 import { DispatchStatus, IDispatch } from '@/data/products/types'
 import { fNumber } from '@/utils/formatNumber'
 
 import { PATHS } from '@/const/paths'
+import { resetAndDeleteMovement } from '@/data/hex/inventory'
+import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
 import { useDispatchBetweenStoresQuery } from '../../state/useDispatch'
 import { useStore } from '../useStore'
 
@@ -15,6 +18,19 @@ export const TableMoves = () => {
   const filterDescription = useStore((st) => st.filterDescription)
   const query = useDispatchBetweenStoresQuery()
   const navigate = useNavigate()
+
+  const resetAndDeleteMovementMt = useMutation({
+    mutationFn: async (id: number) => {
+      await resetAndDeleteMovement(id)
+    },
+    onSuccess: () => {
+      query.refetch()
+    },
+    onError: (error) => {
+      toast.error('Error al anular el pedido : ' + error.message)
+    },
+  })
+
   const columns: ColumnsType<IDispatch> = [
     {
       title: 'Id',
@@ -108,6 +124,34 @@ export const TableMoves = () => {
             >
               <MdRemoveRedEye className="w-5 h-auto" />
             </div>
+            <Button
+              size="small"
+              disabled={record.status != DispatchStatus.DISPATCHED}
+              loading={
+                resetAndDeleteMovementMt.isPending &&
+                resetAndDeleteMovementMt.variables == record.id
+              }
+              ghost
+              className="cursor-pointer !text-black disabled:!text-slate-400  disabled:bg-transparent disabled:border-none"
+              onClick={() => {
+                Modal.confirm({
+                  title: 'Anular pedido',
+                  content: '¿Está seguro de anular este pedido?',
+                  onOk: async () => {
+                    // await query.cancelDispatch(record.id)
+                    resetAndDeleteMovementMt.mutate(record.id)
+                  },
+                })
+                // open(record.id)
+                // navigate(
+                //   PATHS.erp.modulos.mercaderia.despachos.reviewStore +
+                //     '?id=' +
+                //     record.id,
+                // )
+              }}
+            >
+              <MdDelete className="w-5 h-auto " />
+            </Button>
           </div>
         )
       },
