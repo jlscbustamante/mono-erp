@@ -285,6 +285,9 @@ export class HexInventoryController {
 
     // await createDispatch.createException(movement, token?.name)
     await dispatchUtil.saveDispatchException(movement, token.name)
+    if (movement.wareFromId)
+      clearCache(movement.wareFromId, movement.dispatchAt)
+    if (movement.wareToId) clearCache(movement.wareToId, movement.dispatchAt)
 
     return res.json({
       message: 'ok',
