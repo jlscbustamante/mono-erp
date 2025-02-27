@@ -4,27 +4,28 @@ import { useMutation } from '@tanstack/react-query'
 import { CreateCostCenterDto } from '@view'
 import { Button, Drawer, Form, Input, Select } from 'antd'
 import { atom, useAtom } from 'jotai'
+import { useEffect } from 'react'
 import { CompanySelectForm } from '../../../components/company-select'
 import { StoreSelectForm } from '../../../components/stores-select'
 
-const createAtom = atom<null | CashBankSelect>(null)
+const updateCashBank = atom<null | CashBankSelect>(null)
 
-export const useUpdateCostCenter = () => {
-  const [isOpen, setIsOpen] = useAtom(createAtom)
+export const useUpdateCashBank = () => {
+  const [isOpen, setIsOpen] = useAtom(updateCashBank)
 
   return {
-    costCenter: isOpen,
+    cashBank: isOpen,
     isOpen: !!isOpen,
-    open: (costCenter: CashBankSelect) => setIsOpen(costCenter),
+    open: (cashBank: CashBankSelect) => setIsOpen(cashBank),
     close: () => setIsOpen(null),
   }
 }
 
-export const UpdateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
-  const { isOpen, close, costCenter } = useUpdateCostCenter()
+export const UpdateCashBank = ({ onUpdate }: { onUpdate?: () => void }) => {
+  const { isOpen, close, cashBank } = useUpdateCashBank()
   const [form] = Form.useForm()
 
-  const updateCostCenterMt = useMutation({
+  const updateCashBankMt = useMutation({
     mutationFn: async (data: CreateCostCenterDto) => {
       const request =
         await viewClient.api.view.requirement.resource.costCenters.update.$post(
@@ -46,66 +47,71 @@ export const UpdateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
   })
 
   const onFinish = (values: CreateCostCenterDto) => {
-    updateCostCenterMt.mutate(values)
+    updateCashBankMt.mutate(values)
   }
 
+  useEffect(() => {
+    if (cashBank) {
+      form.setFieldsValue({
+        id: cashBank.id,
+        cashbank: cashBank.cashbank,
+        account_id: cashBank.account_id,
+        company_id: cashBank.company_id,
+        type_cash: cashBank.type_cash,
+        status: cashBank.status,
+      })
+    }
+  }, [cashBank])
+
   return (
-    <Drawer
-      open={isOpen}
-      onClose={close}
-      title="Nuevo centro de costo"
-      width={500}
-    >
-      {costCenter && (
+    <Drawer open={isOpen} onClose={close} title="Editar caja" width={500}>
+      {cashBank && (
         <Form
           onFinish={onFinish}
           form={form}
           layout="horizontal"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={
-            {
-              // id: costCenter.id,
-              // costcenter: costCenter.costcenter,
-              // company_id: costCenter.company_id,
-              // sucursal_id: costCenter.sucursal_id,
-              // type_cc: costCenter.type_cc,
-              // account_link1: costCenter.account_link1,
-              // account_link2: costCenter.account_link2,
-              // account_link3: costCenter.account_link3,
-              // status: costCenter.status,
-            }
-          }
         >
           <Form.Item name={'id'} rules={[{ required: true }]} label="Id">
             <Input readOnly />
           </Form.Item>
           <Form.Item
             label="Nombre"
-            name={'costcenter'}
+            name={'cashbank'}
             rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
-          <Form.Item label="Compañia" name={'company_id'}>
+          <Form.Item
+            label="Cuenta"
+            name={'account_id'}
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Compañia"
+            name={'company_id'}
+            rules={[{ required: true }]}
+          >
             <CompanySelectForm />
           </Form.Item>
           <Form.Item label="Tienda" name={'sucursal_id'}>
             <StoreSelectForm />
           </Form.Item>
-          <Form.Item label="Tipo" name={'type_cc'} rules={[{ required: true }]}>
+          <Form.Item
+            label="Tipo"
+            name={'type_cash'}
+            rules={[{ required: true }]}
+          >
             <Select>
-              <Select.Option value="T">Tienda</Select.Option>
+              <Select.Option value={1}>Tiendas</Select.Option>
+              <Select.Option value={3}>Banco</Select.Option>
+              <Select.Option value={4}>Central</Select.Option>
+              <Select.Option value={5}>Corales</Select.Option>
+              <Select.Option value={6}>Liquidadora</Select.Option>
             </Select>
-          </Form.Item>
-          <Form.Item label="Cuenta 1" name={'account_link1'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Cuenta 2" name={'account_link2'}>
-            <Input />
-          </Form.Item>
-          <Form.Item label="Cuenta 3" name={'account_link3'}>
-            <Input />
           </Form.Item>
           <Form.Item label="Estado" name={'status'}>
             <Select>
@@ -117,7 +123,7 @@ export const UpdateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
             <Button
               type="primary"
               htmlType="submit"
-              loading={updateCostCenterMt.isPending}
+              loading={updateCashBankMt.isPending}
             >
               Guardar
             </Button>

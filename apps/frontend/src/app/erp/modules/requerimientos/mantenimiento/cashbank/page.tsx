@@ -3,7 +3,8 @@ import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Control } from './control'
 import { DataTable } from './data-table'
-import { CreateCostCenter } from './drawers/create'
+import { CreateCashBank } from './drawers/create'
+import { UpdateCashBank } from './drawers/edit'
 import { useCashBank } from './state'
 
 export default function CashBankPage() {
@@ -26,7 +27,12 @@ export default function CashBankPage() {
     <div className="p-3 space-y-3">
       <Control onSearch={() => refetch?.()} />
       <DataTable data={data ?? []} />
-      <CreateCostCenter
+      <CreateCashBank
+        onUpdate={() => {
+          refetch()
+        }}
+      />
+      <UpdateCashBank
         onUpdate={() => {
           refetch()
         }}

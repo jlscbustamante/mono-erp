@@ -3,7 +3,7 @@ import { FilterOption } from '@/components/fifi/type'
 import { CashBankSelect } from '@pizzadb'
 import { Button, Input, Select } from 'antd'
 import { useMemo } from 'react'
-import { useCreateCostCenter } from './drawers/create'
+import { useCreateCashBank } from './drawers/create'
 import { useCashBank } from './state'
 
 export const menuOptions: FilterOption<CashBankSelect>[] = [
@@ -50,7 +50,7 @@ export const menuOptions: FilterOption<CashBankSelect>[] = [
 export function Control({ onSearch }: { onSearch?: () => void }) {
   const filters = useCashBank((st) => st.filters)
   const setFilters = useCashBank((st) => st.setFilters)
-  const { open } = useCreateCostCenter()
+  const { open } = useCreateCashBank()
 
   const name = useMemo(() => {
     const element = filters.find((el) => el.field == 'cashbank')

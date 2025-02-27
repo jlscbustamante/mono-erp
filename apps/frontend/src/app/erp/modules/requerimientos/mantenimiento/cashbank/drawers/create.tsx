@@ -8,7 +8,7 @@ import { StoreSelectForm } from '../../../components/stores-select'
 
 const createAtom = atom(false)
 
-export const useCreateCostCenter = () => {
+export const useCreateCashBank = () => {
   const [isOpen, setIsOpen] = useAtom(createAtom)
 
   return {
@@ -18,8 +18,8 @@ export const useCreateCostCenter = () => {
   }
 }
 
-export const CreateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
-  const { isOpen, close } = useCreateCostCenter()
+export const CreateCashBank = ({ onUpdate }: { onUpdate?: () => void }) => {
+  const { isOpen, close } = useCreateCashBank()
   const [form] = Form.useForm()
 
   const createCashBankMt = useMutation({

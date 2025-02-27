@@ -4,13 +4,14 @@ import { useMutation } from '@tanstack/react-query'
 import { CreateCostCenterDto } from '@view'
 import { Button, Drawer, Form, Input, Select } from 'antd'
 import { atom, useAtom } from 'jotai'
+import { useEffect } from 'react'
 import { CompanySelectForm } from '../../../components/company-select'
 import { StoreSelectForm } from '../../../components/stores-select'
 
-const createAtom = atom<null | CostCenterSelecet>(null)
+const updateCostCenterAtom = atom<null | CostCenterSelecet>(null)
 
 export const useUpdateCostCenter = () => {
-  const [isOpen, setIsOpen] = useAtom(createAtom)
+  const [isOpen, setIsOpen] = useAtom(updateCostCenterAtom)
 
   return {
     costCenter: isOpen,
@@ -49,6 +50,22 @@ export const UpdateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
     updateCostCenterMt.mutate(values)
   }
 
+  useEffect(() => {
+    if (costCenter) {
+      form.setFieldsValue({
+        id: costCenter.id,
+        costcenter: costCenter.costcenter,
+        company_id: costCenter.company_id,
+        sucursal_id: costCenter.sucursal_id,
+        type_cc: costCenter.type_cc,
+        account_link1: costCenter.account_link1,
+        account_link2: costCenter.account_link2,
+        account_link3: costCenter.account_link3,
+        status: costCenter.status,
+      })
+    }
+  }, [costCenter])
+
   return (
     <Drawer
       open={isOpen}
@@ -58,22 +75,12 @@ export const UpdateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
     >
       {costCenter && (
         <Form
+          key={costCenter.id}
           onFinish={onFinish}
           form={form}
           layout="horizontal"
           labelCol={{ span: 8 }}
           wrapperCol={{ span: 16 }}
-          initialValues={{
-            id: costCenter.id,
-            costcenter: costCenter.costcenter,
-            company_id: costCenter.company_id,
-            sucursal_id: costCenter.sucursal_id,
-            type_cc: costCenter.type_cc,
-            account_link1: costCenter.account_link1,
-            account_link2: costCenter.account_link2,
-            account_link3: costCenter.account_link3,
-            status: costCenter.status,
-          }}
         >
           <Form.Item name={'id'} rules={[{ required: true }]} label="Id">
             <Input readOnly />

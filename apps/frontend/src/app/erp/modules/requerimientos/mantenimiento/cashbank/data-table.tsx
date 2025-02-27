@@ -2,7 +2,7 @@ import { CashBankSelect } from '@pizzadb'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { StoreTitleForm } from '../../components/stores-select'
-import { useUpdateCostCenter } from './drawers/edit'
+import { useUpdateCashBank } from './drawers/edit'
 
 const columns = [
   {
@@ -55,7 +55,7 @@ const columns = [
 ] satisfies ColumnsType<CashBankSelect>
 
 export function DataTable({ data }: { data: CashBankSelect[] }) {
-  const { open } = useUpdateCostCenter()
+  const { open } = useUpdateCashBank()
 
   return (
     <div>
@@ -66,7 +66,15 @@ export function DataTable({ data }: { data: CashBankSelect[] }) {
           ...columns,
           {
             title: 'Acciones',
-            render: (_, record) => <a onClick={() => open(record)}>Editar</a>,
+            render: (_, record) => (
+              <a
+                onClick={() => {
+                  open(record)
+                }}
+              >
+                Editar
+              </a>
+            ),
           },
         ]}
         bordered
