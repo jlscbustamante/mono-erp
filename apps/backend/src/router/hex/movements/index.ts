@@ -21,6 +21,8 @@ export const movementEndpoints = (app: Application) => {
     controller.startGroupJob,
   )
 
+  app.get('/api/hex/movements/job/infostatus', controller.getInfoJobStatus)
+
   app.get(
     '/api/hex/movements/job/run/status',
     validateToken,

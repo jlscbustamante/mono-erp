@@ -12,6 +12,16 @@ export class MovementController {
   }
 
   @catchError
+  async getInfoJobStatus(req: Request, res: Response) {
+    const { jobName, jobRunId } = req.query as {
+      jobName: string
+      jobRunId: string
+    }
+    const status = await movementService.getInfoJobStatus(jobName, jobRunId)
+    return res.status(200).json({ data: status })
+  }
+
+  @catchError
   async listJobs(req: Request, res: Response) {
     const jobs = await movementService.listJobs()
     return res.status(200).json({ data: jobs })

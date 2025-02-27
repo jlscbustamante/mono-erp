@@ -83,6 +83,10 @@ export class MovementService {
     return this.glueService.infoJob(jobName)
   }
 
+  async getInfoJobStatus(jobName: string, jobRunId: string) {
+    return this.glueService.getJobStatus(jobName, jobRunId)
+  }
+
   async getJobs() {
     const groups = jobsAvailable.map((el) => el.name)
     return groups
