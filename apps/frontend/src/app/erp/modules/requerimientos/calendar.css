@@ -1,0 +1,10 @@
+.fc-daygrid-day-top {
+  flex-direction: row !important;
+}
+.fc-daygrid-day-number {
+  display: block;
+  flex: 1;
+}
+.fc .fc-daygrid-day.fc-day-today {
+  background-color: transparent !important;
+}

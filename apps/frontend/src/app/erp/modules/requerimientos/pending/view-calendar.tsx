@@ -1,5 +1,6 @@
 import { FilterComponent } from '@/components/fifi'
 import { viewClient } from '@/lib/rpc'
+import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
 import { format, parseISO } from 'date-fns'
@@ -100,7 +101,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
         setDate={setDate}
         events={query.data?.map((d) => ({
           date: d.date,
-          title: `S/ ${d.total}<br >Solicitados`,
+          title: fCurrency(d.total).toString() ?? d.total,
         }))}
         beforeAddons={
           <div className="flex gap-1 items-center">

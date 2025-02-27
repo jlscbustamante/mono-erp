@@ -12,7 +12,7 @@ interface Store {
 }
 
 export const useRejectedStore = create<Store>((set) => ({
-  view: 'list',
+  view: 'calendar',
   setView: (view) => {
     return set({ view })
   },

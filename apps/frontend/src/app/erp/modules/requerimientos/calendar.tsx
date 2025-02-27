@@ -1,3 +1,4 @@
+import { cn } from '@/utils'
 import { EventClickArg } from '@fullcalendar/core/index.js'
 import esLocale from '@fullcalendar/core/locales/es'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -7,6 +8,7 @@ import { Button } from 'antd'
 import { format, parseISO } from 'date-fns'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import React, { useMemo, useRef } from 'react'
+import './calendar.css'
 
 const months = [
   'Enero',
@@ -86,7 +88,7 @@ export const CalendarComponent = ({
           <Button onClick={goBack} size="small">
             <ChevronLeft className="text-slate-600" />
           </Button>
-          <span>{month}</span>
+          <span className="text-sm">{month}</span>
           <Button onClick={goNext} size="small">
             <ChevronRight className="text-slate-600" />
           </Button>
@@ -94,30 +96,68 @@ export const CalendarComponent = ({
         </div>
         {addons}
       </div>
+      <div className="mb-2 flex gap-2">
+        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
+          Simple
+        </button>
+        <button className="py-1 px-3 border-blue-500 border-1 rounded-md text-white font-sans bg-blue-500 hover:bg-blue-500 hover:text-white transition-colors">
+          Transferencia
+        </button>
+        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
+          Transferencia
+        </button>
+        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
+          Liquidacion
+        </button>
+      </div>
       <FullCalendar
-        dayCellClassNames={'cursor-pointer'}
+        // dayCellClassNames={'cursor-pointer'}
         dateClick={handleDateClick}
         eventClick={handleEventClick}
         ref={calendarRef}
         plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={false}
         initialView="dayGridMonth"
+        dayHeaderClassNames={'bg-slate-100'}
+        dayCellClassNames={'hover:!bg-blue-50 cursor-pointer !py-3 !px-2'}
+        dayCellContent={(day) => {
+          return (
+            <div className="">
+              <div
+                className={cn(
+                  'h-7 w-7 rounded-full flex items-center justify-center text-sm',
+                  {
+                    'bg-blue-500 text-white':
+                      format(day.date, 'yyyy-MM-dd') ===
+                      format(new Date(), 'yyyy-MM-dd'),
+                  },
+                )}
+              >
+                {day.dayNumberText}
+              </div>
+            </div>
+          )
+        }}
+        eventContent={(eventInfo) => {
+          return (
+            <div className="flex flex-col gap-2 items-center">
+              <p>{eventInfo.event.title}</p>
+              <span className="py-1 px-2 bg-blue-500 rounded-md text-white">
+                Solicitado
+              </span>
+            </div>
+          )
+        }}
         height={'auto'}
         locale={esLocale}
         events={events?.map((el) => {
           return {
             title: el.title,
             date: el.date,
-
             className: 'bg-transparent border border-none text-center',
             textColor: 'black',
           }
         })}
-        eventContent={(arg) => {
-          return {
-            html: arg.event.title,
-          }
-        }}
       />
     </div>
   )

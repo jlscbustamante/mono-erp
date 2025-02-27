@@ -27,12 +27,9 @@ export const UpdateCashBank = ({ onUpdate }: { onUpdate?: () => void }) => {
 
   const updateCashBankMt = useMutation({
     mutationFn: async (data: CreateCostCenterDto) => {
-      const request =
-        await viewClient.api.view.requirement.resource.costCenters.update.$post(
-          {
-            json: data,
-          },
-        )
+      const request = await viewClient.api.view.cashbank.update.$put({
+        json: data,
+      })
       if (!request.ok) {
         throw new Error('Error al crear el centro de costo')
       }
@@ -58,6 +55,7 @@ export const UpdateCashBank = ({ onUpdate }: { onUpdate?: () => void }) => {
         account_id: cashBank.account_id,
         company_id: cashBank.company_id,
         type_cash: cashBank.type_cash,
+        sucursal_id: cashBank.sucursal_id,
         status: cashBank.status,
       })
     }

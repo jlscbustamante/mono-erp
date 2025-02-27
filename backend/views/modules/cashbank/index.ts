@@ -16,4 +16,9 @@ export const cashBankRouter = new Hono()
     const data = (await c.req.json()) as CreateCashBankDto;
     await cashbankService.create(data);
     return c.json({ message: "ok" });
+  })
+  .put("/update", async (c) => {
+    const data = (await c.req.json()) as CashBankSelect;
+    await cashbankService.update(data);
+    return c.json({ message: "ok" });
   });

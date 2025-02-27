@@ -12,7 +12,7 @@ interface Store {
 }
 
 export const usePendingStore = create<Store>((set) => ({
-  view: 'list',
+  view: 'calendar',
   setView: (view) => {
     return set({ view })
   },
