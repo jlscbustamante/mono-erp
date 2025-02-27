@@ -12,10 +12,12 @@ import {
   clearLogsJob,
   getAvailableJobs,
   getLogJobs,
-  runJobs,
+  runJobGroup,
 } from '@/data/hex/movements'
 import { JobLog } from '@/data/interfaces'
 import { cn } from '@/utils'
+import { Play } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 const ProcessRunDrawer: React.FC<{
   open: boolean
@@ -37,15 +39,15 @@ const ProcessRunDrawer: React.FC<{
     return logQuery.data ?? []
   }, [logQuery.data])
 
-  const runJobsMt = useMutation({
-    mutationFn: runJobs,
-    onSuccess: () => {
-      logQuery.refetch()
-    },
-    onError: (err) => {
-      apiMessage.error(err.message)
-    },
-  })
+  // const runJobsMt = useMutation({
+  //   mutationFn: runJobs,
+  //   onSuccess: () => {
+  //     logQuery.refetch()
+  //   },
+  //   onError: (err) => {
+  //     apiMessage.error(err.message)
+  //   },
+  // })
 
   const clearLogs = useMutation({
     mutationFn: clearLogsJob,
@@ -64,14 +66,15 @@ const ProcessRunDrawer: React.FC<{
       {contextHolder}
       <Drawer title="Correr procesos" open={open} onClose={onClose} width={500}>
         <div className="mb-2 flex justify-between items-center">
-          <Button
+          <div></div>
+          {/* <Button
             type="primary"
             disabled={process.length < 1}
             loading={runJobsMt.isPending}
             onClick={() => runJobsMt.mutate()}
           >
             Correr los procesos
-          </Button>
+          </Button> */}
           <div className="space-x-1">
             <Button
               type="primary"
@@ -95,7 +98,16 @@ const ProcessRunDrawer: React.FC<{
             </div>
           )}
           {process.map((el) => {
-            return <CardProcess name={el} key={el} logs={logs} />
+            return (
+              <CardProcess
+                name={el}
+                key={el}
+                logs={logs}
+                refetchLogs={() => {
+                  logQuery.refetch()
+                }}
+              />
+            )
           })}
         </div>
       </Drawer>
@@ -106,13 +118,39 @@ const ProcessRunDrawer: React.FC<{
 const CardProcess: React.FC<{
   name: string
   logs: JobLog[]
-}> = ({ name, logs }) => {
+  refetchLogs: () => void
+}> = ({ name, logs, refetchLogs }) => {
   const groupInLog = logs.find((el) => el.groupName == name)
+
+  const runGroupMt = useMutation({
+    mutationFn: async (groupName: string) => {
+      await runJobGroup(groupName)
+    },
+    onSuccess: () => {
+      refetchLogs()
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
+  const handleRun = (groupName: string) => {
+    runGroupMt.mutate(groupName)
+  }
 
   if (!groupInLog)
     return (
       <div className="p-3 border  border-solid flex justify-between rounded border-slate-700">
         <span>{name}</span>
+        <Button
+          size="small"
+          ghost
+          className="!text-black cursor-pointer"
+          onClick={() => handleRun(name)}
+          loading={runGroupMt.isPending}
+        >
+          <Play className="text-slate-700 w-5 h-auto" />
+        </Button>
       </div>
     )
 

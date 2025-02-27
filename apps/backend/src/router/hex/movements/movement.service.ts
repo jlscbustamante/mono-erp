@@ -100,12 +100,20 @@ export class MovementService {
     await jobManager.runGroups(jobsAvailable)
   }
 
+  async startOneGroup(name: string) {
+    await jobManager.startGroup(name)
+  }
+
   async clearJobs() {
     jobManager.clear()
   }
 
   async getStatusRunJobs() {
     return jobManager.getLogs()
+  }
+
+  async refreshJobsStatus() {
+    return jobManager.checkAllStatus()
   }
 
   async getGroupsJob() {

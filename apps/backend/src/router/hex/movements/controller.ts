@@ -35,6 +35,13 @@ export class MovementController {
   }
 
   @catchError
+  async startOneGroup(req: Request, res: Response) {
+    const { group } = req.body as { group: string }
+    await movementService.startOneGroup(group)
+    return res.status(200).json({ message: 'ok' })
+  }
+
+  @catchError
   async clearJobs(req: Request, res: Response) {
     await movementService.clearJobs()
     return res.status(200).json({ message: 'ok' })
@@ -43,6 +50,12 @@ export class MovementController {
   @catchError
   async getStatusRun(req: Request, res: Response) {
     const state = await movementService.getStatusRunJobs()
+    return res.status(200).json({ data: state })
+  }
+
+  @catchError
+  async refreshJobStatus(req: Request, res: Response) {
+    const state = await movementService.refreshJobsStatus()
     return res.status(200).json({ data: state })
   }
 

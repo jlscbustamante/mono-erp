@@ -21,12 +21,23 @@ export const movementEndpoints = (app: Application) => {
     controller.startGroupJob,
   )
 
+  app.post(
+    '/api/hex/movements/job/run-group',
+    validateToken,
+    controller.startOneGroup,
+  )
+
   app.get('/api/hex/movements/job/infostatus', controller.getInfoJobStatus)
 
   app.get(
     '/api/hex/movements/job/run/status',
     validateToken,
     controller.getStatusRun,
+  )
+
+  app.get(
+    '/api/hex/movements/job/run/refresh-status',
+    controller.refreshJobStatus,
   )
 
   app.get('/api/hex/movements/job/getGroups', controller.getGroupsJob)

@@ -19,7 +19,78 @@ interface JobLog {
 
 export class JobLocalManagerService extends GlueService {
   private logs: JobLog[] = []
-  private jobGroups: JobGroup[] = []
+  private jobGroups: JobGroup[] = [
+    {
+      name: 'ARCHIVOS CULQI',
+      jobs: [
+        {
+          name: 's3_rds_transacciones_culqi_pos',
+        },
+        {
+          name: 'call_sp_transacciones_culqi_pos',
+        },
+        {
+          name: 's3_purge_folder_culqi_pos',
+        },
+      ],
+    },
+    {
+      name: 'ARCHIVOS IZIPAY-TODOS',
+      jobs: [
+        {
+          name: 's3_rds_transacciones_izipay_pos',
+        },
+        {
+          name: 'call_sp_transacciones_izipay_pos',
+        },
+        {
+          name: 's3_purge_folder_izipay_pos',
+        },
+      ],
+    },
+    {
+      name: 'ARCHIVOS AMEX',
+      jobs: [
+        {
+          name: 's3_rds_transacciones_iziamx_pos',
+        },
+        {
+          name: 'call_sp_transacciones_izipay_pos',
+        },
+        {
+          name: 's3_purge_folder_iziamx_pos',
+        },
+      ],
+    },
+    {
+      name: 'ARCHIVOS DC',
+      jobs: [
+        {
+          name: 's3_rds_transacciones_izidc_pos',
+        },
+        {
+          name: 'call_sp_transacciones_izipay_pos',
+        },
+        {
+          name: 's3_purge_folder_izidc_pos',
+        },
+      ],
+    },
+    {
+      name: 'ARCHIVOS MC',
+      jobs: [
+        {
+          name: 's3_rds_transacciones_izimc_pos',
+        },
+        {
+          name: 'call_sp_transacciones_izipay_pos',
+        },
+        {
+          name: 's3_purge_folder_izimc_pos',
+        },
+      ],
+    },
+  ]
   private intervalId: NodeJS.Timeout | null = null
 
   constructor(private readonly segs = 30) {
@@ -70,8 +141,16 @@ export class JobLocalManagerService extends GlueService {
     }
   }
 
-  private async startGroup(groupName: string) {
+  async startGroup(groupName: string) {
     const group = this.validateJob(groupName)
+    if (!group) throw new Error('No se pudo encontrar el grupo de jobs')
+
+    const existInLog = this.logs.find((g) => g.groupName === group.name)
+
+    if (existInLog && !existInLog.closed) {
+      throw new Error('Ya existe un proceso en ejecución para este grupo')
+    }
+    this.logs = this.logs.filter((g) => g.groupName !== group.name)
 
     const firstJobId = await this.startJob(group.jobs[0].name)
     let files = 0
@@ -106,31 +185,51 @@ export class JobLocalManagerService extends GlueService {
         },
       ],
     })
+
+    if (!this.intervalId) {
+      this.intervalId = setInterval(async () => {
+        await this.checkAllStatus()
+      }, this.segs * 1000)
+    }
+  }
+
+  async checkAllStatus() {
+    for (const group of this.logs) {
+      await this.checkOneGroupLog(group)
+    }
+    if (
+      this.logs.every((groupLog) => {
+        return groupLog.closed
+      })
+    ) {
+      this.stopInterval()
+    }
   }
 
   private async checkStatus() {
     try {
       await this.checkOneGroupLog(this.logs[this.logs.length - 1])
-      const lastGroup = this.logs[this.logs.length - 1]
+      // const lastGroup = this.logs[this.logs.length - 1]
       const haveError = this.logs.some(
         (g) => g.closed && g.jobs.some((j) => !j.ok),
       )
 
       if (haveError) {
         this.stopInterval()
-      } else if (lastGroup.closed) {
-        const indexGroup = this.jobGroups.findIndex(
-          (g) => g.name === lastGroup.groupName,
-        )
-        if (indexGroup > -1) {
-          const nextGroup = this.jobGroups[indexGroup + 1]
-          if (nextGroup) {
-            await this.startGroup(nextGroup.name)
-          }
-        } else {
-          this.stopInterval()
-        }
       }
+      // else if (lastGroup.closed) {
+      //   const indexGroup = this.jobGroups.findIndex(
+      //     (g) => g.name === lastGroup.groupName,
+      //   )
+      //   if (indexGroup > -1) {
+      //     const nextGroup = this.jobGroups[indexGroup + 1]
+      //     if (nextGroup) {
+      //       await this.startGroup(nextGroup.name)
+      //     }
+      //   } else {
+      //     this.stopInterval()
+      //   }
+      // }
     } catch (err: any) {
       const lastGroup = this.logs[this.logs.length - 1]
       lastGroup.jobs[lastGroup.jobs.length - 1].error =
@@ -141,12 +240,13 @@ export class JobLocalManagerService extends GlueService {
   }
 
   clear() {
-    if (this.isRunning())
-      throw new Error(
-        'No se puede limpiar el registro, hay un proceso en ejecución.',
-      )
-    this.jobGroups = []
-    this.logs = []
+    this.logs = this.logs.filter((el) => !el.closed)
+    // if (this.isRunning())
+    //   throw new Error(
+    //     'No se puede limpiar el registro, hay un proceso en ejecución.',
+    //   )
+    // this.jobGroups = []
+    // this.logs = []
   }
 
   getLogs() {

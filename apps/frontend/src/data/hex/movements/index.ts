@@ -19,6 +19,15 @@ export const runJobs = async (): Promise<void> => {
   })
 }
 
+export const runJobGroup = async (name: string): Promise<void> => {
+  return baseUrl<void>('hex/movements/job/run-group', {
+    method: 'POST',
+    body: {
+      group: name,
+    },
+  })
+}
+
 export const clearLogsJob = async (): Promise<void> => {
   return baseUrl<void>('hex/movements/job/clear')
 }
