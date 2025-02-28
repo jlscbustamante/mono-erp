@@ -20,53 +20,63 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               title: 'Id',
               dataIndex: 'id',
               sorter: (a, b) => a.id - b.id,
+              showSorterTooltip: false,
             },
             {
               title: 'Proveedor',
               dataIndex: 'supplier',
               sorter: (a, b) => a.supplier?.localeCompare(b.supplier ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'Solicitado',
               dataIndex: 'requestedAt',
               sorter: (a, b) => +(a.requestedAt > b.requestedAt),
+              showSorterTooltip: false,
             },
             {
               title: 'N° Doc',
               dataIndex: 'numDoc',
               sorter: (a, b) => a.numDoc?.localeCompare(b.numDoc ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'Detalle',
               dataIndex: 'description',
               sorter: (a, b) =>
                 a.description?.localeCompare(b.description ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'Centro de costo',
               dataIndex: 'costCenter',
               sorter: (a, b) => a.costCenter?.localeCompare(b.costCenter ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'Categoria',
               dataIndex: 'category',
               sorter: (a, b) => a.category?.localeCompare(b.category ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'Regis. por',
               dataIndex: 'createdBy',
               sorter: (a, b) => a.createdBy?.localeCompare(b.createdBy ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'F. Pago',
               dataIndex: 'paymentMethod',
               sorter: (a, b) =>
                 a.paymentMethod?.localeCompare(b.paymentMethod ?? ''),
+              showSorterTooltip: false,
             },
             {
               title: 'N° Q',
               dataIndex: 'numQuota',
               sorter: (a, b) => a.numQuota - b.numQuota,
+              showSorterTooltip: false,
             },
             // 17:43-> 17:50
             // {

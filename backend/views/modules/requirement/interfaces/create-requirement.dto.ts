@@ -1,6 +1,9 @@
+import { REQUIERMENT_TYPE } from "./enums.ts";
+
 export interface CreateRequirementDto {
   company: string;
   ruc: string;
+  request_type: REQUIERMENT_TYPE;
   legal_name: string;
   description: string;
   document_type: string;

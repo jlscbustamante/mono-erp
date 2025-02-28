@@ -2,11 +2,12 @@ import { FilterComponent } from '@/components/fifi'
 import { viewClient } from '@/lib/rpc'
 import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
-import { REQUIREMENT_STATUS } from '@view'
+import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
 import { format, parseISO } from 'date-fns'
 import { Calendar, Logs } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
+import { SelectRequestType } from '../components/select-request-type'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
 import { usePendingStore } from './state'
@@ -16,6 +17,26 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   const filters = usePendingStore((st) => st.filters)
   const setFilter = usePendingStore((st) => st.setFilters)
   const [control, setControl] = useReducer((c) => c + 1, 0)
+
+  const type = useMemo(() => {
+    return filters.find((el) => el.field == 'request_type')
+      ?.value as REQUIERMENT_TYPE
+  }, [filters])
+
+  const changeType = (type: REQUIERMENT_TYPE) => {
+    setFilter(
+      filters.map((el) => {
+        if (el.field == 'request_type') {
+          return {
+            ...el,
+            value: type,
+          }
+        }
+        return el
+      }),
+    )
+    setControl()
+  }
 
   const supplierId = useMemo(() => {
     return filters.find((el) => el.field == 'supplier_id')?.value as
@@ -96,6 +117,13 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   return (
     <div>
       <CalendarComponent
+        middleAddons={
+          <SelectRequestType
+            className="mb-2"
+            value={type}
+            onChange={changeType}
+          />
+        }
         onClick={handleClick}
         date={date}
         setDate={setDate}

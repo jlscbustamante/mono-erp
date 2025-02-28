@@ -36,7 +36,12 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
           refetch()
         }}
       />
-      <NavRequest />
+      <NavRequest
+        onRefetch={() => {
+          console.log('Pruebn : ')
+          refetch()
+        }}
+      />
       <DataTable data={data} />
     </div>
   )

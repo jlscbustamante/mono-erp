@@ -9,6 +9,13 @@ export enum REQUIREMENT_STATUS {
   CANCELLED = "R",
 }
 
+export enum REQUIERMENT_TYPE {
+  SIMPLE = "S",
+  TRANSFER = "T",
+  SUPPLIER = "U",
+  LIQUIDATION = "L",
+}
+
 export enum REQUIREMENT_TYPE_DOCUMENT {
   FACTURA = "01",
   BOLETA = "03",

@@ -168,6 +168,7 @@ export class RequirementRepository {
     const requirement: RequirementInsert = {
       status: REQUIREMENT_STATUS.PENDING,
       amount: data.amount,
+      request_type: data.request_type,
       company_id: data.company,
       supplier_id: data.supplier,
       legal_number: data.ruc,

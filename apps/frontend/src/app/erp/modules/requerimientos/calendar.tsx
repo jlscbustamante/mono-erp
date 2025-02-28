@@ -29,12 +29,14 @@ export const CalendarComponent = ({
   addons,
   date,
   setDate,
+  middleAddons,
   events,
   onClick,
   beforeAddons,
 }: {
   addons?: React.ReactNode
   beforeAddons?: React.ReactNode
+  middleAddons?: React.ReactNode
   date: string
   events?: {
     title: string
@@ -96,20 +98,7 @@ export const CalendarComponent = ({
         </div>
         {addons}
       </div>
-      <div className="mb-2 flex gap-2">
-        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
-          Simple
-        </button>
-        <button className="py-1 px-3 border-blue-500 border-1 rounded-md text-white font-sans bg-blue-500 hover:bg-blue-500 hover:text-white transition-colors">
-          Transferencia
-        </button>
-        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
-          Transferencia
-        </button>
-        <button className="py-1 px-3 border-blue-500 border rounded-md text-blue-500 font-sans bg-white hover:bg-blue-500 hover:text-white transition-colors cursor-pointer">
-          Liquidacion
-        </button>
-      </div>
+      {middleAddons}
       <FullCalendar
         // dayCellClassNames={'cursor-pointer'}
         dateClick={handleDateClick}

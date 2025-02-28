@@ -10,7 +10,11 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { CreateRequirementDto, REQUIREMENT_TYPE_DOCUMENT } from '@view'
+import {
+  CreateRequirementDto,
+  REQUIERMENT_TYPE,
+  REQUIREMENT_TYPE_DOCUMENT,
+} from '@view'
 import {
   Button,
   Checkbox,
@@ -251,9 +255,13 @@ export function CreationForm() {
               amount: 1,
               hasRetention: false,
               retention: 0,
+              request_type: REQUIERMENT_TYPE.SUPPLIER,
             } satisfies Partial<CreateRequirementDto>
           }
         >
+          <Form.Item name={'request_type'} className="hidden">
+            <Input />
+          </Form.Item>
           <Form.Item name={'cost_center_name'} className="hidden">
             <Input />
           </Form.Item>

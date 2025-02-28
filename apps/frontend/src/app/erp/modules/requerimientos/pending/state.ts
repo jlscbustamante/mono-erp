@@ -1,5 +1,5 @@
 import { RequirementSelect, WhereOption } from '@pizzadb'
-import { REQUIREMENT_STATUS } from '@view'
+import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 
@@ -17,6 +17,12 @@ export const usePendingStore = create<Store>((set) => ({
     return set({ view })
   },
   filters: [
+    {
+      field: 'request_type',
+      key: 'request_type',
+      operator: 'equal',
+      value: REQUIERMENT_TYPE.SUPPLIER,
+    },
     {
       field: 'requested_at',
       key: 'requested_at',

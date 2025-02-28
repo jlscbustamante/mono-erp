@@ -1,16 +1,32 @@
-import { Tabs, TabsProps } from 'antd'
+import { REQUIERMENT_TYPE } from '@view'
+import { useMemo } from 'react'
+import { SelectRequestType } from '../components/select-request-type'
+import { usePendingStore } from './state'
 
-export function NavRequest() {
-  const items: TabsProps['items'] = [
-    {
-      key: '1',
-      label: 'Simple',
-    },
-    {
-      key: '2',
-      label: 'Transferencia',
-    },
-  ]
+export function NavRequest({ onRefetch }: { onRefetch?: () => void }) {
+  const filters = usePendingStore((st) => st.filters)
+  const setFilter = usePendingStore((st) => st.setFilters)
 
-  return <Tabs items={items} defaultActiveKey="1" />
+  const type = useMemo(() => {
+    return filters.find((el) => el.field == 'request_type')
+      ?.value as REQUIERMENT_TYPE
+  }, [filters])
+
+  const changeType = (type: REQUIERMENT_TYPE) => {
+    setFilter(
+      filters.map((el) => {
+        if (el.field == 'request_type') {
+          return {
+            ...el,
+            value: type,
+          }
+        }
+        return el
+      }),
+    )
+    onRefetch?.()
+  }
+  return (
+    <SelectRequestType className="my-2" value={type} onChange={changeType} />
+  )
 }
