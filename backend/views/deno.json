@@ -13,4 +13,10 @@
   "tasks": {
     "dev":"deno run --allow-net --env-file --allow-env --allow-read --allow-write --watch main.ts"
   }
+  ,
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  }
 }

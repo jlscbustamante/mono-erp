@@ -42,6 +42,35 @@ export class RequirementRepository {
     });
   }
 
+  async filterCountByType(
+    filters: WhereOption<RequirementSelect>[],
+    month?: number
+  ) {
+    let allowFilters = filters.filter((el) => el.field !== "request_type");
+    if (month) {
+      allowFilters = allowFilters.filter((el) => el.field !== "requested_at");
+      allowFilters.push({
+        field: "requested_at",
+        key: "requested_at",
+        operator: "equal",
+        value: month,
+        useMods: true,
+        mods: {
+          field: "DATE",
+        },
+      });
+    }
+    const query = transformWhere(filters).join(" AND ");
+
+    const [result] = await db.execute(
+      `SELECT request_type type,COUNT(*) count FROM adm_request ${
+        allowFilters.length > 0 ? `WHERE ${query}` : ""
+      } GROUP BY request_type`
+    );
+
+    return result;
+  }
+
   async saveAndApprove(data: UpdateRequirementDto) {
     await db.transaction(async (manager) => {
       await manager

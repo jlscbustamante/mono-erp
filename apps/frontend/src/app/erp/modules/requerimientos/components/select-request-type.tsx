@@ -1,5 +1,9 @@
+import { viewClient } from '@/lib/rpc'
 import { cn } from '@/utils'
+import { WhereOption } from '@pizzadb'
+import { useQuery } from '@tanstack/react-query'
 import { REQUIERMENT_TYPE } from '@view'
+import { useMemo } from 'react'
 
 const options: { label: string; value: REQUIERMENT_TYPE }[] = [
   {
@@ -24,11 +28,36 @@ export function SelectRequestType({
   className,
   value,
   onChange,
+  filters,
 }: {
   className?: string
   value?: REQUIERMENT_TYPE
   onChange?: (value: REQUIERMENT_TYPE) => void
+  filters?: WhereOption<any>[]
 }) {
+  const query = useQuery({
+    queryKey: ['rq:count-requirements', filters],
+    enabled: !!filters,
+    queryFn: async () => {
+      const data = await viewClient.api.view.requirement.filterCount.$get({
+        query: {
+          filters: JSON.stringify(filters!),
+        },
+      })
+      const body = await data.json()
+      return body.data as { type: REQUIERMENT_TYPE; count: number }[]
+    },
+  })
+
+  const countType: Record<REQUIERMENT_TYPE, number> = useMemo(() => {
+    return (
+      query.data?.reduce(
+        (acc, el) => ({ ...acc, [el.type]: el.count }),
+        {} as Record<REQUIERMENT_TYPE, number>,
+      ) ?? ({} as Record<REQUIERMENT_TYPE, number>)
+    )
+  }, [query.data])
+
   return (
     <div className={cn('flex space-x-2', className)}>
       {options.map((option) => {
@@ -43,7 +72,8 @@ export function SelectRequestType({
               },
             )}
           >
-            {option.label}
+            {option.label}{' '}
+            {countType[option.value] ? `(${countType[option.value]})` : ''}
           </button>
         )
       })}

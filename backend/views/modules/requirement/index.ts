@@ -20,6 +20,14 @@ export const requirementRouter = new Hono()
       data,
     });
   })
+  .get("/filterCount", filtersMiddlaware, async (c) => {
+    const count = await requirementService.filterCount(
+      c.get("filters") as WhereOption<RequirementSelect>[]
+    );
+    return c.json({
+      data: count,
+    });
+  })
   .get(
     "/requirement/:id",
     zValidator(

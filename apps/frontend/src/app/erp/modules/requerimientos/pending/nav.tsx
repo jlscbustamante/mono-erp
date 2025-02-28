@@ -27,6 +27,11 @@ export function NavRequest({ onRefetch }: { onRefetch?: () => void }) {
     onRefetch?.()
   }
   return (
-    <SelectRequestType className="my-2" value={type} onChange={changeType} />
+    <SelectRequestType
+      className="my-2"
+      value={type}
+      onChange={changeType}
+      filters={filters}
+    />
   )
 }

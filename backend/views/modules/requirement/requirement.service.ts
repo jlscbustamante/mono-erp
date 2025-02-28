@@ -20,6 +20,11 @@ export class RequirementService {
     return data;
   }
 
+  async filterCount(filters: WhereOption<RequirementSelect>[]) {
+    const data = await this.requirementRepository.filterCountByType(filters);
+    return data;
+  }
+
   async createRequirement(data: CreateRequirementDto, name: string) {
     await this.requirementRepository.createRequirement(data, name);
   }
@@ -141,7 +146,6 @@ export class RequirementService {
     const query = filters
       ? transformWhere<RequirementSelect>(filters, "ari").join(" AND ")
       : "";
-    console.log("query : ", query);
     const [result] =
       await db.execute(`SELECT ari.${fieldName} date,SUM(ari.amount) total FROM adm_request ari
 WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
