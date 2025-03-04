@@ -283,6 +283,27 @@ export function CreationForm() {
                 ))}
               </Select>
             </Form.Item>
+            <Form.Item
+              label="Tipo"
+              className=""
+              name="request_type"
+              rules={[{ required: true }]}
+            >
+              <Select placeholder="Tipo">
+                <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
+                  SIMPLE
+                </Select.Option>
+                <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                  TRANSFERENCIA
+                </Select.Option>
+                <Select.Option value={REQUIERMENT_TYPE.SUPPLIER}>
+                  PROVEEDOR
+                </Select.Option>
+                <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
+                  LIQUIDACION
+                </Select.Option>
+              </Select>
+            </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item

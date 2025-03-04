@@ -60,7 +60,7 @@ export class RequirementRepository {
         },
       });
     }
-    const query = transformWhere(filters).join(" AND ");
+    const query = transformWhere(allowFilters).join(" AND ");
 
     const [result] = await db.execute(
       `SELECT request_type type,COUNT(*) count FROM adm_request ${
