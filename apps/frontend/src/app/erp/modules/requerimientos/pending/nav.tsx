@@ -3,9 +3,11 @@ import { useMemo } from 'react'
 import { SelectRequestType } from '../components/select-request-type'
 import { usePendingStore } from './state'
 
-export function NavRequest({ onRefetch }: { onRefetch?: () => void }) {
+export function NavRequest() {
   const filters = usePendingStore((st) => st.filters)
   const setFilter = usePendingStore((st) => st.setFilters)
+  const refetch = usePendingStore((st) => st.refetch)
+  const controlRefetch = usePendingStore((st) => st.controlRefetch)
 
   const type = useMemo(() => {
     return filters.find((el) => el.field == 'request_type')
@@ -24,12 +26,14 @@ export function NavRequest({ onRefetch }: { onRefetch?: () => void }) {
         return el
       }),
     )
-    onRefetch?.()
+    refetch()
   }
+
   return (
     <SelectRequestType
       className="my-2"
       value={type}
+      controlRefetch={controlRefetch}
       onChange={changeType}
       filters={filters}
     />

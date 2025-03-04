@@ -3,13 +3,13 @@ import { FilterOption } from '@/components/fifi/type'
 import { RequirementSelect } from '@pizzadb'
 import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
-import { Calendar, Logs } from 'lucide-react'
 import { useMemo } from 'react'
 import {
   SupplierSelectForm,
   SupplierTitleForm,
 } from '../components/supplier-select'
 import { useApprovedStore } from './state'
+import { SwitchViewApproved } from './switch-view-approved'
 
 const { RangePicker } = DatePicker
 
@@ -66,15 +66,10 @@ export const menuOptions: FilterOption<RequirementSelect>[] = [
   },
 ]
 
-export function Control({
-  onRefetch,
-  toggleView,
-}: {
-  onRefetch?: () => void
-  toggleView?: () => void
-}) {
+export function Control({ loading }: { loading?: boolean }) {
   const filters = useApprovedStore((st) => st.filters)
   const setFilters = useApprovedStore((st) => st.setFilters)
+  const refetch = useApprovedStore((st) => st.refetch)
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
@@ -122,25 +117,16 @@ export function Control({
           }}
         />
         <FilterComponent
+          loading={loading}
           options={menuOptions}
           filters={filters}
           setFilters={setFilters}
           onSearch={() => {
-            onRefetch?.()
+            refetch()
           }}
         />
       </div>
-      <div className="flex border border-solid border-slate-300 rounded-md ml-2">
-        <div className="bg-slate-200 p-1 flex items-center justify-center">
-          <Logs className="w-5 h-auto" />
-        </div>
-        <div
-          className="px-2 py-1 flex items-center justify-center cursor-pointer"
-          onClick={toggleView}
-        >
-          <Calendar className="w-5 h-auto" />
-        </div>
-      </div>
+      <SwitchViewApproved />
     </div>
   )
 }

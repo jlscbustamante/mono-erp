@@ -6,7 +6,7 @@ import { DataTable } from './data-table'
 import { NavRequest } from './nav'
 import { useRejectedStore } from './state'
 
-export function ViewTable({ toggleView }: { toggleView?: () => void }) {
+export function ViewTable() {
   const filters = useRejectedStore((st) => st.filters)
 
   const { data = [], refetch } = useQuery({
@@ -25,7 +25,6 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
   return (
     <div>
       <Control
-        toggleView={toggleView}
         onRefetch={() => {
           refetch()
         }}

@@ -29,14 +29,16 @@ export function SelectRequestType({
   value,
   onChange,
   filters,
+  controlRefetch,
 }: {
   className?: string
   value?: REQUIERMENT_TYPE
   onChange?: (value: REQUIERMENT_TYPE) => void
   filters?: WhereOption<any>[]
+  controlRefetch: number
 }) {
   const query = useQuery({
-    queryKey: ['rq:count-requirements', filters],
+    queryKey: ['rq:count-requirements', controlRefetch, value],
     enabled: !!filters,
     queryFn: async () => {
       const data = await viewClient.api.view.requirement.filterCount.$get({
@@ -48,6 +50,9 @@ export function SelectRequestType({
       return body.data as { type: REQUIERMENT_TYPE; count: number }[]
     },
   })
+  const changeType = (type: REQUIERMENT_TYPE) => {
+    onChange?.(type)
+  }
 
   const countType: Record<REQUIERMENT_TYPE, number> = useMemo(() => {
     return (
@@ -63,7 +68,7 @@ export function SelectRequestType({
       {options.map((option) => {
         return (
           <button
-            onClick={() => onChange?.(option.value)}
+            onClick={() => changeType(option.value)}
             key={option.value}
             className={cn(
               'py-1 px-3 text-blue-500 border-blue-400 border-[0.5px] rounded-md font-sans hover:bg-blue-500 hover:text-white transition-colors ring-0 outline-none cursor-pointer bg-transparent',

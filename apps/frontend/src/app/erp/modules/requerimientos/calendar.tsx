@@ -86,7 +86,7 @@ export const CalendarComponent = ({
   return (
     <div>
       <div className="flex justify-between items-center">
-        <div className="flex items-center mb-3 gap-3">
+        <div className="flex items-center gap-3">
           <Button onClick={goBack} size="small">
             <ChevronLeft className="text-slate-600" />
           </Button>

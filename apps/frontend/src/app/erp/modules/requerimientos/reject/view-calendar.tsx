@@ -3,18 +3,19 @@ import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
 import { format, parseISO } from 'date-fns'
-import { Calendar, Logs } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
 import { useRejectedStore } from './state'
+import { SwitchViewReject } from './switch-view-reject'
 
-export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
+export function ViewCalendar() {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const filters = useRejectedStore((st) => st.filters)
   const setFilter = useRejectedStore((st) => st.setFilters)
   const [control, setControl] = useReducer((c) => c + 1, 0)
+  const toggleView = useRejectedStore((st) => st.setView)
 
   const supplierId = useMemo(() => {
     return filters.find((el) => el.field == 'supplier_id')?.value as
@@ -54,7 +55,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   }
 
   const query = useQuery({
-    queryKey: ['rq:reject-calendar', control],
+    queryKey: ['rq:reject-calendar', control, date],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const filtersWithoutDate = filters.filter(
@@ -89,7 +90,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
         return el
       }),
     )
-    toggleView?.()
+    toggleView('list')
   }
 
   return (
@@ -126,19 +127,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
           date: d.date,
           title: `S/ ${d.total}<br >Cancelados`,
         }))}
-        addons={
-          <div className="flex border border-solid border-slate-300 rounded-md ml-2">
-            <div
-              className="p-1 flex items-center justify-center cursor-pointer"
-              onClick={toggleView}
-            >
-              <Logs className="w-5 h-auto" />
-            </div>
-            <div className="px-2 py-1 flex items-center justify-center bg-slate-200">
-              <Calendar className="w-5 h-auto" />
-            </div>
-          </div>
-        }
+        addons={<SwitchViewReject />}
       />
     </div>
   )

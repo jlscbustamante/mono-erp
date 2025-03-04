@@ -1,21 +1,29 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { IRequirementPresentation } from '@view'
+import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
+import { useMemo } from 'react'
 import { Control } from './control'
 import { DataTable } from './data-table'
 import { NavRequest } from './nav'
 import { usePendingStore } from './state'
 
-export function ViewTable({ toggleView }: { toggleView?: () => void }) {
+export function ViewTable() {
   const filters = usePendingStore((st) => st.filters)
+  const controlRefetch = usePendingStore((st) => st.controlRefetch)
+
+  const requirementType = useMemo(() => {
+    const requestType = filters.find((el) => {
+      return el.field == 'request_type'
+    })
+    return requestType?.value as REQUIERMENT_TYPE
+  }, [filters])
 
   const {
     data = [],
-    refetch,
     isLoading,
     isFetching,
   } = useQuery({
-    queryKey: ['rq:pending-req'],
+    queryKey: ['rq:pending-req', requirementType, controlRefetch],
     queryFn: async () => {
       const request = await viewClient.api.view.requirement.filter.$get({
         query: {
@@ -29,19 +37,8 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
 
   return (
     <div>
-      <Control
-        toggleView={toggleView}
-        loading={isLoading || isFetching}
-        onRefetch={() => {
-          refetch()
-        }}
-      />
-      <NavRequest
-        onRefetch={() => {
-          console.log('Pruebn : ')
-          refetch()
-        }}
-      />
+      <Control loading={isLoading || isFetching} />
+      <NavRequest />
       <DataTable data={data} />
     </div>
   )

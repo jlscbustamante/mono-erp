@@ -4,7 +4,6 @@ import { PATHS } from '@/const/paths'
 import { RequirementSelect } from '@pizzadb'
 import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
-import { Calendar, Logs } from 'lucide-react'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import {
@@ -12,6 +11,7 @@ import {
   SupplierTitleForm,
 } from '../components/supplier-select'
 import { usePendingStore } from './state'
+import { SwitchViewPending } from './switch-view-pending'
 
 const { RangePicker } = DatePicker
 
@@ -68,18 +68,11 @@ export const menuOptions: FilterOption<RequirementSelect>[] = [
   },
 ]
 
-export function Control({
-  onRefetch,
-  loading,
-  toggleView,
-}: {
-  onRefetch?: () => void
-  loading?: boolean
-  toggleView?: () => void
-}) {
+export function Control({ loading }: { loading?: boolean }) {
   const navigate = useNavigate()
   const filters = usePendingStore((st) => st.filters)
   const setFilters = usePendingStore((st) => st.setFilters)
+  const refetch = usePendingStore((st) => st.refetch)
 
   const dates: [dayjs.Dayjs | null, dayjs.Dayjs | null] = useMemo(() => {
     const dates = filters.find(
@@ -132,7 +125,7 @@ export function Control({
           filters={filters}
           setFilters={setFilters}
           onSearch={() => {
-            onRefetch?.()
+            refetch()
           }}
         />
       </div>
@@ -145,17 +138,7 @@ export function Control({
       >
         Nuevo requerimiento
       </Button>
-      <div className="flex border border-solid border-slate-300 rounded-md ml-2">
-        <div className="bg-slate-200 p-1 flex items-center justify-center">
-          <Logs className="w-5 h-auto" />
-        </div>
-        <div
-          className="px-2 py-1 flex items-center justify-center cursor-pointer"
-          onClick={toggleView}
-        >
-          <Calendar className="w-5 h-auto" />
-        </div>
-      </div>
+      <SwitchViewPending />
     </div>
   )
 }

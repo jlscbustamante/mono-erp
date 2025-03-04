@@ -2,8 +2,8 @@ import { RequirementSelect, WhereOption } from '@pizzadb'
 import { REQUIREMENT_STATUS } from '@view'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
+import { ViewType } from '../components/view-type.interface'
 
-export type ViewType = 'list' | 'calendar'
 interface Store {
   filters: WhereOption<RequirementSelect>[]
   setFilters: (filters: WhereOption<RequirementSelect>[]) => void

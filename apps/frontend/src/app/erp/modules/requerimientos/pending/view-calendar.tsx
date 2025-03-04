@@ -4,19 +4,20 @@ import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
 import { format, parseISO } from 'date-fns'
-import { Calendar, Logs } from 'lucide-react'
 import { useMemo, useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SelectRequestType } from '../components/select-request-type'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
 import { usePendingStore } from './state'
+import { SwitchViewPending } from './switch-view-pending'
 
-export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
+export function ViewCalendar() {
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
   const filters = usePendingStore((st) => st.filters)
   const setFilter = usePendingStore((st) => st.setFilters)
   const [control, setControl] = useReducer((c) => c + 1, 0)
+  const toggleView = usePendingStore((st) => st.setView)
 
   const type = useMemo(() => {
     return filters.find((el) => el.field == 'request_type')
@@ -76,7 +77,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
   }
 
   const query = useQuery({
-    queryKey: ['rq:pending-calendar', control],
+    queryKey: ['rq:pending-calendar', control, date],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const filtersWithoutDate = filters.filter(
@@ -111,7 +112,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
         return el
       }),
     )
-    toggleView?.()
+    toggleView('list')
   }
 
   return (
@@ -119,7 +120,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
       <CalendarComponent
         middleAddons={
           <SelectRequestType
-            className="mb-2"
+            className="mb-2 mt-2"
             value={type}
             onChange={changeType}
           />
@@ -155,19 +156,7 @@ export function ViewCalendar({ toggleView }: { toggleView?: () => void }) {
             />
           </div>
         }
-        addons={
-          <div className="flex border border-solid border-slate-300 rounded-md ml-2">
-            <div
-              className="p-1 flex items-center justify-center cursor-pointer"
-              onClick={toggleView}
-            >
-              <Logs className="w-5 h-auto" />
-            </div>
-            <div className="px-2 py-1 flex items-center justify-center bg-slate-200">
-              <Calendar className="w-5 h-auto" />
-            </div>
-          </div>
-        }
+        addons={<SwitchViewPending />}
       />
     </div>
   )

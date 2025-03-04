@@ -6,10 +6,14 @@ import { DataTable } from './data-table'
 import { NavRequest } from './nav'
 import { useApprovedStore } from './state'
 
-export function ViewTable({ toggleView }: { toggleView?: () => void }) {
+export function ViewTable() {
   const filters = useApprovedStore((st) => st.filters)
 
-  const { data = [], refetch } = useQuery({
+  const {
+    data = [],
+    isLoading,
+    isFetching,
+  } = useQuery({
     queryKey: ['rq:approved-req'],
     queryFn: async () => {
       const request = await viewClient.api.view.requirement.filter.$get({
@@ -23,13 +27,7 @@ export function ViewTable({ toggleView }: { toggleView?: () => void }) {
   })
   return (
     <div>
-      <Control
-        toggleView={toggleView}
-        // loading={isLoading || isFetching}
-        onRefetch={() => {
-          refetch()
-        }}
-      />
+      <Control loading={isLoading || isFetching} />
       <NavRequest />
       <DataTable data={data} />
     </div>
