@@ -35,6 +35,7 @@ import { IUserFilter3 } from '../../../types/filter'
 import { catchError } from '../../../utils/decorators'
 import {
   createDispatch,
+  createInitialStockSteak,
   createInitialStockUseCase,
   dispatchItemsPizzam,
   dispatchItemsSteak,
@@ -171,12 +172,22 @@ export class HexInventoryController {
 
   @catchError
   async createInitialStock(req: Request, res: Response) {
-    const { items, stockAt, storeCode } = req.body as CreateInitialStockDto
-    await createInitialStockUseCase.run({
-      items,
-      stockAt,
-      storeCode,
-    })
+    const { items, stockAt, storeCode, company } =
+      req.body as CreateInitialStockDto
+    if (company == 'STEAKHOUSE') {
+      await createInitialStockSteak.run({
+        items,
+        stockAt,
+        storeCode,
+      })
+    } else {
+      await createInitialStockUseCase.run({
+        items,
+        stockAt,
+        storeCode,
+      })
+    }
+    clearCache(storeCode, stockAt)
     return res.json({
       message: 'ok',
     })
@@ -221,10 +232,9 @@ export class HexInventoryController {
 
     if (sucursal.trademark_id == 'PIZZAM') {
       await dispatchItemsPizzam.run(dispatch, token.name)
-    } else if(sucursal.trademark_id=='STEAKHOUSE'){
+    } else if (sucursal.trademark_id == 'STEAKHOUSE') {
       await dispatchItemsSteak.run(dispatch, token.name)
-    }
-    else {
+    } else {
       await dispatchItemsUseCase.run(dispatch, token.name)
     }
     res.json({

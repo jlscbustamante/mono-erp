@@ -175,6 +175,11 @@ export const createInitialStockUseCase = new CreateInitialStock(
   stockRepository,
 )
 
+export const createInitialStockSteak = new CreateInitialStock(
+  generateTemplateStockSteak,
+  stockRepositorySteak,
+)
+
 export const relationsRepository = new RelationsRepositoryImpl()
 
 export const sendDispatchEfisUseCase = new SendDispatch(
