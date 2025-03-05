@@ -174,6 +174,8 @@ export class HexInventoryController {
   async createInitialStock(req: Request, res: Response) {
     const { items, stockAt, storeCode, company } =
       req.body as CreateInitialStockDto
+    console.log('INICIAL : CACHE : ', storeCode, stockAt)
+    clearCache(storeCode, stockAt)
     if (company == 'STEAKHOUSE') {
       await createInitialStockSteak.run({
         items,
