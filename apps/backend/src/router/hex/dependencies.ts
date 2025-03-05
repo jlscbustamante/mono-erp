@@ -20,6 +20,7 @@ import { ItemRepositoryImpl } from '../../core/inventory/infrastructure/reposito
 import { PurchaseRepositoryImpl } from '../../core/inventory/infrastructure/repositories/purchase.repository'
 import { StockRepositoryImpl } from '../../core/inventory/infrastructure/repositories/stock.repository'
 import { TemplateRepositoryPizzam } from '../../core/inventory/infrastructure/repositories/template-pizzam.repository'
+import { TemplateSteakRepository } from '../../core/inventory/infrastructure/repositories/template-steak.repository'
 import { TemplateRepositoryImpl } from '../../core/inventory/infrastructure/repositories/template.repository'
 import { WarehousesRepositoryImpl } from '../../core/inventory/infrastructure/repositories/warehouses.repository'
 import { InventoryService } from '../../core/inventory/inventory.service'
@@ -33,10 +34,14 @@ import { DriverService } from './inventory/driver.service'
 
 export const itemRepository = new ItemRepositoryImpl()
 export const warehouseRepository = new WarehousesRepositoryImpl()
+
 export const templateRepository = new TemplateRepositoryImpl(
   warehouseRepository,
 )
 export const templateRepositoryPizzam = new TemplateRepositoryPizzam(
+  warehouseRepository,
+)
+export const templateRepositorySteak = new TemplateSteakRepository(
   warehouseRepository,
 )
 
@@ -48,6 +53,14 @@ export const stockRepository = new StockRepositoryImpl(
   itemRepository,
   stockDbRepository,
 )
+
+const stockRepositorySteak = new StockRepositoryImpl(
+  templateRepositorySteak,
+  warehouseRepository,
+  itemRepository,
+  stockDbRepository,
+)
+
 export const stockRepositoryPizzam = new StockRepositoryImpl(
   templateRepositoryPizzam,
   warehouseRepository,
@@ -60,6 +73,7 @@ export const purchaseRepository = new PurchaseRepositoryImpl()
 
 export const readStockUseCase = new ReadStock(stockRepository)
 export const readStockPizzam = new ReadStock(stockRepositoryPizzam)
+export const readStockSteak = new ReadStock(stockRepositorySteak)
 
 export const saveBiStockUseCase = new SaveBiStock(stockRepository)
 
@@ -75,6 +89,20 @@ export const generateTemplateStockPizzam = new GenerateTemplateEditStock(
   stockRepositoryPizzam,
   templateRepositoryPizzam,
   itemRepository,
+)
+
+export const generateTemplateStockSteak = new GenerateTemplateEditStock(
+  stockRepositorySteak,
+  templateRepositorySteak,
+  itemRepository,
+)
+
+export const dispatchItemsSteak = new DispatchItems(
+  generateTemplateStockSteak,
+  saveBiStockUseCase,
+  templateRepositorySteak,
+  dispatchRepository,
+  warehouseRepository,
 )
 
 export const dispatchItemsUseCase = new DispatchItems(

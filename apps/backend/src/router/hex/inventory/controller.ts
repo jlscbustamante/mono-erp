@@ -37,6 +37,7 @@ import {
   createDispatch,
   createInitialStockUseCase,
   dispatchItemsPizzam,
+  dispatchItemsSteak,
   dispatchItemsUseCase,
   dispatchService,
   dispatchUtil,
@@ -217,13 +218,13 @@ export class HexInventoryController {
       `SELECT * FROM adm_sucursal WHERE id= '${sucursalToId}'`,
     )
     const sucursal = sucursales[0]
-    let isPizzam = false
-    if (sucursal) {
-      isPizzam = sucursal.trademark_id == 'PIZZAM'
-    }
-    if (isPizzam) {
+
+    if (sucursal.trademark_id == 'PIZZAM') {
       await dispatchItemsPizzam.run(dispatch, token.name)
-    } else {
+    } else if(sucursal.trademark_id=='STEAKHOUSE'){
+      await dispatchItemsSteak.run(dispatch, token.name)
+    }
+    else {
       await dispatchItemsUseCase.run(dispatch, token.name)
     }
     res.json({
