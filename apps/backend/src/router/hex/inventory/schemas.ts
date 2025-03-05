@@ -226,6 +226,7 @@ export const createDispatchSchema = Joi.object<DispatchCreateDto>({
 export const createInitialStockSchema = Joi.object<CreateInitialStockDto>({
   stockAt: Joi.date().iso().required(),
   storeCode: Joi.string().required(),
+  company: Joi.string().allow(''),
   items: Joi.array().items(
     Joi.object({
       itemId: Joi.number().integer().required(),
