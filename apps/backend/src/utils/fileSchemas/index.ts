@@ -304,7 +304,7 @@ export const culqiOnlineSchema: FolderSchema = {
   },
 }
 
-export const culqiPosSchemaOld: FolderSchema = {
+export const culqiPosSchemaVeryOld: FolderSchema = {
   header: alpha.slice(0, 53),
   headerJson: {
     A: 'ID Venta',
@@ -363,7 +363,7 @@ export const culqiPosSchemaOld: FolderSchema = {
   },
 }
 
-export const culqiPosSchema: FolderSchema = {
+export const culqiPosSchemaOld: FolderSchema = {
   header: alpha.slice(0, 46),
   headerJson: {
     A: 'ID Venta',
@@ -412,5 +412,64 @@ export const culqiPosSchema: FolderSchema = {
     AR: 'Cuota sin interés',
     AS: 'Nro. Cuotas',
     AT: 'Comision CSI',
+  },
+}
+
+export const culqiPosSchema: FolderSchema = {
+  header: alpha.slice(0, 53),
+  headerJson: {
+    A: 'ID Venta',
+    B: 'ID Cliente',
+    C: 'ID Cargo',
+    D: 'Nombres Cliente',
+    E: 'Apellidos Cliente',
+    F: 'Correo Electronico Cliente',
+    G: 'Marca',
+    H: 'Nro. Tarjeta',
+    I: 'Ult. 4 digitos',
+    J: 'Moneda',
+    K: 'Fecha de la transaccion',
+    L: 'Hora de la transaccion',
+    M: 'Codigo Respuesta',
+    N: 'Descripcion Producto',
+    O: 'Nombres (Tarjeta)',
+    P: 'Apellidos (Tarjeta)',
+    Q: 'Correo Electronico (Tarjeta)',
+    R: 'Pais',
+    S: 'Ciudad',
+    T: 'Direccion',
+    U: 'Nombre Banco',
+    V: 'Pais Banco',
+    W: 'Producto',
+    X: 'Codigo Referencia',
+    Y: 'Ticket',
+    Z: 'Codigo Autorizacion',
+    AA: 'terminal',
+    AB: 'Devolucion',
+    AC: 'Monto VENTA',
+    AD: 'Comisión Variable VENTA',
+    AE: 'IGV VENTA',
+    AF: 'Comisión VENTA',
+    AG: 'Monto Aproximado Abono VENTA',
+    AH: 'Monto PROPINA',
+    AI: 'Comisión Variable PROPINA',
+    AJ: 'IGV PROPINA',
+    AK: 'Comisión PROPINA',
+    AL: 'Monto Aproximado Abono PROPINA',
+    AM: 'Venta Final TOTAL',
+    AN: 'Comision variable TOTAL',
+    AO: 'IGV TOTAL',
+    AP: 'Comision TOTAL',
+    AQ: 'Monto Aproximado Abono TOTAL',
+    AR: 'ID Voucher',
+    AS: 'Serie Terminal',
+    AT: 'Fecha aproximada abono',
+    AU: 'Estado',
+    AV: 'Mensaje al Comercio',
+    AW: 'Mensaje al Usuario',
+    AX: 'Tipo pago',
+    AY: 'Marca QR',
+    AZ: 'ID QR',
+    BA: 'Numero de celular',
   },
 }
