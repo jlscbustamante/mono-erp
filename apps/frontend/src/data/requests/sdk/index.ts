@@ -32,6 +32,31 @@ export const requests = async (filters: Filters<IRequest>) => {
   })
 }
 
+export const requestsLimit = async (filters: Filters<IRequest>) => {
+  return baseUrl<IFilteredRequest[]>('requests/filter', {
+    body: {
+      select: {
+        cashAccount: { name: true, id: true },
+        category: { name: true, id: true },
+        cashAccountCategory: { name: true, id: true },
+        costCenter: { origin: true, id: true },
+      },
+      pagination: {
+        lot: 400,
+        page: 1,
+      },
+      filters,
+      relations: {
+        category: true,
+        cashAccount: true,
+        cashAccountCategory: true,
+        costCenter: true,
+      },
+    },
+    method: 'POST',
+  })
+}
+
 export const countRequests = async (filters: Filters<IRequest>) => {
   return baseUrl<ICountFilterResponse>('requests/filter-count', {
     body: { filters },

@@ -1,6 +1,6 @@
 import { IRequest } from '@/data/requests'
 import { Filters } from '@/data/types/Filters'
-import { format } from 'date-fns'
+import { format, startOfWeek } from 'date-fns'
 import { atom, RecoilState } from 'recoil'
 import { create } from 'zustand'
 
@@ -15,6 +15,9 @@ interface IStore {
 }
 
 export const uploadStore = create<IStore>((set) => ({
-  date: [format(new Date(), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')],
+  date: [
+    format(startOfWeek(new Date()), 'yyyy-MM-dd'),
+    format(new Date(), 'yyyy-MM-dd'),
+  ],
   setDate: (date) => set({ date }),
 }))

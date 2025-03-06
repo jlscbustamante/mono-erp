@@ -48,8 +48,8 @@ export const FormUploadDocument: React.FC<{
   }
 
   const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 },
+    labelCol: { span: 7 },
+    wrapperCol: { span: 17 },
   }
   return (
     <Form {...layout}>
@@ -105,15 +105,15 @@ export const FormUploadDocument: React.FC<{
           }}
           beforeUpload={() => false}
         >
-          <Button icon={<AiOutlineUpload />} type="primary">
-            Selecciona archivo
-          </Button>
+          <Button icon={<AiOutlineUpload />}>Selecciona archivo</Button>
         </Upload>
       </Form.Item>
-      <Form.Item>
-        <Button type="primary" onClick={handlerUpload} disabled={loading}>
-          Guardar documento
-        </Button>
+      <Form.Item wrapperCol={{ offset: 7 }}>
+        <div className="flex justify-end">
+          <Button type="primary" onClick={handlerUpload} disabled={loading}>
+            Guardar documento
+          </Button>
+        </div>
       </Form.Item>
     </Form>
   )

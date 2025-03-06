@@ -105,7 +105,7 @@ const EditFilter: React.FC<{
       case OpFilter.Select:
         return (
           <Select
-            bordered={false}
+            variant="borderless"
             filterOption={selectFilterOption as safeAny}
             placeholder="selecciona"
             showSearch
@@ -207,7 +207,7 @@ const EditFilter: React.FC<{
       className="flex flex-col gap-2"
     >
       <Select
-        bordered={false}
+        variant="borderless"
         options={filterOptions}
         value={filter[0]}
         onChange={(val) => {

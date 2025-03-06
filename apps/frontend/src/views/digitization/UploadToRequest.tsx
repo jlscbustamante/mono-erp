@@ -17,7 +17,8 @@ import {
   validFieldsOptionsPending,
 } from '@/data/requests'
 import { Filters, OpFilter } from '@/data/types/Filters'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 import { FormUploadDocument } from './components/FormUploadDocument'
 import { filterRequirementsSt, uploadStore } from './filter-upload'
 
@@ -39,6 +40,7 @@ export default function UploadToRequest() {
         <Drawer
           title="Subir archivo a requerimiento"
           open={true}
+          width={500}
           onClose={() => {
             setSelectedRequest(null)
           }}
@@ -65,6 +67,7 @@ const RequirementsFound: React.FC<{
       dataIndex: 'id',
       key: 'id',
       sorter: (a, b) => a.id! - b.id!,
+      showSorterTooltip: false,
     },
     {
       title: 'Fecha solicitada',
@@ -73,6 +76,7 @@ const RequirementsFound: React.FC<{
       render: (text: string) => text.split(' ')[0],
       sorter: (a, b) =>
         dayjs(a.requested_at).unix() - dayjs(b.requested_at).unix(),
+      showSorterTooltip: false,
     },
     {
       title: 'Tipo',
@@ -85,31 +89,49 @@ const RequirementsFound: React.FC<{
         else if (type == RequestType.Liquidation) return 'Liquidación'
       },
       sorter: (a, b) => a.request_type.localeCompare(b.request_type),
+      showSorterTooltip: false,
     },
     {
       title: 'Detalle',
       dataIndex: 'description',
       sorter: (a, b) => a.description.localeCompare(b.description),
+      showSorterTooltip: false,
     },
     {
       title: 'Proveedor',
       dataIndex: 'legal_name',
       sorter: (a, b) => a.legal_name?.localeCompare(b.legal_name ?? '') ?? -1,
+      showSorterTooltip: false,
+    },
+    {
+      title: 'Caja',
+      width: 150,
+      dataIndex: ['cashAccount', 'name'],
     },
     {
       title: 'N° Doc',
+      dataIndex: 'num_document',
+      sorter: (a, b) =>
+        a.legal_number?.localeCompare(b.legal_number ?? '') ?? -1,
+      showSorterTooltip: false,
+    },
+    {
+      title: 'Ruc',
       dataIndex: 'legal_number',
       sorter: (a, b) =>
         a.legal_number?.localeCompare(b.legal_number ?? '') ?? -1,
+      showSorterTooltip: false,
     },
     {
       title: 'Monto',
       dataIndex: 'amount',
       render: (amount: number) => fCurrency(amount),
       sorter: (a, b) => a.amount - b.amount,
+      showSorterTooltip: false,
     },
     {
       title: <FaFilePdf className="w-4 h-auto" />,
+      showSorterTooltip: false,
       render: (_, record: IFilteredRequest) => {
         const docs = record.doc_url?.split(',').filter((doc) => doc) ?? []
         if (docs.length == 0)
@@ -145,7 +167,9 @@ const RequirementsFound: React.FC<{
   )
 }
 
-const FiltersRc: React.FC<{ setRequests: safeAny }> = ({ setRequests }) => {
+const FiltersRc: React.FC<{
+  setRequests: (filters: IFilteredRequest[]) => void
+}> = ({ setRequests }) => {
   const date = uploadStore((st) => st.date)
   const setDate = uploadStore((st) => st.setDate)
   const [filters, setFilters] = useRecoilState(filterRequirementsSt)
@@ -174,12 +198,22 @@ const FiltersRc: React.FC<{ setRequests: safeAny }> = ({ setRequests }) => {
     },
   })
 
+  const getRequestMt = useMutation({
+    mutationFn: (filters: Filters<IRequest>) => sdk.requestsLimit(filters),
+    onSuccess: (data) => {
+      setRequests(data)
+    },
+    onError: (err: any) => {
+      toast.error(err.message)
+    },
+  })
+
   const handlerFilter = async () => {
     const searchFilters: Filters<IRequest> = {
       ...filters,
       requested_at: [OpFilter.RangeDate, date[0], date[1]],
     }
-    console.log('filters: ', searchFilters)
+    getRequestMt.mutate(searchFilters)
 
     // try {
     //   const filters: Filters<IRequest> = {
@@ -284,7 +318,11 @@ const FiltersRc: React.FC<{ setRequests: safeAny }> = ({ setRequests }) => {
           setFilterRequest({ ...filterRequest, num_doc: e.target.value })
         }
       /> */}
-      <Button type="primary" onClick={handlerFilter}>
+      <Button
+        type="primary"
+        onClick={handlerFilter}
+        loading={getRequestMt.isPending}
+      >
         Buscar requerimiento
       </Button>
     </div>
