@@ -1,26 +1,25 @@
-import { Button, DatePicker, Drawer, Input, Table } from 'antd'
+import * as sdk from '@/data/requests/sdk'
+import { Button, DatePicker, Drawer, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { FaFilePdf } from 'react-icons/fa6'
-import { toast } from 'react-toastify'
 import { useRecoilState } from 'recoil'
 
-import { NOTIFICATION } from '@/const/notification'
-import * as sdk from '@/data/digitization/sdk'
-import { filterRequestSt } from '@/data/digitization/state'
-import {
-  IFilteredRequest,
-  IRequest,
-  RequestStatus,
-  RequestType,
-} from '@/data/requests/types'
-import { Filters, OpFilter } from '@/data/types/Filters'
+import { IFilteredRequest, IRequest, RequestType } from '@/data/requests/types'
 import { fCurrency } from '@/utils'
 import { openDocsUrls } from '@/utils/openDocsUrls'
 import { safeAny } from '@/utils/someAny'
 
+import { FilterAddButton, UserFilters } from '@/components'
+import {
+  getFilterTypesForKey,
+  validFieldsOptionsPending,
+} from '@/data/requests'
+import { Filters, OpFilter } from '@/data/types/Filters'
+import { useQuery } from '@tanstack/react-query'
 import { FormUploadDocument } from './components/FormUploadDocument'
+import { filterRequirementsSt, uploadStore } from './filter-upload'
 
 const { RangePicker } = DatePicker
 
@@ -147,47 +146,110 @@ const RequirementsFound: React.FC<{
 }
 
 const FiltersRc: React.FC<{ setRequests: safeAny }> = ({ setRequests }) => {
-  const [filterRequest, setFilterRequest] = useRecoilState(filterRequestSt)
+  const date = uploadStore((st) => st.date)
+  const setDate = uploadStore((st) => st.setDate)
+  const [filters, setFilters] = useRecoilState(filterRequirementsSt)
+
+  const { data: categories } = useQuery({
+    queryKey: ['up:req-found-cat'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      return await sdk.categories()
+    },
+  })
+
+  const { data: cashAccounts } = useQuery({
+    queryKey: ['up:req-found-cash'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      return await sdk.cashAccount()
+    },
+  })
+
+  const { data: costCenters } = useQuery({
+    queryKey: ['up:req-found-cost'],
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    queryFn: async () => {
+      return await sdk.costCenters()
+    },
+  })
 
   const handlerFilter = async () => {
-    try {
-      const filters: Filters<IRequest> = {
-        requested_at: [
-          OpFilter.RangeDate,
-          filterRequest.date[0],
-          filterRequest.date[1],
-        ],
-        status: [OpFilter.NotEqual, RequestStatus.Rejected],
-      }
-
-      if (filterRequest.supplier)
-        filters.legal_name = [OpFilter.Contain, filterRequest.supplier]
-      if (filterRequest.ruc)
-        filters.legal_number = [OpFilter.Contain, filterRequest.ruc]
-      if (filterRequest.num_doc)
-        filters.num_document = [OpFilter.Contain, filterRequest.num_doc]
-      if (filterRequest.id) filters.id = [OpFilter.Equal, filterRequest.id]
-      const requestsFound = await sdk.requests(filters)
-      setRequests(requestsFound)
-    } catch (err: any) {
-      toast.error(err.message, NOTIFICATION.error)
+    const searchFilters: Filters<IRequest> = {
+      ...filters,
+      requested_at: [OpFilter.RangeDate, date[0], date[1]],
     }
+    console.log('filters: ', searchFilters)
+
+    // try {
+    //   const filters: Filters<IRequest> = {
+    //     requested_at: [
+    //       OpFilter.RangeDate,
+    //       filterRequest.date[0],
+    //       filterRequest.date[1],
+    //     ],
+    //     status: [OpFilter.NotEqual, RequestStatus.Rejected],
+    //   }
+
+    //   if (filterRequest.supplier)
+    //     filters.legal_name = [OpFilter.Contain, filterRequest.supplier]
+    //   if (filterRequest.ruc)
+    //     filters.legal_number = [OpFilter.Contain, filterRequest.ruc]
+    //   if (filterRequest.num_doc)
+    //     filters.num_document = [OpFilter.Contain, filterRequest.num_doc]
+    //   if (filterRequest.id) filters.id = [OpFilter.Equal, filterRequest.id]
+    //   const requestsFound = await sdk.requests(filters)
+    //   setRequests(requestsFound)
+    // } catch (err: any) {
+    //   toast.error(err.message, NOTIFICATION.error)
+    // }
   }
 
   return (
     <div className="flex gap-2 my-4">
       <RangePicker
-        value={filterRequest.date.map((el) => dayjs(el)) as safeAny}
+        value={[dayjs(date[0]), dayjs(date[1])]}
         allowClear={false}
         onChange={(e: safeAny) => {
-          setFilterRequest({
-            ...filterRequest,
-            date: [e[0].format('YYYY-MM-DD'), e[1].format('YYYY-MM-DD')],
-          })
+          setDate([e[0].format('YYYY-MM-DD'), e[1].format('YYYY-MM-DD')])
         }}
-        style={{ width: '500px' }}
+        style={{ width: '250px' }}
       />
-      <Input
+      <FilterAddButton
+        userFilters={filters}
+        setUserFilters={setFilters}
+        getFilterTypesForKey={getFilterTypesForKey}
+        items={validFieldsOptionsPending()}
+      />
+      <UserFilters
+        userFilters={filters}
+        setFilters={setFilters}
+        getFilterTypesForKey={getFilterTypesForKey}
+        items={validFieldsOptionsPending()}
+        selections={{
+          category_id:
+            categories?.map((el) => ({
+              label: el.name,
+              value: el.id,
+            })) ?? [],
+          cash_id:
+            cashAccounts?.map((el) => ({
+              label: el.name,
+              value: el.id,
+            })) ?? [],
+          category_id_cash:
+            cashAccounts?.map((el) => ({
+              label: el.name,
+              value: el.id,
+            })) ?? [],
+          cost_center_id:
+            costCenters?.map((el) => ({
+              label: el.origin,
+              value: el.id,
+            })) ?? [],
+        }}
+      />
+      {/* <Input
         placeholder="Id requerimiento"
         className="w-96"
         value={filterRequest.id ?? ''}
@@ -221,7 +283,7 @@ const FiltersRc: React.FC<{ setRequests: safeAny }> = ({ setRequests }) => {
         onChange={(e) =>
           setFilterRequest({ ...filterRequest, num_doc: e.target.value })
         }
-      />
+      /> */}
       <Button type="primary" onClick={handlerFilter}>
         Buscar requerimiento
       </Button>
