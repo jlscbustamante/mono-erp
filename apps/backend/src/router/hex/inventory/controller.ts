@@ -132,7 +132,7 @@ export class HexInventoryController {
 
   @catchError
   async templateDispatch(req: Request, res: Response) {
-    const { sucursalCode, company = 'PIZZA' } = req.query as {
+    const { sucursalCode, company = 'PIZZARAUL' } = req.query as {
       sucursalCode: string
       company?: string
     }

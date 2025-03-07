@@ -26,14 +26,14 @@ export class InventoryController {
   @Get('/inventory/template/items')
   async getItemsTemplate(req: Request) {
     const { company } = req.query as { company?: string }
-    const searchCompany = company || 'PIZZA'
+    const searchCompany = company || 'PIZZARAUL'
     const data = await this.inventoryService.getItemsTemplate(searchCompany)
     return data
   }
 
   @Get('/inventory/template/dispatch')
   async getDispatchTemplate(req: Request) {
-    const { company = 'PIZZA', sucursalCode } = req.query as {
+    const { company = 'PIZZARAUL', sucursalCode } = req.query as {
       sucursalCode: string
       company?: string
     }

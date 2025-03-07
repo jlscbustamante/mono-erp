@@ -617,7 +617,7 @@ export class ExternalController {
     const plantillaBase = await invDispatchBase.findOne({
       where: {
         // sucursal_type: DispatchBaseType.PIZZA_INV,
-        sucursal_type: 'PIZZA',
+        sucursal_type: 'PIZZARAUL',
         used_to: DispatchUsedTo.Warehouse,
       },
     })
@@ -1385,7 +1385,7 @@ export const getStockTienda = async (
   const plantillaBase = await invDispatchBase.findOne({
     where: {
       // sucursal_type: DispatchBaseType.PIZZA,
-      sucursal_type: 'PIZZA',
+      sucursal_type: 'PIZZARAUL',
       used_to: DispatchUsedTo.Store,
     },
   })
@@ -1497,7 +1497,7 @@ export const getStockAlmacen = async (
   const plantillaBase = await invDispatchBase.findOne({
     where: {
       // sucursal_type: DispatchBaseType.ALMACEN,
-      sucursal_type: 'PIZZA',
+      sucursal_type: 'PIZZARAUL',
       used_to: DispatchUsedTo.Warehouse,
     },
   })
@@ -1603,7 +1603,7 @@ export const getStockTiendaEntrada = async (
   const plantillaBase = await invDispatchBase.findOne({
     where: {
       // sucursal_type: DispatchBaseType.PIZZA,
-      sucursal_type: 'PIZZA',
+      sucursal_type: 'PIZZARAUL',
       used_to: DispatchUsedTo.Store,
     },
   })
@@ -1714,7 +1714,7 @@ export const getStockTiendaSalida = async (
 ): Promise<InvStock[]> => {
   const plantillaBase = await invDispatchBase.findOne({
     where: {
-      sucursal_type: 'PIZZA',
+      sucursal_type: 'PIZZARAUL',
       used_to: DispatchUsedTo.Store,
     },
   })

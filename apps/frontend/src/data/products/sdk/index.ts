@@ -450,14 +450,14 @@ export interface IStockStore {
 
 export const getStockByStore = (sucursalCode: string, date: string) => {
   return baseUrl<IStockStore>('ext/stock/store/getStock', {
-    query: { sucursalCode, date, type: 'PIZZA' },
+    query: { sucursalCode, date, type: 'PIZZARAUL' },
     method: 'GET',
   })
 }
 
 export const getAnyStockByStore = (sucursalCode: string, date: string) => {
   return baseUrl<IStockStore>('ext/stock/store/getAnyStatusStock', {
-    query: { sucursalCode, date, type: 'PIZZA' },
+    query: { sucursalCode, date, type: 'PIZZARAUL' },
     method: 'GET',
   })
 }
@@ -472,7 +472,7 @@ export const getStockByWarehouse = ({
   return baseUrl<{ isEmpty: boolean; stock: ITemplateItem[] }>(
     'ext/stock/store/getStockWarehouse',
     {
-      query: { sucursalCode, date, type: 'PIZZA' },
+      query: { sucursalCode, date, type: 'PIZZARAUL' },
       method: 'GET',
     },
   )

@@ -66,7 +66,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
 
     const templatebase = await invDispatchBase.findOne({
       where: {
-        sucursal_type: 'PIZZA',
+        sucursal_type: 'PIZZARAUL',
         used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
       },
     })
@@ -224,7 +224,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
     // })
     const templatebase = (await this.templatebass()).find((el) => {
       return (
-        el.sucursal_type == 'PIZZA' &&
+        el.sucursal_type == 'PIZZARAUL' &&
         el.used_to ==
           (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
       )

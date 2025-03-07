@@ -115,7 +115,7 @@ export class InventoryService {
     return dispatch
   }
 
-  async getTemplateItems(company = 'PIZZA'): Promise<Item[]> {
+  async getTemplateItems(company = 'PIZZARAUL'): Promise<Item[]> {
     const cached = cacheHalfDay.get(`template_items_v2_${company}`)
     if (cached) return cached as Item[]
     const templatebase = await invDispatchBase.findOne({

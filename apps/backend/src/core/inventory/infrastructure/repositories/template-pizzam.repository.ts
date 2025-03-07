@@ -64,7 +64,7 @@ export class TemplateRepositoryPizzam implements TemplateRepository {
     const templatebase = await invDispatchBase.findOne({
       where: {
         // sucursal_type: 'PIZZAM',
-        sucursal_type: isWarehouse ? 'PIZZA' : 'PIZZAM',
+        sucursal_type: isWarehouse ? 'PIZZARAUL' : 'PIZZAM',
         used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
       },
     })
@@ -220,7 +220,7 @@ export class TemplateRepositoryPizzam implements TemplateRepository {
     // })
     const templatebase = (await this.templatebass()).find((el) => {
       return (
-        el.sucursal_type == (isWarehouse ? 'PIZZA' : 'PIZZAM') &&
+        el.sucursal_type == (isWarehouse ? 'PIZZARAUL' : 'PIZZAM') &&
         el.used_to ==
           (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
       )
