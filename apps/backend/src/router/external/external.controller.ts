@@ -746,11 +746,16 @@ export class ExternalController {
 
   @catchError
   async getStockStore(req: Request, res: Response) {
-    const { sucursalCode, date, type } = req.query as {
+    const {
+      sucursalCode,
+      date,
+      type: _type,
+    } = req.query as {
       sucursalCode: string
       date: string
       type: string
     }
+    const type = _type == 'PIZZA' ? 'PIZZARAUL' : _type
 
     const surcursal = await sucursalRepository.findOne({
       where: {
@@ -925,11 +930,16 @@ export class ExternalController {
 
   @catchError
   async getStockWarehouse(req: Request, res: Response) {
-    const { sucursalCode, date, type } = req.query as {
+    const {
+      sucursalCode,
+      date,
+      type: _type,
+    } = req.query as {
       sucursalCode: string
       date: string
       type: string
     }
+    const type = _type == 'PIZZA' ? 'PIZZARAUL' : _type
 
     const stock = await invStockRepository.find({
       where: {
