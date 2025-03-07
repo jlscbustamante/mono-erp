@@ -116,7 +116,7 @@ export class StockRepository {
     end: string;
     companyId?: string;
   }): Promise<StockSelectWithCategory[]> {
-    const company = props.companyId ?? "PIZZA";
+    const company = props.companyId ?? "PIZZARAUL";
     if (props.start === props.end) {
       return await this.stock(props.storeId, props.start, company);
     }
@@ -131,7 +131,7 @@ export class StockRepository {
   async stock(
     storeId: string,
     date: string,
-    companyId = "PIZZA"
+    companyId = "PIZZARAUL"
   ): Promise<StockSelectWithCategory[]> {
     const chached = cache.get("stock:" + storeId + ":" + date);
 
@@ -165,7 +165,7 @@ export class StockRepository {
     storeId: string,
     start: string,
     end: string,
-    companyId = "PIZZA"
+    companyId = "PIZZARAUL"
   ): Promise<StockSelectWithCategory[]> {
     const dates = eachDayOfInterval({
       start: parseISO(start),

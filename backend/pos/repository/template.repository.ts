@@ -17,7 +17,9 @@ export interface ItemSelectRelations extends ItemSelect {
 }
 
 export class TemplateRepository {
-  async getTemplate(company: string = "PIZZA"): Promise<ItemSelectRelations[]> {
+  async getTemplate(
+    company: string = "PIZZARAUL"
+  ): Promise<ItemSelectRelations[]> {
     const cached = cache.get("template:" + company);
     if (cached) return JSON.parse(cached);
     const templateDb = await db.query.templates.findFirst({

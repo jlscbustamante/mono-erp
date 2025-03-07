@@ -60,7 +60,7 @@ export const invetarioRouter = new Hono()
       end: props.end,
       start: props.start,
       storeId: props.warehouse,
-      companyId: "PIZZA",
+      companyId: "PIZZARAUL",
     });
     return c.json({ data });
   })
@@ -73,7 +73,7 @@ export const invetarioRouter = new Hono()
         end: date,
         start: date,
         storeId: store.id,
-        companyId: store.trademark_id == "PIZZAM" ? "PIZZAM" : "PIZZA",
+        companyId: store.trademark_id == "PIZZAM" ? "PIZZAM" : "PIZZARAUL",
       });
     }
     return c.json({
