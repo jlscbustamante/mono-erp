@@ -1,4 +1,4 @@
-type Mods = "DATE" | "CONCAT" | "LOWER";
+type Mods = "DATE" | "CONCAT" | "LOWER" | "MONTH";
 type ModsValue = "LOWER" | "NOSPACE" | string;
 export interface WhereOptionMod<T> {
   key: string;

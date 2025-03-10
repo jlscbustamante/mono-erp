@@ -107,6 +107,7 @@ export const CalendarComponent = ({
         plugins={[dayGridPlugin, interactionPlugin]}
         headerToolbar={false}
         initialView="dayGridMonth"
+        initialDate={currentDate}
         dayHeaderClassNames={'bg-slate-100'}
         dayCellClassNames={'hover:!bg-blue-50 cursor-pointer !py-3 !px-2'}
         dayCellContent={(day) => {

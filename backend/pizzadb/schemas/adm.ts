@@ -39,7 +39,7 @@ export const requirements = mysqlTable("adm_request", {
    */
   request_type: char({ length: 1 }),
   description: varchar({ length: 250 }),
-  supplier_id: int().notNull(),
+  supplier_id: int(),
   legal_number: varchar({ length: 15 }),
   legal_name: varchar({ length: 150 }),
   /**

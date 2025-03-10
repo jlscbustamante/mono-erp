@@ -21,8 +21,10 @@ export const requirementRouter = new Hono()
     });
   })
   .get("/filterCount", filtersMiddlaware, async (c) => {
+    const month = c.req.query().month;
     const count = await requirementService.filterCount(
-      c.get("filters") as WhereOption<RequirementSelect>[]
+      c.get("filters") as WhereOption<RequirementSelect>[],
+      month ? +month : undefined
     );
     return c.json({
       data: count,
@@ -180,4 +182,12 @@ export const requirementRouter = new Hono()
 
       return c.json({ message: "ok", data });
     }
-  );
+  )
+  .post("/create_transfer", async (c) => {
+    const session = c.get("user");
+    const data = await c.req.json();
+    await requirementService.createTransfer(data, session.name);
+    return c.json({
+      message: "ok",
+    });
+  });

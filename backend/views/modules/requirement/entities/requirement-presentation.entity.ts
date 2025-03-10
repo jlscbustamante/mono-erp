@@ -23,10 +23,10 @@ export class RequirementPresentation implements IRequirementPresentation {
     // adm_request: RequirementSelect;
     // 17
     items: RequirementItemSelect[];
-    inv_supplier: SupplierSelect;
+    inv_supplier?: SupplierSelect;
   }) {
     this.id = props.reqitem.id;
-    this.supplier = props.inv_supplier.supplier;
+    this.supplier = props.inv_supplier?.supplier ?? "";
     this.requestedAt = props.reqitem.requested_at?.split(" ")[0] ?? "";
     this.category = props.reqitem.movecash_name ?? "";
     this.numDoc = props.reqitem.num_document ?? "";

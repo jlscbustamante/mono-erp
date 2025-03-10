@@ -37,7 +37,7 @@ export class RequirementRepository {
       return new RequirementPresentation({
         reqitem,
         items,
-        inv_supplier: supplier,
+        inv_supplier: supplier ?? undefined,
       });
     });
   }
@@ -56,7 +56,7 @@ export class RequirementRepository {
         value: month,
         useMods: true,
         mods: {
-          field: "DATE",
+          field: "MONTH",
         },
       });
     }

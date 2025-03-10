@@ -1,43 +1,33 @@
 import { FilterComponent } from '@/components/fifi'
+import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
-import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
-import { format, parseISO } from 'date-fns'
-import { useMemo, useReducer, useState } from 'react'
+import { REQUIREMENT_STATUS } from '@view'
+import { Button } from 'antd'
+import { parseISO } from 'date-fns'
+import { useMemo } from 'react'
+import { useNavigate } from 'react-router'
 import { CalendarComponent } from '../calendar'
-import { SelectRequestType } from '../components/select-request-type'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
+import { NavRequest } from './nav'
 import { usePendingStore } from './state'
 import { SwitchViewPending } from './switch-view-pending'
 
 export function ViewCalendar() {
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const date = usePendingStore((st) => st.dateCalendar)
+  const setDate = usePendingStore((st) => st.setDateCalendar)
   const filters = usePendingStore((st) => st.filters)
   const setFilter = usePendingStore((st) => st.setFilters)
-  const [control, setControl] = useReducer((c) => c + 1, 0)
+  const controlRefetch = usePendingStore((st) => st.controlRefetch)
+  const refetch = usePendingStore((st) => st.refetch)
   const toggleView = usePendingStore((st) => st.setView)
+  const navigate = useNavigate()
 
-  const type = useMemo(() => {
-    return filters.find((el) => el.field == 'request_type')
-      ?.value as REQUIERMENT_TYPE
-  }, [filters])
-
-  const changeType = (type: REQUIERMENT_TYPE) => {
-    setFilter(
-      filters.map((el) => {
-        if (el.field == 'request_type') {
-          return {
-            ...el,
-            value: type,
-          }
-        }
-        return el
-      }),
-    )
-    setControl()
-  }
+  const month = useMemo(() => {
+    return parseISO(date).getMonth() + 1
+  }, [date])
 
   const supplierId = useMemo(() => {
     return filters.find((el) => el.field == 'supplier_id')?.value as
@@ -77,7 +67,7 @@ export function ViewCalendar() {
   }
 
   const query = useQuery({
-    queryKey: ['rq:pending-calendar', control, date],
+    queryKey: ['rq:pending-calendar', controlRefetch, date],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const filtersWithoutDate = filters.filter(
@@ -118,13 +108,7 @@ export function ViewCalendar() {
   return (
     <div>
       <CalendarComponent
-        middleAddons={
-          <SelectRequestType
-            className="mb-2 mt-2"
-            value={type}
-            onChange={changeType}
-          />
-        }
+        middleAddons={<NavRequest month={month} />}
         onClick={handleClick}
         date={date}
         setDate={setDate}
@@ -139,6 +123,7 @@ export function ViewCalendar() {
               onChange={changeSupplierId}
             />
             <FilterComponent
+              loading={query.isPending || query.isFetching}
               options={menuOptions.map((el) => {
                 if (el.key == 'supplier_id') {
                   return {
@@ -151,12 +136,25 @@ export function ViewCalendar() {
               filters={filters}
               setFilters={setFilter}
               onSearch={() => {
-                setControl()
+                refetch()
               }}
             />
           </div>
         }
-        addons={<SwitchViewPending />}
+        addons={
+          <div className="flex gap-1 items-center">
+            <Button
+              size="middle"
+              type="primary"
+              onClick={() => {
+                navigate(PATHS.erp.modulos.requerimientos.creation)
+              }}
+            >
+              Nuevo requerimiento
+            </Button>
+            <SwitchViewPending />
+          </div>
+        }
       />
     </div>
   )

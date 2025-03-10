@@ -30,20 +30,23 @@ export function SelectRequestType({
   onChange,
   filters,
   controlRefetch,
+  month,
 }: {
   className?: string
   value?: REQUIERMENT_TYPE
   onChange?: (value: REQUIERMENT_TYPE) => void
   filters?: WhereOption<any>[]
-  controlRefetch: number
+  controlRefetch?: number
+  month?: number
 }) {
   const query = useQuery({
-    queryKey: ['rq:count-requirements', controlRefetch, value],
+    queryKey: ['rq:count-requirements', controlRefetch, value, month],
     enabled: !!filters,
     queryFn: async () => {
       const data = await viewClient.api.view.requirement.filterCount.$get({
         query: {
           filters: JSON.stringify(filters!),
+          month: month?.toString(),
         },
       })
       const body = await data.json()
@@ -78,7 +81,7 @@ export function SelectRequestType({
             )}
           >
             {option.label}{' '}
-            {countType[option.value] ? `(${countType[option.value]})` : ''}
+            {countType[option.value] ? `(${countType[option.value]})` : '(0)'}
           </button>
         )
       })}

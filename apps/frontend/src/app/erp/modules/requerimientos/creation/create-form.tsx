@@ -32,7 +32,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 
-export function CreationForm() {
+export function CreationForm({
+  changeType,
+  type,
+}: {
+  changeType: (type: REQUIERMENT_TYPE) => void
+  type: REQUIERMENT_TYPE
+}) {
   const [form] = Form.useForm()
 
   const hasRetention = Form.useWatch('hasRetention', form)
@@ -204,6 +210,7 @@ export function CreationForm() {
     createMt.mutate({
       ...values,
       detailQuotas: quotas,
+      request_type: type,
     })
   }
 
@@ -255,13 +262,9 @@ export function CreationForm() {
               amount: 1,
               hasRetention: false,
               retention: 0,
-              request_type: REQUIERMENT_TYPE.SUPPLIER,
             } satisfies Partial<CreateRequirementDto>
           }
         >
-          <Form.Item name={'request_type'} className="hidden">
-            <Input />
-          </Form.Item>
           <Form.Item name={'cost_center_name'} className="hidden">
             <Input />
           </Form.Item>
@@ -283,13 +286,8 @@ export function CreationForm() {
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item
-              label="Tipo"
-              className=""
-              name="request_type"
-              rules={[{ required: true }]}
-            >
-              <Select placeholder="Tipo">
+            <Form.Item label="Tipo" className="">
+              <Select placeholder="Tipo" value={type} onChange={changeType}>
                 <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                   SIMPLE
                 </Select.Option>

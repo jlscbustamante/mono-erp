@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { SelectRequestType } from '../components/select-request-type'
 import { usePendingStore } from './state'
 
-export function NavRequest() {
+export function NavRequest({ month }: { month?: number }) {
   const filters = usePendingStore((st) => st.filters)
   const setFilter = usePendingStore((st) => st.setFilters)
   const refetch = usePendingStore((st) => st.refetch)
@@ -31,6 +31,7 @@ export function NavRequest() {
 
   return (
     <SelectRequestType
+      month={month}
       className="my-2"
       value={type}
       controlRefetch={controlRefetch}

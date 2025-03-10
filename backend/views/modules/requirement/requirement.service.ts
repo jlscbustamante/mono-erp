@@ -3,11 +3,19 @@ import { IRelatedRequirement } from "#app/modules/requirement/interfaces/related
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
   CreateRequirementDto,
+  CreateRequirementTransferDto,
+  REQUIERMENT_TYPE,
   REQUIREMENT_STATUS,
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
-import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
+import type {
+  RequirementInsert,
+  RequirementItemInsert,
+  RequirementSelect,
+  WhereOption,
+} from "@scope/pizzadb/types";
+import { format } from "date-fns";
 import { and, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { transformWhere } from "../../../pizzadb/filter/transform.ts";
@@ -20,8 +28,11 @@ export class RequirementService {
     return data;
   }
 
-  async filterCount(filters: WhereOption<RequirementSelect>[]) {
-    const data = await this.requirementRepository.filterCountByType(filters);
+  async filterCount(filters: WhereOption<RequirementSelect>[], month?: number) {
+    const data = await this.requirementRepository.filterCountByType(
+      filters,
+      month
+    );
     return data;
   }
 
@@ -157,6 +168,51 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
         date: el.date.split(" ")[0],
         total: Number(el.total),
       };
+    });
+  }
+
+  async createTransfer(data: CreateRequirementTransferDto, name: string) {
+    //
+    const newRequiremnt: RequirementInsert = {
+      created_by: name,
+      requested_at: format(new Date(), "yyyy-MM-dd"),
+      description: data.description,
+      amount: data.amount,
+      status: REQUIREMENT_STATUS.PENDING,
+      type_document: data.document_type,
+      num_document: data.document_number,
+      request_type: REQUIERMENT_TYPE.TRANSFER,
+    };
+
+    const newRequirementItemOrigin: RequirementItemInsert = {
+      request_id: 0,
+      expires_at: data.expiration_date,
+      amount: data.amount,
+      cashbank_id: data.cashbank_origin,
+      cashbank_name: data.cashbank_origin_name,
+    };
+
+    const newRequirementItemDestiny: RequirementItemInsert = {
+      request_id: 0,
+      expires_at: data.expiration_date,
+      amount: data.amount,
+      cashbank_id: data.cashbank_destiny,
+      cashbank_name: data.cashbank_destiny_name,
+    };
+
+    await db.transaction(async (manager) => {
+      const [result] = await manager.insert(requirements).values(newRequiremnt);
+      const resultId = result.insertId;
+      await manager.insert(requirementItems).values([
+        {
+          ...newRequirementItemOrigin,
+          request_id: resultId,
+        },
+        {
+          ...newRequirementItemDestiny,
+          request_id: resultId,
+        },
+      ]);
     });
   }
 }

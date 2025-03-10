@@ -7,6 +7,7 @@ import { useMemo, useReducer, useState } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
+import { NavRequest } from './nav'
 import { useRejectedStore } from './state'
 import { SwitchViewReject } from './switch-view-reject'
 
@@ -99,6 +100,7 @@ export function ViewCalendar() {
         date={date}
         onClick={handleClick}
         setDate={setDate}
+        middleAddons={<NavRequest />}
         beforeAddons={
           <div className="flex gap-1 items-center">
             <SupplierSelectForm
