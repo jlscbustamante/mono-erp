@@ -33,7 +33,9 @@ export const CalendarComponent = ({
   events,
   onClick,
   beforeAddons,
+  titleBadge,
 }: {
+  titleBadge?: string
   addons?: React.ReactNode
   beforeAddons?: React.ReactNode
   middleAddons?: React.ReactNode
@@ -133,7 +135,7 @@ export const CalendarComponent = ({
             <div className="flex flex-col gap-2 items-center">
               <p>{eventInfo.event.title}</p>
               <span className="py-1 px-2 bg-blue-500 rounded-md text-white">
-                Solicitado
+                {titleBadge ? titleBadge : 'Solicitado'}
               </span>
             </div>
           )

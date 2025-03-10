@@ -4,6 +4,7 @@ import {
   requirementService,
 } from "#app/modules/requirement/dependencies.ts";
 import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
+import { UpdateTransferRequirementDto } from "#app/modules/requirement/interfaces/update-requirement.dto.ts";
 import { UpdateRequirementDto } from "#app/modules/types/index.ts";
 import { zValidator } from "@hono/zod-validator";
 import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
@@ -105,6 +106,17 @@ export const requirementRouter = new Hono()
       data as UpdateRequirementDto
       // session.name
     );
+    return c.json({
+      message: "ok",
+    });
+  })
+  .put("/save_transfer", async (c) => {
+    const data = await c.req.json();
+
+    await requirementService.saveTransferRequirement(
+      data as UpdateTransferRequirementDto
+    );
+
     return c.json({
       message: "ok",
     });

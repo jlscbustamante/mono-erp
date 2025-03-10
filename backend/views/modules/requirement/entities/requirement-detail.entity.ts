@@ -1,4 +1,7 @@
-import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts";
+import {
+  REQUIERMENT_TYPE,
+  REQUIREMENT_STATUS,
+} from "#app/modules/requirement/interfaces/enums.ts";
 import {
   CashBankSelect,
   RequirementItemSelect,
@@ -29,6 +32,7 @@ export class RequirementDetail implements IRequirementDetail {
   readonly status: REQUIREMENT_STATUS;
   readonly costCenterId: number | null;
   readonly items: IRequirementDetailItem[];
+  readonly type: REQUIERMENT_TYPE;
 
   constructor({
     requirement,
@@ -37,14 +41,15 @@ export class RequirementDetail implements IRequirementDetail {
   }: {
     requirement: RequirementSelect;
     items: (RequirementItemSelect & { cashbank: CashBankSelect | null })[];
-    supplier: SupplierSelect;
+    supplier?: SupplierSelect;
   }) {
     this.id = requirement.id;
+    this.type = requirement.request_type as REQUIERMENT_TYPE;
     this.companyId = requirement.company_id!;
     this.amount = requirement.amount!;
-    this.supplierId = supplier.id;
-    this.ruc = supplier.legal_number!;
-    this.legalName = supplier.legal_name!;
+    this.supplierId = supplier?.id ?? 0;
+    this.ruc = supplier?.legal_number ?? "";
+    this.legalName = supplier?.legal_name ?? "";
     this.description = requirement.description ?? "";
     this.documentType = requirement.type_document ?? "";
     this.documentNumber = requirement.num_document ?? "";

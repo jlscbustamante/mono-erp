@@ -1,5 +1,6 @@
 import { FilterComponent } from '@/components/fifi'
 import { viewClient } from '@/lib/rpc'
+import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
 import { format, parseISO } from 'date-fns'
@@ -100,9 +101,10 @@ export function ViewCalendar() {
         onClick={handleClick}
         date={date}
         setDate={setDate}
+        titleBadge="Aprobados"
         events={query.data?.map((d) => ({
           date: d.date,
-          title: `S/ ${d.total}<br >Aprobados`,
+          title: `${fCurrency(d.total)}`,
         }))}
         middleAddons={<NavRequest />}
         beforeAddons={

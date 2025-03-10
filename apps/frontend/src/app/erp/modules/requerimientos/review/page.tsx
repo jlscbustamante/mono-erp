@@ -1,7 +1,8 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { IRequirementDetail } from '@view'
+import { IRequirementDetail, REQUIERMENT_TYPE } from '@view'
 import { ReviewForm } from './review-form'
+import { ReviewTransferForm } from './review-transfer-form'
 
 export function RequirementReview() {
   const searchParams = new URLSearchParams(window.location.search)
@@ -25,7 +26,11 @@ export function RequirementReview() {
   })
   return (
     <div className="p-3">
-      {data && <ReviewForm data={data} beforeUrl={beforeUrl} />}
+      {!data ? null : data.type == REQUIERMENT_TYPE.TRANSFER ? (
+        <ReviewTransferForm data={data} beforeUrl={beforeUrl} />
+      ) : (
+        <ReviewForm data={data} beforeUrl={beforeUrl} />
+      )}
     </div>
   )
 }

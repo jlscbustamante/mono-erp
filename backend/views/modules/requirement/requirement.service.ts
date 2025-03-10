@@ -1,5 +1,6 @@
 import { db } from "#app/database.ts";
 import { IRelatedRequirement } from "#app/modules/requirement/interfaces/related-requirements.interface.ts";
+import { UpdateTransferRequirementDto } from "#app/modules/requirement/interfaces/update-requirement.dto.ts";
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
   CreateRequirementDto,
@@ -54,6 +55,10 @@ export class RequirementService {
 
   async saveRequirement(data: UpdateRequirementDto) {
     await this.requirementRepository.saveRequirement(data);
+  }
+
+  async saveTransferRequirement(data: UpdateTransferRequirementDto) {
+    await this.requirementRepository.saveTransferRequirement(data);
   }
 
   async undoApproval(id: number) {

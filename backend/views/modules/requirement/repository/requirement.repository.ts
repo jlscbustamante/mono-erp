@@ -1,5 +1,6 @@
 import { db } from "#app/database.ts";
 import { RequirementDetail } from "#app/modules/requirement/entities/requirement-detail.entity.ts";
+import { UpdateTransferRequirementDto } from "#app/modules/requirement/interfaces/update-requirement.dto.ts";
 import {
   CreateRequirementDto,
   REQUIREMENT_STATUS,
@@ -170,6 +171,40 @@ export class RequirementRepository {
     });
   }
 
+  async saveTransferRequirement(data: UpdateTransferRequirementDto) {
+    await db.transaction(async (manager) => {
+      await manager
+        .update(requirements)
+        .set({
+          company_id: data.companyId,
+          description: data.description,
+          type_document: data.documentType,
+          num_document: data.documentNumber,
+          amount: data.amount,
+        })
+        .where(eq(requirements.id, data.id));
+      await Promise.all([
+        manager
+          .update(requirementItems)
+          .set({
+            amount: data.amount,
+            cashbank_id: data.cash_origin_id,
+            cashbank_name: data.cash_origin_name,
+          })
+          .where(eq(requirementItems.id, data.origin_id)),
+        manager
+          .update(requirementItems)
+          .set({
+            amount: data.amount,
+            cashbank_id: data.cash_destiny_id,
+            cashbank_name: data.cash_destiny_name,
+            expires_at: data.expiration_date ?? null,
+          })
+          .where(eq(requirementItems.id, data.destiny_id)),
+      ]);
+    });
+  }
+
   async getRequirement(id: number) {
     const result = await db.query.requirements.findFirst({
       where: eq(requirements.id, id),
@@ -189,7 +224,7 @@ export class RequirementRepository {
     return new RequirementDetail({
       requirement,
       items,
-      supplier,
+      supplier: supplier ?? undefined,
     });
   }
 
