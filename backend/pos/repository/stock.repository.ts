@@ -63,6 +63,12 @@ export class StockRepository {
     const store = stores.find((s) => s.id === props.storeId);
 
     const oldStock: OldResponseStock[] = stock.map((s) => {
+      const current =
+        s.stock_last +
+        s.quantity_in_dp +
+        s.quantity_in_mv -
+        s.quantity_out_mv -
+        s.quantity_out_sl;
       return {
         id: s.id,
         itemId: s.item_id,
@@ -75,7 +81,7 @@ export class StockRepository {
         warehouseId: s.warehouse_id,
         stockAt: s.stock_at,
         initialStock: s.stock_last,
-        stockCurrent: s.stock_current,
+        stockCurrent: current,
         stockPhysical: s.stock_physical,
         unitValue: s.unit_value,
         totalValue: s.total_value,
