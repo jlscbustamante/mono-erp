@@ -11,7 +11,7 @@ export default function CashBankPage() {
   const filters = useCashBank((st) => st.filters)
 
   const { data, refetch } = useQuery({
-    queryKey: ['req:cost-center'],
+    queryKey: ['req:cash-bank'],
     queryFn: async () => {
       const data = await viewClient.api.view.cashbank.filter.$get({
         query: {

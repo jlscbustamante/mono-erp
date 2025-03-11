@@ -62,14 +62,11 @@ const cashAccountRepository = AppDataSource.getRepository(CashAccount).extend({
     return this.find({
       where: {
         status: CashAccountStatus.Active,
-        cash_account_type: {
-          type_id: In([CashAccountTypeId.Store]),
-        },
+        type_cash_id: In([CashAccountTypeId.Store]),
       },
       order: {
         name: 'ASC',
       },
-      relations: { cash_account_type: true },
     })
   },
 })

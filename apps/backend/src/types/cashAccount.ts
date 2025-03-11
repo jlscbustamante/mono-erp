@@ -1,6 +1,6 @@
 export enum CashAccountStatus {
-  Active = 'A',
-  Inactive = 'E',
+  Active = 1,
+  Inactive = 0,
 }
 
 export enum CashAccountTypeStatus {
@@ -9,10 +9,10 @@ export enum CashAccountTypeStatus {
 }
 
 export enum CashAccountTypeId {
-  Store = 'T',
-  Bank = 'B',
-  Temporal = 'M',
-  Liquidator = 'L',
-  Corales = 'P',
-  Central = 'N',
+  Store = 1,
+  Bank = 3,
+  Temporal = 7,
+  Liquidator = 6,
+  Corales = 5,
+  Central = 4,
 }

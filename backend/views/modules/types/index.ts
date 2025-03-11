@@ -11,3 +11,5 @@ export type {
 export type { CreateCashBankDto } from "../cashbank/interfaces/create-cashbank.dto.ts";
 export type { CreateCostCenterDto } from "../requirement/interfaces/create-costcenter.dto.ts";
 export type { CreateRequirementTransferDto } from "../requirement/interfaces/create-requirement-transfer.dto.ts";
+
+export type { IDetailedReport } from "../requirement/interfaces/detailed-report.dto.ts";

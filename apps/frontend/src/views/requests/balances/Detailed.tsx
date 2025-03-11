@@ -11,9 +11,9 @@ import {
 } from '@/data/cashAccount/state'
 // import * as sdk from '@/data/cashAccount/sdk'
 import * as sdk from '@/data/requests/sdk'
-import { cashAccountRequestSt } from '@/data/resources/state'
 import { filterOption, safeAny } from '@/utils'
 
+import { useQuery } from '@tanstack/react-query'
 import { TableBalance } from '../components'
 
 export default function DetailedBalance() {
@@ -39,7 +39,11 @@ export default function DetailedBalance() {
   )
 }
 const Filters: React.FC<{ onLoadReport: () => void }> = ({ onLoadReport }) => {
-  const cashAccounts = useRecoilValue(cashAccountRequestSt)
+  // const cashAccounts = useRecoilValue(cashAccountRequestSt)
+  const { data: cashAccounts } = useQuery({
+    queryKey: ['cashAccounts'],
+    queryFn: sdk.cashAccount,
+  })
   const [filter, setFilter] = useRecoilState(reportRequestFiltersSt)
   return (
     <div className="flex gap-2 my-4">
@@ -66,7 +70,7 @@ const Filters: React.FC<{ onLoadReport: () => void }> = ({ onLoadReport }) => {
         }}
         style={{ width: 210 }}
         filterOption={filterOption as safeAny}
-        options={cashAccounts.map((e) => {
+        options={cashAccounts?.map((e) => {
           return {
             value: e.id,
             label: e.name,

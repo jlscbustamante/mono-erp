@@ -83,7 +83,7 @@ export const requirementItems = mysqlTable("adm_request_item", {
    * @description 0:No tiene, 1:Si tiene
    */
   retention: char({ length: 1 }),
-  amount: decimalNumber(),
+  amount: decimalNumber().notNull(),
   amount_net: decimalNumber(),
   amount_ret: decimalNumber(),
   doc_url: varchar({ length: 250 }),

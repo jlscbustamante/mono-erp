@@ -29,14 +29,14 @@ export class ResourceService {
     return this.cashAccountRepository.find({
       where: {
         status: CashAccountStatus.Active,
-        cash_account_type: {
-          type_id: In([CashAccountTypeId.Bank, CashAccountTypeId.Liquidator]),
-        },
+        type_cash_id: In([
+          CashAccountTypeId.Liquidator,
+          CashAccountTypeId.Bank,
+        ]),
       },
       order: {
         name: 'ASC',
       },
-      relations: ['cash_account_type'],
     })
   }
 
@@ -44,14 +44,11 @@ export class ResourceService {
     return this.cashAccountRepository.find({
       where: {
         status: CashAccountStatus.Active,
-        cash_account_type: {
-          type_id: CashAccountTypeId.Store,
-        },
+        type_cash_id: CashAccountTypeId.Store,
       },
       order: {
         name: 'ASC',
       },
-      relations: ['cash_account_type'],
     })
   }
 

@@ -11,26 +11,24 @@ import {
 import { DateTransformer } from '../config/transformers/dateTransformer'
 import { CashAccountStatus } from '../types/cashAccount'
 import { Account } from './Account'
-import { CashAccountType } from './CashAccountType'
 
 @Entity({ name: 'fin_cashbank' })
 export class CashAccount {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', name: 'cashbank' })
   name: string
 
   @Column({ type: 'int' })
   account_id: number
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'type_cash' })
   type_cash_id: number
 
   @Column({ type: 'varchar', name: 'sucursal_id' })
   codefis: string
 
-  @Column({ type: 'int' })
   roles_id: number
 
   @Column({ type: 'enum', enum: CashAccountStatus })
@@ -49,10 +47,6 @@ export class CashAccount {
     transformer: new DateTransformer(),
   })
   updated_at: string
-
-  @ManyToOne(() => CashAccountType)
-  @JoinColumn({ name: 'type_cash_id' })
-  cash_account_type: CashAccountType
 
   @ManyToOne(() => Account)
   @JoinColumn({ name: 'account_id' })

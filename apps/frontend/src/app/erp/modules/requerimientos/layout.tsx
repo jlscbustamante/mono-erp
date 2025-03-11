@@ -18,13 +18,25 @@ const menu: (MenuOption | MenuSeparator)[] = [
   gm('Pagados', PATHS.erp.modulos.requerimientos.aprobados),
   gm('Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
   separator(),
+  // gm(
+  //   'Consulta de movimientos',
+  //   PATHS.erp.modulos.requerimientos.reportes.main,
+  //   [
+  //     gm(
+  //       'Resumen movimientos por fecha',
+  //       PATHS.erp.modulos.requerimientos.reportes.porFecha,
+  //     ),
+  //   ],
+  // ),
   gm(
     'Consulta de movimientos',
     PATHS.erp.modulos.requerimientos.reportes.main,
     [
+      gm('Detallado', PATHS.erp.modulos.requerimientos.reportes.detallado),
+      gm('Resumido', PATHS.erp.modulos.requerimientos.reportes.resumido),
       gm(
-        'Resumen movimientos por fecha',
-        PATHS.erp.modulos.requerimientos.reportes.porFecha,
+        'Por centro de costo',
+        PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
       ),
     ],
   ),
@@ -36,14 +48,6 @@ const menu: (MenuOption | MenuSeparator)[] = [
       PATHS.erp.modulos.requerimientos.mantenimiento.costCenter,
     ),
   ]),
-  // gm('Consultas de caja', PATHS.erp.modulos.requerimientos.reportes.main, [
-  //   gm('Detallado', PATHS.erp.modulos.requerimientos.reportes.detallado),
-  //   gm('Resumido', PATHS.erp.modulos.requerimientos.reportes.resumido),
-  //   gm(
-  //     'Por centro de costo',
-  //     PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
-  //   ),
-  // ]),
 ]
 
 export const RequerimientosLayout = () => {

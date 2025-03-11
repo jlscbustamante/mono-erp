@@ -19,6 +19,7 @@ import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costC
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
 import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
 import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
+import RequirementDetailedPage from '@/app/erp/modules/requerimientos/reports/detailed/page'
 import { RequirementReview } from '@/app/erp/modules/requerimientos/review/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
@@ -64,7 +65,6 @@ import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
 import Reports from '@/views/reports/Reports'
 import BalanceCostCenter from '@/views/requests/balances/CostCenter'
-import DetailedBalance from '@/views/requests/balances/Detailed'
 import SummarizedBalance from '@/views/requests/balances/Summarized'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
@@ -148,7 +148,8 @@ export const routerv2 = createBrowserRouter([
                   },
                   {
                     path: PATHS.erp.modulos.requerimientos.reportes.detallado,
-                    element: <DetailedBalance />,
+                    // element: <DetailedBalance />,
+                    element: <RequirementDetailedPage />,
                   },
                   {
                     path: PATHS.erp.modulos.requerimientos.reportes.resumido,

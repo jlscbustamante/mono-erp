@@ -13,11 +13,12 @@ import { requirementItems, requirements } from "@scope/pizzadb";
 import type {
   RequirementInsert,
   RequirementItemInsert,
+  RequirementRelationsSelect,
   RequirementSelect,
   WhereOption,
 } from "@scope/pizzadb/types";
 import { format } from "date-fns";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { transformWhere } from "../../../pizzadb/filter/transform.ts";
 
@@ -219,5 +220,36 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
         },
       ]);
     });
+  }
+
+  async getDetailedReport(
+    date: string,
+    cashAccountId: number
+  ): Promise<RequirementRelationsSelect[]> {
+    const listIds = await db.query.requirements.findMany({
+      columns: {
+        id: true,
+      },
+      where: sql`DATE(${requirements.requested_at})=${date}`,
+      with: {
+        items: {
+          where: and(eq(requirementItems.cashbank_id, cashAccountId)),
+        },
+      },
+    });
+    const listRequirements = await db.query.requirements.findMany({
+      where: inArray(
+        requirements.id,
+        listIds.map((el) => el.id)
+      ),
+      with: {
+        items: true,
+      },
+    });
+    return listRequirements;
+  }
+  async getInitialBalance(cashId: number, date: string) {
+    //
+    return 124141;
   }
 }

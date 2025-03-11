@@ -2,13 +2,11 @@ import { eachDayOfInterval, format, parseISO } from 'date-fns'
 
 import { Account } from '../entities/Account'
 import { CashAccount } from '../entities/CashAccount'
-import { CashAccountType } from '../entities/CashAccountType'
 import { CashBalance } from '../entities/CashBalance'
 import { RequestEntity } from '../entities/Request'
 import { BalanceRepository } from '../repositories/balance.repository'
 import { CashAccountRepository } from '../repositories/cashAccount.repository'
 import { CashMoveRepository } from '../repositories/cashMove.repository'
-import { CashTypeAccountRepository } from '../repositories/cashTypeAccount.repository'
 import { RequestRepository } from '../repositories/request.repository'
 import { EnvFilters } from '../types'
 import { BalanceStatus } from '../types/balance'
@@ -46,7 +44,6 @@ type EditCashAccount = {
   type_cash_id: number
   codefis: string
   status: CashAccountStatus
-  cash_account_type: CashAccountType
   account: Account
 }
 interface ReportRequest {
@@ -67,7 +64,6 @@ export class CashAccountService {
     private readonly cashMoveRepository: CashMoveRepository,
     private readonly requestRepository: RequestRepository,
     private readonly resourceService: ResourceService,
-    private readonly cashTypeAccountRepository: CashTypeAccountRepository,
   ) {}
 
   async getFilteredNt(
@@ -76,10 +72,12 @@ export class CashAccountService {
     return this.cashAccountRepository.filterNt(filters)
   }
 
-  async getFilteredTypeNt(
-    filters: EnvFilters<CashAccountType>,
-  ): Promise<CashAccountType[]> {
-    return this.cashTypeAccountRepository.filterTypeNt(filters)
+  /**
+   *
+   * @deprecated
+   */
+  async getFilteredTypeNt(_filters: EnvFilters<any>): Promise<any[]> {
+    throw new Error('Method not implemented.')
   }
 
   async initialBalance(
@@ -146,7 +144,6 @@ export class CashAccountService {
       existingCashAccount.type_cash_id = args.type_cash_id
       existingCashAccount.codefis = args.codefis
       existingCashAccount.status = args.status
-      existingCashAccount.cash_account_type = args.cash_account_type
       existingCashAccount.account = args.account
 
       await this.cashAccountRepository.save(existingCashAccount)
@@ -155,19 +152,8 @@ export class CashAccountService {
     }
   }
 
-  async updateCashType(
-    existingCashAccount: CashAccountType,
-    args: EditCashType,
-  ): Promise<void> {
-    try {
-      existingCashAccount.name = args.name
-      existingCashAccount.type_id = args.type_id
-      existingCashAccount.status = args.status
-
-      await this.cashTypeAccountRepository.save(existingCashAccount)
-    } catch (error: any) {
-      throw new Error(`Error al actualizar la cuenta de efectivo: ${error}`)
-    }
+  async updateCashType(_args: any): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
   async createCashAccount(args: EditCashAccount): Promise<void> {
@@ -182,7 +168,6 @@ export class CashAccountService {
       newCashAccount.codefis = args.codefis
 
       newCashAccount.status = args.status
-      newCashAccount.cash_account_type = args.cash_account_type
       newCashAccount.account = args.account
       newCashAccount.updated_at = dateNow()
       newCashAccount.created_at = dateNow()
@@ -215,16 +200,8 @@ export class CashAccountService {
   }
   // cajas contabilizadas
 
-  async createTypeCashAccount(args: EditCashType): Promise<void> {
-    try {
-      const newTypeCashAccount = new CashAccountType()
-      newTypeCashAccount.name = args.name
-      newTypeCashAccount.type_id = args.type_id
-      newTypeCashAccount.status = args.status
-      await this.cashTypeAccountRepository.save(newTypeCashAccount)
-    } catch (error: any) {
-      throw new Error(`Error al crear la cuenta de efectivo: ${error}`)
-    }
+  async createTypeCashAccount(_args: EditCashType): Promise<void> {
+    throw new Error('Method not implemented.')
   }
 
   async getBalanceReport(
@@ -310,6 +287,10 @@ export class CashAccountService {
     return report
   }
 
+  /**
+   *
+   * @deprecated
+   */
   async detailedReportRequest(
     cashAccountId: number,
     date: string,

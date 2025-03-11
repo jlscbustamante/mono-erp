@@ -5,7 +5,6 @@ import balanceRepository from '../repositories/balance.repository'
 import cashAccountRepository from '../repositories/cashAccount.repository'
 import cashBalanceRepository from '../repositories/cashBalance.repository'
 import cashMoveRepository from '../repositories/cashMove.repository'
-import cashTypeAccountRepository from '../repositories/cashTypeAccount.repository'
 import categoryRepository from '../repositories/category.repository'
 import costCenterRepository from '../repositories/costCenter.repository'
 import RequestRepository from '../repositories/request.repository'
@@ -35,7 +34,6 @@ const cashAccountService = new CashAccountService(
   cashMoveRepository,
   RequestRepository,
   resourceService,
-  cashTypeAccountRepository,
 )
 
 const compareBalancesEfis = new CompareBalancesEfis(

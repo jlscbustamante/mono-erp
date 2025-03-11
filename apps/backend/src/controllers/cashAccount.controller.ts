@@ -3,11 +3,9 @@ import { NextFunction, Request, Response } from 'express'
 import { AppDataSource } from '../config/database'
 import { Account } from '../entities/Account'
 import { CashAccount } from '../entities/CashAccount'
-import { CashAccountType } from '../entities/CashAccountType'
 import balanceRepository from '../repositories/balance.repository'
 import cashAccountRepository from '../repositories/cashAccount.repository'
 import cashMoveRepository from '../repositories/cashMove.repository'
-import cashTypeAccountRepository from '../repositories/cashTypeAccount.repository'
 import categoryRepository from '../repositories/category.repository'
 import costCenterRepository from '../repositories/costCenter.repository'
 import RequestRepository from '../repositories/request.repository'
@@ -31,7 +29,6 @@ const cashAccountService = new CashAccountService(
   cashMoveRepository,
   RequestRepository,
   resourceService,
-  cashTypeAccountRepository,
 )
 
 const closeCashAccountService = new CloseCashAccount(
@@ -218,7 +215,6 @@ export class CashAccountController {
         type_cash_id: number
         codefis: string
         status: CashAccountStatus
-        cash_account_type: CashAccountType
         account: Account
         sucursal_id: string
         roles_id: number
@@ -246,34 +242,11 @@ export class CashAccountController {
   }
 
   async updateTypeChash(
-    req: Request,
-    res: Response,
-    next: NextFunction,
+    _req: Request,
+    _res: Response,
+    _next: NextFunction,
   ): Promise<void> {
-    try {
-      const args = req.body as {
-        name: string
-        type_id: string
-        status: CashAccountTypeStatus
-      }
-      const existingCashAccount = await cashTypeAccountRepository.findOne({
-        where: {
-          id: Number(req.query.cashTypeId),
-        },
-      })
-      if (!existingCashAccount) {
-        res.status(404).json({
-          message: `Type con ID ${req.params.cashAccountId} no encontrada`,
-        })
-
-        return
-      }
-
-      await cashAccountService.updateCashType(existingCashAccount, args)
-      res.status(200).json({ message: 'Type se ha actualizado correctamente' })
-    } catch (err) {
-      next(err)
-    }
+    throw new Error('Method not implemented.')
   }
 
   async getCashAccount(
@@ -312,12 +285,7 @@ export class CashAccountController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const existingCashAccount = await cashTypeAccountRepository.findOne({
-        where: {
-          id: Number(req.query.cashTypeAccountId),
-        },
-      })
-      res.status(200).json(existingCashAccount)
+      throw new Error('Method not implemented.')
     } catch (err) {
       next(err)
     }
@@ -329,8 +297,7 @@ export class CashAccountController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const cashTypeAccounts = await cashTypeAccountRepository.find()
-      res.status(200).json(cashTypeAccounts)
+      throw new Error('Method not implemented.')
     } catch (err) {
       next(err)
     }
@@ -364,16 +331,12 @@ export class CashAccountController {
       const queries = req.body as Filters3<CashAccount>
       const { data: requests } = await cashAccountRepository.filter3({
         select: {
-          cash_account_type: {
-            name: true,
-          },
           account: {
             account: true,
           },
         },
         filters: queries,
         relations: {
-          cash_account_type: true,
           account: true,
         },
       })
@@ -390,7 +353,7 @@ export class CashAccountController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const queries = req.query as EnvFilters<CashAccountType>
+      const queries = req.query as EnvFilters<any>
       const requests = await cashAccountService.getFilteredTypeNt(queries)
 
       response.json(requests)
@@ -443,7 +406,6 @@ export class CashAccountController {
         type_cash_id: number
         codefis: string
         status: CashAccountStatus
-        cash_account_type: CashAccountType
         account: Account
       }
       await cashAccountService.createCashAccount(args)

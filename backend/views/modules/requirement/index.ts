@@ -202,4 +202,32 @@ export const requirementRouter = new Hono()
     return c.json({
       message: "ok",
     });
+  })
+  .get("/report/detailed", async (c) => {
+    const { date, cashAccountId } = c.req.query() as {
+      date: string;
+      cashAccountId: string;
+    };
+    const data = await requirementService.getDetailedReport(
+      date,
+      +cashAccountId
+    );
+
+    return c.json({
+      message: "ok",
+      data,
+    });
+  })
+  .get("/report/initial_balance", async (c) => {
+    const { date, cashId } = c.req.query() as {
+      date: string;
+      cashId: string;
+    };
+
+    const amount = await requirementService.getInitialBalance(+cashId, date);
+
+    return c.json({
+      message: "ok",
+      data: amount,
+    });
   });

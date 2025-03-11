@@ -136,14 +136,17 @@ export class RequestController {
     const cashAccounts = await cashAccountRepository.find({
       where: {
         status: CashAccountStatus.Active,
-        cash_account_type: {
-          type_id: In([CashAccountTypeId.Bank, CashAccountTypeId.Liquidator]),
-        },
+        type_cash_id: In([
+          CashAccountTypeId.Bank,
+          CashAccountTypeId.Liquidator,
+        ]),
+        // cash_account_type: {
+        //   type_id: In([CashAccountTypeId.Bank, CashAccountTypeId.Liquidator]),
+        // },
       },
       order: {
         name: 'ASC',
       },
-      relations: { cash_account_type: true },
     })
     response.json({ data: cashAccounts })
   }
