@@ -1,4 +1,5 @@
-import { REQUIERMENT_TYPE } from "#app/modules/requirement/interfaces/enums.ts";
+// import { REQUIERMENT_TYPE } from "#app/modules/requirement/interfaces/enums.ts";
+import { REQUIERMENT_TYPE } from "./enums.ts";
 
 export interface UpdateRequirementItemDto {
   id: number;

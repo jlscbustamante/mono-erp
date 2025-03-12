@@ -18,20 +18,14 @@ const menu: (MenuOption | MenuSeparator)[] = [
   gm('Pagados', PATHS.erp.modulos.requerimientos.aprobados),
   gm('Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
   separator(),
-  // gm(
-  //   'Consulta de movimientos',
-  //   PATHS.erp.modulos.requerimientos.reportes.main,
-  //   [
-  //     gm(
-  //       'Resumen movimientos por fecha',
-  //       PATHS.erp.modulos.requerimientos.reportes.porFecha,
-  //     ),
-  //   ],
-  // ),
   gm(
     'Consulta de movimientos',
     PATHS.erp.modulos.requerimientos.reportes.main,
     [
+      gm(
+        'Cuenta corriente por proveedor',
+        PATHS.erp.modulos.requerimientos.reportes.cuentaCorriente,
+      ),
       gm('Detallado', PATHS.erp.modulos.requerimientos.reportes.detallado),
       gm('Resumido', PATHS.erp.modulos.requerimientos.reportes.resumido),
       gm(

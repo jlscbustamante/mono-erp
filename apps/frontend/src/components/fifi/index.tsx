@@ -2,6 +2,7 @@ import type { WhereOption } from '@pizzadb'
 import { CircleX, Plus, Search, X } from 'lucide-react'
 import type React from 'react'
 
+import { cn } from '@/utils'
 import { Button, Dropdown, Popover, Select } from 'antd'
 import { FiDatePicker, FiRangeDatePicker } from './component/fi-date'
 import { FiInput, FiInputNumber } from './component/fi-input'
@@ -13,12 +14,14 @@ export function FilterComponent<T>({
   setFilters,
   onSearch,
   loading,
+  hideActions,
 }: {
   options?: FilterOption<T>[]
   filters?: WhereOption<T>[]
   setFilters?: (filters: WhereOption<T>[]) => void
   onSearch?: (filters: WhereOption<T>[]) => void
   loading?: boolean
+  hideActions?: boolean
 }) {
   const changeFilter = (newFilter: WhereOption<T>) => {
     if (setFilters) {
@@ -101,7 +104,11 @@ export function FilterComponent<T>({
           )
         })}
       </div>
-      <div className="flex items-center gap-1">
+      <div
+        className={cn('flex items-center gap-1', {
+          hidden: hideActions,
+        })}
+      >
         <Button
           // variant={'filled'}
           type="primary"

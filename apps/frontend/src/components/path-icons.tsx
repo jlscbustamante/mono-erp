@@ -102,6 +102,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.requerimientos.reportes.resumido]: null,
   [PATHS.erp.modulos.requerimientos.reportes.porCentroCosto]: null,
   [PATHS.erp.modulos.requerimientos.reportes.porFecha]: FaRegCalendarAlt,
+  [PATHS.erp.modulos.requerimientos.reportes.cuentaCorriente]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.main]: VscSettings,
   [PATHS.erp.modulos.requerimientos.mantenimiento.cashbank]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.costCenter]: null,

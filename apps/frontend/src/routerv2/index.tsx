@@ -19,6 +19,7 @@ import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costC
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
 import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
 import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
+import { CuentaCorrientePage } from '@/app/erp/modules/requerimientos/reports/cuentaCorriente/page'
 import RequirementDetailedPage from '@/app/erp/modules/requerimientos/reports/detailed/page'
 import { RequirementReview } from '@/app/erp/modules/requerimientos/review/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
@@ -142,6 +143,11 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.requerimientos.reportes.main,
                 children: [
+                  {
+                    path: PATHS.erp.modulos.requerimientos.reportes
+                      .cuentaCorriente,
+                    element: <CuentaCorrientePage />,
+                  },
                   {
                     path: PATHS.erp.modulos.requerimientos.reportes.porFecha,
                     element: <ReportByDatePage />,
