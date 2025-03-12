@@ -27,7 +27,7 @@ export function ReviewTransferForm({
 }) {
   const [form] = Form.useForm()
 
-  const [errors, setErrors] = useState<Record<string, string | null>>({
+  const [_errors, _setErrors] = useState<Record<string, string | null>>({
     cashbankId: null,
   })
 

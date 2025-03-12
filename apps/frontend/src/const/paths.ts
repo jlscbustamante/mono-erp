@@ -30,6 +30,8 @@ export const PATHS = {
         },
         reportes: {
           main: '/erp/modulos/requerimientos/reportes',
+          cuentaCorriente:
+            '/erp/modulos/requerimientos/reportes/cuenta-corriente',
           detallado: '/erp/modulos/requerimientos/reportes/detallado',
           resumido: '/erp/modulos/requerimientos/reportes/resumido',
           porCentroCosto:
