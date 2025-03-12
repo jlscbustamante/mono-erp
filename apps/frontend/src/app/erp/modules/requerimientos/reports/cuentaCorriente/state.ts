@@ -2,15 +2,15 @@ import { RequirementSelect, WhereOption } from '@pizzadb'
 import { format } from 'date-fns'
 import { create } from 'zustand'
 
-interface Item {
-  key: string | number
-  requestType: string
-  docNumber: string
-  requestedAt: string
-  legalName: string
-  subTitle: string
-  amount: number
-}
+// interface Item {
+//   key: string | number
+//   requestType: string
+//   docNumber: string
+//   requestedAt: string
+//   legalName: string
+//   subTitle: string
+//   amount: number
+// }
 
 interface IStore {
   refetch: () => void
