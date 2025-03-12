@@ -193,7 +193,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     const newRequirementItemOrigin: RequirementItemInsert = {
       request_id: 0,
       expires_at: data.expiration_date,
-      amount: data.amount,
+      amount: data.amount * -1,
       cashbank_id: data.cashbank_origin,
       cashbank_name: data.cashbank_origin_name,
     };
@@ -253,5 +253,21 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     });
     const total = elments.reduce((acc, el) => acc + el.amount, 0);
     return total * -1;
+  }
+
+  async getSupplierCurrentAccount(filters: WhereOption<RequirementSelect>[]) {
+    const query = transformWhere(filters).join(" AND ");
+
+    console.log("search query : ");
+
+    const result = await db.query.requirements.findMany({
+      where: query ? sql.raw(query) : undefined,
+      with: {
+        items: true,
+        supplier: true,
+      },
+    });
+
+    return result;
   }
 }

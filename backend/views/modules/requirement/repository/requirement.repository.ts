@@ -257,13 +257,13 @@ export class RequirementRepository {
         description: "",
         cashbank_id: data.cashbank,
         cashbank_name: data.cashbank_name,
-        amount: quotaDetail.amount,
+        amount: -1 * quotaDetail.amount,
         created_by: name,
         status: REQUIREMENT_STATUS.PENDING,
         expires_at: initialExpiresAt ?? quotaDetail.expiresAt,
         retention: data.hasRetention ? "1" : "2",
-        amount_net: data.hasRetention ? data.amount - data.retention : 0,
-        amount_ret: data.hasRetention ? data.retention : 0,
+        amount_net: (data.hasRetention ? data.amount - data.retention : 0) * -1,
+        amount_ret: (data.hasRetention ? data.retention : 0) * -1,
       });
     }
 

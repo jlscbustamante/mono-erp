@@ -60,7 +60,7 @@ export function CreationTransferForm({
   }, [cashbankId])
 
   useEffect(() => {
-    const cashBank = cashBanks?.find((el) => el.id === cashbankId)
+    const cashBank = cashBanks?.find((el) => el.id === cashbankDestityId)
     if (cashBank) {
       form.setFieldValue('cashbank_destiny_name', cashBank.cashbank)
     } else {

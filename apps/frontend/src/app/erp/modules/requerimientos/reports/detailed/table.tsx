@@ -18,10 +18,34 @@ export function DataTable({
 }) {
   const total = useMemo(() => {
     const amount = data.reduce((acc, el) => {
-      return acc + (el.amount ?? 0)
+      const totalReq =
+        el.items?.reduce((acc2, el2) => {
+          if (el2.cashbank_id == cashId) {
+            return acc2 + (el2.amount ?? 0)
+          }
+          return acc2
+        }, 0) ?? 0
+      return acc + totalReq
     }, 0)
     return fCurrency(amount)
   }, [data])
+
+  const relations: {
+    out: RequirementRelationsSelect[]
+    in: RequirementRelationsSelect[]
+  } = useMemo(() => {
+    const inData = data.filter((el) => {
+      return el.items?.some((el) => el.cashbank_id == cashId && el.amount > 0)
+    })
+    const outData = data.filter((el) => {
+      return el.items?.some((el) => el.cashbank_id == cashId && el.amount < 0)
+    })
+    return {
+      out: outData,
+      in: inData,
+    }
+  }, [data])
+
   return (
     <div>
       <Table
@@ -71,9 +95,9 @@ export function DataTable({
               align: 'right',
               render: (_, record) => {
                 if ((record as any).isTitle) return null
-                if (record.request_type == REQUIERMENT_TYPE.TRANSFER) {
-                  return fCurrency(record.amount ?? 0)
-                }
+                // if (record.request_type == REQUIERMENT_TYPE.TRANSFER) {
+                //   return fCurrency(record.amount ?? 0)
+                // }
                 const total = record.items?.reduce((acc, el) => {
                   if (el.cashbank_id == cashId) return acc + (el.amount ?? 0)
                   return acc
@@ -115,12 +139,13 @@ export function DataTable({
             id: 'INGRESOS',
             name: 'INGRESOS',
           } as any,
-          ...data,
+          ...relations.in,
           {
             isTitle: true,
             id: 'SALIDAS',
             name: 'SALIDAS',
           } as any,
+          ...relations.out,
         ]}
       />
     </div>

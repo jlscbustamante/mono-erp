@@ -230,4 +230,12 @@ export const requirementRouter = new Hono()
       message: "ok",
       data: amount,
     });
+  })
+  .get("/report/supplier_current_account", filtersMiddlaware, async (c) => {
+    const filters = c.get("filters") as WhereOption<RequirementSelect>[];
+    const data = await requirementService.getSupplierCurrentAccount(filters);
+    return c.json({
+      message: "ok",
+      data,
+    });
   });
