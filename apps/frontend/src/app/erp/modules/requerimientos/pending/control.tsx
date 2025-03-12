@@ -6,6 +6,7 @@ import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
+import { ExportRequirements } from '../components/export-button'
 import {
   SupplierSelectForm,
   SupplierTitleForm,
@@ -108,7 +109,7 @@ export function Control({ loading }: { loading?: boolean }) {
   }
 
   return (
-    <div className="flex justify-between items-center gap-">
+    <div className="flex justify-between items-center gap-1">
       <div className="flex-1 flex gap-1">
         <RangePicker
           value={dates}
@@ -129,6 +130,7 @@ export function Control({ loading }: { loading?: boolean }) {
           }}
         />
       </div>
+      <ExportRequirements filters={filters} />
       <Button
         size="middle"
         type="primary"

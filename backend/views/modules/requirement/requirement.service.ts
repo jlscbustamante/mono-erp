@@ -226,22 +226,15 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     date: string,
     cashAccountId: number
   ): Promise<RequirementRelationsSelect[]> {
-    const listIds = await db.query.requirements.findMany({
-      columns: {
-        id: true,
-      },
-      where: sql`DATE(${requirements.requested_at})=${date}`,
-      with: {
-        items: {
-          where: and(eq(requirementItems.cashbank_id, cashAccountId)),
-        },
-      },
-    });
+    const [result] = (await db.execute<{
+      id: number;
+    }>(
+      `SELECT ari.request_id FROM adm_request_item ari left join adm_request ar ON ar.id=ari.request_id  WHERE cashbank_id=${cashAccountId} AND DATE(ar.requested_at)="${date}"`
+    )) as unknown as [{ request_id: number }[]];
+    const ids = result.map((el) => el.request_id);
+    if (ids.length === 0) return [];
     const listRequirements = await db.query.requirements.findMany({
-      where: inArray(
-        requirements.id,
-        listIds.map((el) => el.id)
-      ),
+      where: inArray(requirements.id, ids),
       with: {
         items: true,
       },
@@ -249,7 +242,16 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     return listRequirements;
   }
   async getInitialBalance(cashId: number, date: string) {
-    //
-    return 124141;
+    const elments = await db.query.requirementItems.findMany({
+      columns: {
+        amount: true,
+      },
+      where: and(
+        eq(requirementItems.cashbank_id, cashId),
+        sql.raw(`DATE(requested_at) < "${date}"`)
+      ),
+    });
+    const total = elments.reduce((acc, el) => acc + el.amount, 0);
+    return total * -1;
   }
 }
