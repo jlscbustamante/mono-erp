@@ -17,6 +17,7 @@ export type RequirementInsert = InferInsertModel<typeof requirements>;
 
 export type RequirementRelationsSelect = RequirementSelect & {
   items: RequirementItemSelect[];
+  supplier: SupplierSelect;
 };
 
 export type RequirementItemSelect = InferSelectModel<typeof requirementItems>;

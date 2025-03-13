@@ -96,6 +96,7 @@ export const Control = () => {
   return (
     <div className="flex items-center gap-2">
       <RangePicker
+        allowClear={false}
         value={[dayjs(requestAt[0]), dayjs(requestAt[1])]}
         onChange={(val) => {
           if (val && val[0] && val[1]) {

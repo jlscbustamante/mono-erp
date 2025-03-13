@@ -7,17 +7,17 @@ export const fCurrency = (value: number | string, showCurrency = true) => {
   }
   const val = Number(value)
 
-  // return Intl.NumberFormat('es-PE', {
-  //   style: 'currency',
-  //   currency: 'PEN',
-  // }).format(val)
   if (showCurrency) {
     return Intl.NumberFormat('es-PE', {
       style: 'currency',
       currency: 'PEN',
     }).format(val)
   }
-  return Intl.NumberFormat('es-PE', {
+  const num = Intl.NumberFormat('es-PE', {
     currency: 'PEN',
   }).format(val)
+  if (!num.endsWith('.00')) {
+    return `${num}.00`
+  }
+  return num
 }
