@@ -7,6 +7,7 @@ import {
 } from "@scope/pizzadb";
 import { minutesToSeconds } from "date-fns";
 import { and, eq, inArray } from "drizzle-orm";
+import { HTTPException } from "hono/http-exception";
 import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
 
@@ -41,7 +42,9 @@ export class TemplateRepository {
       },
     });
     if (!templateDb) {
-      return [];
+      throw new HTTPException(404, {
+        message: "No se encontró la plantilla para : " + company,
+      });
     }
     const itemIds = templateDb.items.map((item) => item.item_stock_id);
     const uniqueItemIds = [...new Set(itemIds)];
