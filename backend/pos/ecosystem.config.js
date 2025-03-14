@@ -26,6 +26,15 @@ module.exports = {
       env: {
         PORT: 8006
       }
+    },
+    {
+      name: 'pos-4',
+      script: './main.ts',
+      interpreter: 'deno',
+      interpreter_args: 'run --allow-net --env-file --allow-env --allow-read --allow-write',
+      env: {
+        PORT: 8007
+      }
     }
   ]
 };
