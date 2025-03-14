@@ -56,9 +56,9 @@ export const invetarioRouter = new Hono()
       date: string;
       warehouse: string;
       stock: IStock[];
-      company?: string;
+      company: string;
     };
-    if (!date || !warehouse || !stock) {
+    if (!date || !warehouse || !stock || !company) {
       throw new Error("Faltan parametros");
     }
     await stockRepository.saveStock({
