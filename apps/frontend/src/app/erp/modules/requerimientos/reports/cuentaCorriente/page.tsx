@@ -72,6 +72,12 @@ export function CuentaCorrientePage() {
     },
   })
 
+  const total = useMemo(() => {
+    if (!query.data) return '0.00'
+    const total = query.data.reduce((acc, el) => acc + (el.amount ?? 0), 0)
+    return fCurrency(total)
+  }, [query.data])
+
   const data: Partial<ItemReport>[] = useMemo(() => {
     if (!query.data) return []
     return getItemReport(query.data)
@@ -79,8 +85,18 @@ export function CuentaCorrientePage() {
 
   return (
     <div className="p-3 space-y-2">
-      <Control />
-      <DataTable data={data} />
+      <Control loading={query.isLoading} />
+      <DataTable
+        data={[
+          ...data,
+          {
+            isSummary: true,
+            key: 'total',
+            subTitle: 'TOTAL',
+            amount: total,
+          },
+        ]}
+      />
     </div>
   )
 }

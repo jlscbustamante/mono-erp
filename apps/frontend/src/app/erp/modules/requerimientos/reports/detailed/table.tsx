@@ -103,7 +103,7 @@ export function DataTable({
                   return acc
                 }, 0)
 
-                return fCurrency(total)
+                return fCurrency(total, false)
               },
             },
           ] satisfies ColumnsType<RequirementRelationsSelect>

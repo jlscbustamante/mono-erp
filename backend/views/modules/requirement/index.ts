@@ -1,5 +1,6 @@
 import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import {
+  requirementExportService,
   requirementResourceService,
   requirementService,
 } from "#app/modules/requirement/dependencies.ts";
@@ -9,6 +10,8 @@ import { UpdateRequirementDto } from "#app/modules/types/index.ts";
 import { zValidator } from "@hono/zod-validator";
 import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
 import { Hono } from "hono";
+import { stream } from "hono/streaming";
+import * as XLSX from "xlsx";
 import { z } from "zod";
 
 export const requirementRouter = new Hono()
@@ -237,5 +240,25 @@ export const requirementRouter = new Hono()
     return c.json({
       message: "ok",
       data,
+    });
+  })
+  .get("/report/export", filtersMiddlaware, async (c) => {
+    const filters = c.get("filters") as WhereOption<RequirementSelect>[];
+    const data = await requirementExportService.exportExcel(filters);
+
+    return stream(c, async (stream) => {
+      const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+      const wb: XLSX.WorkBook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Datos");
+
+      const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+
+      c.header("Content-Disposition", "attachment; filename=report.xlsx");
+      c.header(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      );
+
+      await stream.write(excelBuffer);
     });
   });

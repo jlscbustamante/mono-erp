@@ -9,7 +9,7 @@ import { useSupplierAccount } from './state'
 
 const RangePicker = DatePicker.RangePicker
 
-export const Control = () => {
+export const Control = ({ loading }: { loading: boolean }) => {
   const refetch = useSupplierAccount((st) => st.refetch)
   const filters = useSupplierAccount((st) => st.filters)
   const setFilters = useSupplierAccount((st) => st.setFilters)
@@ -124,7 +124,7 @@ export const Control = () => {
         filters={filters}
         setFilters={setFilters}
       />
-      <Button type="primary" onClick={refetch}>
+      <Button type="primary" onClick={refetch} loading={loading}>
         Consultar
       </Button>
     </div>

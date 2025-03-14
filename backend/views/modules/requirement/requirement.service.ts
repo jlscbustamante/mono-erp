@@ -258,8 +258,6 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
   async getSupplierCurrentAccount(filters: WhereOption<RequirementSelect>[]) {
     const query = transformWhere(filters).join(" AND ");
 
-    console.log("search query : ");
-
     const result = await db.query.requirements.findMany({
       where: query ? sql.raw(query) : undefined,
       with: {
