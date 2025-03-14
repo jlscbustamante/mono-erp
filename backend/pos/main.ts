@@ -32,7 +32,7 @@ app.onError((err, c) => {
 
 Deno.serve(
   {
-    port: 8004,
+    port: Deno.env.get("PORT") ? parseInt(Deno.env.get("PORT")!) : 8000,
   },
   app.fetch
 );

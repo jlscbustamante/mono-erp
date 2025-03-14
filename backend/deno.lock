@@ -1,9 +1,6 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@lambdalisue/ttl-cache@1": "1.0.0",
-    "jsr:@std/assert@0.221": "0.221.0",
-    "jsr:@std/async@0.221": "0.221.0",
     "jsr:@std/dotenv@~0.225.3": "0.225.3",
     "jsr:@std/path@*": "1.0.8",
     "jsr:@std/path@^1.0.8": "1.0.8",
@@ -14,25 +11,11 @@
     "npm:drizzle-orm@~0.38.3": "0.38.3_mysql2@3.12.0",
     "npm:hono-rate-limiter@~0.4.2": "0.4.2_hono@4.6.16",
     "npm:hono@^4.6.16": "4.6.16",
+    "npm:ioredis@^5.6.0": "5.6.0",
     "npm:mysql2@^3.12.0": "3.12.0",
     "npm:zod@^3.24.1": "3.24.1"
   },
   "jsr": {
-    "@lambdalisue/ttl-cache@1.0.0": {
-      "integrity": "1f0c57ffdd9d345a3f7a76a8f61c96cbd116fda2617c7d4d7a4c220a7c8dbcaf",
-      "dependencies": [
-        "jsr:@std/async"
-      ]
-    },
-    "@std/assert@0.221.0": {
-      "integrity": "a5f1aa6e7909dbea271754fd4ab3f4e687aeff4873b4cef9a320af813adb489a"
-    },
-    "@std/async@0.221.0": {
-      "integrity": "f5519861754a1bb2898d227dd8ccb545abc975534aa9063e53911d6cb4e365cf",
-      "dependencies": [
-        "jsr:@std/assert"
-      ]
-    },
     "@std/dotenv@0.225.3": {
       "integrity": "a95e5b812c27b0854c52acbae215856d9cce9d4bbf774d938c51d212711e8d4a"
     },
@@ -200,11 +183,17 @@
         "zod"
       ]
     },
+    "@ioredis/commands@1.2.0": {
+      "integrity": "sha512-Sx1pU8EM64o2BrqNpEO1CNLtKQwyhuXuqyfH7oGKCk+1a33d2r5saW8zNwm3j6BTExtjrv2BxTgzzkMwts6vGg=="
+    },
     "aws-ssl-profiles@1.1.2": {
       "integrity": "sha512-NZKeq9AfyQvEeNlN0zSYAaWrmBffJh3IELMZfRpJVWgrpEbtEpnjvzqBPf+mxoI287JohRDoa+/nsfqqiZmF6g=="
     },
     "buffer-from@1.1.2": {
       "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ=="
+    },
+    "cluster-key-slot@1.1.2": {
+      "integrity": "sha512-RMr0FhtfXemyinomL4hrWcYJxmX6deFdCxpJzhDttxgO1+bcCnkk+9drydLVDmAMG7NE6aN/fl4F7ucU/90gAA=="
     },
     "date-fns@4.1.0": {
       "integrity": "sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg=="
@@ -325,8 +314,28 @@
         "safer-buffer"
       ]
     },
+    "ioredis@5.6.0": {
+      "integrity": "sha512-tBZlIIWbndeWBWCXWZiqtOF/yxf6yZX3tAlTJ7nfo5jhd6dctNxF7QnYlZLZ1a0o0pDoen7CgZqO+zjNaFbJAg==",
+      "dependencies": [
+        "@ioredis/commands",
+        "cluster-key-slot",
+        "debug",
+        "denque",
+        "lodash.defaults",
+        "lodash.isarguments",
+        "redis-errors",
+        "redis-parser",
+        "standard-as-callback"
+      ]
+    },
     "is-property@1.0.2": {
       "integrity": "sha512-Ks/IoX00TtClbGQr4TWXemAnktAQvYB7HzcCxDGqEZU6oCmb2INHuOoKxbtR+HFkmYWBKv/dOZtGRiAjDhj92g=="
+    },
+    "lodash.defaults@4.2.0": {
+      "integrity": "sha512-qjxPLHd3r5DnsdGacqOMU6pb/avJzdh9tFX2ymgoZE27BmjXrNy/y4LoaiTeAb+O3gL8AfpJGtqfX/ae2leYYQ=="
+    },
+    "lodash.isarguments@3.1.0": {
+      "integrity": "sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg=="
     },
     "long@5.2.3": {
       "integrity": "sha512-lcHwpNoggQTObv5apGNCTdJrO69eHOZMi4BNC+rTLER8iHAqGrUVeLh/irVIM7zTw2bOXA8T6uNPeujwOLg/2Q=="
@@ -360,6 +369,15 @@
         "lru-cache"
       ]
     },
+    "redis-errors@1.2.0": {
+      "integrity": "sha512-1qny3OExCf0UvUV/5wpYKf2YwPcOqXzkwKKSmKHiE6ZMQs5heeE/c8eXK+PNllPvmjgAbfnsbpkGZWy8cBpn9w=="
+    },
+    "redis-parser@3.0.0": {
+      "integrity": "sha512-DJnGAeenTdpMEH6uAJRK/uiyEIH9WVsUmoLwzudwGJUwZPp80PDBWPHXSAGNPwNvIXAbe7MSUB1zQFugFml66A==",
+      "dependencies": [
+        "redis-errors"
+      ]
+    },
     "resolve-pkg-maps@1.0.0": {
       "integrity": "sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw=="
     },
@@ -381,6 +399,9 @@
     },
     "sqlstring@2.3.3": {
       "integrity": "sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg=="
+    },
+    "standard-as-callback@2.1.0": {
+      "integrity": "sha512-qoRRSyROncaz1z0mvYqIE4lCd9p2R90i6GxW3uZv5ucSu8tU7B5HXUP1gG8pVZsYNVaXjk8ClXHPttLyxAL48A=="
     },
     "zod@3.24.1": {
       "integrity": "sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A=="
@@ -480,7 +501,6 @@
       },
       "pos": {
         "dependencies": [
-          "jsr:@lambdalisue/ttl-cache@1",
           "jsr:@std/dotenv@~0.225.3",
           "jsr:@std/path@^1.0.8",
           "npm:@hono/zod-validator@~0.4.2",
@@ -489,6 +509,7 @@
           "npm:drizzle-orm@~0.38.3",
           "npm:hono-rate-limiter@~0.4.2",
           "npm:hono@^4.6.16",
+          "npm:ioredis@^5.6.0",
           "npm:mysql2@^3.12.0",
           "npm:zod@^3.24.1"
         ]

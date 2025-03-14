@@ -1,7 +1,7 @@
 import { add, format, parseISO, sub } from "date-fns";
 import { Hono } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
-import { cache } from "../cache/index.ts";
+import { redis } from "../cache/index.ts";
 import { stockRepository } from "../repository/dependencies.ts";
 
 export const invetarioRouter = new Hono()
@@ -35,7 +35,7 @@ export const invetarioRouter = new Hono()
       });
     }
   )
-  .get("/clearcache", (c) => {
+  .get("/clearcache", async (c) => {
     const { warehouse, date } = c.req.query() as {
       warehouse: string;
       date: string;
@@ -44,9 +44,9 @@ export const invetarioRouter = new Hono()
       const today = parseISO(date);
       const before = format(sub(today, { days: 1 }), "yyyy-MM-dd");
       const tomorrow = format(add(today, { days: 1 }), "yyyy-MM-dd");
-      cache.delete("stock:" + warehouse + ":" + date);
-      cache.delete("stock:" + warehouse + ":" + before);
-      cache.delete("stock:" + warehouse + ":" + tomorrow);
+      await redis.del("stock:" + warehouse + ":" + date);
+      await redis.del("stock:" + warehouse + ":" + before);
+      await redis.del("stock:" + warehouse + ":" + tomorrow);
     }
     return c.json({ message: "ok" });
   })

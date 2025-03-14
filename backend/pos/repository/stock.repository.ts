@@ -1,10 +1,14 @@
 import { stocks, StockSelect, SucursalSelect } from "@scope/pizzadb";
-import { eachDayOfInterval, format, parseISO } from "date-fns";
+import {
+  eachDayOfInterval,
+  format,
+  minutesToSeconds,
+  parseISO,
+} from "date-fns";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { cache } from "../cache/index.ts";
+import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
-import { minutesToMilliseconds } from "../utils.ts";
 import { templateRepository } from "./dependencies.ts";
 import { ItemSelectRelations } from "./template.repository.ts";
 
@@ -40,13 +44,16 @@ interface StockSelectWithCategory extends StockSelect {
 
 export class StockRepository {
   async stores(): Promise<SucursalSelect[]> {
-    const cached = cache.get("stores");
+    const cached = await redis.get("stores");
     if (cached) return JSON.parse(cached);
     const stores = await db.query.sucursalTable.findMany();
 
-    cache.set("stores", JSON.stringify(stores), {
-      ttl: minutesToMilliseconds(60 * 3),
-    });
+    await redis.set(
+      "stores",
+      JSON.stringify(stores),
+      "EX",
+      minutesToSeconds(60 * 2)
+    );
 
     return stores;
   }
@@ -105,14 +112,14 @@ export class StockRepository {
   }
 
   async getLastClose(storeId: string): Promise<string | null> {
-    const cached = cache.get("lastClose:" + storeId);
+    const cached = await redis.get("lastClose:" + storeId);
     if (cached) return JSON.parse(cached);
     const lastClosed = await db.query.stocks.findFirst({
       where: and(eq(stocks.warehouse_id, storeId), eq(stocks.status, 2)),
       orderBy: desc(stocks.stock_at),
     });
     const date = lastClosed?.stock_at?.split(" ")[0] ?? null;
-    cache.set("lastClose:" + storeId, JSON.stringify(date));
+    await redis.set("lastClose:" + storeId, JSON.stringify(date));
     return date;
   }
 
@@ -139,9 +146,9 @@ export class StockRepository {
     date: string,
     companyId = "PIZZARAUL"
   ): Promise<StockSelectWithCategory[]> {
-    const chached = cache.get("stock:" + storeId + ":" + date);
+    const cached = await redis.get("stock:" + storeId + ":" + date);
 
-    if (chached) return JSON.parse(chached);
+    if (cached) return JSON.parse(cached);
     const stores = await this.stores();
     const store = stores.find((s) => s.id === storeId);
     if (!store) {
@@ -163,7 +170,12 @@ export class StockRepository {
       warehouseId: storeId,
     });
 
-    cache.set("stock:" + storeId + ":" + date, JSON.stringify(union));
+    await redis.set(
+      "stock:" + storeId + ":" + date,
+      JSON.stringify(union),
+      "EX",
+      minutesToSeconds(60 * 2)
+    );
     return union;
   }
 

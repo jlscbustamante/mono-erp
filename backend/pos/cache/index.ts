@@ -1,4 +1,3 @@
-import { Cache } from "@lambdalisue/ttl-cache";
-import { minutesToMilliseconds } from "../utils.ts";
+import { Redis } from "ioredis";
 
-export const cache = new Cache<string, string>(minutesToMilliseconds(120));
+export const redis = new Redis();

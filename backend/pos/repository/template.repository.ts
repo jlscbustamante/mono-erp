@@ -5,8 +5,9 @@ import {
   PresentationSelect,
   templates,
 } from "@scope/pizzadb";
+import { minutesToSeconds } from "date-fns";
 import { and, eq, inArray } from "drizzle-orm";
-import { cache } from "../cache/index.ts";
+import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
 
 export interface ItemSelectRelations extends ItemSelect {
@@ -20,7 +21,7 @@ export class TemplateRepository {
   async getTemplate(
     company: string = "PIZZARAUL"
   ): Promise<ItemSelectRelations[]> {
-    const cached = cache.get("template:" + company);
+    const cached = await redis.get("template:" + company);
     if (cached) return JSON.parse(cached);
     const templateDb = await db.query.templates.findFirst({
       columns: {
@@ -56,7 +57,12 @@ export class TemplateRepository {
       },
     });
 
-    cache.set("template:" + company, JSON.stringify(items));
+    await redis.set(
+      "template:" + company,
+      JSON.stringify(items),
+      "EX",
+      minutesToSeconds(60 * 2)
+    );
 
     return items;
   }
