@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
 import { redis } from "../cache/index.ts";
 import { stockRepository } from "../repository/dependencies.ts";
+import { IStock } from "./types.ts";
 
 export const invetarioRouter = new Hono()
   .get(
@@ -50,6 +51,24 @@ export const invetarioRouter = new Hono()
     }
     return c.json({ message: "ok" });
   })
+  .post("/save_stock", async (c) => {
+    const { date, warehouse, stock, company } = (await c.req.json()) as {
+      date: string;
+      warehouse: string;
+      stock: IStock[];
+      company?: string;
+    };
+    if (!date || !warehouse || !stock) {
+      throw new Error("Faltan parametros");
+    }
+    await stockRepository.saveStock({
+      date,
+      warehouse,
+      stock,
+      companyId: company ? company : undefined,
+    });
+    return c.json({ message: "ok", data: warehouse });
+  })
   .get("/stock", async (c) => {
     const props = c.req.query() as {
       warehouse: string;
@@ -63,6 +82,19 @@ export const invetarioRouter = new Hono()
       companyId: "PIZZARAUL",
     });
     return c.json({ data });
+  })
+  .get("/last_closed", async (c) => {
+    const { warehouse } = c.req.query() as {
+      warehouse: string;
+    };
+    if (!warehouse) {
+      throw new Error("Faltan parametros");
+    }
+    const date = await stockRepository.getLastClose(warehouse);
+
+    return c.json({
+      data: date,
+    });
   })
   .get("/cachear", async (c) => {
     const stores = await stockRepository.stores();

@@ -1,14 +1,21 @@
-import { stocks, StockSelect, SucursalSelect } from "@scope/pizzadb";
+import {
+  StockInsert,
+  stocks,
+  StockSelect,
+  SucursalSelect,
+} from "@scope/pizzadb";
 import {
   eachDayOfInterval,
   format,
   minutesToSeconds,
   parseISO,
+  sub,
 } from "date-fns";
 import { and, desc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
+import { IStock } from "../router/types.ts";
 import { templateRepository } from "./dependencies.ts";
 import { ItemSelectRelations } from "./template.repository.ts";
 
@@ -313,5 +320,121 @@ export class StockRepository {
     allStock.push(...itemsNotInTemplate);
 
     return allStock;
+  }
+
+  async saveStock(props: {
+    date: string;
+    warehouse: string;
+    stock: IStock[];
+    companyId?: string;
+  }) {
+    const beforeDay = format(
+      sub(parseISO(props.date), { days: 1 }),
+      "yyyy-MM-dd"
+    );
+    // TODO: Solucianar esto, no deberiamos consultar el stock del dia anterior
+    // en realidad con consultar el de hoy deberia bastar, acaso no es confiable ?
+    const stockBefore = await this.getStockStore({
+      storeId: props.warehouse,
+      start: beforeDay,
+      end: beforeDay,
+    });
+    const stock = await this.getStockStore({
+      storeId: props.warehouse,
+      start: props.date,
+      end: props.date,
+      companyId: props.companyId,
+    });
+    const newStock = this.newStock({
+      before: stockBefore,
+      now: stock,
+      mod: props.stock,
+      date: props.date,
+      warehouse: props.warehouse,
+    });
+
+    await db.transaction(async (trx) => {
+      await trx
+        .delete(stocks)
+        .where(
+          and(
+            eq(stocks.warehouse_id, props.warehouse),
+            sql`DATE(${stocks.stock_at})=${props.date}`
+          )
+        );
+
+      if (newStock.length > 0) {
+        await trx.insert(stocks).values(newStock);
+      }
+    });
+    await redis.del("stock:" + props.warehouse + ":" + props.date);
+    await redis.del("lastClose:" + props.warehouse);
+  }
+
+  private newStock({
+    before,
+    now,
+    mod,
+    date,
+    warehouse,
+  }: {
+    before: StockSelectWithCategory[];
+    now: StockSelectWithCategory[];
+    mod: IStock[];
+    date: string;
+    warehouse: string;
+  }): StockInsert[] {
+    const stock: StockInsert[] = [];
+    const createdAt = format(new Date(), "yyyy-MM-dd");
+    for (const itemMod of mod) {
+      const itemBefore = before.find((s) => s.item_id === itemMod.itemId);
+      const itemDb = now.find((s) => s.item_id === itemMod.itemId);
+
+      const provitional: StockInsert = {
+        stock_last: itemBefore?.stock_physical ?? 0,
+        total_last: itemBefore?.total_value ?? 0,
+        item_id: itemMod.itemId,
+        item_name: itemMod.itemName,
+        measure_id: itemMod.measureId,
+        presentation_id: itemMod.presentationId,
+        presentation_name: itemMod.presentationName,
+        stock_at: date,
+        warehouse_id: warehouse,
+        status: 2,
+        quantity_in_dp: itemDb?.quantity_in_dp ?? itemMod.quantityInDispatch,
+        quantity_in_mv: itemDb?.quantity_in_mv ?? itemMod.quantityInMv,
+        quantity_in_pu: itemDb?.quantity_in_pu ?? 0,
+        quantity_out_dp: itemDb?.quantity_out_dp ?? 0,
+        quantity_out_mv: itemDb?.quantity_out_mv ?? 0,
+        quantity_out_sl: itemDb?.quantity_out_sl ?? 0,
+        stock_physical: itemMod.stockPhysical ?? 0,
+        total_value: itemMod.totalValue ?? 0,
+        unit_value:
+          itemDb?.unit_value ??
+          itemMod.unitValue ??
+          itemBefore?.unit_value ??
+          0,
+        created_by: "sys",
+        created_at: createdAt,
+      };
+      const stockCurrent =
+        (provitional.stock_last ?? 0) +
+        (provitional.quantity_in_dp ?? 0) +
+        (provitional.quantity_in_mv ?? 0) -
+        (provitional.quantity_out_mv ?? 0) -
+        (provitional.quantity_out_sl ?? 0);
+      provitional.stock_current = stockCurrent;
+      stock.push(provitional);
+    }
+
+    const validStock: StockInsert[] = stock.filter((el) => {
+      if (el.stock_current == 0 && el.stock_physical == 0) return false;
+      return true;
+    });
+    if (validStock.length === 0) {
+      validStock.push(stock[0]);
+    }
+
+    return validStock;
   }
 }
