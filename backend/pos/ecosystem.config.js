@@ -24,7 +24,7 @@ module.exports = {
       interpreter: 'deno',
       interpreter_args: 'run --allow-net --env-file --allow-env --allow-read --allow-write',
       env: {
-        PORT: 8005
+        PORT: 8006
       }
     }
   ]
