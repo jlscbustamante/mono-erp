@@ -48,6 +48,7 @@ export const invetarioRouter = new Hono()
       await redis.del("stock:" + warehouse + ":" + date);
       await redis.del("stock:" + warehouse + ":" + before);
       await redis.del("stock:" + warehouse + ":" + tomorrow);
+      await redis.del("lastClose:" + warehouse);
     }
     return c.json({ message: "ok" });
   })
