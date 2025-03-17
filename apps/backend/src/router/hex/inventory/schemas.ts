@@ -177,8 +177,8 @@ export const getEditTemplateSchema = Joi.object({
 })
 
 export const approveMovementSchema = Joi.object<MoveBetweenStoresDto>({
-  storeFrom: Joi.string().required(),
-  storeToId: Joi.string().required(),
+  storeFrom: Joi.string(),
+  storeToId: Joi.string(),
   moveAt: Joi.date().iso().required(),
   gloss: Joi.string().allow('').required(),
   items: Joi.array()

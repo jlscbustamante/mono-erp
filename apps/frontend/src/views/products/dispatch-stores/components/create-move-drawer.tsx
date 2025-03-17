@@ -12,7 +12,7 @@ import {
   Table,
 } from 'antd'
 import dayjs from 'dayjs'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MdDelete } from 'react-icons/md'
 import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
@@ -154,14 +154,10 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
         autoComplete="off"
         onFinish={handleSubmit}
       >
-        <Form.Item
-          name={'sucursal_from_id'}
-          label="Origen"
-          rules={[{ required: true }]}
-        >
+        <Form.Item name={'sucursal_from_id'} label="Origen">
           <Select
             loading={sucursalesQuery.isLoading}
-            allowClear={false}
+            allowClear={true}
             filterOption={filterSelectForm as any}
             showSearch={true}
           >
@@ -176,11 +172,10 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
           name={'sucursal_to_id'}
           label="Destino"
           rules={[
-            { required: true },
             {
               validator: (_, value) => {
                 const sucursalFromId = form.getFieldValue('sucursal_from_id')
-                if (sucursalFromId == value) {
+                if (sucursalFromId && sucursalFromId == value) {
                   return Promise.reject(
                     'Origen y destino no pueden ser iguales',
                   )
@@ -192,7 +187,7 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
         >
           <Select
             loading={sucursalesQuery.isLoading}
-            allowClear={false}
+            allowClear={true}
             filterOption={filterSelectForm as any}
             showSearch={true}
           >
@@ -370,28 +365,28 @@ interface SubmitButtonProps {
 }
 
 const SubmitButton: React.FC<React.PropsWithChildren<SubmitButtonProps>> = ({
-  form,
+  // form,
   children,
   loading,
-  disabled,
+  // disabled,
 }) => {
-  const [submittable, setSubmittable] = useState<boolean>(false)
+  // const [submittable, setSubmittable] = useState<boolean>(false)
 
   // Watch all values
-  const values = Form.useWatch([], form)
+  // const values = Form.useWatch([], form)
 
-  useEffect(() => {
-    form
-      .validateFields({ validateOnly: true })
-      .then(() => setSubmittable(true))
-      .catch(() => setSubmittable(false))
-  }, [form, values])
+  // useEffect(() => {
+  //   form
+  //     .validateFields({ validateOnly: true })
+  //     .then(() => setSubmittable(true))
+  //     .catch(() => setSubmittable(false))
+  // }, [form, values])
 
   return (
     <Button
       type="primary"
       htmlType="submit"
-      disabled={!submittable || disabled}
+      // disabled={!submittable || disabled}
       loading={loading}
     >
       {children}

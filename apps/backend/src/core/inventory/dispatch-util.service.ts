@@ -1256,53 +1256,65 @@ export class DispatchUtil {
     dispatch.totalValue = netValue
 
     const [stockFrom, stockTo] = await Promise.all([
-      this.invStockRepository.find({
-        where: {
-          warehouse_id: move.storeFrom,
-          stock_at: Raw((alias) => `DATE(${alias}) = '${move.moveAt}'`),
-        },
-      }),
-      this.invStockRepository.find({
-        where: {
-          warehouse_id: move.storeToId,
-          stock_at: Raw((alias) => `DATE(${alias}) = '${move.moveAt}'`),
-        },
-      }),
+      move.storeFrom
+        ? this.invStockRepository.find({
+            where: {
+              warehouse_id: move.storeFrom,
+              stock_at: Raw((alias) => `DATE(${alias}) = '${move.moveAt}'`),
+            },
+          })
+        : Promise.resolve(null),
+      move.storeToId
+        ? this.invStockRepository.find({
+            where: {
+              warehouse_id: move.storeToId,
+              stock_at: Raw((alias) => `DATE(${alias}) = '${move.moveAt}'`),
+            },
+          })
+        : null,
     ])
 
-    const newStockFrom = this.addDispatchMoveStoreOut(
-      stockFrom,
-      {
-        items: template,
-        isWarehouse: false,
-      },
-      items,
-      move.moveAt.split(' ')[0],
-      move.storeFrom,
-    )
-    const newStockTo = this.addDispatchMoveStoreIn(
-      stockTo,
-      {
-        items: template,
-        isWarehouse: false,
-      },
-      items,
-      move.moveAt.split(' ')[0],
-      move.storeToId,
-    )
+    const newStockFrom = stockFrom
+      ? this.addDispatchMoveStoreOut(
+          stockFrom,
+          {
+            items: template,
+            isWarehouse: false,
+          },
+          items,
+          move.moveAt.split(' ')[0],
+          move.storeFrom,
+        )
+      : []
+    const newStockTo = stockTo
+      ? this.addDispatchMoveStoreIn(
+          stockTo,
+          {
+            items: template,
+            isWarehouse: false,
+          },
+          items,
+          move.moveAt.split(' ')[0],
+          move.storeToId,
+        )
+      : []
 
     const invStocks = [...newStockFrom, ...newStockTo]
     const cleaned = invStocks.filter((el) => !this.isStockEmpty(el))
 
     await AppDataSource.transaction(async (manager) => {
-      await manager.query(
-        'DELETE FROM inv_stock WHERE DATE(stock_at)=? AND warehouse_id=?',
-        [move.moveAt.split(' ')[0], move.storeFrom],
-      )
-      await manager.query(
-        'DELETE FROM inv_stock WHERE DATE(stock_at)=? AND warehouse_id=?',
-        [move.moveAt.split(' ')[0], move.storeToId],
-      )
+      if (move.storeFrom) {
+        await manager.query(
+          'DELETE FROM inv_stock WHERE DATE(stock_at)=? AND warehouse_id=?',
+          [move.moveAt.split(' ')[0], move.storeFrom],
+        )
+      }
+      if (move.storeToId) {
+        await manager.query(
+          'DELETE FROM inv_stock WHERE DATE(stock_at)=? AND warehouse_id=?',
+          [move.moveAt.split(' ')[0], move.storeToId],
+        )
+      }
 
       const { items: _items, ...restDispatch } = dispatch
       const result = await manager.insert(InvDispatch, restDispatch)
