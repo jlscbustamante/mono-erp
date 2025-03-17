@@ -9,4 +9,5 @@ export interface CreateRequirementTransferDto {
   cashbank_destiny: number;
   cashbank_destiny_name: string;
   expiration_date: string;
+  payment_method: string;
 }

@@ -1,11 +1,20 @@
 import { PATHS } from '@/const/paths'
 import { fNumber } from '@/utils/formatNumber'
-import { IRequirementPresentation } from '@view'
+import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
+import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 
-export function DataTable({ data }: { data: IRequirementPresentation[] }) {
+export function DataTable({
+  data,
+  type,
+}: {
+  data: IRequirementPresentation[]
+  type?: REQUIERMENT_TYPE
+}) {
+  const isTransfer = useMemo(() => type == REQUIERMENT_TYPE.TRANSFER, [type])
+
   return (
     <div>
       <Table
@@ -27,6 +36,7 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               dataIndex: 'supplier',
               sorter: (a, b) => a.supplier?.localeCompare(b.supplier ?? ''),
               showSorterTooltip: false,
+              hidden: isTransfer,
             },
             {
               title: 'Solicitado',
@@ -39,6 +49,7 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               dataIndex: 'numDoc',
               sorter: (a, b) => a.numDoc?.localeCompare(b.numDoc ?? ''),
               showSorterTooltip: false,
+              hidden: isTransfer,
             },
             {
               title: 'Detalle',
@@ -52,12 +63,26 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               dataIndex: 'costCenter',
               sorter: (a, b) => a.costCenter?.localeCompare(b.costCenter ?? ''),
               showSorterTooltip: false,
+              hidden: isTransfer,
             },
             {
               title: 'Categoria',
               dataIndex: 'category',
               sorter: (a, b) => a.category?.localeCompare(b.category ?? ''),
               showSorterTooltip: false,
+              hidden: isTransfer,
+            },
+            {
+              title: 'Caja Origen',
+              dataIndex: 'originName',
+              showSorterTooltip: false,
+              hidden: !isTransfer,
+            },
+            {
+              title: 'Caja destino',
+              dataIndex: 'destinyName',
+              showSorterTooltip: false,
+              hidden: !isTransfer,
             },
             {
               title: 'Regis. por',
@@ -77,6 +102,7 @@ export function DataTable({ data }: { data: IRequirementPresentation[] }) {
               dataIndex: 'numQuota',
               sorter: (a, b) => a.numQuota - b.numQuota,
               showSorterTooltip: false,
+              hidden: isTransfer,
             },
             // 17:43-> 17:50
             // {

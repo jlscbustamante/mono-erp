@@ -1,3 +1,5 @@
+import { REQUIERMENT_TYPE } from "./enums.ts";
+
 export interface IRequirementPresentation {
   id: number;
   supplier: string;
@@ -10,4 +12,7 @@ export interface IRequirementPresentation {
   numQuota: number;
   amount: number;
   createdBy: string;
+  type: REQUIERMENT_TYPE;
+  originName?: string;
+  destinyName?: string;
 }

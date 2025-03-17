@@ -39,7 +39,7 @@ export function ViewTable() {
     <div>
       <Control loading={isLoading || isFetching} />
       <NavRequest />
-      <DataTable data={data} />
+      <DataTable data={data} type={requirementType} />
     </div>
   )
 }

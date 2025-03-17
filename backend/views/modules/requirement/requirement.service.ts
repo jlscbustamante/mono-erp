@@ -178,13 +178,13 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
   }
 
   async createTransfer(data: CreateRequirementTransferDto, name: string) {
-    //
     const newRequiremnt: RequirementInsert = {
       created_by: name,
       requested_at: format(new Date(), "yyyy-MM-dd"),
       description: data.description,
       amount: data.amount,
       status: REQUIREMENT_STATUS.PENDING,
+      pay_method: data.payment_method,
       type_document: data.document_type,
       num_document: data.document_number,
       request_type: REQUIERMENT_TYPE.TRANSFER,

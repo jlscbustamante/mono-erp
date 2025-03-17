@@ -45,14 +45,7 @@ export const DataTable = ({ data }: { data: Partial<ItemReport>[] }) => {
           },
         ]}
         onRow={(record) => {
-          if (record.isSummary) {
-            return {
-              style: {
-                fontWeight: 'bold',
-              },
-            }
-          }
-          if (!record.docNumber) return {}
+          if (!record.docNumber || record.isSummary) return {}
           return {
             style: {
               backgroundColor: 'rgb(248, 248, 248)',
