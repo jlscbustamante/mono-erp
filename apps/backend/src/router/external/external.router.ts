@@ -194,6 +194,7 @@ export const loadExternalEndpoints = (app: Application) => {
         start: Joi.date().iso().required(),
         end: Joi.date().iso().required(),
         group: Joi.number().integer(),
+        company: Joi.string(),
       }),
       'query',
     ),

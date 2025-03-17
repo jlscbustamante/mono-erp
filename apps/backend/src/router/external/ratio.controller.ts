@@ -34,9 +34,14 @@ interface Reporte {
 export class RatioController {
   @catchError
   async getRptVentaTienda(req: Request, res: Response) {
-    const { stores, group: typeGroup } = req.query as {
+    const {
+      stores,
+      group: typeGroup,
+      company,
+    } = req.query as {
       stores: string[] | undefined
       group: string | undefined
+      company: string | undefined
     }
     const group = typeGroup ? typeGroup : 1
     const { start, end } = req.query
@@ -47,8 +52,13 @@ export class RatioController {
         ? `vrsvt.IdTienda IN (${storesFormatted}) AND `
         : ''
 
+    const queryIfThereCompany = company
+      ? `${queryIfThereStores ? 'AND' : ''} suc.trademark_id =
+      '${company}' AND `
+      : ''
+
     const data: Reporte[] = await AppDataSource.query(
-      `SELECT vrsvt.*, suc.trademark_id company FROM view_rpt_stock_ventax_tienda vrsvt LEFT JOIN adm_sucursal suc ON vrsvt.IdTienda = suc.id WHERE ${queryIfThereStores} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
+      `SELECT vrsvt.*, suc.trademark_id company FROM view_rpt_stock_ventax_tienda vrsvt LEFT JOIN adm_sucursal suc ON vrsvt.IdTienda = suc.id WHERE ${queryIfThereStores} ${queryIfThereCompany} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
     )
 
     if (group == '2') {
