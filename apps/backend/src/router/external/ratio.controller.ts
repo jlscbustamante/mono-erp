@@ -28,6 +28,7 @@ interface Reporte {
   IvFinal: string
   Consumo: string
   Venta: string
+  company: string
 }
 
 export class RatioController {
@@ -43,11 +44,11 @@ export class RatioController {
     const storesFormatted = storesFiltered.map((el) => `'${el}'`).join(',')
     const queryIfThereStores =
       storesFiltered.length > 0
-        ? `vrsvt.idTienda IN (${storesFormatted}) AND `
+        ? `vrsvt.IdTienda IN (${storesFormatted}) AND `
         : ''
 
     const data: Reporte[] = await AppDataSource.query(
-      `SELECT * FROM view_rpt_stock_ventax_tienda vrsvt WHERE ${queryIfThereStores} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
+      `SELECT vrsvt.*, suc.trademark_id company FROM view_rpt_stock_ventax_tienda vrsvt LEFT JOIN adm_sucursal suc ON vrsvt.IdTienda = suc.id WHERE ${queryIfThereStores} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
     )
 
     if (group == '2') {
@@ -99,6 +100,7 @@ export class RatioController {
           Tienda: groupedByStore[idTienda].Tienda,
           Venta: groupedByStore[idTienda].Venta,
           Consumo: consume.toFixed(3),
+          company: groupedByStore[idTienda].company,
         } satisfies Reporte
       })
 
