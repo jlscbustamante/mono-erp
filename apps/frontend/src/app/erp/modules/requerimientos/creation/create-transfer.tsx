@@ -27,6 +27,7 @@ export function CreationTransferForm({
 
   const cashbankId = Form.useWatch('cashbank_origin', form)
   const cashbankDestityId = Form.useWatch('cashbank_destiny', form)
+  const company = Form.useWatch('company', form)
 
   const navigate = useNavigate()
 
@@ -99,6 +100,15 @@ export function CreationTransferForm({
       ...values,
     })
   }
+
+  useEffect(() => {
+    form.setFieldsValue({
+      cashbank_origin: undefined,
+      cashbank_destiny: undefined,
+      cashbank_origin_name: undefined,
+      cashbank_destiny_name: undefined,
+    })
+  }, [company])
 
   return (
     <div className="flex justify-center gap-3">
@@ -196,15 +206,15 @@ export function CreationTransferForm({
                   Nota credito
                 </Select.Option>
                 <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.NOTA_DEBITO}>
-                  Factura
+                  Nota debito
                 </Select.Option>
                 <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.GUIA_REMISION}>
-                  Factura
+                  Guia remision
                 </Select.Option>
                 <Select.Option
                   value={REQUIREMENT_TYPE_DOCUMENT.GUIA_TRANSPORTISTA}
                 >
-                  Factura
+                  Guia transportista
                 </Select.Option>
               </Select>
             </Form.Item>
@@ -245,11 +255,18 @@ export function CreationTransferForm({
               className="hidden"
             >
               <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
+                {cashBanks
+                  ?.filter((el) => {
+                    if (company) {
+                      return el.company_id === company
+                    }
+                    return true
+                  })
+                  .map((cashBank) => (
+                    <Select.Option key={cashBank.id} value={cashBank.id}>
+                      {cashBank.cashbank}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
 
@@ -268,22 +285,52 @@ export function CreationTransferForm({
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Caja Origen" name={'cashbank_origin'}>
+            <Form.Item
+              label="Caja Origen"
+              name={'cashbank_origin'}
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
               <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
+                {cashBanks
+                  ?.filter((el) => {
+                    if (company) {
+                      return el.company_id === company
+                    }
+                    return true
+                  })
+                  .map((cashBank) => (
+                    <Select.Option key={cashBank.id} value={cashBank.id}>
+                      {cashBank.cashbank}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
-            <Form.Item label="Caja Destino" name={'cashbank_destiny'}>
+            <Form.Item
+              label="Caja Destino"
+              name={'cashbank_destiny'}
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
+            >
               <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
+                {cashBanks
+                  ?.filter((el) => {
+                    if (company) {
+                      return el.company_id === company
+                    }
+                    return true
+                  })
+                  .map((cashBank) => (
+                    <Select.Option key={cashBank.id} value={cashBank.id}>
+                      {cashBank.cashbank}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
           </div>

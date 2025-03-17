@@ -48,6 +48,7 @@ export function CreationForm({
   const supplierId = Form.useWatch('supplier', form)
   const cashbankId = Form.useWatch('cashbank', form)
   const categoryId = Form.useWatch('category_id', form)
+  const company = Form.useWatch('company', form)
   const [quotas, setQuotas] = useState<
     { number: number; amount: number; expiresAt?: string }[]
   >([])
@@ -448,11 +449,18 @@ export function CreationForm({
             </Form.Item>
             <Form.Item label="Caja" name={'cashbank'}>
               <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
+                {cashBanks
+                  ?.filter((el) => {
+                    if (company) {
+                      return el.company_id == company
+                    }
+                    return true
+                  })
+                  .map((cashBank) => (
+                    <Select.Option key={cashBank.id} value={cashBank.id}>
+                      {cashBank.cashbank}
+                    </Select.Option>
+                  ))}
               </Select>
             </Form.Item>
             <Form.Item
