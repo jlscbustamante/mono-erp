@@ -11,15 +11,18 @@ export const DataTable = ({ data }: { data: Partial<ItemReport>[] }) => {
           {
             title: 'TIPO',
             dataIndex: 'requestType',
+            width: 90,
           },
           {
             title: 'NUMERO',
             dataIndex: 'docNumber',
+            width: 200,
           },
           {
             title: 'FECHA EMISION',
             dataIndex: 'requestedAt',
             render: (val: string) => val?.split(' ')?.[0],
+            width: 140,
           },
           {
             title: 'RAZON SOCIAL',

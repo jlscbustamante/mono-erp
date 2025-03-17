@@ -1,4 +1,5 @@
 import { viewClient } from '@/lib/rpc'
+import { filterSelectForm } from '@/utils'
 import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Button, DatePicker, Select } from 'antd'
@@ -41,6 +42,8 @@ export const Control = ({ loading }: { loading: boolean }) => {
         className="w-60"
         placeholder="Caja/Banco"
         value={cashId}
+        filterOption={filterSelectForm}
+        showSearch
         onChange={(val) => {
           setCashId(val)
         }}

@@ -58,6 +58,17 @@ export function DataTable({
               title: 'ID',
             },
             {
+              title: 'Tipo',
+              dataIndex: 'request_type',
+              render: (val) => {
+                if (val == REQUIERMENT_TYPE.SIMPLE) return 'Simple'
+                if (val == REQUIERMENT_TYPE.SUPPLIER) return 'Proveedor'
+                if (val == REQUIERMENT_TYPE.TRANSFER) return 'Transferencia'
+                if (val == REQUIERMENT_TYPE.LIQUIDATION) return 'Liquidación'
+                return null
+              },
+            },
+            {
               title: 'Categoria/Caja',
               render: (_, record) => {
                 if (record.request_type == REQUIERMENT_TYPE.TRANSFER) {
@@ -103,7 +114,7 @@ export function DataTable({
                   return acc
                 }, 0)
 
-                return fCurrency(total, false)
+                return fCurrency(total ?? 0, false)
               },
             },
           ] satisfies ColumnsType<RequirementRelationsSelect>
