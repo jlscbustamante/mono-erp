@@ -72,11 +72,12 @@ export class RequirementRepository {
     return result;
   }
 
-  async saveAndApprove(data: UpdateRequirementDto) {
+  async saveAndApprove(data: UpdateRequirementDto, userName: string) {
     await db.transaction(async (manager) => {
       await manager
         .update(requirements)
         .set({
+          created_by: userName,
           company_id: data.companyId,
           supplier_id: data.supplierId,
           legal_name: data.supplierName,
@@ -278,9 +279,5 @@ export class RequirementRepository {
         }))
       );
     });
-  }
-
-  async rejectRequirement(id: number) {
-    //
   }
 }

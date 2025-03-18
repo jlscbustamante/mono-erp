@@ -1,9 +1,10 @@
 import { FilterComponent } from '@/components/fifi'
 import { viewClient } from '@/lib/rpc'
+import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
-import { format, parseISO } from 'date-fns'
-import { useMemo, useReducer, useState } from 'react'
+import { parseISO } from 'date-fns'
+import { useMemo } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
@@ -12,11 +13,17 @@ import { useRejectedStore } from './state'
 import { SwitchViewReject } from './switch-view-reject'
 
 export function ViewCalendar() {
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const date = useRejectedStore((st) => st.dateCalendar)
+  const setDate = useRejectedStore((st) => st.setDateCalendar)
   const filters = useRejectedStore((st) => st.filters)
   const setFilter = useRejectedStore((st) => st.setFilters)
-  const [control, setControl] = useReducer((c) => c + 1, 0)
+  const controlRefetch = useRejectedStore((st) => st.controlRefetch)
+  const refetch = useRejectedStore((st) => st.refetch)
   const toggleView = useRejectedStore((st) => st.setView)
+
+  const month = useMemo(() => {
+    return parseISO(date).getMonth() + 1
+  }, [date])
 
   const supplierId = useMemo(() => {
     return filters.find((el) => el.field == 'supplier_id')?.value as
@@ -56,7 +63,7 @@ export function ViewCalendar() {
   }
 
   const query = useQuery({
-    queryKey: ['rq:reject-calendar', control, date],
+    queryKey: ['rq:reject-calendar', controlRefetch, date],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const filtersWithoutDate = filters.filter(
@@ -100,7 +107,7 @@ export function ViewCalendar() {
         date={date}
         onClick={handleClick}
         setDate={setDate}
-        middleAddons={<NavRequest />}
+        middleAddons={<NavRequest month={month} />}
         beforeAddons={
           <div className="flex gap-1 items-center">
             <SupplierSelectForm
@@ -120,14 +127,15 @@ export function ViewCalendar() {
               filters={filters}
               setFilters={setFilter}
               onSearch={() => {
-                setControl()
+                refetch()
               }}
             />
           </div>
         }
+        titleBadge="Rechazado"
         events={query.data?.map((d) => ({
           date: d.date,
-          title: `S/ ${d.total}<br >Cancelados`,
+          title: `${fCurrency(d.total)}`,
         }))}
         addons={<SwitchViewReject />}
       />

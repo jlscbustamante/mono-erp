@@ -47,7 +47,7 @@ export class RequirementService {
   }
 
   async saveAndApprove(data: UpdateRequirementDto, userName: string) {
-    await this.requirementRepository.saveAndApprove(data);
+    await this.requirementRepository.saveAndApprove(data, userName);
   }
 
   async approve(id: number, userName: string) {

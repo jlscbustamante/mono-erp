@@ -71,6 +71,18 @@ export function DataTable({
               hidden: isTransfer,
             },
             {
+              title: 'Caja Origen',
+              dataIndex: 'originName',
+              showSorterTooltip: false,
+              hidden: !isTransfer,
+            },
+            {
+              title: 'Caja destino',
+              dataIndex: 'destinyName',
+              showSorterTooltip: false,
+              hidden: !isTransfer,
+            },
+            {
               title: 'Aprobado por',
               dataIndex: 'approvedBy',
               sorter: (a, b) => a.createdBy?.localeCompare(b.createdBy ?? ''),

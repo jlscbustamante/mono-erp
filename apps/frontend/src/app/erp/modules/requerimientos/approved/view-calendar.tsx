@@ -3,8 +3,8 @@ import { viewClient } from '@/lib/rpc'
 import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_STATUS } from '@view'
-import { format, parseISO } from 'date-fns'
-import { useMemo, useReducer, useState } from 'react'
+import { parseISO } from 'date-fns'
+import { useMemo } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
@@ -13,11 +13,17 @@ import { useApprovedStore } from './state'
 import { SwitchViewApproved } from './switch-view-approved'
 
 export function ViewCalendar() {
-  const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const date = useApprovedStore((st) => st.dateCalendar)
+  const setDate = useApprovedStore((st) => st.setDateCalendar)
   const filters = useApprovedStore((st) => st.filters)
   const setFilter = useApprovedStore((st) => st.setFilters)
-  const [control, setControl] = useReducer((c) => c + 1, 0)
+  const controlRefetch = useApprovedStore((st) => st.controlRefetch)
+  const refetch = useApprovedStore((st) => st.refetch)
   const toggleView = useApprovedStore((st) => st.setView)
+
+  const month = useMemo(() => {
+    return parseISO(date).getMonth() + 1
+  }, [date])
 
   const supplierId = useMemo(() => {
     return filters.find((el) => el.field == 'supplier_id')?.value as
@@ -57,7 +63,7 @@ export function ViewCalendar() {
   }
 
   const query = useQuery({
-    queryKey: ['rq:approved-calendar', control, date],
+    queryKey: ['rq:approved-calendar', controlRefetch, date],
     queryFn: async () => {
       const month = parseISO(date).getMonth() + 1
       const filtersWithoutDate = filters.filter(
@@ -106,7 +112,7 @@ export function ViewCalendar() {
           date: d.date,
           title: `${fCurrency(d.total)}`,
         }))}
-        middleAddons={<NavRequest />}
+        middleAddons={<NavRequest month={month} />}
         beforeAddons={
           <div className="flex gap-1 items-center">
             <SupplierSelectForm
@@ -126,7 +132,7 @@ export function ViewCalendar() {
               filters={filters}
               setFilters={setFilter}
               onSearch={() => {
-                setControl()
+                refetch()
               }}
             />
           </div>
