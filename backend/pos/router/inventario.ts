@@ -102,7 +102,8 @@ export const invetarioRouter = new Hono()
   })
   .get("/move_info", async (c) => {
     const props = c.req.query() as {
-      date: string;
+      start: string;
+      end: string;
       warehouse: string;
       type: string;
       itemId: string;
@@ -125,7 +126,8 @@ export const invetarioRouter = new Hono()
         props.type === "in"
           ? eq(dispatches.sucursal_to_id, props.warehouse)
           : eq(dispatches.sucursal_from_id, props.warehouse),
-        sql`date(${dispatches.move_at})=${props.date}`,
+        // sql`date(${dispatches.move_at})=${props.date}`,
+        sql`date(${dispatches.move_at}) BETWEEN ${props.start} AND ${props.end}`,
         eq(dispatches.move_type, "M"),
         eq(dispatches.status, 3)
       ),
