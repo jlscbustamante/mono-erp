@@ -159,7 +159,7 @@ export const invetarioRouter = new Hono()
 
     return c.json({
       message: "ok",
-      summary: info,
+      data: info,
     });
   })
   .get("/cachear", async (c) => {
