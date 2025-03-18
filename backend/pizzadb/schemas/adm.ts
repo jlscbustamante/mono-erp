@@ -1,4 +1,4 @@
-import { InferSelectModel } from "drizzle-orm";
+import type { InferSelectModel } from "drizzle-orm";
 import { char, mysqlTable, varchar } from "drizzle-orm/mysql-core";
 
 export const sucursalTable = mysqlTable("adm_sucursal", {

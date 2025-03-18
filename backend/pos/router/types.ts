@@ -21,3 +21,12 @@ export interface IStock {
   unitValue: number;
   warehouseId: string;
 }
+
+export interface MoveInfo {
+  date: string;
+  description: string;
+  quantity: number;
+  itemId: number;
+  actor?: string;
+  itemName: string;
+}

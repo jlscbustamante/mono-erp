@@ -1,9 +1,12 @@
 import { add, format, parseISO, sub } from "date-fns";
+import { and, eq, sql } from "drizzle-orm";
 import { Hono } from "hono";
 import { rateLimiter } from "hono-rate-limiter";
+import { dispatches, dispatchesItems } from "../../pizzadb/index.ts";
 import { redis } from "../cache/index.ts";
+import { db } from "../database.ts";
 import { stockRepository } from "../repository/dependencies.ts";
-import { IStock } from "./types.ts";
+import { IStock, MoveInfo } from "./types.ts";
 
 export const invetarioRouter = new Hono()
   .get(
@@ -95,6 +98,68 @@ export const invetarioRouter = new Hono()
 
     return c.json({
       data: date,
+    });
+  })
+  .get("/move_info", async (c) => {
+    const props = c.req.query() as {
+      date: string;
+      warehouse: string;
+      type: string;
+      itemId: string;
+    };
+    const itemId = +props.itemId;
+    // type =='in' ingreso
+    // type=='out' salida
+
+    // salida
+    const list = await db.query.dispatches.findMany({
+      columns: {
+        id: true,
+        gloss: true,
+        sucursal_from_id: true,
+        sucursal_to_id: true,
+        move_at: true,
+        move_type: true,
+      },
+      where: and(
+        props.type === "in"
+          ? eq(dispatches.sucursal_to_id, props.warehouse)
+          : eq(dispatches.sucursal_from_id, props.warehouse),
+        sql`date(${dispatches.move_at})=${props.date}`,
+        eq(dispatches.move_type, "M"),
+        eq(dispatches.status, 3)
+      ),
+      with: {
+        items: {
+          where: eq(dispatchesItems.item_id, itemId),
+        },
+        origin: true,
+        destiny: true,
+      },
+    });
+    const listItems = list.filter((el) =>
+      el.items.some((il) => il.item_id == itemId)
+    );
+
+    const info: MoveInfo[] = [];
+
+    for (const item of listItems) {
+      const itemInfo = item.items.find((el) => el.item_id == itemId);
+      if (itemInfo) {
+        info.push({
+          date: item.move_at?.split(" ")[0],
+          quantity: itemInfo.quantity,
+          description: item.gloss ?? "",
+          itemId: itemInfo.item_id,
+          itemName: itemInfo.item_name,
+          actor: props.type === "in" ? item.origin?.title : item.destiny?.title,
+        });
+      }
+    }
+
+    return c.json({
+      message: "ok",
+      summary: info,
     });
   })
   .get("/cachear", async (c) => {

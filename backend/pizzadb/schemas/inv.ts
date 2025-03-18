@@ -14,6 +14,7 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { sucursalTable } from "./adm.ts";
 
 const decimalNumber = customType<{
   data: number;
@@ -97,8 +98,16 @@ export const dispatchItemRelation = relations(dispatchesItems, ({ one }) => ({
   }),
 }));
 
-export const dispatchesRelation = relations(dispatches, ({ many }) => ({
+export const dispatchesRelation = relations(dispatches, ({ many, one }) => ({
   items: many(dispatchesItems),
+  origin: one(sucursalTable, {
+    fields: [dispatches.sucursal_from_id],
+    references: [sucursalTable.id],
+  }),
+  destiny: one(sucursalTable, {
+    fields: [dispatches.sucursal_to_id],
+    references: [sucursalTable.id],
+  }),
 }));
 
 export const stocks = mysqlTable("inv_stock", {
