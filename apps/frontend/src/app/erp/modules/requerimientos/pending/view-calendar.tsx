@@ -9,6 +9,7 @@ import { parseISO } from 'date-fns'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { CalendarComponent } from '../calendar'
+import { ExportRequirements } from '../components/export-button'
 import { SupplierSelectForm } from '../components/supplier-select'
 import { menuOptions } from './control'
 import { NavRequest } from './nav'
@@ -143,6 +144,7 @@ export function ViewCalendar() {
         }
         addons={
           <div className="flex gap-1 items-center">
+            <ExportRequirements filters={filters} />
             <Button
               size="middle"
               type="primary"
@@ -150,7 +152,7 @@ export function ViewCalendar() {
                 navigate(PATHS.erp.modulos.requerimientos.creation)
               }}
             >
-              Nuevo requerimiento
+              Nuevo
             </Button>
             <SwitchViewPending />
           </div>

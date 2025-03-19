@@ -241,14 +241,15 @@ export function CreationForm({
 
   return (
     <div className="flex justify-center gap-3">
-      <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
+      <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
         <div
-          className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
+          className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
           onClick={() => navigate(PATHS.erp.modulos.requerimientos.solicitados)}
         >
-          <ArrowLeft className="" size={16} />
-          Volver
+          <ArrowLeft className="" size={20} />
+          NUEVO REQUERIMIENTO
         </div>
+        <Divider className="mt-2" />
         <Form
           labelAlign="left"
           name="rq-create-form"
@@ -263,19 +264,20 @@ export function CreationForm({
               amount: 1,
               hasRetention: false,
               retention: 0,
+              company: 'PIZZARAUL',
             } satisfies Partial<CreateRequirementDto>
           }
         >
-          <Form.Item name={'cost_center_name'} className="hidden">
+          <Form.Item name={'cost_center_name'} hidden>
             <Input />
           </Form.Item>
-          <Form.Item name={'category_name'} className="hidden">
+          <Form.Item name={'category_name'} hidden>
             <Input />
           </Form.Item>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
               label="Empresa"
-              className=""
+              className="mb-2"
               name="company"
               rules={[{ required: true }]}
             >
@@ -287,16 +289,13 @@ export function CreationForm({
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item label="Tipo" className="">
+            <Form.Item label="Tipo" className="mb-2">
               <Select placeholder="Tipo" value={type} onChange={changeType}>
                 <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                   SIMPLE
                 </Select.Option>
                 <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
                   TRANSFERENCIA
-                </Select.Option>
-                <Select.Option value={REQUIERMENT_TYPE.SUPPLIER}>
-                  PROVEEDOR
                 </Select.Option>
                 <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
                   LIQUIDACION
@@ -306,25 +305,9 @@ export function CreationForm({
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
-              label="Proveedor"
-              name="supplier"
-              rules={[{ required: true }]}
-            >
-              <Select
-                placeholder="Proveedor"
-                filterOption={filterSelectForm}
-                showSearch
-              >
-                {suppliers?.map((supplier) => (
-                  <Select.Option key={supplier.id} value={supplier.id}>
-                    {supplier.supplier}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-            <Form.Item
               label="RUC proveedor"
               name="ruc"
+              className="mb-2"
               rules={[{ required: true }]}
             >
               <Input
@@ -336,9 +319,18 @@ export function CreationForm({
                 // }}
               />
             </Form.Item>
+            <Form.Item
+              className="mb-2"
+              label="Proveedor"
+              name="supplier"
+              rules={[{ required: true }]}
+            >
+              <Input placeholder="Proveedor" />
+            </Form.Item>
           </div>
           <div className="grid-cols-2 gap-2 hidden">
             <Form.Item
+              className="mb-2"
               label="R. social"
               name="legal_name"
               rules={[{ required: true }]}
@@ -352,13 +344,14 @@ export function CreationForm({
           <div>
             <Form.Item
               label="Detalle"
+              className="mb-2"
               labelAlign="left"
               labelCol={{ span: 4 }}
               name="description"
             >
               <Input.TextArea
                 placeholder="Descripcion"
-                rows={2}
+                rows={1}
                 className="resize-none"
               />
             </Form.Item>
@@ -367,6 +360,7 @@ export function CreationForm({
             <Form.Item
               label="Tipo doc."
               name="document_type"
+              className="mb-2"
               rules={[{ required: true }]}
             >
               <Select
@@ -398,7 +392,7 @@ export function CreationForm({
                 </Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="N° doc." name="document_number">
+            <Form.Item label="N° doc." name="document_number" className="mb-2">
               <Input />
             </Form.Item>
           </div>
@@ -431,10 +425,11 @@ export function CreationForm({
             </Form.Item>
           </div>
 
-          <Divider />
+          <Divider className="mt-2" />
           <h5>Datos del pago:</h5>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
+              className="mb-2"
               label="Monto"
               name="amount"
               rules={[
@@ -447,7 +442,7 @@ export function CreationForm({
             >
               <InputNumber min={0} className="w-full" />
             </Form.Item>
-            <Form.Item label="Caja" name={'cashbank'}>
+            <Form.Item label="Caja" name={'cashbank'} className="mb-2">
               <Select placeholder="Caja">
                 {cashBanks
                   ?.filter((el) => {
@@ -463,11 +458,7 @@ export function CreationForm({
                   ))}
               </Select>
             </Form.Item>
-            <Form.Item
-              label="CajaNombre"
-              name={'cashbank_name'}
-              className="hidden"
-            >
+            <Form.Item label="CajaNombre" name={'cashbank_name'} hidden>
               <Select placeholder="Caja">
                 {cashBanks?.map((cashBank) => (
                   <Select.Option key={cashBank.id} value={cashBank.id}>
@@ -478,25 +469,34 @@ export function CreationForm({
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Forma de pago" name={'payment_method'}>
+            <Form.Item
+              label="Forma de pago"
+              name={'payment_method'}
+              className="mb-2"
+            >
               <Select placeholder="pago">
                 <Select.Option value="CONTADO">CONTADO</Select.Option>
                 <Select.Option value="CREDITO">CREDITO</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Vencimiento" name={'expiration_date'}>
+            <Form.Item
+              label="Vencimiento"
+              name={'expiration_date'}
+              className="mb-2"
+            >
               <CustomDatePicker className="w-full" />
             </Form.Item>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
+              className="mb-2"
               label="Tiene retencion"
               name="hasRetention"
               valuePropName="checked"
             >
               <Checkbox />
             </Form.Item>
-            <Form.Item label="Retencion" name={'retention'}>
+            <Form.Item label="Retencion" name={'retention'} className="mb-2">
               <InputNumber placeholder="0.0" disabled={!hasRetention} min={0} />
             </Form.Item>
           </div>
@@ -530,9 +530,9 @@ export function CreationForm({
               </Form.Item>
             </div>
           </div>
-          <Form.Item wrapperCol={{ span: 14, offset: 4 }} hidden={!hasQuota}>
+          <Form.Item wrapperCol={{ span: 12, offset: 4 }} hidden={!hasQuota}>
             <div>
-              <div className="grid grid-cols-[120px_120px_1fr] font-semibold mb-2 gap-3">
+              <div className="grid grid-cols-[100px_100px_1fr] font-semibold mb-2 gap-3">
                 <p>N° cuota</p>
                 <p>Monto</p>
                 <p>Vencimiento</p>
@@ -540,7 +540,7 @@ export function CreationForm({
               {quotas.map((el) => {
                 return (
                   <div key={el.number} className="flex items-center relative">
-                    <div className="grid grid-cols-[120px_120px_1fr] my-2 gap-3 w-full">
+                    <div className="grid grid-cols-[100px_100px_1fr] my-1 gap-3 w-full">
                       <InputNumber readOnly value={el.number} />
                       <InputNumber
                         value={el.amount}

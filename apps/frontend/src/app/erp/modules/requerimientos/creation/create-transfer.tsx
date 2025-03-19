@@ -112,14 +112,15 @@ export function CreationTransferForm({
 
   return (
     <div className="flex justify-center gap-3">
-      <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
+      <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
         <div
-          className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
+          className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
           onClick={() => navigate(PATHS.erp.modulos.requerimientos.solicitados)}
         >
-          <ArrowLeft className="" size={16} />
-          Volver
+          <ArrowLeft className="" size={20} />
+          NUEVO REQUERIMIENTO
         </div>
+        <Divider className="mt-2" />
         <Form
           labelAlign="left"
           name="rq-create-form-transfer"
@@ -134,13 +135,14 @@ export function CreationTransferForm({
               amount: 1,
               hasRetention: false,
               retention: 0,
+              company: 'PIZZARAUL',
             } satisfies Partial<CreateRequirementDto>
           }
         >
           <div className="grid grid-cols-2 gap-2">
             <Form.Item
               label="Empresa"
-              className=""
+              className="mb-2"
               name="company"
               rules={[{ required: true }]}
             >
@@ -152,16 +154,17 @@ export function CreationTransferForm({
                 ))}
               </Select>
             </Form.Item>
-            <Form.Item label="Tipo" className="" rules={[{ required: true }]}>
+            <Form.Item
+              label="Tipo"
+              className="mb-2"
+              rules={[{ required: true }]}
+            >
               <Select placeholder="Tipo" value={type} onChange={changeType}>
                 <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                   SIMPLE
                 </Select.Option>
                 <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
                   TRANSFERENCIA
-                </Select.Option>
-                <Select.Option value={REQUIERMENT_TYPE.SUPPLIER}>
-                  PROVEEDOR
                 </Select.Option>
                 <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
                   LIQUIDACION
@@ -175,10 +178,11 @@ export function CreationTransferForm({
               labelAlign="left"
               labelCol={{ span: 4 }}
               name="description"
+              className="mb-2"
             >
               <Input.TextArea
                 placeholder="Descripcion"
-                rows={2}
+                rows={1}
                 className="resize-none"
               />
             </Form.Item>
@@ -222,15 +226,23 @@ export function CreationTransferForm({
               <Input />
             </Form.Item>
           </div>
-          <Divider />
+          <Divider className="mt-2" />
           <div className="grid grid-cols-2 gap-2">
-            <Form.Item label="Forma de pago" name={'payment_method'}>
+            <Form.Item
+              label="Forma de pago"
+              name={'payment_method'}
+              className="mb-2"
+            >
               <Select placeholder="pago">
                 <Select.Option value="CONTADO">CONTADO</Select.Option>
                 <Select.Option value="CREDITO">CREDITO</Select.Option>
               </Select>
             </Form.Item>
-            <Form.Item label="Vencimiento" name={'expiration_date'}>
+            <Form.Item
+              label="Vencimiento"
+              name={'expiration_date'}
+              className="mb-2"
+            >
               <CustomDatePicker className="w-full" />
             </Form.Item>
           </div>
@@ -238,6 +250,7 @@ export function CreationTransferForm({
             <Form.Item
               label="Monto"
               name="amount"
+              className="mb-2"
               rules={[
                 { required: true },
                 {
@@ -249,11 +262,7 @@ export function CreationTransferForm({
               <InputNumber min={0} className="w-full" />
             </Form.Item>
 
-            <Form.Item
-              label="CajaNombre"
-              name={'cashbank_origin_name'}
-              className="hidden"
-            >
+            <Form.Item label="CajaNombre" name={'cashbank_origin_name'} hidden>
               <Select placeholder="Caja">
                 {cashBanks
                   ?.filter((el) => {

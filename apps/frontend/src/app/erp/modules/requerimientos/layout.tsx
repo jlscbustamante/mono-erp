@@ -93,7 +93,9 @@ export const RequerimientosLayout = () => {
       <Layout.Sidebar
         options={appConfig.ui.fullAccess ? menu : authorizedViews}
       />
-      <Layout.Content>{outlet ? outlet : <EmptyModule />}</Layout.Content>
+      <Layout.Content className="">
+        {outlet ? outlet : <EmptyModule />}
+      </Layout.Content>
     </Layout>
   )
 }

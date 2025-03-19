@@ -138,7 +138,7 @@ export function Control({ loading }: { loading?: boolean }) {
           navigate(PATHS.erp.modulos.requerimientos.creation)
         }}
       >
-        Nuevo requerimiento
+        Nuevo
       </Button>
       <SwitchViewPending />
     </div>

@@ -57,9 +57,9 @@ export function ExportRequirements({
   }
 
   return (
-    <Button type="primary" onClick={handleExport}>
+    <Button type="primary" onClick={handleExport} className="px-2">
       <RiFileExcel2Line className="w-5 h-5 items-center" />
-      Expotar
+      {/* Expotar */}
     </Button>
   )
 }
