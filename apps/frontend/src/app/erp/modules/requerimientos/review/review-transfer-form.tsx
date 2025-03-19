@@ -162,53 +162,54 @@ export function ReviewTransferForm({
         requestId={data.id}
       />
       <div className="flex justify-center gap-3">
-        <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
-          <div
-            className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
-            onClick={() =>
-              navigate(
-                beforeUrl ?? PATHS.erp.modulos.requerimientos.solicitados,
-              )
-            }
-          >
-            <ArrowLeft className="" size={16} />
-            Volver
-          </div>
-          <Form
-            labelAlign="left"
-            name="rq-create-form"
-            labelCol={{ span: 8 }}
-            onFinish={() => null}
-            onValuesChange={() => {
-              setIsEditing(true)
-            }}
-            form={form}
-            className="w-[800px]"
-            initialValues={
-              {
-                id: data.id,
-                companyId: data.companyId,
-                description: data.description,
-                documentNumber: data.documentNumber,
-                documentType: data.documentType,
-                payment_method: data.paymentMethod,
-                amount: data.amount,
-                origin_id: data.items[0].id,
-                cash_origin_id: data.items[0].cashbankId ?? undefined,
-                cash_origin_name: data.items[0].cashbankName ?? undefined,
-                destiny_id: data.items[1].id,
-                cash_destiny_id: data.items[1].cashbankId ?? undefined,
-                cash_destiny_name: data.items[1].cashbankName ?? undefined,
-                expiration_date: data.items[0].expiresAt ?? undefined,
-                request_type: data.type,
-              } satisfies Partial<UpdateTransferRequirementDto>
-            }
-          >
+        <Form
+          labelAlign="left"
+          name="rq-create-form"
+          labelCol={{ span: 8 }}
+          onFinish={() => null}
+          onValuesChange={() => {
+            setIsEditing(true)
+          }}
+          form={form}
+          className="flex gap-2 justify-center flex-wrap"
+          initialValues={
+            {
+              id: data.id,
+              companyId: data.companyId,
+              description: data.description,
+              documentNumber: data.documentNumber,
+              documentType: data.documentType,
+              payment_method: data.paymentMethod,
+              amount: data.amount,
+              origin_id: data.items[0].id,
+              cash_origin_id: data.items[0].cashbankId ?? undefined,
+              cash_origin_name: data.items[0].cashbankName ?? undefined,
+              destiny_id: data.items[1].id,
+              cash_destiny_id: data.items[1].cashbankId ?? undefined,
+              cash_destiny_name: data.items[1].cashbankName ?? undefined,
+              expiration_date: data.items[0].expiresAt ?? undefined,
+              request_type: data.type,
+            } satisfies Partial<UpdateTransferRequirementDto>
+          }
+        >
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
+            <div
+              className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
+              onClick={() =>
+                navigate(
+                  beforeUrl ?? PATHS.erp.modulos.requerimientos.solicitados,
+                )
+              }
+            >
+              <ArrowLeft className="" size={16} />
+              Volver
+            </div>
+
             <Form.Item name="request_type" className="hidden">
               <Input />
             </Form.Item>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item name={'id'} label="id">
+              <Form.Item name={'id'} label="id" className="mb-2">
                 <Input readOnly />
               </Form.Item>
             </div>
@@ -217,6 +218,7 @@ export function ReviewTransferForm({
                 label="Empresa"
                 name="companyId"
                 rules={[{ required: true }]}
+                className="mb-2"
               >
                 <Select placeholder="Empresa">
                   {companies?.map((company) => (
@@ -226,13 +228,14 @@ export function ReviewTransferForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item>
+              <Form.Item className="mb-2">
                 <Input readOnly value={'Simple'} />
               </Form.Item>
             </div>
 
             <div>
               <Form.Item
+                className="mb-2"
                 label="Detalle"
                 labelAlign="left"
                 labelCol={{ span: 4 }}
@@ -240,7 +243,7 @@ export function ReviewTransferForm({
               >
                 <Input.TextArea
                   placeholder="Descripcion"
-                  rows={2}
+                  rows={1}
                   className="resize-none"
                 />
               </Form.Item>
@@ -250,6 +253,7 @@ export function ReviewTransferForm({
                 label="Tipo doc."
                 name="documentType"
                 rules={[{ required: true }]}
+                className="mb-2"
               >
                 <Select
                   placeholder="Requerimiento"
@@ -284,7 +288,7 @@ export function ReviewTransferForm({
                   </Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="N° doc." name="documentNumber">
+              <Form.Item label="N° doc." name="documentNumber" className="mb-2">
                 <Input />
               </Form.Item>
             </div>
@@ -297,20 +301,31 @@ export function ReviewTransferForm({
                 ></Select>
               </Form.Item>
             </div>
-            <Divider />
+          </div>
+          {/* SEPARADOS */}
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md max-w-[900px]">
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Forma de pago" name={'payment_method'}>
+              <Form.Item
+                label="Forma de pago"
+                name={'payment_method'}
+                className="mb-2"
+              >
                 <Select placeholder="pago">
                   <Select.Option value="CONTADO">CONTADO</Select.Option>
                   <Select.Option value="CREDITO">CREDITO</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Vencimiento" name={'expiration_date'}>
+              <Form.Item
+                label="Vencimiento"
+                name={'expiration_date'}
+                className="mb-2"
+              >
                 <CustomDatePicker className="w-full" />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
+                className="mb-2"
                 label="Monto"
                 name="amount"
                 rules={[
@@ -325,7 +340,11 @@ export function ReviewTransferForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Caja Origen" name={'cash_origin_id'}>
+              <Form.Item
+                label="Caja Origen"
+                name={'cash_origin_id'}
+                className="mb-2"
+              >
                 <Select placeholder="Caja">
                   {cashBanks?.map((cashBank) => (
                     <Select.Option key={cashBank.id} value={cashBank.id}>
@@ -340,7 +359,11 @@ export function ReviewTransferForm({
               <Form.Item name={'cash_origin_name'} hidden>
                 <Input />
               </Form.Item>
-              <Form.Item label="Caja Destino" name={'cash_destiny_id'}>
+              <Form.Item
+                label="Caja Destino"
+                name={'cash_destiny_id'}
+                className="mb-2"
+              >
                 <Select placeholder="Caja">
                   {cashBanks?.map((cashBank) => (
                     <Select.Option key={cashBank.id} value={cashBank.id}>
@@ -358,7 +381,7 @@ export function ReviewTransferForm({
             </div>
             <Divider />
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Creado por">
+              <Form.Item label="Creado por" className="mb-2">
                 <Input readOnly value={data.createdBy} />
               </Form.Item>
             </div>
@@ -435,8 +458,8 @@ export function ReviewTransferForm({
                 </Button>
               </div>
             </Form.Item>
-          </Form>
-        </div>
+          </div>
+        </Form>
       </div>
     </>
   )

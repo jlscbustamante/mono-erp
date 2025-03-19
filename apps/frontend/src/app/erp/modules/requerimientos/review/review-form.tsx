@@ -511,6 +511,7 @@ export function ReviewForm({
               </Form.Item>
               <Form.Item label="Valor quota" className="mb-2">
                 <InputNumber
+                  min={0}
                   className="w-full"
                   value={item.amount}
                   onChange={(val) => {
