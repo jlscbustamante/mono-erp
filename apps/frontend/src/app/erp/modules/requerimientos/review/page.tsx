@@ -27,7 +27,7 @@ export function RequirementReview() {
   })
 
   return (
-    <div className="p-3">
+    <div className="p-3 bg-blue-50 h-full">
       {!data ? null : data.type == REQUIERMENT_TYPE.TRANSFER ? (
         <ReviewTransferForm data={data} beforeUrl={beforeUrl} />
       ) : (

@@ -230,51 +230,48 @@ export function ReviewForm({
         requestId={data.id}
       />
       <div className="flex justify-center gap-3">
-        <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
-          <div
-            className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
-            onClick={() =>
-              navigate(
-                beforeUrl ?? PATHS.erp.modulos.requerimientos.solicitados,
-              )
-            }
-          >
-            <ArrowLeft className="" size={16} />
-            Volver
-          </div>
-          <Form
-            labelAlign="left"
-            name="rq-create-form"
-            labelCol={{ span: 8 }}
-            onFinish={() => null}
-            onValuesChange={() => {
-              setIsEditing(true)
-            }}
-            form={form}
-            className="w-[800px]"
-            initialValues={
-              {
-                id: data.id,
-                companyId: data.companyId,
-                supplierId: data.supplierId,
-                ruc: data.ruc,
-                description: data.description,
-                documentNumber: data.documentNumber,
-                documentType: data.documentType,
-                categoryId: data.categoryId ?? undefined,
-                costCenterId: data.costCenterId ?? undefined,
-                categoryName: data.categoryName ?? undefined,
-                costCenterName: data.costCenterName ?? undefined,
-                supplierName: data.legalName,
-                paymentMethod: data.paymentMethod,
-                amount: data.amount,
-              } satisfies Partial<UpdateRequirementDto>
-            }
-          >
-            <Form.Item name={'id'} className="hidden">
-              <Input />
-            </Form.Item>
-
+        <Form
+          labelAlign="left"
+          name="rq-create-form"
+          labelCol={{ span: 8 }}
+          onFinish={() => null}
+          onValuesChange={() => {
+            setIsEditing(true)
+          }}
+          form={form}
+          className="flex gap-2 flex-wrap justify-center"
+          initialValues={
+            {
+              id: data.id,
+              companyId: data.companyId,
+              supplierId: data.supplierId,
+              ruc: data.ruc,
+              description: data.description,
+              documentNumber: data.documentNumber,
+              documentType: data.documentType,
+              categoryId: data.categoryId ?? undefined,
+              costCenterId: data.costCenterId ?? undefined,
+              categoryName: data.categoryName ?? undefined,
+              costCenterName: data.costCenterName ?? undefined,
+              supplierName: data.legalName,
+              paymentMethod: data.paymentMethod,
+              amount: data.amount,
+            } satisfies Partial<UpdateRequirementDto>
+          }
+        >
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md max-w-[900px]">
+            <div
+              className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
+              onClick={() =>
+                navigate(
+                  beforeUrl ?? PATHS.erp.modulos.requerimientos.solicitados,
+                )
+              }
+            >
+              <ArrowLeft className="" size={20} />
+              NUEVO REQUERIMIENTO
+            </div>
+            <Divider className="mt-2" />
             <Form.Item className="hidden" name={'costCenterName'}>
               <Input />
             </Form.Item>
@@ -282,7 +279,7 @@ export function ReviewForm({
               <Input />
             </Form.Item>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item name={'id'} label="id">
+              <Form.Item name={'id'} label="id" className="mb-2">
                 <Input readOnly />
               </Form.Item>
             </div>
@@ -290,6 +287,7 @@ export function ReviewForm({
               <Form.Item
                 label="Empresa"
                 name="companyId"
+                className="mb-2"
                 rules={[{ required: true }]}
               >
                 <Select placeholder="Empresa">
@@ -300,12 +298,12 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item>
+              <Form.Item className="mb-2">
                 <Input readOnly value={'Simple'} />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Proveedor" name="supplierId">
+              <Form.Item label="Proveedor" name="supplierId" className="mb-2">
                 <Select
                   placeholder="Proveedor"
                   filterOption={filterSelectForm}
@@ -318,10 +316,10 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item name={'supplierName'} className="hidden">
+              <Form.Item name={'ruc'} className="mb-2">
                 <Input />
               </Form.Item>
-              <Form.Item name={'ruc'} className="">
+              <Form.Item name={'supplierName'} hidden>
                 <Input />
               </Form.Item>
             </div>
@@ -332,10 +330,11 @@ export function ReviewForm({
                 labelAlign="left"
                 labelCol={{ span: 4 }}
                 name="description"
+                className="mb-2"
               >
                 <Input.TextArea
                   placeholder="Descripcion"
-                  rows={2}
+                  rows={1}
                   className="resize-none"
                 />
               </Form.Item>
@@ -345,6 +344,7 @@ export function ReviewForm({
                 label="Tipo doc."
                 name="documentType"
                 rules={[{ required: true }]}
+                className="mb-2"
               >
                 <Select
                   placeholder="Requerimiento"
@@ -379,12 +379,12 @@ export function ReviewForm({
                   </Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="N° doc." name="documentNumber">
+              <Form.Item label="N° doc." name="documentNumber" className="mb-2">
                 <Input />
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Categoria" name="categoryId">
+              <Form.Item label="Categoria" name="categoryId" className="mb-2">
                 <Select
                   placeholder="Categorias"
                   showSearch
@@ -397,7 +397,11 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Centro de costo" name="costCenterId">
+              <Form.Item
+                label="Centro de costo"
+                name="costCenterId"
+                className="mb-2"
+              >
                 <Select
                   placeholder="Centro de costo"
                   showSearch
@@ -428,11 +432,13 @@ export function ReviewForm({
                 ></Select>
               </Form.Item>
             </div>
-
-            <Divider />
+          </div>
+          {/* SEPARACION */}
+          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 max-w-[700px]">
             <h5>Datos del pago:</h5>
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
+                className="mb-2"
                 label="Monto"
                 name="amount"
                 rules={[
@@ -445,7 +451,12 @@ export function ReviewForm({
               >
                 <InputNumber min={0} className="w-full" />
               </Form.Item>
-              <Form.Item label="Caja" rules={[{ required: true }]} required>
+              <Form.Item
+                label="Caja"
+                rules={[{ required: true }]}
+                required
+                className="mb-2"
+              >
                 <div>
                   <Select
                     placeholder="Caja"
@@ -477,13 +488,14 @@ export function ReviewForm({
                 label="Forma de pago"
                 name={'paymentMethod'}
                 rules={[{ required: true }]}
+                className="mb-2"
               >
                 <Select placeholder="pago">
                   <Select.Option value="CONTADO">CONTADO</Select.Option>
                   <Select.Option value="CREDITO">CREDITO</Select.Option>
                 </Select>
               </Form.Item>
-              <Form.Item label="Vencimiento">
+              <Form.Item label="Vencimiento" className="mb-2">
                 <CustomDatePicker
                   className="w-full"
                   value={item.expiresAt}
@@ -494,12 +506,11 @@ export function ReviewForm({
               </Form.Item>
             </div>
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="N° cuota">
+              <Form.Item label="N° cuota" className="mb-2">
                 <InputNumber readOnly min={1} />
               </Form.Item>
-              <Form.Item label="Valor quota">
+              <Form.Item label="Valor quota" className="mb-2">
                 <InputNumber
-                  min={0}
                   className="w-full"
                   value={item.amount}
                   onChange={(val) => {
@@ -508,9 +519,13 @@ export function ReviewForm({
                 />
               </Form.Item>
             </div>
-            <Form.Item label="Detalle del pago" labelCol={{ span: 4 }}>
+            <Form.Item
+              label="Detalle del pago"
+              labelCol={{ span: 4 }}
+              className="mb-2"
+            >
               <Input.TextArea
-                rows={2}
+                rows={1}
                 value={item.description}
                 onChange={(e) =>
                   setItemWrapper({ ...item, description: e.target.value })
@@ -553,7 +568,7 @@ export function ReviewForm({
             </div>
             <Divider />
             <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Creado por">
+              <Form.Item label="Creado por" className="mb-2">
                 <Input readOnly value={data.createdBy} />
               </Form.Item>
             </div>
@@ -630,8 +645,8 @@ export function ReviewForm({
                 </Button>
               </div>
             </Form.Item>
-          </Form>
-        </div>
+          </div>
+        </Form>
       </div>
     </>
   )

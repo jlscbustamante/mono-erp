@@ -241,33 +241,37 @@ export function CreationForm({
 
   return (
     <div className="flex justify-center gap-3">
-      <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
-        <div
-          className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
-          onClick={() => navigate(PATHS.erp.modulos.requerimientos.solicitados)}
-        >
-          <ArrowLeft className="" size={20} />
-          NUEVO REQUERIMIENTO
-        </div>
-        <Divider className="mt-2" />
-        <Form
-          labelAlign="left"
-          name="rq-create-form"
-          labelCol={{ span: 8 }}
-          onFinish={onFinish}
-          form={form}
-          className="w-[800px]"
-          initialValues={
-            {
-              quota: 1,
-              description: '',
-              amount: 1,
-              hasRetention: false,
-              retention: 0,
-              company: 'PIZZARAUL',
-            } satisfies Partial<CreateRequirementDto>
-          }
-        >
+      <Form
+        labelAlign="left"
+        name="rq-create-form"
+        labelCol={{ span: 8 }}
+        onFinish={onFinish}
+        form={form}
+        // className="w-[800px]"
+        className="flex gap-1 flex-wrap justify-center"
+        initialValues={
+          {
+            quota: 1,
+            description: '',
+            amount: 1,
+            hasRetention: false,
+            retention: 0,
+            company: 'PIZZARAUL',
+          } satisfies Partial<CreateRequirementDto>
+        }
+      >
+        <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
+          <div
+            className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
+            onClick={() =>
+              navigate(PATHS.erp.modulos.requerimientos.solicitados)
+            }
+          >
+            <ArrowLeft className="" size={20} />
+            NUEVO REQUERIMIENTO
+          </div>
+          <Divider className="mt-2" />
+
           <Form.Item name={'cost_center_name'} hidden>
             <Input />
           </Form.Item>
@@ -383,12 +387,12 @@ export function CreationForm({
                   Factura
                 </Select.Option>
                 <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.GUIA_REMISION}>
-                  Factura
+                  Guia remision
                 </Select.Option>
                 <Select.Option
                   value={REQUIREMENT_TYPE_DOCUMENT.GUIA_TRANSPORTISTA}
                 >
-                  Factura
+                  Guia transportista
                 </Select.Option>
               </Select>
             </Form.Item>
@@ -424,193 +428,200 @@ export function CreationForm({
               </Select>
             </Form.Item>
           </div>
-
-          <Divider className="mt-2" />
-          <h5>Datos del pago:</h5>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item
-              className="mb-2"
-              label="Monto"
-              name="amount"
-              rules={[
-                { required: true },
-                {
-                  type: 'number',
-                  min: 0,
-                },
-              ]}
-            >
-              <InputNumber min={0} className="w-full" />
-            </Form.Item>
-            <Form.Item label="Caja" name={'cashbank'} className="mb-2">
-              <Select placeholder="Caja">
-                {cashBanks
-                  ?.filter((el) => {
-                    if (company) {
-                      return el.company_id == company
-                    }
-                    return true
-                  })
-                  .map((cashBank) => (
+        </div>
+        {/* SEPARACION */}
+        <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300">
+          <p>
+            <h5 className="mb-3">Datos del pago:</h5>
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item
+                className="mb-2"
+                label="Monto"
+                name="amount"
+                rules={[
+                  { required: true },
+                  {
+                    type: 'number',
+                    min: 0,
+                  },
+                ]}
+              >
+                <InputNumber min={0} className="w-full" />
+              </Form.Item>
+              <Form.Item label="Caja" name={'cashbank'} className="mb-2">
+                <Select placeholder="Caja">
+                  {cashBanks
+                    ?.filter((el) => {
+                      if (company) {
+                        return el.company_id == company
+                      }
+                      return true
+                    })
+                    .map((cashBank) => (
+                      <Select.Option key={cashBank.id} value={cashBank.id}>
+                        {cashBank.cashbank}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </Form.Item>
+              <Form.Item label="CajaNombre" name={'cashbank_name'} hidden>
+                <Select placeholder="Caja">
+                  {cashBanks?.map((cashBank) => (
                     <Select.Option key={cashBank.id} value={cashBank.id}>
                       {cashBank.cashbank}
                     </Select.Option>
                   ))}
-              </Select>
-            </Form.Item>
-            <Form.Item label="CajaNombre" name={'cashbank_name'} hidden>
-              <Select placeholder="Caja">
-                {cashBanks?.map((cashBank) => (
-                  <Select.Option key={cashBank.id} value={cashBank.id}>
-                    {cashBank.cashbank}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item
-              label="Forma de pago"
-              name={'payment_method'}
-              className="mb-2"
-            >
-              <Select placeholder="pago">
-                <Select.Option value="CONTADO">CONTADO</Select.Option>
-                <Select.Option value="CREDITO">CREDITO</Select.Option>
-              </Select>
-            </Form.Item>
-            <Form.Item
-              label="Vencimiento"
-              name={'expiration_date'}
-              className="mb-2"
-            >
-              <CustomDatePicker className="w-full" />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <Form.Item
-              className="mb-2"
-              label="Tiene retencion"
-              name="hasRetention"
-              valuePropName="checked"
-            >
-              <Checkbox />
-            </Form.Item>
-            <Form.Item label="Retencion" name={'retention'} className="mb-2">
-              <InputNumber placeholder="0.0" disabled={!hasRetention} min={0} />
-            </Form.Item>
-          </div>
-          <div className="grid grid-cols-[repeat(24,1fr)] grid-rows-1 mb-4">
-            <label htmlFor="" className="col-span-4">
-              Pago al crédito
-            </label>
-            <div className="col-span-9 flex items-center gap-8">
-              <Switch
-                checkedChildren="Si"
-                unCheckedChildren="No"
-                onChange={() => {
-                  setHasQuota(!hasQuota)
-                }}
-                checked={hasQuota}
-              />
+                </Select>
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
               <Form.Item
-                label="N° cuota"
-                name={'quota'}
-                className="mb-0 "
-                // labelCol={{ span: 1 }}
-                labelCol={{ span: 10 }}
+                label="Forma de pago"
+                name={'payment_method'}
+                className="mb-2"
               >
+                <Select placeholder="pago">
+                  <Select.Option value="CONTADO">CONTADO</Select.Option>
+                  <Select.Option value="CREDITO">CREDITO</Select.Option>
+                </Select>
+              </Form.Item>
+              <Form.Item
+                label="Vencimiento"
+                name={'expiration_date'}
+                className="mb-2"
+              >
+                <CustomDatePicker className="w-full" />
+              </Form.Item>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item
+                className="mb-2"
+                label="Tiene retencion"
+                name="hasRetention"
+                valuePropName="checked"
+              >
+                <Checkbox />
+              </Form.Item>
+              <Form.Item label="Retencion" name={'retention'} className="mb-2">
                 <InputNumber
-                  readOnly
-                  min={1}
-                  value={quota}
-                  disabled={true}
-                  className="!text-slate-800"
+                  placeholder="0.0"
+                  disabled={!hasRetention}
+                  min={0}
                 />
               </Form.Item>
             </div>
-          </div>
-          <Form.Item wrapperCol={{ span: 12, offset: 4 }} hidden={!hasQuota}>
-            <div>
-              <div className="grid grid-cols-[100px_100px_1fr] font-semibold mb-2 gap-3">
-                <p>N° cuota</p>
-                <p>Monto</p>
-                <p>Vencimiento</p>
+            <div className="grid grid-cols-[repeat(24,1fr)] grid-rows-1 mb-4">
+              <label htmlFor="" className="col-span-4">
+                Pago al crédito
+              </label>
+              <div className="col-span-9 flex items-center gap-8">
+                <Switch
+                  checkedChildren="Si"
+                  unCheckedChildren="No"
+                  onChange={() => {
+                    setHasQuota(!hasQuota)
+                  }}
+                  checked={hasQuota}
+                />
+                <Form.Item
+                  label="N° cuota"
+                  name={'quota'}
+                  className="mb-0 "
+                  // labelCol={{ span: 1 }}
+                  labelCol={{ span: 10 }}
+                >
+                  <InputNumber
+                    readOnly
+                    min={1}
+                    value={quota}
+                    disabled={true}
+                    className="!text-slate-800"
+                  />
+                </Form.Item>
               </div>
-              {quotas.map((el) => {
-                return (
-                  <div key={el.number} className="flex items-center relative">
-                    <div className="grid grid-cols-[100px_100px_1fr] my-1 gap-3 w-full">
-                      <InputNumber readOnly value={el.number} />
-                      <InputNumber
-                        value={el.amount}
-                        min={0.01}
-                        onChange={(value) => {
-                          if (value)
-                            changeQuotaAmount(el.number, value, el.expiresAt)
-                        }}
-                      />
-                      <DatePicker
-                        className=""
-                        allowClear={true}
-                        value={el.expiresAt ? dayjs(el.expiresAt) : null}
-                        onChange={(val) => {
-                          if (val) {
-                            changeQuotaAmount(
-                              el.number,
-                              el.amount,
-                              val.format('YYYY-MM-DD'),
-                            )
-                          } else {
-                            changeQuotaAmount(el.number, el.amount)
-                          }
-                        }}
-                      />
-                    </div>
-                    {el.number == 1 && (
-                      <div className="absolute left-full ml-2">
-                        <div className="flex gap-1 items-center">
-                          <Button
-                            size="small"
-                            onClick={() => changeQuota(true)}
-                            type="primary"
-                          >
-                            <Plus className="w-4 text-white" />
-                          </Button>
-                          <Button
-                            size="small"
-                            onClick={() => changeQuota(false)}
-                            type="primary"
-                          >
-                            <Minus className="w-4 text-white" />
-                          </Button>
-                        </div>
+            </div>
+            <Form.Item wrapperCol={{ span: 14, offset: 4 }} hidden={!hasQuota}>
+              <div>
+                <div className="grid grid-cols-[100px_100px_1fr] font-semibold mb-2 gap-3">
+                  <p>N° cuota</p>
+                  <p>Monto</p>
+                  <p>Vencimiento</p>
+                </div>
+                {quotas.map((el) => {
+                  return (
+                    <div key={el.number} className="flex items-center relative">
+                      <div className="grid grid-cols-[100px_100px_1fr] my-1 gap-3 w-full">
+                        <InputNumber readOnly value={el.number} />
+                        <InputNumber
+                          value={el.amount}
+                          min={0.01}
+                          onChange={(value) => {
+                            if (value)
+                              changeQuotaAmount(el.number, value, el.expiresAt)
+                          }}
+                        />
+                        <DatePicker
+                          className=""
+                          allowClear={true}
+                          value={el.expiresAt ? dayjs(el.expiresAt) : null}
+                          onChange={(val) => {
+                            if (val) {
+                              changeQuotaAmount(
+                                el.number,
+                                el.amount,
+                                val.format('YYYY-MM-DD'),
+                              )
+                            } else {
+                              changeQuotaAmount(el.number, el.amount)
+                            }
+                          }}
+                        />
                       </div>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-            <div>
-              {isTotalAmountMatched ? (
-                ''
-              ) : (
-                <span className="text-red-500">El total no coincide</span>
-              )}
-            </div>
-          </Form.Item>
-          <Form.Item labelCol={{ span: 4 }} className="flex justify-end">
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={createMt.isPending}
-              disabled={!isTotalAmountMatched}
-            >
-              Guardar
-            </Button>
-          </Form.Item>
-        </Form>
-      </div>
+                      {el.number == 1 && (
+                        <div className="absolute left-full ml-2">
+                          <div className="flex gap-1 items-center">
+                            <Button
+                              size="small"
+                              onClick={() => changeQuota(true)}
+                              type="primary"
+                            >
+                              <Plus className="w-4 text-white" />
+                            </Button>
+                            <Button
+                              size="small"
+                              onClick={() => changeQuota(false)}
+                              type="primary"
+                            >
+                              <Minus className="w-4 text-white" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              <div>
+                {isTotalAmountMatched ? (
+                  ''
+                ) : (
+                  <span className="text-red-500">El total no coincide</span>
+                )}
+              </div>
+            </Form.Item>
+            <Form.Item labelCol={{ span: 4 }} className="flex justify-end">
+              <Button
+                type="primary"
+                htmlType="submit"
+                loading={createMt.isPending}
+                disabled={!isTotalAmountMatched}
+              >
+                Guardar
+              </Button>
+            </Form.Item>
+          </p>
+        </div>
+      </Form>
     </div>
   )
 }

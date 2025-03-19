@@ -106,7 +106,7 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
         />
       </div>
       <Button onClick={() => open()} type="primary">
-        Nuevo centro de costo
+        Nuevo
       </Button>
     </div>
   )

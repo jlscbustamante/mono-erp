@@ -106,7 +106,7 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
         />
       </div>
       <Button onClick={() => open()} type="primary">
-        Nueva caja
+        Nuevo
       </Button>
     </div>
   )

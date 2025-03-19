@@ -162,7 +162,7 @@ export function ReviewTransferForm({
         requestId={data.id}
       />
       <div className="flex justify-center gap-3">
-        <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0">
+        <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
           <div
             className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
             onClick={() =>
