@@ -261,4 +261,22 @@ export const requirementRouter = new Hono()
 
       await stream.write(excelBuffer);
     });
-  });
+  })
+  .get(
+    "/report/summary",
+    zValidator(
+      "query",
+      z.object({
+        date: z.string(),
+        cashId: z.string(),
+      })
+    ),
+    async (c) => {
+      const { cashId, date } = c.req.valid("query");
+      const data = await requirementService.resumeCashBox(+cashId, date);
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  );

@@ -13,3 +13,5 @@ export type { CreateCostCenterDto } from "../requirement/interfaces/create-costc
 export type { CreateRequirementTransferDto } from "../requirement/interfaces/create-requirement-transfer.dto.ts";
 
 export type { IDetailedReport } from "../requirement/interfaces/detailed-report.dto.ts";
+
+export * from "../requirement/interfaces/summary-box.dto.ts";

@@ -1,5 +1,9 @@
 import { db } from "#app/database.ts";
 import { IRelatedRequirement } from "#app/modules/requirement/interfaces/related-requirements.interface.ts";
+import {
+  SummaryBox,
+  SummaryItem,
+} from "#app/modules/requirement/interfaces/summary-box.dto.ts";
 import { UpdateTransferRequirementDto } from "#app/modules/requirement/interfaces/update-requirement.dto.ts";
 import { RequirementRepository } from "#app/modules/requirement/repository/requirement.repository.ts";
 import {
@@ -226,9 +230,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     date: string,
     cashAccountId: number
   ): Promise<RequirementRelationsSelect[]> {
-    const [result] = (await db.execute<{
-      id: number;
-    }>(
+    const [result] = (await db.execute(
       `SELECT ari.request_id FROM adm_request_item ari left join adm_request ar ON ar.id=ari.request_id  WHERE cashbank_id=${cashAccountId} AND DATE(ar.requested_at)="${date}"`
     )) as unknown as [{ request_id: number }[]];
     const ids = result.map((el) => el.request_id);
@@ -267,5 +269,75 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     });
 
     return result;
+  }
+
+  async resumeCashBox(cashId: number, date: string): Promise<SummaryBox> {
+    const initial = await this.getInitialBalance(cashId, date);
+    const [result] = (await db.execute(
+      `SELECT ari.request_id FROM adm_request_item ari left join adm_request ar ON ar.id=ari.request_id  WHERE cashbank_id=${cashId} AND DATE(ar.requested_at)="${date}" AND ar.status IN ("${REQUIREMENT_STATUS.APPROVED}","${REQUIREMENT_STATUS.PAID}")`
+    )) as unknown as [{ request_id: number }[]];
+    const ids = result.map((el) => el.request_id);
+    if (ids.length === 0) {
+      return {
+        initial,
+        list: [],
+        final: initial,
+      };
+    }
+
+    const listRequirements = await db.query.requirements.findMany({
+      where: inArray(requirements.id, ids),
+      with: {
+        items: true,
+      },
+    });
+
+    const record: Record<string, SummaryItem> = {};
+    for (const req of listRequirements) {
+      if (req.request_type == REQUIERMENT_TYPE.TRANSFER) {
+        const otherCash = req.items.find(
+          (el) => el.cashbank_id != cashId
+        )?.cashbank_name;
+        if (!otherCash)
+          throw new HTTPException(400, {
+            message: "ERROR_DATA. Transferencia",
+          });
+        if (!record[otherCash])
+          record[otherCash] = {
+            title: otherCash,
+            total: 0,
+          };
+        record[otherCash].total += req.items.reduce(
+          (acc, el) => acc + el.amount,
+          0
+        );
+      } else {
+        const category = req.movecash_name
+          ? req.movecash_name
+          : "Sin Categoria";
+        if (category == "Sin Categoria") {
+          console.log("here : ", req);
+        }
+        if (!record[category]) {
+          record[category] = {
+            title: category,
+            total: 0,
+          };
+        }
+        for (const item of req.items) {
+          if (item.cashbank_id == cashId) {
+            record[category].total += item.amount;
+          }
+        }
+      }
+    }
+    const list = Object.values(record);
+    const final = list.reduce((acc, el) => acc + el.total, initial);
+
+    return {
+      initial,
+      list,
+      final,
+    };
   }
 }
