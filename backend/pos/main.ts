@@ -21,6 +21,7 @@ app
   .route("inventario", invetarioRouter);
 
 app.onError((err, c) => {
+  console.log(err);
   if (err instanceof HTTPException) {
     return err.getResponse();
   }

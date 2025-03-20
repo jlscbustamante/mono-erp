@@ -5,6 +5,7 @@ import {
   SucursalSelect,
 } from "@scope/pizzadb";
 import {
+  add,
   eachDayOfInterval,
   format,
   minutesToSeconds,
@@ -328,6 +329,16 @@ export class StockRepository {
     stock: IStock[];
     companyId?: string;
   }) {
+    // const last_closed = await this.getLastClose(props.warehouse);
+
+    // if (last_closed) {
+    //   if (props.date < last_closed) {
+    //     throw new HTTPException(400, {
+    //       message: "La fecha no puede ser menor a la ultima fecha de cierre",
+    //     });
+    //   }
+    // }
+
     const beforeDay = format(
       sub(parseISO(props.date), { days: 1 }),
       "yyyy-MM-dd"
@@ -353,22 +364,107 @@ export class StockRepository {
       warehouse: props.warehouse,
     });
 
+    const fix_stock = await this.fixNextStock(
+      props.warehouse,
+      props.date,
+      newStock,
+      props.companyId
+    );
+
+    const all_stock: StockInsert[] = [...newStock, ...(fix_stock?.stock ?? [])];
+
     await db.transaction(async (trx) => {
       await trx
         .delete(stocks)
         .where(
           and(
             eq(stocks.warehouse_id, props.warehouse),
-            sql`DATE(${stocks.stock_at})=${props.date}`
+            sql`DATE(${stocks.stock_at}) IN (${props.date},${
+              fix_stock?.tomorrow_date ? fix_stock.tomorrow_date : props.date
+            })`
           )
         );
 
       if (newStock.length > 0) {
-        await trx.insert(stocks).values(newStock);
+        await trx.insert(stocks).values(all_stock);
       }
     });
+
     await redis.del("stock:" + props.warehouse + ":" + props.date);
+    if (fix_stock?.tomorrow_date) {
+      await redis.del(
+        "stock:" + props.warehouse + ":" + fix_stock.tomorrow_date
+      );
+    }
     await redis.del("lastClose:" + props.warehouse);
+  }
+
+  /**
+   * @description Fixea el stock del dia siguiente si la fecha es anterior al dia de hoy.
+   */
+  private async fixNextStock(
+    storeId: string,
+    date: string,
+    new_stock: StockInsert[],
+    companyId?: string
+  ): Promise<{ tomorrow_date: string; stock: StockInsert[] } | null> {
+    const today = format(new Date(), "yyyy-MM-dd");
+    if (date < today) {
+      const tomorrow = format(add(parseISO(date), { days: 1 }), "yyyy-MM-dd");
+
+      const tomorrow_stock = await this.stock(storeId, tomorrow, companyId);
+
+      if (tomorrow_stock.length == 0) return null;
+
+      const status = tomorrow_stock[0].status;
+
+      const new_stock_tomorrow: StockInsert[] = tomorrow_stock.map((el) => {
+        const item = new_stock.find((s) => s.item_id === el.item_id);
+        if (item) {
+          const new_current =
+            (item.stock_physical ?? 0) +
+            el.quantity_in_dp +
+            el.quantity_in_mv -
+            el.quantity_out_mv;
+          return {
+            ...el,
+            id: undefined,
+            stock_last: item.stock_physical ?? 0,
+            total_last: item.total_value ?? 0,
+            stock_current: new_current,
+          };
+        }
+
+        return el;
+      });
+
+      const itemsNotInTomorrowStock = new_stock.filter(
+        (s) => !tomorrow_stock.some((t) => t.item_id === s.item_id)
+      );
+
+      const newItems: StockInsert[] = itemsNotInTomorrowStock.map((item) => ({
+        ...item,
+        id: undefined,
+        stock_at: tomorrow,
+        stock_last: item.stock_physical ?? 0,
+        total_last: item.total_value ?? 0,
+        quantity_in_dp: 0,
+        quantity_in_mv: 0,
+        quantity_in_pu: 0,
+        quantity_out_mv: 0,
+        quantity_out_dp: 0,
+        status: status,
+        stock_current: item.stock_physical ?? 0,
+      }));
+
+      new_stock_tomorrow.push(...newItems);
+
+      return {
+        stock: new_stock_tomorrow,
+        tomorrow_date: tomorrow,
+      };
+    }
+    return null;
   }
 
   private newStock({
