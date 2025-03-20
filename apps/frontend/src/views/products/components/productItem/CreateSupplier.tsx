@@ -4,14 +4,15 @@ import { LuPlus } from 'react-icons/lu'
 import { toast } from 'react-toastify'
 
 import { NOTIFICATION } from '@/const/notification'
-import * as sdk from '@/data/products/sdk'
 import { IInvSupplier } from '@/data/products/types'
 import * as sdkRequest from '@/data/requests/sdk'
+import { SupplierSelect } from '@pizzadb'
 
 const { Search } = Input
 export const CreateSupplier: React.FC<{
-  onCreate: (id: number, name?: string) => void
-}> = ({ onCreate }) => {
+  suppliers?: SupplierSelect[]
+  onCreate: (id: number, name?: string, ruc?: string) => void
+}> = ({ onCreate, suppliers }) => {
   const [loadingRuc, setLoadingRuc] = useState(false)
   const [creating, setCreating] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -34,10 +35,11 @@ export const CreateSupplier: React.FC<{
   const handleCreateSupplier = async () => {
     try {
       setCreating(true)
-      const { id } = await sdk.createSupplier(newSupplier)
-      onCreate(id, newSupplier.legalName)
-      setNewSupplier({ status: 1 })
-      setIsOpen(false)
+      // const { id } = await sdk.createSupplier(newSupplier)
+      // onCreate(id, newSupplier.legalName, newSupplier.legalNumber)
+      // setNewSupplier({ status: 1 })
+      // setIsOpen(false)
+      console.log('creado')
     } catch (err: any) {
       toast.error(err.message, NOTIFICATION.error)
     } finally {
@@ -53,7 +55,23 @@ export const CreateSupplier: React.FC<{
       arrow={false}
       content={
         <Form>
-          <Form.Item label="Ruc">
+          <Form.Item
+            label="Ruc"
+            rules={[
+              () => ({
+                validator(_, value, callback) {
+                  const isUnique = suppliers?.some(
+                    (el: any) =>
+                      el.legalNumber?.toString().toLowerCase() ===
+                      value.toString().toLowerCase(),
+                  )
+                  if (suppliers && isUnique) {
+                    callback('El ruc ya existe')
+                  } else callback()
+                },
+              }),
+            ]}
+          >
             {/* <Input
               value={newSupplier.legalNumber}
               onChange={(e) =>

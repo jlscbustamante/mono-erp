@@ -12,7 +12,8 @@ import * as sdkRequest from '@/data/requests/sdk'
 export const CreateProviderDrawer = ({
   open,
   onClose,
-  onCreate, // suppliers,
+  onCreate,
+  suppliers,
 }: {
   open: boolean
   onClose: () => void
@@ -88,22 +89,20 @@ export const CreateProviderDrawer = ({
         <Form.Item
           name={names.legalNumber}
           label="RUC"
-          rules={
-            [
-              // () => ({
-              //   validator(_, value, callback) {
-              //     const isUnique = suppliers.some(
-              //       (el: any) =>
-              //         el.legalNumber?.toString().toLowerCase() ===
-              //         value.toString().toLowerCase(),
-              //     )
-              //     if (isUnique) {
-              //       callback('El ruc ya existe')
-              //     } else callback()
-              //   },
-              // }),
-            ]
-          }
+          rules={[
+            () => ({
+              validator(_, value, callback) {
+                const isUnique = suppliers.some(
+                  (el: any) =>
+                    el.legalNumber?.toString().toLowerCase() ===
+                    value.toString().toLowerCase(),
+                )
+                if (isUnique) {
+                  callback('El ruc ya existe')
+                } else callback()
+              },
+            }),
+          ]}
         >
           <Search
             placeholder="000000000000"
