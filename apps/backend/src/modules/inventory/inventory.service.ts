@@ -198,8 +198,6 @@ export class InventoryService {
    * @description Obtiene template para que el usuario edite lo neceario de una tienda
    */
   async getStockToEdit(store: string, date: string, company?: string) {
-    const cached = cacheApi.get(`stock_edit_v2_${store}_${date}`)
-    if (cached) return cached as StockItemToCreateDto[]
     const beforeDay = format(sub(parseISO(date), { days: 1 }), 'yyyy-MM-dd')
     const [before, now, template] = await Promise.all([
       this.stockRepository.find({
@@ -293,7 +291,6 @@ export class InventoryService {
       }
     }
     const ordered = result.sort((a, b) => a.itemName.localeCompare(b.itemName))
-    cacheApi.set(`stock_edit_v2_${store}_${date}`, ordered)
     return ordered
   }
 
