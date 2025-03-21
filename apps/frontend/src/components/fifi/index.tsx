@@ -1,9 +1,10 @@
 import type { WhereOption } from '@pizzadb'
-import { CircleX, Plus, Search, X } from 'lucide-react'
+import { CircleX, Search, X } from 'lucide-react'
 import type React from 'react'
 
 import { cn } from '@/utils'
 import { Button, Dropdown, Popover, Select } from 'antd'
+import { IoMdAddCircleOutline } from 'react-icons/io'
 import { FiDatePicker, FiRangeDatePicker } from './component/fi-date'
 import { FiInput, FiInputNumber } from './component/fi-input'
 import type { FilterComponentProps, FilterOption } from './type'
@@ -74,7 +75,7 @@ export function FilterComponent<T>({
     <div className="flex gap-1 items-center">
       <Dropdown
         trigger={['click']}
-        className="w-48"
+        // className="w-48"
         menu={{
           items: options
             .filter((el) => !('isSeparator' in el))
@@ -85,9 +86,10 @@ export function FilterComponent<T>({
             })),
         }}
       >
-        <Button size="middle" variant="outlined">
-          <Plus /> Agregar filtro
-        </Button>
+        <div className="border border-solid border-gray-300 rounded-md p-1 text-sm flex items-center cursor-pointer hover:border-blue-600 hover:text-blue-600 gap-2">
+          <IoMdAddCircleOutline />
+          Agregar filtro
+        </div>
       </Dropdown>
       <div className="flex flex-wrap gap-1">
         {filters.map((el) => {
@@ -214,10 +216,10 @@ function FilterButton<T>({
         trigger={'click'}
         placement="bottom"
       >
-        <Button
-          variant={'outlined'}
+        <div
+          // variant={'outlined'}
           key={filter.key}
-          className="flex justify-between px-1 gap-2"
+          className="cursor-pointer border border-dashed border-gray-300 items-center flex text-sm rounded-md px-1 gap-2 bg-slate-50"
         >
           <span className="flex-1">
             {option?.label ?? filter.key} :{' '}
@@ -237,7 +239,7 @@ function FilterButton<T>({
               clearFilter(filter.key)
             }}
           />
-        </Button>
+        </div>
       </Popover>
     </div>
   )
