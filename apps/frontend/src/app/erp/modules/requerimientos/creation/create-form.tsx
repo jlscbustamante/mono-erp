@@ -378,6 +378,7 @@ export function CreationForm({
                 labelAlign="left"
                 labelCol={{ span: 4 }}
                 name="description"
+                rules={[{ required: true }]}
               >
                 <Input.TextArea
                   placeholder="Descripcion"

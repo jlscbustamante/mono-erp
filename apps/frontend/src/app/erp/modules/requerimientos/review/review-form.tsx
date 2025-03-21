@@ -67,7 +67,6 @@ export function ReviewForm({
   const session = useSession((st) => st.user)
   const [messageApi, contextHolder] = message.useMessage()
 
-  const supplierId = Form.useWatch('supplierId', form)
   const costCenterId = Form.useWatch('costCenterId', form)
 
   const navigate = useNavigate()
@@ -130,21 +129,6 @@ export function ReviewForm({
       form.setFieldValue('costCenterName', undefined)
     }
   }, [costCenterId])
-
-  useEffect(() => {
-    const supplier = suppliers?.find((el) => el.id == supplierId)
-    if (supplier) {
-      form.setFieldsValue({
-        globalSupplierName: supplier.legal_name,
-        globalSupplierRuc: supplier.legal_number,
-      })
-    } else {
-      form.setFieldsValue({
-        globalSupplierName: '',
-        globalSupplierRuc: '',
-      })
-    }
-  }, [supplierId])
 
   const approveMt = useMutation({
     mutationFn: async (data: number) => {
@@ -221,11 +205,11 @@ export function ReviewForm({
   const searchSupplier = (ruc: string) => {
     const supplier = suppliers?.find((el) => el.legal_number === ruc)
     if (supplier) {
-      form.setFieldValue('supplier_name', supplier.legal_name)
-      form.setFieldValue('supplier', supplier.id)
+      form.setFieldValue('supplierName', supplier.legal_name)
+      form.setFieldValue('supplierId', supplier.id)
     } else {
-      form.setFieldValue('supplier_name', undefined)
-      form.setFieldValue('supplier', undefined)
+      form.setFieldValue('supplierName', undefined)
+      form.setFieldValue('supplierId', undefined)
       messageApi.error('Proveedor no encontrado')
     }
   }
@@ -362,7 +346,7 @@ export function ReviewForm({
                 rules={[{ required: true }]}
               >
                 <Input.Search
-                  placeholder="RUC proveedor"
+                  placeholder="RUC"
                   // loading={getInfoRuc.isPending}
                   onSearch={(ruc) => {
                     searchSupplier(ruc)
@@ -375,7 +359,7 @@ export function ReviewForm({
               <Form.Item
                 className="mb-2"
                 label="Proveedor"
-                name="supplier"
+                name="supplierId"
                 rules={[{ required: true }]}
                 hidden
               >
@@ -385,7 +369,7 @@ export function ReviewForm({
                 <Form.Item
                   className="mb-2 flex-1"
                   label="Proveedor"
-                  name="supplier_name"
+                  name="supplierName"
                   rules={[{ required: true }]}
                   labelCol={{ span: 9 }}
                 >
@@ -413,6 +397,7 @@ export function ReviewForm({
                 labelCol={{ span: 4 }}
                 name="description"
                 className="mb-2"
+                rules={[{ required: true }]}
               >
                 <Input.TextArea
                   placeholder="Descripcion"
@@ -599,6 +584,7 @@ export function ReviewForm({
               label="Detalle del pago"
               labelCol={{ span: 4 }}
               className="mb-2"
+              rules={[{ required: true }]}
             >
               <Input.TextArea
                 rows={1}
