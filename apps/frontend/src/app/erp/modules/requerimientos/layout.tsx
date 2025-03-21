@@ -26,11 +26,17 @@ const menu: (MenuOption | MenuSeparator)[] = [
         'Cuenta corriente por proveedor',
         PATHS.erp.modulos.requerimientos.reportes.cuentaCorriente,
       ),
-      gm('Detallado', PATHS.erp.modulos.requerimientos.reportes.detallado),
-      gm('Resumido', PATHS.erp.modulos.requerimientos.reportes.resumido),
       gm(
-        'Por centro de costo',
-        PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
+        'Estado de cuenta caja y bancos',
+        PATHS.erp.modulos.requerimientos.reportes.detallado,
+      ),
+      // gm(
+      //   'Movimientos por centro de costo',
+      //   PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
+      // ),
+      gm(
+        'Resumen movimientos por fecha',
+        PATHS.erp.modulos.requerimientos.reportes.resumido,
       ),
     ],
   ),

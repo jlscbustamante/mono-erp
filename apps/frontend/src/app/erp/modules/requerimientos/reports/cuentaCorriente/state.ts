@@ -37,6 +37,12 @@ export const useSupplierAccount = create<IStore>((set, get) => ({
         field: 'DATE',
       },
     },
+    {
+      field: 'company_id',
+      key: 'company_id',
+      operator: 'equal',
+      value: 'PIZZARAUL',
+    },
   ],
   setFilters: (filters) => set({ filters }),
 }))

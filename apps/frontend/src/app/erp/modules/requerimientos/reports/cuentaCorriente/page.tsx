@@ -58,6 +58,7 @@ export function CuentaCorrientePage() {
 
   const query = useQuery({
     queryKey: ['req:rep-cuenta-corriente', controlRefetch],
+    enabled: controlRefetch > 0,
     queryFn: async () => {
       const data =
         await viewClient.api.view.requirement.report.supplier_current_account.$get(

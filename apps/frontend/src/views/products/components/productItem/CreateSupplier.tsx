@@ -1,3 +1,4 @@
+import * as sdk from '@/data/products/sdk'
 import { Button, Form, Input, Popover } from 'antd'
 import { useState } from 'react'
 import { LuPlus } from 'react-icons/lu'
@@ -12,7 +13,8 @@ const { Search } = Input
 export const CreateSupplier: React.FC<{
   suppliers?: SupplierSelect[]
   onCreate: (id: number, name?: string, ruc?: string) => void
-}> = ({ onCreate, suppliers }) => {
+  onError?: (message: string) => void
+}> = ({ onCreate, suppliers, onError }) => {
   const [loadingRuc, setLoadingRuc] = useState(false)
   const [creating, setCreating] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -35,11 +37,17 @@ export const CreateSupplier: React.FC<{
   const handleCreateSupplier = async () => {
     try {
       setCreating(true)
-      // const { id } = await sdk.createSupplier(newSupplier)
-      // onCreate(id, newSupplier.legalName, newSupplier.legalNumber)
-      // setNewSupplier({ status: 1 })
-      // setIsOpen(false)
-      console.log('creado')
+      const supplierExist = suppliers?.find(
+        (el) => el.legal_number == newSupplier.legalNumber,
+      )
+      if (supplierExist) {
+        onError?.('El ruc ya existe. No puede ser creado')
+      } else {
+        const { id } = await sdk.createSupplier(newSupplier)
+        onCreate(id, newSupplier.legalName, newSupplier.legalNumber)
+        setNewSupplier({ status: 1 })
+        setIsOpen(false)
+      }
     } catch (err: any) {
       toast.error(err.message, NOTIFICATION.error)
     } finally {

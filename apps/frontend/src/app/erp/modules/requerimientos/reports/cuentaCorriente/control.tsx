@@ -95,6 +95,12 @@ export const Control = ({ loading }: { loading: boolean }) => {
 
   return (
     <div className="flex items-center gap-2">
+      <CompanySelectForm
+        value={company}
+        onChange={(val) => {
+          onChange(val)
+        }}
+      />
       <RangePicker
         allowClear={false}
         value={[dayjs(requestAt[0]), dayjs(requestAt[1])]}
@@ -107,12 +113,7 @@ export const Control = ({ loading }: { loading: boolean }) => {
           }
         }}
       />
-      <CompanySelectForm
-        value={company}
-        onChange={(val) => {
-          onChange(val)
-        }}
-      />
+
       <SupplierSelectForm
         value={supplier}
         onChange={(val) => {

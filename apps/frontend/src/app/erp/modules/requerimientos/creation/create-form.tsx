@@ -273,7 +273,7 @@ export function CreationForm({
             } satisfies Partial<CreateRequirementDto>
           }
         >
-          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md w-[700px]">
             <div
               className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
               onClick={() =>
@@ -306,7 +306,7 @@ export function CreationForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item label="Tipo" className="mb-2">
+              <Form.Item label="Tipo" className="mb-2 ml-1">
                 <Select placeholder="Tipo" value={type} onChange={changeType}>
                   <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                     SIMPLE
@@ -345,38 +345,31 @@ export function CreationForm({
                 rules={[{ required: true }]}
                 hidden
               >
-                <Input placeholder="Proveedor" />
+                <Input placeholder="Proveedor" className="" />
               </Form.Item>
-
-              <Form.Item
-                className="mb-2"
-                label="Proveedor"
-                name="supplier_name"
-                rules={[{ required: true }]}
-              >
-                <Input placeholder="Proveedor" readOnly />
-              </Form.Item>
-              <CreateSupplier
-                onCreate={(id, supplier, ruc) => {
-                  form.setFieldValue('supplier', id)
-                  form.setFieldValue('supplier_name', supplier)
-                  form.setFieldValue('ruc', ruc)
-                  refetchSupplier()
-                }}
-              />
-            </div>
-            <div className="grid-cols-2 gap-2 hidden">
-              <Form.Item
-                className="mb-2"
-                label="R. social"
-                name="legal_name"
-                rules={[{ required: true }]}
-              >
-                <Input
-                  readOnly
-                  placeholder="Ingresa el ruc y presiona el boton"
+              <div className="flex gap-1">
+                <Form.Item
+                  className="mb-2 flex-1"
+                  label="Proveedor"
+                  name="supplier_name"
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 9 }}
+                >
+                  <Input placeholder="Proveedor" readOnly />
+                </Form.Item>
+                <CreateSupplier
+                  suppliers={suppliers ?? []}
+                  onError={(message) => {
+                    messageApi.error(message)
+                  }}
+                  onCreate={(id, supplier, ruc) => {
+                    form.setFieldValue('supplier', id)
+                    form.setFieldValue('supplier_name', supplier)
+                    form.setFieldValue('ruc', ruc)
+                    refetchSupplier()
+                  }}
                 />
-              </Form.Item>
+              </div>
             </div>
             <div>
               <Form.Item
@@ -471,7 +464,7 @@ export function CreationForm({
             </div>
           </div>
           {/* SEPARACION */}
-          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300">
+          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 w-[700px]">
             <p>
               <h5 className="mb-3">Datos del pago:</h5>
               <div className="grid grid-cols-2 gap-2">

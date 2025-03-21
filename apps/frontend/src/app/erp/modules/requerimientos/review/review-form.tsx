@@ -189,16 +189,20 @@ export function ReviewForm({
     setIsEditing(false)
   }
 
-  const onFinish = () => {
-    form.validateFields()
-    if (item.cashbankId) {
-      approveMt.mutate(data.id)
-    } else {
-      toast.error('Seleccione caja')
-      setErrors({
-        ...errors,
-        cashbankId: 'Seleccione una cuenta bancaria',
-      })
+  const onFinish = async () => {
+    try {
+      await form.validateFields()
+      if (item.cashbankId) {
+        approveMt.mutate(data.id)
+      } else {
+        toast.error('Seleccione caja')
+        setErrors({
+          ...errors,
+          cashbankId: 'Seleccione una cuenta bancaria',
+        })
+      }
+    } catch (err) {
+      /* empty */
     }
   }
 
@@ -259,7 +263,7 @@ export function ReviewForm({
             } satisfies Partial<UpdateRequirementDto>
           }
         >
-          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md max-w-[900px]">
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md w-[700px]">
             <div
               className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex gap-3"
               onClick={() =>
@@ -434,22 +438,16 @@ export function ReviewForm({
             </div>
           </div>
           {/* SEPARACION */}
-          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 max-w-[700px]">
+          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 w-[700px]">
             <h5>Datos del pago:</h5>
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 className="mb-2"
                 label="Monto"
                 name="amount"
-                rules={[
-                  { required: true },
-                  {
-                    type: 'number',
-                    min: 0,
-                  },
-                ]}
+                rules={[{ required: true }]}
               >
-                <InputNumber min={0} className="w-full" />
+                <InputNumber className="w-full" />
               </Form.Item>
               <Form.Item
                 label="Caja"
@@ -511,7 +509,6 @@ export function ReviewForm({
               </Form.Item>
               <Form.Item label="Valor quota" className="mb-2">
                 <InputNumber
-                  min={0}
                   className="w-full"
                   value={item.amount}
                   onChange={(val) => {

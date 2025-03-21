@@ -12,7 +12,7 @@ export default function RequirementDetailedPage() {
 
   const query = useQuery({
     queryKey: ['req:rep-detailed', controlRefetch],
-    enabled: cashId != null,
+    enabled: cashId != null && controlRefetch > 0,
     queryFn: async () => {
       const data = await viewClient.api.view.requirement.report.detailed.$get({
         query: {

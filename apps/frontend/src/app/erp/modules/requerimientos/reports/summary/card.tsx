@@ -1,17 +1,21 @@
 import { viewClient } from '@/lib/rpc'
+import { fCurrency } from '@/utils'
 import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { SummaryBox } from '@view'
+import { Divider, Empty } from 'antd'
 
 export const Card = ({
   cashBank,
   date,
+  control_refetch,
 }: {
   cashBank: CashBankSelect
   date: string
+  control_refetch?: number
 }) => {
   const query = useQuery({
-    queryKey: ['req:rep-summary'],
+    queryKey: ['req:rep-summary', control_refetch],
     queryFn: async () => {
       const data = await viewClient.api.view.requirement.report.summary.$get({
         query: {
@@ -24,14 +28,20 @@ export const Card = ({
     },
   })
   return (
-    <div className="">
-      <div className="font-bold">{cashBank.cashbank}</div>
-      <div>
-        <p>SALDO INICIAL</p>
-        <p>{query.data?.initial ?? 0}</p>
+    <div className="rounded-md border border-solid border-slate-100">
+      <div className="font-bold p-3">
+        {cashBank.id} . {cashBank.cashbank}
       </div>
-
-      <div>
+      <Divider className="my-0" />
+      <div className="p-3 flex justify-between items-center">
+        <p>SALDO INICIAL</p>
+        <p>{fCurrency(query.data?.initial ?? 0)}</p>
+      </div>
+      <Divider className="my-0" />
+      <div className="p-3">
+        {!query.data || query.data.list.length == 0 ? (
+          <Empty description="No se encontro requerimientos" />
+        ) : null}
         {query.data?.list.map((item) => {
           return (
             <div key={item.title}>
@@ -41,9 +51,10 @@ export const Card = ({
           )
         })}
       </div>
-      <div>
+      <Divider className="my-0" />
+      <div className="p-3 flex justify-between items-center">
         <p>SALDO FINAL</p>
-        <p>{query.data?.final ?? 0}</p>
+        <p>{fCurrency(query.data?.final ?? 0)}</p>
       </div>
     </div>
   )

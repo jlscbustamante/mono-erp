@@ -35,7 +35,7 @@ export function CompanySelectForm({
       onChange={(val) => {
         onChange?.(val ?? undefined)
       }}
-      placeholder="Compañias"
+      placeholder="Compañia"
       filterOption={filterSelectForm}
       showSearch={true}
       allowClear
