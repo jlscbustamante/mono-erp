@@ -295,29 +295,21 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     const record: Record<string, SummaryItem> = {};
     for (const req of listRequirements) {
       if (req.request_type == REQUIERMENT_TYPE.TRANSFER) {
-        const otherCash = req.items.find(
-          (el) => el.cashbank_id != cashId
-        )?.cashbank_name;
-        if (!otherCash)
+        const otherCash = req.items.find((el) => el.cashbank_id != cashId);
+        if (!otherCash || !otherCash.cashbank_name)
           throw new HTTPException(400, {
             message: "ERROR_DATA. Transferencia",
           });
-        if (!record[otherCash])
-          record[otherCash] = {
-            title: otherCash,
+        if (!record[otherCash.cashbank_name])
+          record[otherCash.cashbank_name] = {
+            title: otherCash.cashbank_name,
             total: 0,
           };
-        record[otherCash].total += req.items.reduce(
-          (acc, el) => acc + el.amount,
-          0
-        );
+        record[otherCash.cashbank_name].total = otherCash.amount;
       } else {
         const category = req.movecash_name
           ? req.movecash_name
-          : "Sin Categoria";
-        if (category == "Sin Categoria") {
-          console.log("here : ", req);
-        }
+          : "SIN CATEGORIA";
         if (!record[category]) {
           record[category] = {
             title: category,

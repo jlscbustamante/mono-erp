@@ -1,7 +1,7 @@
 import { viewClient } from '@/lib/rpc'
 import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
-import { Button, DatePicker } from 'antd'
+import { Button, Checkbox, DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { CompanySelectForm } from '../../components/company-select'
@@ -55,6 +55,14 @@ export default function RequirementSummaryPage() {
         <Button type="primary" onClick={() => refetch()}>
           Buscar
         </Button>
+        <label htmlFor="wmove" className="flex gap-1 items-center">
+          <span>Con movimiento</span>
+          <Checkbox id="wmove" />
+        </label>
+        <label htmlFor="mzero" className="flex gap-1 items-center">
+          <span>Saldos mayor a 0</span>
+          <Checkbox id="mzero" />
+        </label>
       </div>
       <div className="grid gap-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
         {cash_banks?.map((cs) => {

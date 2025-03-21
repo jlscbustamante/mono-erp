@@ -124,7 +124,7 @@ export function DataTable({
                 return (
                   <Link
                     to={
-                      PATHS.erp.modulos.requerimientos.review +
+                      PATHS.erp.modulos.requerimientos.reviewApproved +
                       `?id=${record.id}&bf=${PATHS.erp.modulos.requerimientos.aprobados}`
                     }
                   >

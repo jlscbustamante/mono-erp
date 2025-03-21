@@ -192,7 +192,7 @@ export function ReviewTransferForm({
             } satisfies Partial<UpdateTransferRequirementDto>
           }
         >
-          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md w-[700px]">
             <div
               className="mt-1 mb-3 text-slate-600 items-center hover:text-slate-700 cursor-pointer inline-flex"
               onClick={() =>
@@ -202,8 +202,9 @@ export function ReviewTransferForm({
               }
             >
               <ArrowLeft className="" size={16} />
-              Volver
+              REQUERIMIENTO
             </div>
+            <Divider className="my-0 mb-3" />
 
             <Form.Item name="request_type" className="hidden">
               <Input />
@@ -303,7 +304,7 @@ export function ReviewTransferForm({
             </div>
           </div>
           {/* SEPARADOS */}
-          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md max-w-[900px]">
+          <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md w-[700px]">
             <div className="grid grid-cols-2 gap-2">
               <Form.Item
                 label="Forma de pago"

@@ -14,6 +14,34 @@ import { useSession } from '../../use-session'
 // import * as sdk from '@/data/resources/sdk'
 
 const menu: (MenuOption | MenuSeparator)[] = [
+  {
+    type: 'option',
+    label: 'Requerimiento',
+    path: PATHS.erp.modulos.requerimientos.reviewApproved,
+    hide: true,
+    icon: null,
+  },
+  {
+    type: 'option',
+    label: 'Requerimiento',
+    path: PATHS.erp.modulos.requerimientos.reviewRejected,
+    hide: true,
+    icon: null,
+  },
+  {
+    type: 'option',
+    label: 'Requerimiento',
+    path: PATHS.erp.modulos.requerimientos.review,
+    hide: true,
+    icon: null,
+  },
+  {
+    type: 'option',
+    label: 'Nuevo requerimiento',
+    path: PATHS.erp.modulos.requerimientos.creation,
+    icon: null,
+    hide: true,
+  },
   gm('Solicitados', PATHS.erp.modulos.requerimientos.solicitados),
   gm('Pagados', PATHS.erp.modulos.requerimientos.aprobados),
   gm('Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
@@ -94,6 +122,13 @@ export const RequerimientosLayout = () => {
             'bg-yellow-200 text-black',
           [PATHS.erp.modulos.requerimientos.aprobados]: 'bg-lime-500',
           [PATHS.erp.modulos.requerimientos.rechazados]: 'bg-red-500',
+          [PATHS.erp.modulos.requerimientos.creation]:
+            'bg-yellow-200 text-black',
+          [PATHS.erp.modulos.requerimientos.review]: 'bg-yellow-200 text-black',
+          [PATHS.erp.modulos.requerimientos.reviewApproved]:
+            'bg-lime-500 text-white',
+          [PATHS.erp.modulos.requerimientos.reviewRejected]:
+            'bg-red-500 text-white',
         }}
       />
       <Layout.Sidebar

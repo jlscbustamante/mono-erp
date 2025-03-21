@@ -1,4 +1,5 @@
 import { RequirementSelect, WhereOption } from '@pizzadb'
+import { REQUIREMENT_STATUS } from '@view'
 import { format } from 'date-fns'
 import { create } from 'zustand'
 
@@ -36,6 +37,12 @@ export const useSupplierAccount = create<IStore>((set, get) => ({
       mods: {
         field: 'DATE',
       },
+    },
+    {
+      field: 'status',
+      key: 'status',
+      operator: 'in',
+      value: [REQUIREMENT_STATUS.PENDING],
     },
     {
       field: 'company_id',

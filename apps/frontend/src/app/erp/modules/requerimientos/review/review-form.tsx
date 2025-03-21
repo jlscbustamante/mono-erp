@@ -273,7 +273,7 @@ export function ReviewForm({
               }
             >
               <ArrowLeft className="" size={20} />
-              NUEVO REQUERIMIENTO
+              REQUERIMIENTO
             </div>
             <Divider className="mt-2" />
             <Form.Item className="hidden" name={'costCenterName'}>

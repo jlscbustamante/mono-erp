@@ -15,7 +15,7 @@ export const Card = ({
   control_refetch?: number
 }) => {
   const query = useQuery({
-    queryKey: ['req:rep-summary', control_refetch],
+    queryKey: ['req:rep-summary:' + cashBank.id, control_refetch],
     queryFn: async () => {
       const data = await viewClient.api.view.requirement.report.summary.$get({
         query: {
@@ -28,31 +28,32 @@ export const Card = ({
     },
   })
   return (
-    <div className="rounded-md border border-solid border-slate-100">
-      <div className="font-bold p-3">
-        {cashBank.id} . {cashBank.cashbank}
-      </div>
+    <div className="rounded-md border border-solid border-slate-100 flex flex-col min-h-[300px]">
+      <div className="font-bold p-3">{cashBank.cashbank}</div>
       <Divider className="my-0" />
-      <div className="p-3 flex justify-between items-center">
+      <div className="p-3 flex justify-between items-center text-sm text-slate-700">
         <p>SALDO INICIAL</p>
         <p>{fCurrency(query.data?.initial ?? 0)}</p>
       </div>
       <Divider className="my-0" />
-      <div className="p-3">
+      <div className="p-3 flex-1 my-2 flex flex-col space-y-2 overflow-y-auto">
         {!query.data || query.data.list.length == 0 ? (
-          <Empty description="No se encontro requerimientos" />
+          <Empty description="No se encontro requerimientos" className="" />
         ) : null}
         {query.data?.list.map((item) => {
           return (
-            <div key={item.title}>
+            <div
+              key={item.title}
+              className="flex justify-between border-0 border-b border-slate-100 border-solid"
+            >
               <span>{item.title}</span>
-              <span>{item.total}</span>
+              <span>{fCurrency(item.total, false)}</span>
             </div>
           )
         })}
       </div>
       <Divider className="my-0" />
-      <div className="p-3 flex justify-between items-center">
+      <div className="p-3 flex justify-between items-center text-slate-700 text-sm">
         <p>SALDO FINAL</p>
         <p>{fCurrency(query.data?.final ?? 0)}</p>
       </div>

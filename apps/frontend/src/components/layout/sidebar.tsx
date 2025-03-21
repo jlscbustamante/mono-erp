@@ -17,43 +17,49 @@ export const SidebarLayout = ({
   const navigate = useNavigate()
 
   const items: ItemType<MenuItemType>[] = useMemo(() => {
-    const finalOptions: ItemType<MenuItemType>[] = options.map((el, index) => {
-      if (el.type == 'option') {
-        const Icon = el.icon
-        if (el.children) {
-          return {
-            key: el.path,
-            type: 'submenu',
-            icon: Icon ? <Icon /> : null,
-            label: el.label,
-            // title: el.label,
-            children: el.children.map((children) => {
-              const IconChildren = children.icon
-              return {
-                key: children.path,
-                type: 'item',
-                icon: IconChildren ? <IconChildren /> : null,
-                label: children.label,
-                title: children.label,
-              }
-            }),
-          } satisfies ItemType
+    const finalOptions: ItemType<MenuItemType>[] = options
+      .filter((el) => {
+        if (el.type == 'separator') return true
+        if (el.hide) return false
+        return true
+      })
+      .map((el, index) => {
+        if (el.type == 'option') {
+          const Icon = el.icon
+          if (el.children) {
+            return {
+              key: el.path,
+              type: 'submenu',
+              icon: Icon ? <Icon /> : null,
+              label: el.label,
+              // title: el.label,
+              children: el.children.map((children) => {
+                const IconChildren = children.icon
+                return {
+                  key: children.path,
+                  type: 'item',
+                  icon: IconChildren ? <IconChildren /> : null,
+                  label: children.label,
+                  title: children.label,
+                }
+              }),
+            } satisfies ItemType
+          } else {
+            return {
+              key: el.path,
+              type: 'item',
+              icon: Icon ? <Icon /> : null,
+              label: el.label,
+              title: el.label,
+            } satisfies ItemType
+          }
         } else {
           return {
-            key: el.path,
-            type: 'item',
-            icon: Icon ? <Icon /> : null,
-            label: el.label,
-            title: el.label,
+            type: 'divider',
+            key: `divider-${index}`,
           } satisfies ItemType
         }
-      } else {
-        return {
-          type: 'divider',
-          key: `divider-${index}`,
-        } satisfies ItemType
-      }
-    })
+      })
 
     return finalOptions
   }, [options])

@@ -19,6 +19,8 @@ export const PATHS = {
         main: '/erp/modulos/requerimientos',
         solicitados: '/erp/modulos/requerimientos/solicitados',
         review: '/erp/modulos/requerimientos/requirement',
+        reviewApproved: '/erp/modulos/requerimientos/review-approved',
+        reviewRejected: '/erp/modulos/requerimientos/review-rejected',
         creation: '/erp/modulos/requerimientos/creation',
         aprobados: '/erp/modulos/requerimientos/aprobados',
         rechazados: '/erp/modulos/requerimientos/rechazados',

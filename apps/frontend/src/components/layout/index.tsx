@@ -15,6 +15,7 @@ export interface MenuOption {
   path: string
   icon: LucideIcon | IconType | null
   children?: MenuOption[]
+  hide?: true
 }
 
 export interface MenuSeparator {

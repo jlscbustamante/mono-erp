@@ -125,6 +125,14 @@ export const routerv2 = createBrowserRouter([
                 element: <RequirementReview />,
               },
               {
+                path: PATHS.erp.modulos.requerimientos.reviewApproved,
+                element: <RequirementReview />,
+              },
+              {
+                path: PATHS.erp.modulos.requerimientos.reviewRejected,
+                element: <RequirementReview />,
+              },
+              {
                 path: PATHS.erp.modulos.requerimientos.creation,
                 element: <RequirementeCreation />,
               },
