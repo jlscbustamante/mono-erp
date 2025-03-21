@@ -48,6 +48,12 @@ export const useApprovedStore = create<Store>((set, get) => ({
       operator: 'in',
       value: [REQUIREMENT_STATUS.PAID, REQUIREMENT_STATUS.APPROVED],
     },
+    {
+      field: 'company_id',
+      key: 'company_id',
+      operator: 'equal',
+      value: 'PIZZARAUL',
+    },
   ],
   setFilters: (filters) => {
     return set({ filters: filters })

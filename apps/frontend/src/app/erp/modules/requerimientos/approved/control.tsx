@@ -8,6 +8,7 @@ import {
   SupplierSelectForm,
   SupplierTitleForm,
 } from '../components/supplier-select'
+import { CompanySelectApproved } from './company-select'
 import { useApprovedStore } from './state'
 import { SwitchViewApproved } from './switch-view-approved'
 
@@ -107,6 +108,7 @@ export function Control({ loading }: { loading?: boolean }) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex-1 flex gap-1">
+        <CompanySelectApproved />
         <RangePicker
           value={dates}
           allowClear={false}

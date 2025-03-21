@@ -3,6 +3,7 @@ import { cn } from '@/utils'
 import { WhereOption } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIERMENT_TYPE } from '@view'
+import { Input } from 'antd'
 import { useMemo } from 'react'
 
 const options: { label: string; value: REQUIERMENT_TYPE }[] = [
@@ -86,5 +87,24 @@ export function SelectRequestType({
         )
       })}
     </div>
+  )
+}
+
+export function InputRequestType({ value }: { value?: string }) {
+  return (
+    <Input
+      readOnly
+      value={
+        value == REQUIERMENT_TYPE.SIMPLE
+          ? 'Simple'
+          : value == REQUIERMENT_TYPE.LIQUIDATION
+            ? 'Liquidación'
+            : value == REQUIERMENT_TYPE.SUPPLIER
+              ? 'Proveedores'
+              : value == REQUIERMENT_TYPE.TRANSFER
+                ? 'Transferencia'
+                : ''
+      }
+    />
   )
 }

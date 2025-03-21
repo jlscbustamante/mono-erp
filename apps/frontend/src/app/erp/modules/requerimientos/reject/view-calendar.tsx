@@ -7,6 +7,7 @@ import { parseISO } from 'date-fns'
 import { useMemo } from 'react'
 import { CalendarComponent } from '../calendar'
 import { SupplierSelectForm } from '../components/supplier-select'
+import { CompanySelectReject } from './company-select'
 import { menuOptions } from './control'
 import { NavRequest } from './nav'
 import { useRejectedStore } from './state'
@@ -110,6 +111,7 @@ export function ViewCalendar() {
         middleAddons={<NavRequest month={month} />}
         beforeAddons={
           <div className="flex gap-1 items-center">
+            <CompanySelectReject />
             <SupplierSelectForm
               value={supplierId}
               onChange={changeSupplierId}

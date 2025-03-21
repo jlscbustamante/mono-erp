@@ -8,6 +8,7 @@ import {
   SupplierSelectForm,
   SupplierTitleForm,
 } from '../components/supplier-select'
+import { CompanySelectReject } from './company-select'
 import { useRejectedStore } from './state'
 import { SwitchViewReject } from './switch-view-reject'
 
@@ -106,6 +107,7 @@ export function Control({ onRefetch }: { onRefetch?: () => void }) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex-1 flex gap-1">
+        <CompanySelectReject />
         <RangePicker
           value={dates}
           allowClear={false}

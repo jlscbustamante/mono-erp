@@ -52,6 +52,12 @@ export const useRejectedStore = create<Store>((set, get) => ({
       operator: 'in',
       value: [REQUIREMENT_STATUS.CANCELLED],
     },
+    {
+      field: 'company_id',
+      key: 'company_id',
+      operator: 'equal',
+      value: 'PIZZARAUL',
+    },
   ],
   setFilters: (filters) => {
     return set({ filters: filters })

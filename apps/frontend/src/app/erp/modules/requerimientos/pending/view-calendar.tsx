@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router'
 import { CalendarComponent } from '../calendar'
 import { ExportRequirements } from '../components/export-button'
 import { SupplierSelectForm } from '../components/supplier-select'
+import { CompanySelectPending } from './company-select'
 import { menuOptions } from './control'
 import { NavRequest } from './nav'
 import { usePendingStore } from './state'
@@ -119,6 +120,7 @@ export function ViewCalendar() {
         }))}
         beforeAddons={
           <div className="flex gap-1 items-center">
+            <CompanySelectPending />
             <SupplierSelectForm
               value={supplierId}
               onChange={changeSupplierId}

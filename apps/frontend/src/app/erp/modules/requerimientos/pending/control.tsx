@@ -11,6 +11,7 @@ import {
   SupplierSelectForm,
   SupplierTitleForm,
 } from '../components/supplier-select'
+import { CompanySelectPending } from './company-select'
 import { usePendingStore } from './state'
 import { SwitchViewPending } from './switch-view-pending'
 
@@ -111,6 +112,7 @@ export function Control({ loading }: { loading?: boolean }) {
   return (
     <div className="flex justify-between items-center gap-1">
       <div className="flex-1 flex gap-1">
+        <CompanySelectPending />
         <RangePicker
           value={dates}
           allowClear={false}

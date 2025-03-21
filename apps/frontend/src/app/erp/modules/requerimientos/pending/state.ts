@@ -48,6 +48,12 @@ export const usePendingStore = create<Store>((set, get) => ({
       operator: 'equal',
       value: REQUIREMENT_STATUS.PENDING,
     },
+    {
+      field: 'company_id',
+      key: 'company_id',
+      operator: 'equal',
+      value: 'PIZZARAUL',
+    },
   ],
   setFilters: (filters) => {
     return set({ filters: filters })

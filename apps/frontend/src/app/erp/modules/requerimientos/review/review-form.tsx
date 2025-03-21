@@ -4,6 +4,7 @@ import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { cn, filterSelectForm } from '@/utils'
+import { CreateSupplier } from '@/views/products/components/productItem/CreateSupplier'
 import {
   CashBankSelect,
   CompanySelect,
@@ -19,11 +20,21 @@ import {
   UpdateRequirementDto,
   UpdateRequirementItemDto,
 } from '@view'
-import { Button, Divider, Form, Input, InputNumber, Select, Switch } from 'antd'
+import {
+  Button,
+  Divider,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Select,
+  Switch,
+} from 'antd'
 import { ArrowLeft } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
+import { InputRequestType } from '../components/select-request-type'
 
 export function ReviewForm({
   data,
@@ -54,6 +65,7 @@ export function ReviewForm({
   const [isEditing, setIsEditing] = useState(false)
 
   const session = useSession((st) => st.user)
+  const [messageApi, contextHolder] = message.useMessage()
 
   const supplierId = Form.useWatch('supplierId', form)
   const costCenterId = Form.useWatch('costCenterId', form)
@@ -70,7 +82,7 @@ export function ReviewForm({
     },
   })
 
-  const { data: suppliers } = useQuery({
+  const { data: suppliers, refetch: refetchSupplier } = useQuery({
     queryKey: ['rq:suppliers'],
     queryFn: async () => {
       const request =
@@ -206,6 +218,18 @@ export function ReviewForm({
     }
   }
 
+  const searchSupplier = (ruc: string) => {
+    const supplier = suppliers?.find((el) => el.legal_number === ruc)
+    if (supplier) {
+      form.setFieldValue('supplier_name', supplier.legal_name)
+      form.setFieldValue('supplier', supplier.id)
+    } else {
+      form.setFieldValue('supplier_name', undefined)
+      form.setFieldValue('supplier', undefined)
+      messageApi.error('Proveedor no encontrado')
+    }
+  }
+
   const setItemWrapper = (editedItem: UpdateRequirementItemDto) => {
     setIsEditing(true)
     setItem(editedItem)
@@ -227,6 +251,7 @@ export function ReviewForm({
 
   return (
     <>
+      {contextHolder}
       <RejectModal
         onChange={setOpenModal}
         open={openModal}
@@ -260,6 +285,7 @@ export function ReviewForm({
               supplierName: data.legalName,
               paymentMethod: data.paymentMethod,
               amount: data.amount,
+              request_type: data.type,
             } satisfies Partial<UpdateRequirementDto>
           }
         >
@@ -302,11 +328,12 @@ export function ReviewForm({
                   ))}
                 </Select>
               </Form.Item>
-              <Form.Item className="mb-2">
-                <Input readOnly value={'Simple'} />
+              <Form.Item className="mb-2" label="Tipo" name={'request_type'}>
+                {/* <Input readOnly /> */}
+                <InputRequestType />
               </Form.Item>
             </div>
-            <div className="grid grid-cols-2 gap-2">
+            {/* <div className="grid grid-cols-2 gap-2">
               <Form.Item label="Proveedor" name="supplierId" className="mb-2">
                 <Select
                   placeholder="Proveedor"
@@ -326,8 +353,59 @@ export function ReviewForm({
               <Form.Item name={'supplierName'} hidden>
                 <Input />
               </Form.Item>
+            </div> */}
+            <div className="grid grid-cols-2 gap-2">
+              <Form.Item
+                label="RUC proveedor"
+                name="ruc"
+                className="mb-2"
+                rules={[{ required: true }]}
+              >
+                <Input.Search
+                  placeholder="RUC proveedor"
+                  // loading={getInfoRuc.isPending}
+                  onSearch={(ruc) => {
+                    searchSupplier(ruc)
+                  }}
+                  // onSearch={(ruc) => {
+                  //   getInfoRuc.mutate(ruc.trim())
+                  // }}
+                />
+              </Form.Item>
+              <Form.Item
+                className="mb-2"
+                label="Proveedor"
+                name="supplier"
+                rules={[{ required: true }]}
+                hidden
+              >
+                <Input placeholder="Proveedor" className="" />
+              </Form.Item>
+              <div className="flex gap-1">
+                <Form.Item
+                  className="mb-2 flex-1"
+                  label="Proveedor"
+                  name="supplier_name"
+                  rules={[{ required: true }]}
+                  labelCol={{ span: 9 }}
+                >
+                  <Input placeholder="Proveedor" readOnly />
+                </Form.Item>
+                <CreateSupplier
+                  suppliers={suppliers ?? []}
+                  onError={(message) => {
+                    messageApi.error(message)
+                  }}
+                  onCreate={(id, supplier, ruc) => {
+                    form.setFieldValue('supplier', id)
+                    form.setFieldValue('supplier_name', supplier)
+                    form.setFieldValue('ruc', ruc)
+                    refetchSupplier()
+                  }}
+                />
+              </div>
             </div>
-
+            {/* limit*/}
             <div>
               <Form.Item
                 label="Detalle"
