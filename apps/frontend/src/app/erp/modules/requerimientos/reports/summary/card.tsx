@@ -1,5 +1,5 @@
 import { viewClient } from '@/lib/rpc'
-import { fCurrency } from '@/utils'
+import { cn, fCurrency } from '@/utils'
 import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { SummaryBox } from '@view'
@@ -9,11 +9,17 @@ export const Card = ({
   cashBank,
   date,
   control_refetch,
+  args,
 }: {
   cashBank: CashBankSelect
   date: string
   control_refetch?: number
+  args?: {
+    have_moves: boolean
+    have_balance: boolean
+  }
 }) => {
+  const { have_balance = true, have_moves = true } = args ?? {}
   const query = useQuery({
     queryKey: ['req:rep-summary:' + cashBank.id, control_refetch],
     queryFn: async () => {
@@ -27,8 +33,21 @@ export const Card = ({
       return body.data as SummaryBox
     },
   })
+
   return (
-    <div className="rounded-md border border-solid border-slate-100 flex flex-col min-h-[300px]">
+    <div
+      className={cn(
+        'rounded-md border border-solid border-slate-100 flex flex-col min-h-[300px]',
+        {
+          hidden:
+            (query.data && query.data.list.length == 0 && have_moves) ||
+            (query.data &&
+              query.data.initial == 0 &&
+              query.data.final == 0 &&
+              have_balance),
+        },
+      )}
+    >
       <div className="font-bold p-3">{cashBank.cashbank}</div>
       <Divider className="my-0" />
       <div className="p-3 flex justify-between items-center text-sm text-slate-700">

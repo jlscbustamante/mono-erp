@@ -15,6 +15,13 @@ export default function RequirementSummaryPage() {
   const set_company_id = use_summary_store((st) => st.set_company_id)
   const refetch = use_summary_store((st) => st.refetch)
   const control_refetch = use_summary_store((st) => st.control_refetch)
+  const show_with_moves = use_summary_store((st) => st.show_with_moves)
+  const set_show_with_moves = use_summary_store((st) => st.set_show_with_moves)
+  const show_with_balance = use_summary_store((st) => st.show_with_balance)
+  const set_show_with_balance = use_summary_store(
+    (st) => st.set_show_with_balance,
+  )
+
   const cashbankQuery = useQuery({
     queryKey: ['req:rs:cash-bank'],
     queryFn: async () => {
@@ -56,18 +63,34 @@ export default function RequirementSummaryPage() {
           Buscar
         </Button>
         <label htmlFor="wmove" className="flex gap-1 items-center">
-          <span>Con movimiento</span>
-          <Checkbox id="wmove" />
+          <span className="select-none">Con movimiento</span>
+          <Checkbox
+            id="wmove"
+            checked={show_with_moves}
+            onChange={(val) => {
+              set_show_with_moves(val.target.checked)
+            }}
+          />
         </label>
         <label htmlFor="mzero" className="flex gap-1 items-center">
-          <span>Saldos mayor a 0</span>
-          <Checkbox id="mzero" />
+          <span className="select-none">Saldos mayor a 0</span>
+          <Checkbox
+            id="mzero"
+            checked={show_with_balance}
+            onChange={(val) => {
+              set_show_with_balance(val.target.checked)
+            }}
+          />
         </label>
       </div>
       <div className="grid gap-3 grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3">
         {cash_banks?.map((cs) => {
           return (
             <Card
+              args={{
+                have_balance: show_with_balance,
+                have_moves: show_with_moves,
+              }}
               cashBank={cs}
               key={cs.id}
               date={date}
