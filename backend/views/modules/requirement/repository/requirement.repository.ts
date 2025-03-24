@@ -22,9 +22,14 @@ export class RequirementRepository {
   async filter(
     filters: WhereOption<RequirementSelect>[]
   ): Promise<RequirementPresentation[]> {
-    const query = transformWhere(filters).join(" AND ");
+    console.log("query : ", filters);
 
-    const result = await db.query.requirements.findMany({
+    const x_cash = filters.find((el) => el.key == "x-caja");
+    const allow_filter = filters.filter((el) => el.key != "x-caja");
+
+    const query = transformWhere(allow_filter).join(" AND ");
+
+    let result = await db.query.requirements.findMany({
       where: query ? sql.raw(query) : undefined,
       with: {
         items: true,
@@ -32,6 +37,12 @@ export class RequirementRepository {
       },
       limit: 500,
     });
+
+    if (x_cash) {
+      result = result.filter((el) =>
+        el.items.some((item) => item.cashbank_id == x_cash.value)
+      );
+    }
 
     return result.map((el) => {
       const { items, supplier, ...reqitem } = el;

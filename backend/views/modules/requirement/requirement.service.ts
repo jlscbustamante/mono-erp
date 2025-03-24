@@ -243,6 +243,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     });
     return listRequirements;
   }
+
   async getInitialBalance(cashId: number, date: string) {
     const elments = await db.query.requirementItems.findMany({
       columns: {

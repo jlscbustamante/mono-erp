@@ -5,7 +5,7 @@ interface WhereOptionBasic<T>
 
 export interface FilterOption<T> {
   operators: string[]
-  key: keyof T
+  key: string
   label: string
   hide?: boolean
   type?: 'date' | 'number'

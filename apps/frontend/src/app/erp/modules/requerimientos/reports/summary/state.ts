@@ -21,9 +21,9 @@ export const use_summary_store = create<IStore>((set, get) => ({
   set_company_id: (company_id: string | undefined) => set({ company_id }),
   control_refetch: 0,
   refetch: () => set({ control_refetch: get().control_refetch + 1 }),
-  show_with_moves: true,
+  show_with_moves: false,
   set_show_with_moves: (show_with_moves: boolean) => set({ show_with_moves }),
-  show_with_balance: true,
+  show_with_balance: false,
   set_show_with_balance: (show_with_balance: boolean) =>
     set({ show_with_balance }),
 }))

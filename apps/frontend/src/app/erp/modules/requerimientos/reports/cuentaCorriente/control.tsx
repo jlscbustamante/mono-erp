@@ -1,13 +1,71 @@
 import { FilterComponent } from '@/components/fifi'
+import { FilterOption } from '@/components/fifi/type'
+import { RequirementSelect } from '@pizzadb'
 import { Button, DatePicker } from 'antd'
 import { format } from 'date-fns'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { CompanySelectForm } from '../../components/company-select'
-import { SupplierSelectForm } from '../../components/supplier-select'
+import {
+  SupplierSelectForm,
+  SupplierTitleForm,
+} from '../../components/supplier-select'
 import { useSupplierAccount } from './state'
 
 const RangePicker = DatePicker.RangePicker
+
+export const menuOptions: FilterOption<RequirementSelect>[] = [
+  {
+    key: 'id',
+    label: 'Id',
+    operators: ['equal'],
+    whereOption: {
+      field: 'id',
+    },
+  },
+  {
+    key: 'description',
+    label: 'Descripcion',
+    operators: ['contain', 'equal'],
+    whereOption: {
+      field: 'description',
+    },
+  },
+  {
+    key: 'amount',
+    label: 'Monto',
+    type: 'number',
+    operators: ['equal'],
+    whereOption: {
+      field: 'amount',
+    },
+  },
+  {
+    key: 'created_by',
+    label: 'Creado por',
+    operators: ['contain', 'equal'],
+    whereOption: {
+      field: 'created_by',
+    },
+  },
+  {
+    key: 'supplier_id',
+    label: 'Proveedor',
+    operators: ['equal'],
+    whereOption: {
+      field: 'supplier_id',
+    },
+    view: ({ fiValue }) => <SupplierTitleForm supplierId={fiValue as number} />,
+    render: ({ fiValue, onFiChange }) => {
+      return (
+        <SupplierSelectForm
+          value={fiValue as number}
+          onChange={(val) => onFiChange?.(val)}
+        />
+      )
+    },
+  },
+]
 
 export const Control = ({ loading }: { loading: boolean }) => {
   const refetch = useSupplierAccount((st) => st.refetch)
@@ -121,6 +179,7 @@ export const Control = ({ loading }: { loading: boolean }) => {
         }}
       />
       <FilterComponent
+        options={menuOptions}
         hideActions={true}
         filters={filters}
         setFilters={setFilters}

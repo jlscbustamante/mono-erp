@@ -45,15 +45,18 @@ export function ReviewForm({
 }) {
   const [form] = Form.useForm()
 
-  const [item, setItem] = useState<UpdateRequirementItemDto>({
-    id: data.items[0].id,
-    amount: data.items[0].amount,
-    hasRetention: data.items[0].hasRetention,
-    retention: data.items[0].retention,
-    cashbankId: data.items[0].cashbankId ?? undefined,
-    cashbankName: data.items[0].cashbankName ?? undefined,
-    expiresAt: data.items[0].expiresAt ?? undefined,
-    description: data.items[0].description,
+  const [item, setItem] = useState<UpdateRequirementItemDto | null>(() => {
+    if (!data.items || !data.items[0]) return null
+    return {
+      id: data.items[0].id,
+      amount: data.items[0].amount,
+      hasRetention: data.items[0].hasRetention,
+      retention: data.items[0].retention,
+      cashbankId: data.items[0].cashbankId ?? undefined,
+      cashbankName: data.items[0].cashbankName ?? undefined,
+      expiresAt: data.items[0].expiresAt ?? undefined,
+      description: data.items[0].description,
+    }
   })
 
   const [errors, setErrors] = useState<Record<string, string | null>>({
@@ -188,7 +191,7 @@ export function ReviewForm({
   const onFinish = async () => {
     try {
       await form.validateFields()
-      if (item.cashbankId) {
+      if (item?.cashbankId) {
         approveMt.mutate(data.id)
       } else {
         toast.error('Seleccione caja')
@@ -501,213 +504,215 @@ export function ReviewForm({
             </div>
           </div>
           {/* SEPARACION */}
-          <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 w-[700px]">
-            <h5>Datos del pago:</h5>
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item
-                className="mb-2"
-                label="Monto"
-                name="amount"
-                rules={[{ required: true }]}
-              >
-                <InputNumber className="w-full" />
-              </Form.Item>
-              <Form.Item
-                label="Caja"
-                rules={[{ required: true }]}
-                required
-                className="mb-2"
-              >
-                <div>
-                  <Select
-                    placeholder="Caja"
-                    // status={errors.cashbankId ? 'error' : undefined}
-                    value={item.cashbankId}
-                    onChange={(val) => {
-                      const cashBank = cashBanks?.find(
-                        (cashBank) => cashBank.id === val,
-                      )
-                      if (cashBank)
-                        setItemWrapper({
-                          ...item,
-                          cashbankId: cashBank.id,
-                          cashbankName: cashBank.cashbank,
-                        })
-                    }}
-                  >
-                    {cashBanks?.map((cashBank) => (
-                      <Select.Option key={cashBank.id} value={cashBank.id}>
-                        {cashBank.cashbank}
-                      </Select.Option>
-                    ))}
+          {item && (
+            <div className="bg-white rounded-md p-6 shadow-md border border-solid border-slate-300 w-[700px]">
+              <h5>Datos del pago:</h5>
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item
+                  className="mb-2"
+                  label="Monto"
+                  name="amount"
+                  rules={[{ required: true }]}
+                >
+                  <InputNumber className="w-full" />
+                </Form.Item>
+                <Form.Item
+                  label="Caja"
+                  rules={[{ required: true }]}
+                  required
+                  className="mb-2"
+                >
+                  <div>
+                    <Select
+                      placeholder="Caja"
+                      // status={errors.cashbankId ? 'error' : undefined}
+                      value={item.cashbankId}
+                      onChange={(val) => {
+                        const cashBank = cashBanks?.find(
+                          (cashBank) => cashBank.id === val,
+                        )
+                        if (cashBank)
+                          setItemWrapper({
+                            ...item,
+                            cashbankId: cashBank.id,
+                            cashbankName: cashBank.cashbank,
+                          })
+                      }}
+                    >
+                      {cashBanks?.map((cashBank) => (
+                        <Select.Option key={cashBank.id} value={cashBank.id}>
+                          {cashBank.cashbank}
+                        </Select.Option>
+                      ))}
+                    </Select>
+                  </div>
+                </Form.Item>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item
+                  label="Forma de pago"
+                  name={'paymentMethod'}
+                  rules={[{ required: true }]}
+                  className="mb-2"
+                >
+                  <Select placeholder="pago">
+                    <Select.Option value="CONTADO">CONTADO</Select.Option>
+                    <Select.Option value="CREDITO">CREDITO</Select.Option>
                   </Select>
-                </div>
-              </Form.Item>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item
-                label="Forma de pago"
-                name={'paymentMethod'}
-                rules={[{ required: true }]}
-                className="mb-2"
-              >
-                <Select placeholder="pago">
-                  <Select.Option value="CONTADO">CONTADO</Select.Option>
-                  <Select.Option value="CREDITO">CREDITO</Select.Option>
-                </Select>
-              </Form.Item>
-              <Form.Item label="Vencimiento" className="mb-2">
-                <CustomDatePicker
-                  className="w-full"
-                  value={item.expiresAt}
-                  onChange={(val) => {
-                    if (val) setItemWrapper({ ...item, expiresAt: val })
-                  }}
-                />
-              </Form.Item>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="N° cuota" className="mb-2">
-                <InputNumber readOnly min={1} />
-              </Form.Item>
-              <Form.Item label="Valor quota" className="mb-2">
-                <InputNumber
-                  className="w-full"
-                  value={item.amount}
-                  onChange={(val) => {
-                    if (val) setItemWrapper({ ...item, amount: val })
-                  }}
-                />
-              </Form.Item>
-            </div>
-            <Form.Item
-              label="Detalle del pago"
-              labelCol={{ span: 4 }}
-              className="mb-2"
-              rules={[{ required: true }]}
-            >
-              <Input.TextArea
-                rows={1}
-                value={item.description}
-                onChange={(e) =>
-                  setItemWrapper({ ...item, description: e.target.value })
-                }
-              ></Input.TextArea>
-            </Form.Item>
-            <Form.Item
-              label="Tiene retencion"
-              labelCol={{ span: 4 }}
-              className="mb-2"
-            >
-              <Switch
-                checked={item.hasRetention}
-                onChange={(val) =>
-                  setItemWrapper({ ...item, hasRetention: val })
-                }
-              />
-            </Form.Item>
-            <div
-              className={cn('grid grid-cols-[repeat(24,1fr)] grid-rows-1', {
-                hidden: !item.hasRetention,
-              })}
-            >
-              <label htmlFor="" className="col-span-4"></label>
-              <div className="col-span-12 flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <label htmlFor="">Retencion</label>
-                  <InputNumber
-                    value={item.retention}
+                </Form.Item>
+                <Form.Item label="Vencimiento" className="mb-2">
+                  <CustomDatePicker
+                    className="w-full"
+                    value={item.expiresAt}
                     onChange={(val) => {
-                      if (val) setItemWrapper({ ...item, retention: val })
+                      if (val) setItemWrapper({ ...item, expiresAt: val })
                     }}
                   />
-                </div>
-                <div className="flex items-center gap-2">
-                  <label htmlFor="">Monto neto</label>
-                  <Input readOnly value={item.amount - item.retention} />
-                </div>
+                </Form.Item>
               </div>
-            </div>
-            <Divider />
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Creado por" className="mb-2">
-                <Input readOnly value={data.createdBy} />
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item label="N° cuota" className="mb-2">
+                  <InputNumber readOnly min={1} />
+                </Form.Item>
+                <Form.Item label="Valor quota" className="mb-2">
+                  <InputNumber
+                    className="w-full"
+                    value={item.amount}
+                    onChange={(val) => {
+                      if (val) setItemWrapper({ ...item, amount: val })
+                    }}
+                  />
+                </Form.Item>
+              </div>
+              <Form.Item
+                label="Detalle del pago"
+                labelCol={{ span: 4 }}
+                className="mb-2"
+                rules={[{ required: true }]}
+              >
+                <Input.TextArea
+                  rows={1}
+                  value={item.description}
+                  onChange={(e) =>
+                    setItemWrapper({ ...item, description: e.target.value })
+                  }
+                ></Input.TextArea>
               </Form.Item>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Form.Item label="Aprobado por">
-                <Input readOnly value={session.userName} />
-              </Form.Item>
-              <Form.Item name={'approvedAt'} label="Fecha de aprobación">
-                <CustomDatePicker
-                  className="w-full"
-                  props={{
-                    allowClear: false,
-                  }}
+              <Form.Item
+                label="Tiene retencion"
+                labelCol={{ span: 4 }}
+                className="mb-2"
+              >
+                <Switch
+                  checked={item.hasRetention}
+                  onChange={(val) =>
+                    setItemWrapper({ ...item, hasRetention: val })
+                  }
                 />
               </Form.Item>
+              <div
+                className={cn('grid grid-cols-[repeat(24,1fr)] grid-rows-1', {
+                  hidden: !item.hasRetention,
+                })}
+              >
+                <label htmlFor="" className="col-span-4"></label>
+                <div className="col-span-12 flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="">Retencion</label>
+                    <InputNumber
+                      value={item.retention}
+                      onChange={(val) => {
+                        if (val) setItemWrapper({ ...item, retention: val })
+                      }}
+                    />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="">Monto neto</label>
+                    <Input readOnly value={item.amount - item.retention} />
+                  </div>
+                </div>
+              </div>
+              <Divider />
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item label="Creado por" className="mb-2">
+                  <Input readOnly value={data.createdBy} />
+                </Form.Item>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <Form.Item label="Aprobado por">
+                  <Input readOnly value={session.userName} />
+                </Form.Item>
+                <Form.Item name={'approvedAt'} label="Fecha de aprobación">
+                  <CustomDatePicker
+                    className="w-full"
+                    props={{
+                      allowClear: false,
+                    }}
+                  />
+                </Form.Item>
+              </div>
+              <Form.Item
+                labelCol={{ span: 4 }}
+                className={cn('flex justify-end', {
+                  hidden: data.status != REQUIREMENT_STATUS.APPROVED,
+                })}
+              >
+                <div>
+                  <Button
+                    danger
+                    onClick={() => undoApproveMt.mutate(data.id)}
+                    loading={undoApproveMt.isPending}
+                  >
+                    Deshacer aprobación
+                  </Button>
+                </div>
+              </Form.Item>
+              <Form.Item
+                labelCol={{ span: 4 }}
+                className={cn('flex justify-end', {
+                  hidden: data.status != REQUIREMENT_STATUS.PENDING,
+                })}
+              >
+                <div
+                  className={cn('flex gap-1', {
+                    hidden: !isEditing,
+                  })}
+                >
+                  <Button onClick={cancelEdit} danger type="primary">
+                    Cancelar
+                  </Button>
+                  <Button
+                    type="primary"
+                    onClick={() => onSave()}
+                    loading={saveRequirementMt.isPending}
+                  >
+                    Guardar cambios
+                  </Button>
+                </div>
+                <div
+                  className={cn('flex gap-1', {
+                    hidden: isEditing,
+                  })}
+                >
+                  <Button
+                    danger
+                    type="primary"
+                    onClick={() => setOpenModal(true)}
+                  >
+                    Rechazar
+                  </Button>
+                  <Button
+                    loading={approveMt.isPending}
+                    type="primary"
+                    className=""
+                    onClick={() => onFinish()}
+                  >
+                    Aprobar
+                  </Button>
+                </div>
+              </Form.Item>
             </div>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              className={cn('flex justify-end', {
-                hidden: data.status != REQUIREMENT_STATUS.APPROVED,
-              })}
-            >
-              <div>
-                <Button
-                  danger
-                  onClick={() => undoApproveMt.mutate(data.id)}
-                  loading={undoApproveMt.isPending}
-                >
-                  Deshacer aprobación
-                </Button>
-              </div>
-            </Form.Item>
-            <Form.Item
-              labelCol={{ span: 4 }}
-              className={cn('flex justify-end', {
-                hidden: data.status != REQUIREMENT_STATUS.PENDING,
-              })}
-            >
-              <div
-                className={cn('flex gap-1', {
-                  hidden: !isEditing,
-                })}
-              >
-                <Button onClick={cancelEdit} danger type="primary">
-                  Cancelar
-                </Button>
-                <Button
-                  type="primary"
-                  onClick={() => onSave()}
-                  loading={saveRequirementMt.isPending}
-                >
-                  Guardar cambios
-                </Button>
-              </div>
-              <div
-                className={cn('flex gap-1', {
-                  hidden: isEditing,
-                })}
-              >
-                <Button
-                  danger
-                  type="primary"
-                  onClick={() => setOpenModal(true)}
-                >
-                  Rechazar
-                </Button>
-                <Button
-                  loading={approveMt.isPending}
-                  type="primary"
-                  className=""
-                  onClick={() => onFinish()}
-                >
-                  Aprobar
-                </Button>
-              </div>
-            </Form.Item>
-          </div>
+          )}
         </Form>
       </div>
     </>
