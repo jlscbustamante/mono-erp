@@ -15,4 +15,5 @@ export interface IRequirementPresentation {
   type: REQUIERMENT_TYPE;
   originName?: string;
   destinyName?: string;
+  status: string;
 }

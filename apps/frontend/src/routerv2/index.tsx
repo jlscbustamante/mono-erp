@@ -19,6 +19,7 @@ import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costC
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
 import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
 import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
+import { ReportByCostCenterPage } from '@/app/erp/modules/requerimientos/reports/cost_center/page'
 import { CuentaCorrientePage } from '@/app/erp/modules/requerimientos/reports/cuentaCorriente/page'
 import RequirementDetailedPage from '@/app/erp/modules/requerimientos/reports/detailed/page'
 import RequirementSummaryPage from '@/app/erp/modules/requerimientos/reports/summary/page'
@@ -66,7 +67,6 @@ import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
 import Reports from '@/views/reports/Reports'
-import BalanceCostCenter from '@/views/requests/balances/CostCenter'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
 import PaymentMethods from '@/views/stores/PaymentMethods'
@@ -173,7 +173,8 @@ export const routerv2 = createBrowserRouter([
                   {
                     path: PATHS.erp.modulos.requerimientos.reportes
                       .porCentroCosto,
-                    element: <BalanceCostCenter />,
+                    // element: <CostCenterPage />,
+                    element: <ReportByCostCenterPage />,
                   },
                 ],
               },

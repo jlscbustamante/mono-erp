@@ -279,4 +279,25 @@ export const requirementRouter = new Hono()
         data,
       });
     }
+  )
+  .get(
+    "/report/cost_center",
+    zValidator(
+      "query",
+      z.object({
+        start: z.string(),
+        end: z.string(),
+      })
+    ),
+    async (c) => {
+      const { end, start } = c.req.valid("query");
+      const data = await requirementService.requirements_by_cost_center(
+        start,
+        end
+      );
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
   );

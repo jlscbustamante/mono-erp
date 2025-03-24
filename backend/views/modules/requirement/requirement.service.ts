@@ -271,6 +271,23 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     return result;
   }
 
+  async requirements_by_cost_center(start: string, end: string) {
+    const requirement_list = await this.requirementRepository.filter([
+      {
+        key: "requested_at",
+        field: "requested_at",
+        operator: "range",
+        value: [start, end],
+        useMods: true,
+        mods: {
+          field: "DATE",
+        },
+      },
+    ]);
+
+    return requirement_list;
+  }
+
   async resumeCashBox(cashId: number, date: string): Promise<SummaryBox> {
     const initial = await this.getInitialBalance(cashId, date);
     const [result] = (await db.execute(

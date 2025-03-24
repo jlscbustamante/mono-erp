@@ -58,10 +58,10 @@ const menu: (MenuOption | MenuSeparator)[] = [
         'Estado de cuenta caja y bancos',
         PATHS.erp.modulos.requerimientos.reportes.detallado,
       ),
-      // gm(
-      //   'Movimientos por centro de costo',
-      //   PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
-      // ),
+      gm(
+        'Movimientos por centro de costo',
+        PATHS.erp.modulos.requerimientos.reportes.porCentroCosto,
+      ),
       gm(
         'Resumen movimientos por fecha',
         PATHS.erp.modulos.requerimientos.reportes.resumido,

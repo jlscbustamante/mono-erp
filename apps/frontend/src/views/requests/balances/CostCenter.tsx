@@ -12,6 +12,7 @@ import { fCurrency, safeAny } from '@/utils'
 import { columnsApproved } from '../components'
 
 const RangePicker = DatePicker.RangePicker
+
 export default function BalanceCostCenter() {
   const [activeKey, setActiveKey] = useState<string[]>([])
   const [report, setReport] = useState<

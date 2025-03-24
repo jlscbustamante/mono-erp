@@ -4,7 +4,7 @@ import {
   RequirementSelect,
   SupplierSelect,
 } from "@scope/pizzadb/types";
-import { REQUIERMENT_TYPE } from "../interfaces/enums.ts";
+import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from "../interfaces/enums.ts";
 
 export class RequirementPresentation implements IRequirementPresentation {
   readonly id: number;
@@ -21,6 +21,7 @@ export class RequirementPresentation implements IRequirementPresentation {
   readonly category: string;
   readonly originName?: string | undefined;
   readonly destinyName?: string | undefined;
+  readonly status: REQUIREMENT_STATUS;
 
   constructor(props: {
     reqitem: RequirementSelect;
@@ -41,6 +42,7 @@ export class RequirementPresentation implements IRequirementPresentation {
     this.paymentMethod = props.reqitem.pay_method ?? "";
     this.numQuota = props.reqitem.nro_quotas ?? 1;
     this.amount = props.reqitem.amount ?? 0;
+    this.status = props.reqitem.status as REQUIREMENT_STATUS;
 
     if (this.type == REQUIERMENT_TYPE.TRANSFER) {
       this.originName =
