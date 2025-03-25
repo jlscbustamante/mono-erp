@@ -7,7 +7,7 @@ import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { ExportRequirements } from '../components/export-button'
-import { CashBankForm } from '../components/select-cash'
+import { CashBankForm, CashBankTitleForm } from '../components/select-cash'
 import {
   SupplierSelectForm,
   SupplierTitleForm,
@@ -41,6 +41,9 @@ export const menuOptions: FilterOption<RequirementSelect>[] = [
     operators: ['equal'],
     whereOption: {
       field: 'amount',
+    },
+    view: ({ fiValue }) => {
+      return <CashBankTitleForm cashBankId={fiValue as number} />
     },
     render: ({ fiValue, onFiChange }) => {
       return <CashBankForm value={fiValue as number} onChange={onFiChange} />

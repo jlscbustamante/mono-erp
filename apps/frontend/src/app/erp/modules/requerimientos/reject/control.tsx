@@ -4,6 +4,7 @@ import { RequirementSelect } from '@pizzadb'
 import { DatePicker } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
+import { CashBankForm, CashBankTitleForm } from '../components/select-cash'
 import {
   SupplierSelectForm,
   SupplierTitleForm,
@@ -29,6 +30,20 @@ export const menuOptions: FilterOption<RequirementSelect>[] = [
     operators: ['contain', 'equal'],
     whereOption: {
       field: 'description',
+    },
+  },
+  {
+    key: 'x-caja',
+    label: 'Caja',
+    operators: ['equal'],
+    whereOption: {
+      field: 'amount',
+    },
+    view: ({ fiValue }) => {
+      return <CashBankTitleForm cashBankId={fiValue as number} />
+    },
+    render: ({ fiValue, onFiChange }) => {
+      return <CashBankForm value={fiValue as number} onChange={onFiChange} />
     },
   },
   {
