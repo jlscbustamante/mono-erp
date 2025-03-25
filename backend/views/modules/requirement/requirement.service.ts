@@ -273,8 +273,12 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
     return result;
   }
 
-  async requirements_by_cost_center(start: string, end: string) {
-    const requirement_list = await this.requirementRepository.filter([
+  async requirements_by_cost_center(
+    start: string,
+    end: string,
+    company_id?: string
+  ) {
+    const filters: WhereOption<RequirementSelect>[] = [
       {
         key: "requested_at",
         field: "requested_at",
@@ -285,7 +289,16 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
           field: "DATE",
         },
       },
-    ]);
+    ];
+    if (company_id) {
+      filters.push({
+        key: "company_id",
+        field: "company_id",
+        operator: "equal",
+        value: company_id,
+      });
+    }
+    const requirement_list = await this.requirementRepository.filter(filters);
 
     return requirement_list;
   }

@@ -287,13 +287,15 @@ export const requirementRouter = new Hono()
       z.object({
         start: z.string(),
         end: z.string(),
+        company_id: z.string().optional(),
       })
     ),
     async (c) => {
-      const { end, start } = c.req.valid("query");
+      const { end, start, company_id } = c.req.valid("query");
       const data = await requirementService.requirements_by_cost_center(
         start,
-        end
+        end,
+        company_id
       );
       return c.json({
         message: "ok",

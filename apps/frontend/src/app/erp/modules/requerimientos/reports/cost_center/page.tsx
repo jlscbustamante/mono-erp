@@ -5,6 +5,7 @@ import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
 import { Button, Collapse, CollapseProps, DatePicker, Empty, Table } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
+import { CompanySelectForm } from '../../components/company-select'
 import { StatusTag } from '../../components/status-req'
 import { use_cost_center } from './state'
 
@@ -13,6 +14,8 @@ export function ReportByCostCenterPage() {
   const dates = use_cost_center((st) => st.dates)
   const set_dates = use_cost_center((st) => st.set_dates)
   const refetch = use_cost_center((st) => st.refetch)
+  const company_id = use_cost_center((st) => st.company_id)
+  const set_company_id = use_cost_center((st) => st.set_company_id)
   const control_refetch = use_cost_center((st) => st.control_refetch)
 
   const query = useQuery({
@@ -24,6 +27,7 @@ export function ReportByCostCenterPage() {
           query: {
             start: dates[0],
             end: dates[1],
+            company_id: company_id,
           },
         },
       )
@@ -66,10 +70,14 @@ export function ReportByCostCenterPage() {
   }, [query.data])
 
   return (
-    <div className="min-h-full bg-blue-50 py-3">
-      <div className="space-y-3 container mx-auto p-3 bg-white rounded-md">
+    <div className="min-h-full">
+      <div className="space-y-3 p-3 bg-white rounded-md">
         <div className="">
           <div className="flex gap-2">
+            <CompanySelectForm
+              value={company_id}
+              onChange={(val) => set_company_id(val)}
+            />
             <RangePicker
               value={[dayjs(dates[0]), dayjs(dates[1])]}
               onChange={(val) => {
