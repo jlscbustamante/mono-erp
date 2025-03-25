@@ -178,6 +178,7 @@ export function CreationTransferForm({
               labelAlign="left"
               labelCol={{ span: 4 }}
               name="description"
+              rules={[{ required: true }]}
               className="mb-2"
             >
               <Input.TextArea
@@ -191,7 +192,7 @@ export function CreationTransferForm({
             <Form.Item
               label="Tipo doc."
               name="document_type"
-              rules={[{ required: true }]}
+              rules={[{ required: false }]}
             >
               <Select
                 placeholder="Requerimiento"
@@ -232,6 +233,11 @@ export function CreationTransferForm({
               label="Forma de pago"
               name={'payment_method'}
               className="mb-2"
+              rules={[
+                {
+                  required: true,
+                },
+              ]}
             >
               <Select placeholder="pago">
                 <Select.Option value="CONTADO">CONTADO</Select.Option>

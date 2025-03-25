@@ -514,6 +514,11 @@ export function CreationForm({
                   label="Forma de pago"
                   name={'payment_method'}
                   className="mb-2"
+                  rules={[
+                    {
+                      required: true,
+                    },
+                  ]}
                 >
                   <Select placeholder="pago">
                     <Select.Option value="CONTADO">CONTADO</Select.Option>

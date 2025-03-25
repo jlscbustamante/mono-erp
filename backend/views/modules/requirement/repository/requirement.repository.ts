@@ -22,8 +22,6 @@ export class RequirementRepository {
   async filter(
     filters: WhereOption<RequirementSelect>[]
   ): Promise<RequirementPresentation[]> {
-    console.log("query : ", filters);
-
     const x_cash = filters.find((el) => el.key == "x-caja");
     const allow_filter = filters.filter((el) => el.key != "x-caja");
 
@@ -58,7 +56,10 @@ export class RequirementRepository {
     filters: WhereOption<RequirementSelect>[],
     month?: number
   ) {
-    let allowFilters = filters.filter((el) => el.field !== "request_type");
+    const x_cash = filters.find((el) => el.key == "x-caja");
+    let allowFilters = filters
+      .filter((el) => el.field !== "request_type")
+      .filter((el) => el.key !== "x-caja");
     if (month) {
       allowFilters = allowFilters.filter((el) => el.field !== "requested_at");
       allowFilters.push({
@@ -72,13 +73,23 @@ export class RequirementRepository {
         },
       });
     }
-    const query = transformWhere(allowFilters).join(" AND ");
 
-    const [result] = await db.execute(
-      `SELECT request_type type,COUNT(*) count FROM adm_request ${
-        allowFilters.length > 0 ? `WHERE ${query}` : ""
-      } GROUP BY request_type`
-    );
+    let query = transformWhere(allowFilters, "adm").join(" AND ");
+
+    let query_base = `SELECT adm.request_type type,COUNT(DISTINCT adm.id) count FROM adm_request adm $join $where GROUP BY adm.request_type`;
+    if (x_cash) {
+      query += ` ${query ? "AND" : ""} adi.cashbank_id = ${x_cash.value}`;
+      query_base = query_base.replace(
+        "$join",
+        "JOIN adm_request_item adi ON adm.id = adi.request_id"
+      );
+      query_base = query_base.replace("$where", `WHERE ${query}`);
+    } else {
+      query_base = query_base.replace("$join", "");
+      query_base = query_base.replace("$where", query ? `WHERE ${query}` : "");
+    }
+
+    const [result] = await db.execute(query_base);
 
     return result;
   }

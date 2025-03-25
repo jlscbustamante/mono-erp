@@ -183,6 +183,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
 
   async createTransfer(data: CreateRequirementTransferDto, name: string) {
     const newRequiremnt: RequirementInsert = {
+      company_id: data.company,
       created_by: name,
       requested_at: format(new Date(), "yyyy-MM-dd"),
       description: data.description,

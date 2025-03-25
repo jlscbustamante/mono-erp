@@ -35,7 +35,7 @@ const connection = mysql.createPool({
 
 export const db = drizzle(connection, {
   mode: "default",
-  logger: true,
+  logger: false,
   schema: {
     storeTable,
     finMoveCash,
