@@ -50,6 +50,10 @@ export class RequirementService {
     return await this.requirementRepository.getRequirement(id);
   }
 
+  async get_requirement_raw(id: number) {
+    return await this.requirementRepository.get_requirement_raw(id);
+  }
+
   async saveAndApprove(data: UpdateRequirementDto, userName: string) {
     await this.requirementRepository.saveAndApprove(data, userName);
   }

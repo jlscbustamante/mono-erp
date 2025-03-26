@@ -1,6 +1,6 @@
 import { RequirementSelect, WhereOption } from '@pizzadb'
 import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
-import { format } from 'date-fns'
+import { format, startOfWeek } from 'date-fns'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
 import { ViewType } from '../components/view-type.interface'
@@ -37,7 +37,10 @@ export const usePendingStore = create<Store>((set, get) => ({
       key: 'requested_at',
       operator: 'range',
       useMods: true,
-      value: [dayjs().format('YYYY-MM-DD'), dayjs().format('YYYY-MM-DD')],
+      value: [
+        format(startOfWeek(new Date()), 'yyyy-MM-dd'),
+        dayjs().format('YYYY-MM-DD'),
+      ],
       mods: {
         field: ['DATE'],
       },

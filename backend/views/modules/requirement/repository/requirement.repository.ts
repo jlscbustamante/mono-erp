@@ -228,6 +228,17 @@ export class RequirementRepository {
     });
   }
 
+  async get_requirement_raw(id: number) {
+    const req = await db.query.requirements.findFirst({
+      where: eq(requirements.id, id),
+      with: {
+        items: true,
+        supplier: true,
+      },
+    });
+    return req ?? null;
+  }
+
   async getRequirement(id: number) {
     const result = await db.query.requirements.findFirst({
       where: eq(requirements.id, id),

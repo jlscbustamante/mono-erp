@@ -124,7 +124,6 @@ export const requirementItemsRelation = relations(
       fields: [requirementItems.cashbank_id],
       references: [cashBanks.id],
     }),
-    
   })
 );
 

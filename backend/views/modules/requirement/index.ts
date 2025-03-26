@@ -35,6 +35,21 @@ export const requirementRouter = new Hono()
     });
   })
   .get(
+    "/requirement/raw/:id",
+    zValidator(
+      "param",
+      z.object({
+        id: z.string(),
+      })
+    ),
+    async (c) => {
+      const id = +c.req.valid("param").id;
+      const data = await requirementService.get_requirement_raw(id);
+
+      return c.json({ message: "ok", data });
+    }
+  )
+  .get(
     "/requirement/:id",
     zValidator(
       "param",
