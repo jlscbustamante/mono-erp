@@ -21,15 +21,18 @@ export const WarehouseTable = () => {
           title: 'Codigo',
           dataIndex: 'id',
           sorter: (a, b) => a.id.localeCompare(b.id),
+          showSorterTooltip: false,
         },
         {
           title: 'Tienda',
           dataIndex: 'title',
           sorter: (a, b) => a.title.localeCompare(b.title),
+          showSorterTooltip: false,
         },
         {
           title: 'Dirección',
           dataIndex: 'ubi_address',
+          showSorterTooltip: false,
           sorter: (a, b) => {
             if (!a.ubi_address) return -1
             if (!b.ubi_address) return 1
@@ -39,10 +42,12 @@ export const WarehouseTable = () => {
         {
           title: 'Distrito',
           dataIndex: 'ubi_district',
+          showSorterTooltip: false,
         },
         {
           title: 'Tipo de tienda',
           dataIndex: 'type_sede',
+          showSorterTooltip: false,
           render: (val: WAREHOUSE_TYPE) =>
             val == WAREHOUSE_TYPE.STORE ? 'Tienda' : 'Almacén',
           sorter: (a) => {
@@ -56,6 +61,7 @@ export const WarehouseTable = () => {
         {
           title: 'Concesionario',
           dataIndex: 'legalperson_name',
+          showSorterTooltip: false,
           sorter: (a, b) => {
             if (!a.legalperson_name) return -1
             if (!b.legalperson_name) return 1
@@ -65,6 +71,7 @@ export const WarehouseTable = () => {
         {
           title: 'Ruc',
           dataIndex: 'sede_nro_ruc',
+          showSorterTooltip: false,
           sorter: (a, b) => {
             if (!a.sede_nro_ruc) return -1
             if (!b.sede_nro_ruc) return 1
@@ -75,6 +82,7 @@ export const WarehouseTable = () => {
         {
           title: 'Serie factura',
           dataIndex: 'cfd_serie',
+          showSorterTooltip: false,
           sorter: (a, b) => {
             if (!a.cfd_serie) return -1
             if (!b.cfd_serie) return 1
@@ -84,6 +92,7 @@ export const WarehouseTable = () => {
         {
           title: 'Serie guía',
           dataIndex: 'guide_serie',
+          showSorterTooltip: false,
           sorter: (a, b) => {
             if (!a.guide_serie) return -1
             if (!b.guide_serie) return 1
@@ -92,6 +101,7 @@ export const WarehouseTable = () => {
         },
         {
           title: '',
+          showSorterTooltip: false,
           render: (_, record: Sucursal) => (
             <RiPencilFill
               className="text-slate-700 w-5 h-auto cursor-pointer"

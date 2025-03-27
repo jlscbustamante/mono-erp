@@ -6,6 +6,7 @@ import { Sucursal } from 'pizzadb'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
 import { OpFilter } from 'shared'
+import { SelectTradeMarker } from '../../components/select-trademarker'
 import { useCreateWarehouse } from './create-drawer'
 import { controlerAtom, filtersAtom } from './state'
 
@@ -50,6 +51,21 @@ export const WarehouseHeader = () => {
   return (
     <div className="flex justify-between items-center mb-3">
       <div className="flex items-center gap-1">
+        <SelectTradeMarker
+          value={filters.trademark_id?.[1]}
+          onChange={(val) => {
+            if (val == '')
+              setFilters({
+                ...filters,
+                trademark_id: undefined,
+              })
+            else
+              setFilters({
+                ...filters,
+                trademark_id: [OpFilter.Equal, val],
+              })
+          }}
+        />
         <Input
           addonBefore="Nombre"
           placeholder="Buscar nombre"
@@ -85,6 +101,7 @@ export const WarehouseHeader = () => {
           userFilters={filters}
         />
         <ShowFilters
+          ignore={['title', 'trademark_id']}
           rootClass="flex gap-1 items-center"
           options={filtersOptions as any}
           userFilters={filters}

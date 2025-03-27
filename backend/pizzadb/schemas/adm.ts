@@ -1,5 +1,12 @@
+import dayjs from "dayjs";
 import type { InferSelectModel } from "drizzle-orm";
-import { char, mysqlTable, varchar } from "drizzle-orm/mysql-core";
+import {
+  char,
+  datetime,
+  mysqlTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
 
 export const sucursalTable = mysqlTable("adm_sucursal", {
   id: varchar({ length: 10 }).notNull().primaryKey(),
@@ -14,4 +21,16 @@ export const sucursalTable = mysqlTable("adm_sucursal", {
   trademark_id: varchar({ length: 10 }).notNull(),
 });
 
+export const trademarkTable = mysqlTable("adm_trademark", {
+  id: varchar({ length: 10 }).notNull().primaryKey(),
+  title: varchar({ length: 150 }).notNull(),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
 export type SucursalSelect = InferSelectModel<typeof sucursalTable>;
+export type TrademarkSelect = InferSelectModel<typeof trademarkTable>;

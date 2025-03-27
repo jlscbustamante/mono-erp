@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
+import { companyRouter } from "./modules/company/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 
 const app = new Hono();
@@ -13,7 +14,8 @@ export const apiRouter = app
   .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
   .use(session)
-  .route("inventory", inventoryRouter);
+  .route("inventory", inventoryRouter)
+  .route("company", companyRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);
