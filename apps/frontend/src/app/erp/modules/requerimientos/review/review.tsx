@@ -1,4 +1,5 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
+import { CustomSwitchNumber } from '@/components/ant-form/custom-switch-number'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
 import { cn, filterSelectForm } from '@/utils'
@@ -13,36 +14,52 @@ import {
   RequirementSelect,
   SupplierSelect,
 } from '@pizzadb'
-import { useQuery } from '@tanstack/react-query'
-import { REQUIERMENT_TYPE, REQUIREMENT_TYPE_DOCUMENT } from '@view'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import {
+  PAYMENT_METHOD,
+  REQUIERMENT_TYPE,
+  REQUIREMENT_TYPE_DOCUMENT,
+} from '@view'
 import {
   Button,
   Divider,
   Form,
+  FormInstance,
   Input,
   InputNumber,
   message,
+  Modal,
   Select,
-  Switch,
 } from 'antd'
 import { ArrowLeft } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
+import { toast } from 'react-toastify'
+import { RejectModal } from './reject-modal'
 
 export function Review({
   data,
   beforeUrl,
+  refetch,
 }: {
   data: RequirementRelationsSelect
   beforeUrl?: string | null
+  refetch?: () => void
 }) {
   const navigate = useNavigate()
+  const [isModified, setIsModified] = useState(false)
   const { requirement, items } = useMemo(() => {
     const { items: _items, supplier, ...rest } = data
     return { requirement: rest, items: _items ?? [], supplier }
   }, [data])
   const [form] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
+
+  const payMethod = Form.useWatch('pay_method', form)
+
+  const changePayMethod = (val: string) => {
+    form.setFieldsValue({ pay_method: val })
+  }
 
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
@@ -118,6 +135,9 @@ export function Review({
             labelCol={{ span: 6 }}
             initialValues={requirement}
             form={form}
+            onValuesChange={() => {
+              setIsModified(true)
+            }}
           >
             <div className="grid grid-cols-2 gap-x-1">
               <Form.Item label="Id" name={'id'} className="mb-2">
@@ -272,55 +292,127 @@ export function Review({
                 </Select>
               </Form.Item>
             </div>
+            <Form.Item
+              className="mb-2"
+              label="Forma de pago"
+              rules={[{ required: true }]}
+              name={'pay_method'}
+              hidden
+            >
+              <Select placeholder="pago" value={requirement.pay_method}>
+                <Select.Option value="CONTADO">CONTADO</Select.Option>
+                <Select.Option value="CREDITO">CREDITO</Select.Option>
+              </Select>
+            </Form.Item>
           </Form>
         </div>
 
         {/* DIVIDER */}
 
         <div className="border border-solid border-slate-300 rounded-md p-6 shrink-0 bg-white shadow-md">
-          <RequirementItems items={items} requirement={requirement} />
+          <RequirementItems
+            form={form}
+            isModified={isModified}
+            setIsModified={setIsModified}
+            items={items}
+            requirement={requirement}
+            refetch={refetch}
+            payMethod={payMethod}
+            setPayMethod={changePayMethod}
+          />
         </div>
       </div>
     </div>
   )
 }
+
 const RequirementItems = ({
   items,
   requirement,
+  refetch,
+  payMethod,
+  setPayMethod,
+  isModified,
+  setIsModified,
+  form: formRequirement,
 }: {
+  form: FormInstance<any>
   items: RequirementItemSelect[]
   requirement: RequirementSelect
+  refetch?: () => void
+  payMethod: PAYMENT_METHOD
+  setPayMethod: (val: PAYMENT_METHOD) => void
+  isModified: boolean
+  setIsModified: (val: boolean) => void
 }) => {
   const [form] = Form.useForm()
+  const navigate = useNavigate()
+  const [openModal, setOpenModal] = useState(false)
   const [isEdited, setIsEdited] = useState(false)
+
+  const hasChanges = useMemo(() => {
+    return isEdited || isModified
+  }, [isEdited, isModified])
+
   const [numQuota, setNumQuota] = useState(() => {
     return items.length > 0 ? 0 : null
   })
-  // const [selected, set_selected] = useState<RequirementItemSelect | null>(
-  //   items.length > 0 ? items[0] : null,
-  // )
+
+  const saveItemMt = useMutation({
+    mutationFn: async (props: {
+      requirement: RequirementSelect
+      item: RequirementItemSelect
+    }) => {
+      await viewClient.api.view.requirement.update_requirement.$put({
+        json: props,
+      })
+    },
+    onSuccess: () => {
+      setIsEdited(false)
+      setIsModified(false)
+      refetch?.()
+    },
+  })
+
+  const approveMt = useMutation({
+    mutationFn: async (data: number) => {
+      const result = await viewClient.api.view.requirement.approve.$post({
+        json: { id: data },
+      })
+      if (!result.ok) throw new Error('No se pudo aprobar el requerimiento')
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+    onSuccess: () => {
+      // refetch?.()
+      navigate(PATHS.erp.modulos.requerimientos.solicitados)
+    },
+  })
 
   const handleSave = () => {
-    // console.log('handle save : ', selected, items)
+    const requirementValues =
+      formRequirement.getFieldsValue() as RequirementSelect
+    const requirementItem = form.getFieldsValue() as RequirementItemSelect
+    saveItemMt.mutate({
+      item: requirementItem,
+      requirement: requirementValues,
+    })
+  }
+
+  const handleApprove = () => {
+    approveMt.mutate(requirement.id)
   }
 
   const resetFields = () => {
-    // const item = items.find((item) => item.id === selected?.id)
-    // if (item) {
-    //   form.setFieldsValue(item)
-    //   set_selected(item)
-    //   setIsEdited(false)
-    // } else {
-    //   message.error('Item no encontrado')
-    // }
+    formRequirement.setFieldsValue(requirement)
+    setIsModified(false)
+    const item = numQuota != null ? items[numQuota] : null
+    if (item) {
+      form.setFieldsValue(item)
+    }
+    setIsEdited(false)
   }
-
-  // Add useEffect to reset form values when selected changes
-  // useEffect(() => {
-  //   if (selected) {
-  //     form.setFieldsValue(selected)
-  //   }
-  // }, [selected, form])
 
   const { data: cash_banks } = useQuery({
     queryKey: ['rq:cashBanks'],
@@ -333,161 +425,204 @@ const RequirementItems = ({
   })
 
   return (
-    <div>
+    <>
+      <RejectModal
+        onChange={setOpenModal}
+        open={openModal}
+        id={requirement.id}
+        requestId={requirement.id}
+      />
       <div>
-        <div className="mb-4">
-          <div className="flex justify-between items-center mb-2">
-            <Select
-              placeholder="Seleccionar cuota"
-              // value={items.indexOf(selected!)}
-              value={numQuota}
-              onChange={(index) => {
-                setNumQuota(index)
-                const item = items[index]
-              }}
-              className="w-1/2"
-            >
-              {items.map((_item, index) => (
-                <Select.Option key={index} value={index}>
-                  Cuota {index + 1}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-          {items.length > 0 && (
-            <div>
-              <h5 className="mb-2">Datos del pago:</h5>
-              <Form
-                form={form}
-                wrapperCol={{ span: 18 }}
-                labelCol={{ span: 6 }}
-                initialValues={items.length > 0 ? items[0] : {}}
-                // onValuesChange={(_changedValues, allValues) => {
-                //   setIsEdited(true)
-                //   const updatedItemIndex = items.indexOf(selected)
-                //   if (updatedItemIndex !== -1) {
-                //     items[updatedItemIndex] = { ...selected, ...allValues }
-                //     set_selected(items[updatedItemIndex])
-                //   }
-                // }}
+        <div>
+          <div className="mb-4">
+            <div className="flex justify-between items-center mb-2 hidden">
+              <Select
+                placeholder="Seleccionar cuota"
+                value={numQuota}
+                onChange={(index) => {
+                  if (isEdited) {
+                    Modal.confirm({
+                      title: '¿Desea salir de la edicion?',
+                      content: 'Tienes cambios sin guardar ¿Desea continuar?',
+                      onOk: () => {
+                        setNumQuota(index)
+                        const item = items[index]
+                        form.setFieldsValue(item)
+                        setIsEdited(false)
+                      },
+                    })
+                  } else {
+                    setNumQuota(index)
+                    const item = items[index]
+                    form.setFieldsValue(item)
+                  }
+                }}
+                className="w-1/2"
               >
-                <div className="grid grid-cols-2 gap-x-1">
-                  <Form.Item name={'id'} label="Id">
-                    <Input />
-                  </Form.Item>
-                  <div></div>
-                  <Form.Item
-                    className="mb-2"
-                    label="Monto"
-                    name="amount"
-                    rules={[{ required: true }]}
-                  >
-                    <InputNumber className="w-full" />
-                  </Form.Item>
-                  <Form.Item className="mb-2" label="Caja" name={'cashbank_id'}>
-                    <Select showSearch filterOption={filterSelectForm}>
-                      {cash_banks?.map((cash_bank) => (
-                        <Select.Option key={cash_bank.id} value={cash_bank.id}>
-                          {cash_bank.cashbank}
-                        </Select.Option>
-                      ))}
-                    </Select>
-                  </Form.Item>
-
-                  <Form.Item
-                    className="mb-2"
-                    label="Forma de pago"
-                    rules={[{ required: true }]}
-                  >
-                    <Select placeholder="pago" value={requirement.pay_method}>
-                      <Select.Option value="CONTADO">CONTADO</Select.Option>
-                      <Select.Option value="CREDITO">CREDITO</Select.Option>
-                    </Select>
-                  </Form.Item>
-                  <Form.Item
-                    className="mb-2"
-                    label="Vencimiento"
-                    name={'expires_at'}
-                  >
-                    <CustomDatePicker className="w-full" />
-                  </Form.Item>
-                  <Form.Item label="N° cuota" className="mb-2">
-                    <Input
-                      value={numQuota != null ? numQuota + 1 : undefined}
-                      readOnly
-                    />
-                  </Form.Item>
-                  <Form.Item className="mb-2" label="Valor cuota" name="amount">
-                    <InputNumber readOnly className="w-full" />
-                  </Form.Item>
-                  <Form.Item
-                    className="mb-2 col-span-2 "
-                    label="Detalle"
-                    name="description"
-                    labelCol={{ span: 3 }}
-                    wrapperCol={{ span: 21 }}
-                  >
-                    <Input.TextArea rows={1} />
-                  </Form.Item>
-                  <Form.Item
-                    label="Tiene retencion"
-                    // labelCol={{ span: 4 }}
-                    className="mb-2"
-                  >
-                    <Switch
-                    // checked={item.hasRetention}
-                    // onChange={(val) =>
-                    //   // setItemWrapper({ ...item, hasRetention: val })
-                    // }
-                    />
-                  </Form.Item>
-                  <div className="flex gap-2">
-                    <Form.Item name={'retention'} label="Retencion">
+                {items.map((_item, index) => (
+                  <Select.Option key={index} value={index}>
+                    Cuota {index + 1}
+                  </Select.Option>
+                ))}
+              </Select>
+            </div>
+            {items.length > 0 && (
+              <div>
+                <h5 className="mb-2">Datos del pago:</h5>
+                <Form
+                  form={form}
+                  wrapperCol={{ span: 18 }}
+                  labelCol={{ span: 6 }}
+                  initialValues={items.length > 0 ? items[0] : {}}
+                  onValuesChange={() => {
+                    setIsEdited(true)
+                  }}
+                >
+                  <div className="grid grid-cols-2 gap-x-1">
+                    <Form.Item name={'id'} label="Id" className="mb-2 hidden">
+                      <Input />
+                    </Form.Item>
+                    <Form.Item
+                      name={'status'}
+                      label="Estado"
+                      className="mb-2 hidden"
+                    >
                       <Input readOnly />
                     </Form.Item>
-                    <Form.Item name={'retention'} label="Neto">
+                    <Form.Item
+                      className="mb-2"
+                      label="Monto"
+                      name="amount"
+                      rules={[{ required: true }]}
+                    >
+                      <InputNumber className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                      className="mb-2"
+                      label="Caja"
+                      name={'cashbank_id'}
+                    >
+                      <Select showSearch filterOption={filterSelectForm}>
+                        {cash_banks?.map((cash_bank) => (
+                          <Select.Option
+                            key={cash_bank.id}
+                            value={cash_bank.id}
+                          >
+                            {cash_bank.cashbank}
+                          </Select.Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                      className="mb-2"
+                      label="Forma de pago"
+                      rules={[{ required: true }]}
+                    >
+                      <Select
+                        placeholder="pago"
+                        value={payMethod}
+                        onChange={setPayMethod}
+                      >
+                        <Select.Option value="CONTADO">CONTADO</Select.Option>
+                        <Select.Option value="CREDITO">CREDITO</Select.Option>
+                      </Select>
+                    </Form.Item>
+                    <Form.Item
+                      className="mb-2"
+                      label="Vencimiento"
+                      name={'expires_at'}
+                    >
+                      <CustomDatePicker className="w-full" />
+                    </Form.Item>
+                    <Form.Item label="N° cuota" className="mb-2">
+                      <Input
+                        value={numQuota != null ? numQuota + 1 : undefined}
+                        readOnly
+                      />
+                    </Form.Item>
+                    <Form.Item
+                      className="mb-2"
+                      label="Valor cuota"
+                      name="amount"
+                    >
+                      <InputNumber readOnly className="w-full" />
+                    </Form.Item>
+                    <Form.Item
+                      className="mb-2 col-span-2 "
+                      label="Detalle"
+                      name="description"
+                      labelCol={{ span: 3 }}
+                      wrapperCol={{ span: 21 }}
+                    >
+                      <Input.TextArea rows={1} />
+                    </Form.Item>
+                    <Form.Item
+                      label="Tiene retencion"
+                      // labelCol={{ span: 4 }}
+                      className="mb-2"
+                      name={'retention'}
+                    >
+                      <CustomSwitchNumber />
+                      {/* <Switch
+                    /> */}
+                    </Form.Item>
+                    <div className="flex gap-2">
+                      <Form.Item name={'amount_ret'} label="Retencion">
+                        <Input readOnly />
+                      </Form.Item>
+                      <Form.Item name={'amount_net'} label="Neto">
+                        <Input readOnly />
+                      </Form.Item>
+                    </div>
+                    {/*  */}
+                    <Form.Item
+                      className="mb-2"
+                      label="Creado por"
+                      name="created_by"
+                    >
                       <Input readOnly />
                     </Form.Item>
                   </div>
-                  {/*  */}
-                  <Form.Item
-                    className="mb-2"
-                    label="Creado por"
-                    name="created_by"
-                  >
-                    <Input readOnly />
-                  </Form.Item>
-                </div>
-              </Form>
-            </div>
-          )}
+                </Form>
+              </div>
+            )}
 
-          <div
-            className={cn('flex justify-end gap-2', {
-              hidden: !isEdited,
-            })}
-          >
-            <Button type="primary" danger>
-              Rechazar
-            </Button>
-            <Button type="primary" onClick={handleSave}>
-              Aprobar
-            </Button>
-          </div>
-          <div
-            className={cn('flex justify-end gap-2', {
-              hidden: isEdited,
-            })}
-          >
-            <Button type="primary" danger onClick={() => resetFields()}>
-              Cancelar
-            </Button>
-            <Button type="primary" onClick={handleSave}>
-              Guardar
-            </Button>
+            <div
+              className={cn('flex justify-end gap-2', {
+                hidden: hasChanges,
+              })}
+            >
+              <Button type="primary" danger onClick={() => setOpenModal(true)}>
+                Rechazar
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleApprove}
+                loading={approveMt.isPending}
+              >
+                Aprobar
+              </Button>
+            </div>
+            <div
+              className={cn('flex justify-end gap-2', {
+                hidden: !hasChanges,
+              })}
+            >
+              <Button type="primary" danger onClick={() => resetFields()}>
+                Cancelar
+              </Button>
+              <Button
+                type="primary"
+                onClick={handleSave}
+                loading={saveItemMt.isPending}
+              >
+                Guardar
+              </Button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -8,7 +8,11 @@ import { REQUIREMENT_STATUS } from "#app/modules/requirement/interfaces/enums.ts
 import { UpdateTransferRequirementDto } from "#app/modules/requirement/interfaces/update-requirement.dto.ts";
 import { UpdateRequirementDto } from "#app/modules/types/index.ts";
 import { zValidator } from "@hono/zod-validator";
-import type { RequirementSelect, WhereOption } from "@scope/pizzadb/types";
+import type {
+  RequirementItemSelect,
+  RequirementSelect,
+  WhereOption,
+} from "@scope/pizzadb/types";
 import { Hono } from "hono";
 import { stream } from "hono/streaming";
 import * as XLSX from "xlsx";
@@ -317,4 +321,14 @@ export const requirementRouter = new Hono()
         data,
       });
     }
-  );
+  )
+  .put("/update_requirement", async (c) => {
+    const data: {
+      item: RequirementItemSelect;
+      requirement: RequirementSelect;
+    } = await c.req.json();
+    await requirementService.updateRequirement(data);
+    return c.json({
+      message: "ok",
+    });
+  });

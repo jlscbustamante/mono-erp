@@ -17,6 +17,7 @@ import { requirementItems, requirements } from "@scope/pizzadb";
 import type {
   RequirementInsert,
   RequirementItemInsert,
+  RequirementItemSelect,
   RequirementRelationsSelect,
   RequirementSelect,
   WhereOption,
@@ -367,5 +368,22 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
       list,
       final,
     };
+  }
+
+  async updateRequirement(data: {
+    item: RequirementItemSelect;
+    requirement: RequirementSelect;
+  }) {
+    await db.transaction(async (manager) => {
+      await manager
+        .update(requirementItems)
+        .set(data.item)
+        .where(eq(requirementItems.id, data.item.id));
+
+      await manager
+        .update(requirements)
+        .set(data.requirement)
+        .where(eq(requirements.id, data.requirement.id));
+    });
   }
 }
