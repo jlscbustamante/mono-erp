@@ -15,5 +15,6 @@ export const appConfig = {
     password: Deno.env.get("DB_PASSWORD") as string,
     port: Deno.env.get("DB_PORT") as string,
     database: Deno.env.get("DB_DATABASE") as string,
+    url: Deno.env.get("DATABASE_URL") as string,
   },
 };

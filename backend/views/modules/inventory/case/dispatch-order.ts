@@ -1,6 +1,7 @@
+import { db } from "#app/config/database.ts";
 export class DispatchOrder {
   async execute(id: number) {
-    //
-    console.log("ejecutar : ", id);
+    const users = await db.selectFrom("iam_user").selectAll().execute();
+    return users;
   }
 }

@@ -64,7 +64,7 @@ export const inventoryRouter = new Hono()
     ),
     async (c) => {
       const { id } = c.req.valid("json");
-      await dispatchOrderUC.execute(id);
-      return c.json({ message: "ok" }, 200);
+      const data = await dispatchOrderUC.execute(id);
+      return c.json({ message: "ok", data }, 200);
     }
   );
