@@ -1,8 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
+import { DispatchUpdateDto } from "@scope/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { DispatchUpdateDto } from "../../../shared/types/index.ts";
 import { dispatchOrderUC, dividerDispatchService } from "./dependencies.ts";
 
 export const inventoryRouter = new Hono()
@@ -55,9 +55,9 @@ export const inventoryRouter = new Hono()
       return c.json({ message: "ok" }, 200);
     }
   )
-  .post("dispatchOrder", async (c) => {
+  .post("dispatch_order", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchUpdateDto;
     const data = await dispatchOrderUC.execute(body, user.name);
-    return c.json({ message: "ok", data }, 200);
+    return c.json({ message: "ok", data });
   });

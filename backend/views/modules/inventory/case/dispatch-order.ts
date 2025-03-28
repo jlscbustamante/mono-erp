@@ -1,4 +1,4 @@
-import { get_items } from "#app/modules/inventory/queries/get_items.ts";
+import { get_template } from "#app/modules/inventory/queries/get_template.ts";
 import { get_stores } from "#app/modules/sucursales/queries/get_stores.ts";
 import { DispatchUpdateDto } from "@scope/shared";
 import { format } from "date-fns";
@@ -22,15 +22,12 @@ export class DispatchOrder {
       });
     }
 
-    const items = await get_items();
-    return items;
+    const [template_from, template_to] = await Promise.all([
+      get_template(store_from.trademark_id),
+      get_template(store_to.trademark_id),
+    ]);
 
-    // const [template_from, template_to] = await Promise.all([
-    //   get_template(store_from.trademark_id),
-    //   get_template(store_to.trademark_id),
-    // ]);
-
-    // return template_from;
+    return template_from;
   }
 
   private validate_data(data: DispatchUpdateDto) {

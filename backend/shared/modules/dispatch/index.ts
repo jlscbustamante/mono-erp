@@ -54,3 +54,18 @@ export interface DispatchItemAddDto
 export interface DispatchUpdateDto extends Omit<Dispatch, "items"> {
   items: DispatchItemAddDto[];
 }
+
+export interface IItem {
+  item_id: number;
+  item_name: string;
+  presentation_id: number;
+  presentation_name: string;
+  product_category_id: number;
+  product_measure_id: number;
+  warehouse_cost: number;
+  store_price: number;
+  status: number;
+  is_active: boolean;
+  supplier_id: number;
+  brand_id: number;
+}

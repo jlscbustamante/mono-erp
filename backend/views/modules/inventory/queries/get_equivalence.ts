@@ -1,6 +1,7 @@
 import { db } from "#app/config/database.ts";
 
-export const get_template = async (template_id: string) => {
+export const get_equivalence = async (template_id: string) => {
+  // const templateDb = await db.sele;
   const template = await db
     .selectFrom("inv_dispatchbase")
     .where("sucursal_type", "=", template_id)
