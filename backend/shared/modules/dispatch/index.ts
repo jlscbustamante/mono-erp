@@ -69,3 +69,8 @@ export interface IItem {
   supplier_id: number;
   brand_id: number;
 }
+
+export interface ITemplate {
+  item_stock: IItem;
+  item_dispatch: IItem;
+}
