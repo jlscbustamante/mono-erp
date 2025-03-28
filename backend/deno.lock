@@ -887,6 +887,7 @@
         "dependencies": [
           "jsr:@std/path@^1.0.8",
           "npm:@hono/zod-validator@~0.4.2",
+          "npm:date-fns@^4.1.0",
           "npm:dayjs@^1.11.13",
           "npm:drizzle-orm@~0.38.3",
           "npm:hono@^4.6.16",
