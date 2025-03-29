@@ -1,3 +1,5 @@
+import { InvEquivalenceSelect } from "../../db/mods.ts";
+
 export enum DISPATCH_MOVE_TYPE {
   WAREHOUSE_TO_STORE = "D",
   STORE_TO_STORE = "M",
@@ -73,4 +75,5 @@ export interface IItem {
 export interface ITemplate {
   item_stock: IItem;
   item_dispatch: IItem;
+  equivalency: InvEquivalenceSelect | null;
 }

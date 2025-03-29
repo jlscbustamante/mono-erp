@@ -1,6 +1,12 @@
+import { get_inventory_by_date } from "#app/modules/inventory/queries/get_stock.ts";
 import { get_template } from "#app/modules/inventory/queries/get_template.ts";
 import { get_stores } from "#app/modules/sucursales/queries/get_stores.ts";
-import { DispatchUpdateDto } from "@scope/shared";
+import {
+  DispatchUpdateDto,
+  InvStockInsert,
+  InvStockSelect,
+  ITemplate,
+} from "@scope/shared";
 import { format } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 
@@ -22,12 +28,22 @@ export class DispatchOrder {
       });
     }
 
+    const [inventory_from, inventory_to] = await Promise.all([
+      get_inventory_by_date(store_from.id, data.dispatchAt),
+      get_inventory_by_date(store_to.id, data.dispatchAt),
+    ]);
+
     const [template_from, template_to] = await Promise.all([
       get_template(store_from.trademark_id),
       get_template(store_to.trademark_id),
     ]);
+  }
 
-    return template_from;
+  private generate_stock(
+    inventory: InvStockSelect,
+    template: ITemplate
+  ): InvStockInsert[] {
+    return [];
   }
 
   private validate_data(data: DispatchUpdateDto) {
