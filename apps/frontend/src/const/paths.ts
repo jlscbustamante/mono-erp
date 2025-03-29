@@ -117,6 +117,18 @@ export const PATHS = {
         cargos: '/erp/modulos/recursos-humanos/cargos',
         motorizados: '/erp/modulos/recursos-humanos/motorizados',
       },
+      recetas: {
+        main: '/erp/modulos/recetas',
+        consultarReceta: '/erp/modulos/recetas/consultar-receta',
+        crearReceta: '/erp/modulos/recetas/crear-receta',
+        mantenimiento: {
+          main: '/erp/modulos/recetas/mantenimiento',
+          recetaBase: '/erp/modulos/recetas/mantenimiento/receta-base',
+          porSabor: '/erp/modulos/recetas/mantenimiento/receta-por-sabor',
+          insumos: '/erp/modulos/recetas/mantenimiento/insumos',
+        },
+        catalogoVenta: '/erp/modulos/recetas/catalogo-venta',
+      },
     },
   },
 }
@@ -129,4 +141,6 @@ export const PATHS_MAIN = [
   PATHS.erp.modulos.mercaderia.main,
   PATHS.erp.modulos.reportes.main,
   PATHS.erp.modulos.recursosHumanos.main,
+  PATHS.erp.modulos.recetas.main,
 ]
+

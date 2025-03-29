@@ -54,4 +54,10 @@ export const modules = [
     title: 'Recursos humanos',
     route: PATHS.erp.modulos.recursosHumanos.main,
   },
+  {
+    id: 15,
+    module: 'Recetas',
+    title: 'Recetas',
+    route: PATHS.erp.modulos.recetas.main,
+  }
 ]

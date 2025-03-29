@@ -7,6 +7,7 @@ import DispatchDivider from '@/app/erp/modules/mercaderia/dispatch-divider'
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
+import { RecetasLayout } from '@/app/erp/modules/recetas/layout'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
@@ -444,6 +445,10 @@ export const routerv2 = createBrowserRouter([
               },
             ],
           },
+          {
+            path: PATHS.erp.modulos.recetas.main,
+            element: <RecetasLayout />,
+          }
         ],
       },
     ],

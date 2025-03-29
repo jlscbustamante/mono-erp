@@ -8,6 +8,7 @@ import {
 import {
   BiPurchaseTagAlt,
   BiSolidCategoryAlt,
+  BiSolidPizza,
   BiSolidUser,
 } from 'react-icons/bi'
 import {
@@ -31,22 +32,23 @@ import {
   FaUserTie,
 } from 'react-icons/fa6'
 import { FiBox } from 'react-icons/fi'
-import { GiConfirmed, GiFullMotorcycleHelmet } from 'react-icons/gi'
+import { GiCampCookingPot, GiConfirmed, GiFullMotorcycleHelmet, GiFullPizza, GiTomato } from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
-import { IoCalendarNumberOutline, IoStorefrontOutline } from 'react-icons/io5'
+import { IoCalendarNumberOutline, IoCreateSharp, IoStorefrontOutline } from 'react-icons/io5'
 import {
   LiaNetworkWiredSolid,
   LiaShippingFastSolid,
   LiaWarehouseSolid,
 } from 'react-icons/lia'
 import { IconType } from 'react-icons/lib'
-import { LuSplitSquareVertical, LuTruck } from 'react-icons/lu'
+import { LuCupSoda, LuSplitSquareVertical, LuTruck } from 'react-icons/lu'
 import {
   MdAltRoute,
   MdCancelPresentation,
   MdDeliveryDining,
   MdOutlineCategory,
   MdOutlinePayment,
+  MdOutlineSell,
 } from 'react-icons/md'
 import { RiCoinLine } from 'react-icons/ri'
 import {
@@ -131,6 +133,14 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recursosHumanos.asistencia]: IoCalendarNumberOutline,
   [PATHS.erp.modulos.recursosHumanos.cargos]: LiaNetworkWiredSolid,
   [PATHS.erp.modulos.recursosHumanos.motorizados]: MdDeliveryDining,
+
+  [PATHS.erp.modulos.recetas.consultarReceta]: GiFullPizza,
+  [PATHS.erp.modulos.recetas.crearReceta]: IoCreateSharp,
+  [PATHS.erp.modulos.recetas.mantenimiento.main]: VscSettings,
+  [PATHS.erp.modulos.recetas.mantenimiento.recetaBase]: BiSolidPizza,
+  [PATHS.erp.modulos.recetas.mantenimiento.porSabor]: GiTomato,
+  [PATHS.erp.modulos.recetas.mantenimiento.insumos]: LuCupSoda,
+  [PATHS.erp.modulos.recetas.catalogoVenta]: MdOutlineSell,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

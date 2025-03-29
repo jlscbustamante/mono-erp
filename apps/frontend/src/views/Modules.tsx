@@ -17,6 +17,7 @@ import { modules } from '@/const'
 import { appConfig } from '@/const/config'
 import { useMemo } from 'react'
 import { FaUsersRays } from 'react-icons/fa6'
+import { FaPizzaSlice } from 'react-icons/fa'
 
 export const Modules = () => {
   const authorizedModules = useSession((st) => st.user.modules)
@@ -155,6 +156,15 @@ const CoverIcon = ({ module }: { module: string }) => {
           className="text-red-500 h-auto"
         />
       )
+      break
+    case 'Recetas':
+      Icon = (
+        <FaPizzaSlice
+          style={{ width: widthIcon }}
+          className="text-red-500 h-auto"
+        />
+      )
+      break
   }
   return <div className="text-center mt-8">{Icon}</div>
 }
