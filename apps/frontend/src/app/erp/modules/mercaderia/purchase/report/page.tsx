@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query'
 import type { IPurchaseReport } from '@types'
 import { Excel } from 'antd-table-saveas-excel'
 import { format } from 'date-fns'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { columns, RowTable } from './columns'
 import { Control } from './control'
 import { TableReport } from './data_view'
@@ -15,6 +15,7 @@ export default function ReportPurchasePage() {
   const control_refetch = use_report_store((st) => st.control_refetch)
   const dates = use_report_store((st) => st.dates)
   const filters = use_report_store((st) => st.filters)
+  const ref_table = useRef(null)
   const query = useQuery({
     queryKey: ['purchase_report', control_refetch],
     enabled: control_refetch > 0,
@@ -129,8 +130,9 @@ export default function ReportPurchasePage() {
       <Control
         loading={query.isLoading}
         handle_export_excel={handle_export_excel}
+        ref_table={ref_table}
       />
-      <TableReport data={datasource} total={total} />
+      <TableReport data={datasource} total={total} ref_table={ref_table} />
     </div>
   )
 }

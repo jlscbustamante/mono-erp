@@ -66,6 +66,10 @@ export const columns: ColumnsType<RowTable> = [
     title: 'COSTO',
     dataIndex: 'price',
     align: 'right',
+    render: (val) => {
+      if (!val) return ''
+      return <p className="text-right">{fCurrency(val, true)}</p>
+    },
   },
   {
     title: '1.18',
@@ -73,7 +77,7 @@ export const columns: ColumnsType<RowTable> = [
     align: 'right',
     render: (value) => {
       if (!value) return ''
-      return <p className="text-right">{fCurrency(value, false)}</p>
+      return <p className="text-right">{fCurrency(value, true)}</p>
     },
   },
   {

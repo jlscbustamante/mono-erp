@@ -10,7 +10,7 @@ export const ExcelExportBtn = ({
 }) => {
   return (
     <Button
-      className="flex items-center gap-2 font-semibold"
+      className="font-semibold"
       onClick={onExport}
       size={small ? 'small' : 'middle'}
       type="primary"

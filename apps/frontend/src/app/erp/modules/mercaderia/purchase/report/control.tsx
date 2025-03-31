@@ -10,6 +10,8 @@ import { useItems } from '@/views/products/hooks/use-items'
 import { useSupplierQuery } from '@/views/products/provider/useSupplierQuery'
 import { Button, DatePicker } from 'antd'
 import dayjs from 'dayjs'
+import { Printer } from 'lucide-react'
+import ReactToPrint from 'react-to-print'
 import { use_report_store } from './state'
 
 const options = [
@@ -33,9 +35,11 @@ const options = [
 export const Control = ({
   loading,
   handle_export_excel,
+  ref_table,
 }: {
   loading: boolean
   handle_export_excel: () => void
+  ref_table: any
 }) => {
   const dates = use_report_store((st) => st.dates)
   const set_dates = use_report_store((st) => st.set_dates)
@@ -93,7 +97,19 @@ export const Control = ({
           Cargar reporte
         </Button>
       </div>
-      <ExcelExportBtn onExport={handle_export_excel} />
+      <div className="flex items-center gap-1">
+        <ReactToPrint
+          trigger={() => {
+            return (
+              <Button type="primary">
+                <Printer className="w-5 h-auto" />
+              </Button>
+            )
+          }}
+          content={() => ref_table.current}
+        />
+        <ExcelExportBtn onExport={handle_export_excel} />
+      </div>
     </div>
   )
 }
