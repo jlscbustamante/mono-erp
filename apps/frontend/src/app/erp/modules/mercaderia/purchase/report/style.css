@@ -1,0 +1,14 @@
+/* table:hover,
+tr:hover,
+thead:hover {
+  background: #20293c !important;
+} */
+
+/* .ant-table-tbody > tr.ant-table-row:hover > td {
+  background: none !important;
+}
+
+:where(.css-dev-only-do-not-override-1x0dypw).ant-table-wrapper
+  td.ant-table-column-sort {
+  background: none !important;
+} */

@@ -69,7 +69,7 @@ export default function ReportPurchasePage() {
       purchase.items.forEach((item, i) => {
         const price_exact = +item.total_value / +item.quantity
         let price_with_igv = price_exact
-        const is_last_line = i == purchase.items.length - 1
+        // const is_last_line = i == purchase.items.length - 1
         if (have_igv) {
           price_with_igv = price_exact + price_exact * 0.18
         }
@@ -79,20 +79,15 @@ export default function ReportPurchasePage() {
           // date: purchase.purchase.purchase_at as unknown as string,
           date: new Date(purchase.purchase.purchase_at),
           supplier: purchase.purchase.supplier_name,
-          type_doc:
-            i == 0
-              ? purchase.purchase.num_invoice
-                ? 'FACTURA'
-                : purchase.purchase.num_guide
-                  ? 'GUIA'
-                  : ''
+          type_doc: purchase.purchase.num_invoice
+            ? 'FACTURA'
+            : purchase.purchase.num_guide
+              ? 'GUIA'
               : '',
           num_doc:
-            i == 0
-              ? (purchase.purchase.num_invoice ??
-                purchase.purchase.num_guide ??
-                '')
-              : '',
+            // i == 0
+            purchase.purchase.num_invoice ?? purchase.purchase.num_guide ?? '',
+          // : '',
           category_name: item.category_name,
           item_name: item.item_name,
           quantity: item.quantity,
@@ -100,9 +95,10 @@ export default function ReportPurchasePage() {
           price: fCurrency(item.unit_value, false).toString(),
           price_with_igv: have_igv ? price_with_igv.toString() : '',
           total: price_with_igv * +item.quantity,
-          total_fact: is_last_line
-            ? purchase.purchase.total_value.toString()
-            : '',
+          total_fact: purchase.purchase.total_value.toString(),
+          // total_fact: is_last_line
+          // ? purchase.purchase.total_value.toString()
+          // : '',
         })
       })
     })

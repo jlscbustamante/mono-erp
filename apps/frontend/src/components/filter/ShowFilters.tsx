@@ -89,6 +89,7 @@ const FilterComponent: React.FC<{
   onChangeFilter?: (value: [OpFilter, ...safeAny[]], key: safeAny) => void
   onDelete?: (key: safeAny) => void
   selections?: { [key: string]: { label: string; value: safeAny }[] }
+  largeSelect?: boolean
 }> = ({ options, filter, keyFilter, onChangeFilter, onDelete, selections }) => {
   const element = options.find((el) => el.key === keyFilter)
   const label = element?.label
@@ -223,7 +224,12 @@ const FilterComponent: React.FC<{
       content={
         <div
           style={{
-            width: filters[0] == OpFilter.RangeDate ? '240px' : '190px',
+            width:
+              filters[0] == OpFilter.RangeDate
+                ? '240px'
+                : keyFilter == 'item_id'
+                  ? '360px'
+                  : '190px',
           }}
         >
           <Select

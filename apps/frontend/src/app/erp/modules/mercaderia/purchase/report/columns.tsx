@@ -45,17 +45,21 @@ export const columns: ColumnsType<RowTable> = [
     dataIndex: 'num_doc',
   },
   {
-    title: 'Categoria',
+    title: 'CATEGORIA',
     dataIndex: 'category_name',
+    sorter: (a, b) =>
+      a.category_name?.localeCompare(b.category_name ?? '') ?? 1,
   },
   {
     title: 'ITEM',
     dataIndex: 'item_name',
+    sorter: (a, b) => a.item_name?.localeCompare(b.item_name ?? '') ?? 1,
   },
   {
     title: 'CANTIDAD',
     dataIndex: 'quantity',
     align: 'right',
+    sorter: (a, b) => a.quantity - b.quantity,
   },
   {
     title: 'U.M',
