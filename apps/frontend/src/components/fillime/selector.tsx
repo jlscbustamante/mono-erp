@@ -84,9 +84,7 @@ export const FillimeSelector = <T = unknown,>({
     <div className="flex gap-2 items-center">
       <div>
         <Dropdown menu={{ items }} trigger={['click']}>
-          <Button size="small" className="w-52">
-            Agregar filtros
-          </Button>
+          <Button className="w-52">Agregar filtros</Button>
         </Dropdown>
       </div>
       <div className="flex items-center gap-1">

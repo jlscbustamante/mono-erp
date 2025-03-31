@@ -3,7 +3,7 @@ import { IoMdAddCircleOutline } from 'react-icons/io'
 
 import { Filters3, OpFilter } from '@/data/types/Filters'
 
-type FilterOPtions = {
+export type FilterOPtions = {
   label: string
   key: string
   options: OpFilter[]

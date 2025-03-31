@@ -13,13 +13,34 @@ import { use_report_store } from './state'
 export default function ReportPurchasePage() {
   const control_refetch = use_report_store((st) => st.control_refetch)
   const dates = use_report_store((st) => st.dates)
+  const filters = use_report_store((st) => st.filters)
   const query = useQuery({
     queryKey: ['purchase_report', control_refetch],
     enabled: control_refetch > 0,
     queryFn: async () => {
+      const supplier_id = (filters?.supplier_id as any)?.[1] ?? undefined
+      const item_id = (filters?.item_id as any)?.[1] ?? undefined
+      const category_id = (filters?.category_id as any)?.[1] ?? undefined
+
+      const queryParams = new URLSearchParams({
+        start: dates[0],
+        end: dates[1],
+      })
+
+      if (supplier_id !== undefined) {
+        queryParams.append('supplier_id', supplier_id)
+      }
+      if (item_id !== undefined) {
+        queryParams.append('item_id', item_id)
+      }
+      if (category_id !== undefined) {
+        queryParams.append('category_id', category_id)
+      }
+
       const req = await fetch(
         appConfig.clients.view +
-          `/api/view/purchase/report?start=${dates[0]}&end=${dates[1]}`,
+          `/api/view/purchase/report?` +
+          queryParams.toString(),
         {
           headers: {
             Authorization: `Bearer ${getToken()}`,
@@ -69,10 +90,12 @@ export default function ReportPurchasePage() {
                 purchase.purchase.num_guide ??
                 '')
               : '',
+          category_name: item.category_name,
           item_name: item.item_name,
           quantity: item.quantity,
+          unit_measure: item.unit_measure,
           price: item.unit_value,
-          price_with_igv: price_with_igv.toString(),
+          price_with_igv: have_igv ? price_with_igv.toString() : '',
           total: price_with_igv * +item.quantity,
           total_fact: is_last_line
             ? purchase.purchase.total_value.toString()

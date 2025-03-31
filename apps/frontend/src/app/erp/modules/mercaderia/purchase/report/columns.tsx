@@ -15,6 +15,8 @@ export interface RowTable {
   price_with_igv: string
   total: number
   total_fact: string
+  unit_measure?: string
+  category_name?: string
 }
 
 export const columns: ColumnsType<RowTable> = [
@@ -43,7 +45,11 @@ export const columns: ColumnsType<RowTable> = [
     dataIndex: 'num_doc',
   },
   {
-    title: 'PRODUCTO',
+    title: 'Categoria',
+    dataIndex: 'category_name',
+  },
+  {
+    title: 'ITEM',
     dataIndex: 'item_name',
   },
   {
@@ -51,6 +57,11 @@ export const columns: ColumnsType<RowTable> = [
     dataIndex: 'quantity',
     align: 'right',
   },
+  {
+    title: 'U.M',
+    dataIndex: 'unit_measure',
+  },
+
   {
     title: 'COSTO',
     dataIndex: 'price',

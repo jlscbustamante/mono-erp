@@ -6,7 +6,7 @@ export const useSupplierQuery = () => {
   const query = useQuery({
     queryKey: ['supplier-inventory'],
     queryFn: sdk.suppliers,
-    staleTime: Infinity,
+    // staleTime: Infinity,
   })
   return query
 }

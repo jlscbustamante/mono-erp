@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 
 export const useCategories = () => {
   const query = useQuery({
-    queryKey: ['items'],
+    queryKey: ['items-cats'],
     queryFn: () => categories(),
   })
 
