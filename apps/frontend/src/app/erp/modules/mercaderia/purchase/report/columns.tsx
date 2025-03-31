@@ -11,7 +11,7 @@ export interface RowTable {
   num_doc: string
   item_name: string
   quantity: number
-  price: number
+  price: string
   price_with_igv: string
   total: number
   total_fact: string

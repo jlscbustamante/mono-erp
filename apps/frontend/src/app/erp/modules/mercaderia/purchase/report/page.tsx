@@ -1,5 +1,6 @@
 import { appConfig } from '@/const/config'
 import { getToken } from '@/lib/rpc'
+import { fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
 import type { IPurchaseReport } from '@types'
 import { Excel } from 'antd-table-saveas-excel'
@@ -65,10 +66,11 @@ export default function ReportPurchasePage() {
       const have_igv = +purchase.purchase.tax_value > 0
       // const is_last_line = index == purchase.items.length - 1
       purchase.items.forEach((item, i) => {
-        let price_with_igv = +item.unit_value
+        const price_exact = +item.total_value / +item.quantity
+        let price_with_igv = price_exact
         const is_last_line = i == purchase.items.length - 1
         if (have_igv) {
-          price_with_igv = price_with_igv + price_with_igv * 0.18
+          price_with_igv = price_exact + price_exact * 0.18
         }
         list.push({
           id: item.id,
@@ -94,7 +96,7 @@ export default function ReportPurchasePage() {
           item_name: item.item_name,
           quantity: item.quantity,
           unit_measure: item.unit_measure,
-          price: item.unit_value,
+          price: fCurrency(item.unit_value, false).toString(),
           price_with_igv: have_igv ? price_with_igv.toString() : '',
           total: price_with_igv * +item.quantity,
           total_fact: is_last_line
