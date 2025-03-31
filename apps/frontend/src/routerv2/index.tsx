@@ -67,6 +67,7 @@ import Stock from '@/views/products/Stock'
 import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
+import Recipe from '@/views/recipe/page'
 import Reports from '@/views/reports/Reports'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
@@ -448,6 +449,12 @@ export const routerv2 = createBrowserRouter([
           {
             path: PATHS.erp.modulos.recetas.main,
             element: <RecetasLayout />,
+            children: [
+              {
+                path: PATHS.erp.modulos.recetas.catalogoVenta,
+                element: <Recipe />,
+              }
+            ]
           }
         ],
       },

@@ -1,128 +1,57 @@
 import config from "@/config"
 import { ITEM } from "@/const/localStorageItems"
-import { IBaseRecipe } from "../type/Recipe"
+import { IBaseRecipe, IFinalRecipe, IFlavorRecipe, ISupplies } from "../type/Recipe"
+import { baseUrl } from "@/data/api/baseUrl"
 
 
 
-export const getFinalRecipes = async () =>{
-    const token = localStorage.getItem(ITEM.TOKEN)
-    try {
-        const response = await fetch(`${config.API}/recipes/get-final-recipes`,{
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            method: 'GET'
-        })
-
-        if(!response.ok){
-            throw new Error('Error al obtener las recetas finales.')
-        }
-
-        const data = await response.json();
-        
-        if(!Array.isArray(data)){
-            throw new Error('Los datos obtenidos no tienen el formato correcto.')
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al obtener las recetas finales.');
-        throw error;
-    }
+export const getFinalRecipes = async () => {
+    return baseUrl<IFinalRecipe[]>('recipe/finalRecipes/get', {
+        method: 'GET'
+    })
 }
 
 export const getBasicRecipes = async () => {
-
-    const token = localStorage.getItem(ITEM.TOKEN)
-    try {
-        const response = await fetch(`${config.API}/recipes/get-basic-recipes`,{ 
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-            method: 'GET',
-        })
-        
-        if (!response.ok) {
-            throw new Error('Error al obtener las recetas')
-        }
-
-        const data = await response.json()
-
-        if(!Array.isArray(data)){
-            throw new Error('Los datos obtenidos no tienen el formato correcto')
-        }
-
-        return data
-    } catch(error){
-        console.error('Error al obtener las recetas:', error)
-        throw error
-    }
-
+    return baseUrl<IBaseRecipe[]>('recipe/basicRecipe/get',{
+        method: 'GET'
+    })
 }
 
-export const getFlavorsByTypeDish = async (dishType: string) => {
-    const token = localStorage.getItem(ITEM.TOKEN)
 
-    try{
-        const response = await fetch(
-            `${config.API}/recipes/get-flavor?dish-type=${dishType}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                    'Content-type': 'application/json',
-                },
-                method: 'GET'
-            }
-        )
+export const getFlavorRecipes = async () => {
+    return baseUrl<IFlavorRecipe[]>('recipe/flavorRecipe/get',{
+        method: 'GET'
+    })
+}
 
-        if(!response.ok){
-            throw new Error('Error al obtener los sabores del producto.')
-        }
+export const getFlavorRecipesByTypeDish = async (dishType: string) => {
+    return baseUrl<IFlavorRecipe[]>(`recipe/flavorRecipe/get?dishType=${dishType}`,{
+        method: 'GET'
+    })
+}
 
-        const data = await response.json()
-
-        if(!Array.isArray(data)){
-            throw new Error("Los datos obtenidos tienen el formato incorrecto")
-        }
-
-        return data;
-
-    }catch(error){
-        console.log('Error al obtener los datos del sabor: ', error);
-        throw error
-    }
+export const createFinalRecipe = async (data: Partial<IFinalRecipe>) => {
+    return baseUrl<IFinalRecipe>('recipe/finalRecipes/create', {
+        method: 'POST',
+        body: data
+    })
 }
 
 export const getSupplies = async () => {
-const token = localStorage.getItem(ITEM.TOKEN)
-
-    try {
-        const response = await fetch(`${config.API}/get-suppliers`,{
-            headers:{
-                Autorization: `Bearer ${token}`,
-                'Content-type': 'application/json'
-            },
-            method: 'GET'
-        })
-
-        if(!response.ok){
-            throw new Error('Error al obtener lista de insumos.')
-        }
-
-        const data = await response.json()
-
-        if(!Array.isArray(data)){
-            throw new Error('Los datos obtenidos no tienen el formato correcto')
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al obtener los datos de insumos.');
-        throw error;
-    }
+    return baseUrl<ISupplies>('recipe/supplies/get', {
+        method: 'GET'
+    })
 }
+
+export const editFinalRecipe = async (finalRecipe: Partial<IFinalRecipe>) => {
+    return baseUrl<void>(`recipe/finalRecipes/edit`, {
+        method: 'PUT',
+        body: finalRecipe
+    })
+}
+
+
+
 
 
 export const updateBaseRecipe = async (baseRecipeID: string, updateData: IBaseRecipe) => {

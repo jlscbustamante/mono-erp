@@ -29,10 +29,11 @@ export interface ISupplies extends IItem{
 
 export interface IFinalRecipe {
     id: number
+    name: string
     baseRecipe: IBaseRecipe
     flavorRecipe: IFlavorRecipe
     supplies : ISupplies[]
-    status: RecipeStatus
+    status: number
     created_at: string
 }
 
