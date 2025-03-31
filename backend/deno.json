@@ -1,8 +1,9 @@
 {
-  "workspace" :["./views","./shared","./pizzadb","./scripts","./pos"],
-  "compilerOptions":{
-    "jsx":"precompile",
-    "jsxImportSource":"hono/jsx",
-    "strict":true
-  }
+  "workspace": ["./views", "./shared", "./pizzadb", "./scripts", "./pos"],
+  "compilerOptions": {
+    "jsx": "precompile",
+    "jsxImportSource": "hono/jsx",
+    "strict": true
+  },
+  "nodeModulesDir": "auto"
 }

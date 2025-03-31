@@ -1,4 +1,4 @@
-import { InvEquivalenceSelect } from "../../db/mods.ts";
+import type { InvEquivalenceSelect } from "../../db/mods.ts";
 
 export enum DISPATCH_MOVE_TYPE {
   WAREHOUSE_TO_STORE = "D",

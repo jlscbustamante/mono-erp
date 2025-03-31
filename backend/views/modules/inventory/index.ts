@@ -1,9 +1,18 @@
+import {
+  check_status,
+  clear_logs,
+  dispatch_multiple,
+  stop_queue,
+} from "./case/dispatch_order.ts";
 import { zValidator } from "@hono/zod-validator";
 import { DispatchUpdateDto } from "@scope/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
-import { dispatchOrderUC, dividerDispatchService } from "./dependencies.ts";
+import {
+  dispatch_order_by_id_uc,
+  dividerDispatchService,
+} from "./dependencies.ts";
 
 export const inventoryRouter = new Hono()
   .get("/items", (c) => {
@@ -58,6 +67,48 @@ export const inventoryRouter = new Hono()
   .post("dispatch_order", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchUpdateDto;
-    const data = await dispatchOrderUC.execute(body, user.name);
+    const data = await dispatch_order_by_id_uc.execute_and_update(
+      body,
+      user.name
+    );
     return c.json({ message: "ok", data });
+  })
+  .post("dispatch_order_id", async (c) => {
+    const user = c.get("user");
+    const body = (await c.req.json()) as {
+      dispatch_id: number;
+      date: string;
+      warehouse_origin?: string;
+    };
+    await dispatch_order_by_id_uc.execute(
+      body.dispatch_id,
+      body.date,
+      user.name,
+      body.warehouse_origin
+    );
+    return c.json({ message: "ok" });
+  })
+  .post("dispatch_multiple", async (c) => {
+    const props = (await c.req.json()) as {
+      ids: number[];
+      date: string;
+      warehouse_origin?: string;
+    };
+    const user = c.get("user");
+
+    dispatch_multiple(props.ids, props.date, user.name, props.warehouse_origin);
+
+    return c.json({ message: "ok" });
+  })
+  .get("check_dispatches", async (c) => {
+    const status = await check_status();
+    return c.json({ message: "ok", data: status });
+  })
+  .get("clear_logs", async (c) => {
+    await clear_logs();
+    return c.json({ message: "ok" });
+  })
+  .post("stop_queue", async (c) => {
+    await stop_queue();
+    return c.json({ message: "ok" });
   });

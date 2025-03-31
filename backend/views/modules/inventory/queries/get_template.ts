@@ -25,7 +25,7 @@ export const get_template = async (template_id: string) => {
     const item_dispatch = items.find((i) => i.item_id == item.item_move_id);
     if (!item_stock)
       throw new HTTPException(400, {
-        message: "No se encontró el item de stock en el template",
+        message: `No se encontró el item ${item.item_stock_id} de la plantilla ${template_id}`,
       });
     if (!item_dispatch)
       throw new HTTPException(400, {

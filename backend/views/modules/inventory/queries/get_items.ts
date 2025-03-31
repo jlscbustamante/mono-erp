@@ -12,7 +12,7 @@ export const get_items = async (): Promise<IItem[]> => {
   const items = await db
     .selectFrom("inv_item as it")
     .innerJoin("inv_product as pro", "pro.id", "it.product_id")
-    .innerJoin("inv_presentation as pre", "pre.id", "it.id")
+    .innerJoin("inv_presentation as pre", "pre.id", "it.presentation_id")
     .select([
       "it.id as item_id",
       "it.item_name",
@@ -44,7 +44,7 @@ export const get_items = async (): Promise<IItem[]> => {
         is_active: item.status == 1,
         supplier_id: item.supplier_id,
         brand_id: item.brand_id,
-      } satisfies IItem)
+      }) satisfies IItem
   );
 
   await redis.set(
