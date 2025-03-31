@@ -4,6 +4,8 @@ import type {
   InvDispatch,
   InvDispatchItem,
   InvEquivalence,
+  InvPurchase,
+  InvPurchaseItem,
   InvStock,
 } from "./generated.ts";
 
@@ -16,3 +18,6 @@ export type InvStockSelect = Selectable<InvStock>;
 export type InvDispatchSelect = Selectable<InvDispatch>;
 export type InvDispatchItemSelect = Selectable<InvDispatchItem>;
 export type InvDispatchItemInsert = Insertable<InvDispatchItem>;
+
+export type InvPurchaseSelect = Selectable<InvPurchase>;
+export type InvPurchaseItemSelect = Selectable<InvPurchaseItem>;

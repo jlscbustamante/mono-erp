@@ -16,7 +16,6 @@ export const ExcelExportBtn = ({
       type="primary"
     >
       <RiFileExcel2Line className="w-5 h-5 items-center" />
-      <span>Exportar</span>
     </Button>
   )
 }

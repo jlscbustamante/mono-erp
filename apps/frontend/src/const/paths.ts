@@ -70,7 +70,12 @@ export const PATHS = {
         },
         divider: '/erp/modulos/mercaderia/divider',
         notaCredito: '/erp/modulos/mercaderia/nota-credito',
-        compra: '/erp/modulos/mercaderia/compra',
+        // compra: '/erp/modulos/mercaderia/compra',
+        compraGroup: {
+          main: '/erp/modulos/mercaderia/compra',
+          compra: '/erp/modulos/mercaderia/compra/registro',
+          report: '/erp/modulos/mercaderia/compra/report',
+        },
         editCompra: '/erp/modulos/mercaderia/compra/edit',
         stockAlmacen: '/erp/modulos/mercaderia/stock-almacen',
         reportes: {

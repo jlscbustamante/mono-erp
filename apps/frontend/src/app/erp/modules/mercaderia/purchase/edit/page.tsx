@@ -146,7 +146,7 @@ const PurchaseBody = ({
         <div
           className="my-2 inline-flex items-center gap-1 cursor-pointer mb-5"
           onClick={() => {
-            navigate(PATHS.erp.modulos.mercaderia.compra)
+            navigate(PATHS.erp.modulos.mercaderia.compraGroup.compra)
           }}
         >
           <ArrowLeft /> Volver

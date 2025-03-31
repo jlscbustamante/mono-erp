@@ -13,9 +13,12 @@ import { useSession } from '../../use-session'
 
 const menu: (MenuOption | MenuSeparator)[] = [
   gm('Despacho tiendas', PATHS.erp.modulos.mercaderia.despachos.main, [
-    gm('Despacho de almacén', PATHS.erp.modulos.mercaderia.despachos.deAlmacen),
     gm(
-      'Despachos entre tiendas',
+      'Registro de despacho',
+      PATHS.erp.modulos.mercaderia.despachos.deAlmacen,
+    ),
+    gm(
+      'Movimiento entre tiendas',
       PATHS.erp.modulos.mercaderia.despachos.entreTiendas,
     ),
     gm('Despachos por ruta', PATHS.erp.modulos.mercaderia.despachos.porRuta),
@@ -26,7 +29,14 @@ const menu: (MenuOption | MenuSeparator)[] = [
   ]),
   gm('Nota de credito', PATHS.erp.modulos.mercaderia.notaCredito),
   gm('Dividir despacho', PATHS.erp.modulos.mercaderia.divider),
-  gm('Compra mercadería', PATHS.erp.modulos.mercaderia.compra),
+  // gm('Compra mercadería', PATHS.erp.modulos.mercaderia.compra),
+  gm('Compra de mercadería', PATHS.erp.modulos.mercaderia.compraGroup.main, [
+    gm('Registro de compras', PATHS.erp.modulos.mercaderia.compraGroup.compra),
+    gm(
+      'Consulta de ingresos diarios',
+      PATHS.erp.modulos.mercaderia.compraGroup.report,
+    ),
+  ]),
   gm('Reportes de inventario', PATHS.erp.modulos.mercaderia.reportes.main, [
     gm(
       'Despacho tiendas',

@@ -4,7 +4,7 @@ import { hc } from 'hono/client'
 
 type ViewType = any
 
-const getToken = () => {
+export const getToken = () => {
   return localStorage.getItem('tk_admin') ?? ''
 }
 
