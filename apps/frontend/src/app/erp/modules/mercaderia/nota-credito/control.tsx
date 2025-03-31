@@ -45,7 +45,7 @@ export const Control = () => {
         />
         <Button
           loading={handleSearch.isPending}
-          size="small"
+          // size="small"
           type="primary"
           shape="circle"
           icon={<Search className="w-4 h-auto" />}
