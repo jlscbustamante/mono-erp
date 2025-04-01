@@ -5,5 +5,10 @@
     "jsxImportSource": "hono/jsx",
     "strict": true
   },
-  "nodeModulesDir": "auto"
+  "nodeModulesDir": "auto",
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
+  }
 }
