@@ -74,7 +74,7 @@ export const AddInvProductDrawer = () => {
 
   return (
     <Drawer
-      title="Nuevo producto"
+      title="Nueva subcategoría"
       keyboard={false}
       open={store.drawers.create}
       onClose={() => {

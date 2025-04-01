@@ -197,9 +197,9 @@ export const AddProductItemDrawer: React.FC<{
             </Select.Option>
           </Select>
         </Form.Item>
-        <Form.Item label="Producto">
+        <Form.Item label="Subcategoría">
           <Select
-            placeholder="Producto"
+            placeholder="Subcategoría"
             showSearch={true}
             filterOption={filterSelectForm}
             value={newProduct.productId}

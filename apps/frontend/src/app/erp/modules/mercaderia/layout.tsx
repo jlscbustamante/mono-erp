@@ -50,7 +50,6 @@ const menu: (MenuOption | MenuSeparator)[] = [
   ]),
   gm('Kardex', PATHS.erp.modulos.mercaderia.kardex),
   separator(),
-  gm('Productos', PATHS.erp.modulos.mercaderia.productos),
   gm('Items', PATHS.erp.modulos.mercaderia.items),
   gm('Lista de precios', PATHS.erp.modulos.mercaderia.precios),
   separator(),
@@ -62,6 +61,7 @@ const menu: (MenuOption | MenuSeparator)[] = [
   gm('Mantenimiento', PATHS.erp.modulos.mercaderia.mantenimiento.main, [
     gm('Marca', PATHS.erp.modulos.mercaderia.mantenimiento.marcas),
     gm('Categoría', PATHS.erp.modulos.mercaderia.mantenimiento.categorias),
+    gm('Subcategoria', PATHS.erp.modulos.mercaderia.productos),
     gm('Presentación', PATHS.erp.modulos.mercaderia.mantenimiento.presentacion),
     gm('Unidad de medida', PATHS.erp.modulos.mercaderia.mantenimiento.unidades),
     gm(

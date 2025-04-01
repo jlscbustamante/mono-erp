@@ -166,7 +166,7 @@ export const EditProductItemDrawer = () => {
               </Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Producto">
+          <Form.Item label="Subcategoría">
             <Select
               placeholder="Producto"
               showSearch={true}

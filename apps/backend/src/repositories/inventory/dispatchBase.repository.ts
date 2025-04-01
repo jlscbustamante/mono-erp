@@ -1,9 +1,4 @@
-import { Repository } from 'typeorm'
-
 import { AppDataSource } from '../../config/database'
-import { DispatchBase } from '../../entities/inventory/DispatchBase'
-import { Filter3Method } from '../../types/filter'
-import { filter3Base } from '../filter3base'
 
 // export type DispatchBaseRepository = {
 //   // filter3: Filter3Method<DispatchBase>
@@ -25,7 +20,7 @@ WHERE id LIKE("%${type}%");`)
     const itemIds = queryIds.map((el) => el.itemId)
 
     const template = await AppDataSource.query(
-      `SELECT ii.id itemId,ii.item_name itemName, 1 quantity,im.code measureCode,ii.unit_price unitPrice FROM inv_item ii LEFT JOIN inv_product ip ON ii.product_id=ip.id
+      `SELECT ii.id itemId,ii.item_name itemName, 1 quantity,im.code measureCode,ii.unit_price unitPrice FROM inv_item ii LEFT JOIN inv_subcategory ip ON ii.product_id=ip.id
     LEFT JOIN inv_measure im ON ip.measure_id=im.id
     WHERE ii.id IN(?) ORDER BY itemName`,
       [itemIds],

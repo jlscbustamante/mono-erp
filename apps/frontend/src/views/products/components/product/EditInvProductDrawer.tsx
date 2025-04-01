@@ -59,7 +59,7 @@ export const EditInvProductDrawer = () => {
 
   return (
     <Drawer
-      title="Editar producto"
+      title="Editar subcategoria"
       keyboard={false}
       open={store.drawers.edit}
       onClose={() => {

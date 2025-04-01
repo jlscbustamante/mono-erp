@@ -20,7 +20,7 @@ export const TableProduct = () => {
       sorter: (a, b) => a.id - b.id,
     },
     {
-      title: 'Nombre del producto',
+      title: 'Nombre de la subcategoria',
       dataIndex: 'product',
       key: 'product',
       sorter: (a, b) => a.product.localeCompare(b.product),

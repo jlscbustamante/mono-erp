@@ -213,9 +213,10 @@ export const categoryTable = mysqlTable("inv_category", {
   category: varchar({ length: 50 }).notNull(),
 });
 
-export const productTable = mysqlTable("inv_product", {
+export const productTable = mysqlTable("inv_subcategory", {
   id: int().autoincrement().notNull().primaryKey(),
-  product: varchar({ length: 50 }).notNull(),
+  // product: varchar({ length: 50 }).notNull(),
+  product: varchar("subcategory", { length: 50 }).notNull(),
   category_id: int().notNull(),
 });
 
