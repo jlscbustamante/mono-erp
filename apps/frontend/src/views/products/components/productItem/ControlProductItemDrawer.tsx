@@ -7,9 +7,15 @@ import { AddFilterButton } from '@/components/filter/AddFilterButton'
 import { ShowFilters } from '@/components/filter/ShowFilters'
 import { OpFilter } from '@/data/types/Filters'
 
+import { ExcelExportBtn } from '@/components/excel-btn'
+import { IInvProductItem } from '@/data/products/types'
+import { Excel } from 'antd-table-saveas-excel'
+import { ColumnsType } from 'antd/es/table'
+import { Printer } from 'lucide-react'
+import ReactToPrint from 'react-to-print'
 import { useProductItem } from '../../state/useProductItem'
 
-export const ControlProductItem = () => {
+export const ControlProductItem = ({ ref_table }: { ref_table: any }) => {
   const { store, loadProducts, getListProducts } = useProductItem()
 
   const categories = useMemo(() => {
@@ -96,6 +102,63 @@ export const ControlProductItem = () => {
   ]
   const [editFilters, setEditFilters] = useState(0)
   // const [firstTime, setFirstTime] = useState(true)
+
+  const columns: ColumnsType<IInvProductItem> = [
+    {
+      title: 'Id',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: 'Categoria',
+      dataIndex: ['product', 'category', 'category'],
+    },
+    {
+      title: 'Nombre del item',
+      dataIndex: 'itemName',
+      key: 'itemName',
+    },
+    {
+      title: 'Costo',
+      dataIndex: 'unitCost',
+      // render: (text) => fNumber(text),
+      // render: (text) => text,
+    },
+    {
+      title: 'Precio',
+      dataIndex: 'unitPrice',
+      key: 'unitPrice',
+      // render: (text) => fNumber(text),
+      // sorter: (a, b) => a.unitPrice - b.unitPrice,
+    },
+    {
+      title: 'UM',
+      dataIndex: ['measure', 'code'],
+      key: 'unidad_medida',
+    },
+    {
+      title: 'Estado',
+      dataIndex: 'status',
+      key: 'status',
+      // sorter: () => -1,
+      render: (status: number | string) => {
+        if (status == 1) {
+          return 'Activo'
+        } else if (status == 0) {
+          return 'Inactivo'
+        }
+      },
+    },
+  ]
+
+  const handleExport = () => {
+    const excel = new Excel()
+    excel
+      .addSheet('Items')
+      .addColumns(columns as any)
+      .addDataSource(store.productItems)
+      .saveAs('items.xlsx')
+  }
 
   // useEffect(() => {
   //   loadProducts()
@@ -190,9 +253,29 @@ export const ControlProductItem = () => {
           danger
         />
       </div>
-      <Button type="primary" onClick={() => store.setDrawers({ create: true })}>
-        Nuevo
-      </Button>
+      <div className="flex items-center gap-1">
+        <ReactToPrint
+          trigger={() => {
+            return (
+              <Button type="primary">
+                <Printer className="w-5 h-auto" />
+              </Button>
+            )
+          }}
+          content={() => ref_table.current}
+        />
+        <ExcelExportBtn
+          onExport={() => {
+            handleExport()
+          }}
+        />
+        <Button
+          type="primary"
+          onClick={() => store.setDrawers({ create: true })}
+        >
+          Nuevo
+        </Button>
+      </div>
     </div>
   )
 }
