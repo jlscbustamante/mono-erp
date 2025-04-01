@@ -139,13 +139,6 @@ export class DispatchOrderById {
       username
     );
 
-    console.log(
-      "GUARDAR STOCK : ",
-      stock_from.length,
-      stock_to.length, // retorna 314 WHYYYY
-      stock_to.slice(0, 2)
-    );
-
     await db.transaction().execute(async (trx) => {
       await trx
         .deleteFrom("inv_stock")
@@ -290,7 +283,7 @@ export class DispatchOrderById {
     date: string,
     dir: "in" | "out" = "out",
     user: string = "sys"
-  ) {
+  ): Promise<InvStockInsert[]> {
     const previous_dispatch_date = format(
       sub(parseISO(date), { days: 1 }),
       "yyyy-MM-dd"
@@ -303,10 +296,21 @@ export class DispatchOrderById {
     const template = await get_template(
       warehouse.trademark_id ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
     );
+
+    const unmatched_dispatch_item = dispatch_items.find(
+      (el) => !template.some((item) => item.item_dispatch.item_id == el.item_id)
+    );
+
+    if (unmatched_dispatch_item) {
+      throw new HTTPException(400, {
+        message: `El item ${unmatched_dispatch_item.item_id}-${unmatched_dispatch_item.item_name} no esta en la plantilla`,
+      });
+    }
+
     const status =
       inventory.length > 0 ? inventory[0].status : DISPATCH_STATUS.NEW;
 
-    const calculate_inventory = template.map((item) => {
+    const calculate_inventory: InvStockInsert[] = template.map((item) => {
       const item_before = inventory_before.find(
         (item_before) => item_before.item_id == item.item_stock.item_id
       );
