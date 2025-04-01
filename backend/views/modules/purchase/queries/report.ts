@@ -22,7 +22,7 @@ export const purchase_report = async (
   const result_items = await db
     .selectFrom("inv_purchase_item as ip")
     .innerJoin("inv_item as ii", "ii.id", "ip.item_id")
-    .innerJoin("inv_subcategory as ipro", "ipro.id", "ii.product_id")
+    .innerJoin("inv_subcategory as ipro", "ipro.id", "ii.subcategory_id")
     .innerJoin("inv_category", "inv_category.id", "ipro.category_id")
     .innerJoin("inv_measure", "inv_measure.id", "ipro.measure_id")
     .select([

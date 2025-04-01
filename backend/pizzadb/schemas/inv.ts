@@ -224,7 +224,7 @@ export const itemTable = mysqlTable("inv_item", {
   id: int().autoincrement().notNull().primaryKey(),
   item_name: varchar({ length: 150 }).notNull(),
   item_type: varchar({ length: 50 }).notNull(),
-  product_id: int().notNull(),
+  product_id: int("subcategory_id").notNull(),
   brand_id: int().notNull(),
   presentation_id: int().notNull(),
   supplier_id: int().notNull(),

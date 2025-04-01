@@ -20,7 +20,7 @@ WHERE id LIKE("%${type}%");`)
     const itemIds = queryIds.map((el) => el.itemId)
 
     const template = await AppDataSource.query(
-      `SELECT ii.id itemId,ii.item_name itemName, 1 quantity,im.code measureCode,ii.unit_price unitPrice FROM inv_item ii LEFT JOIN inv_subcategory ip ON ii.product_id=ip.id
+      `SELECT ii.id itemId,ii.item_name itemName, 1 quantity,im.code measureCode,ii.unit_price unitPrice FROM inv_item ii LEFT JOIN inv_subcategory ip ON ii.subcategory_id=ip.id
     LEFT JOIN inv_measure im ON ip.measure_id=im.id
     WHERE ii.id IN(?) ORDER BY itemName`,
       [itemIds],

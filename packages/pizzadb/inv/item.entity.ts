@@ -33,7 +33,7 @@ export class Item extends EntitiesTimeStamps {
   @Column({ type: "varchar", length: 150, name: "item_name" })
   itemName: string;
 
-  @Column({ type: "int", name: "product_id" })
+  @Column({ type: "int", name: "subcategory_id" })
   productId: number;
 
   @Column({ type: "int", name: "brand_id" })
@@ -89,7 +89,7 @@ export class Item extends EntitiesTimeStamps {
   supplier?: InvSupplier;
 
   @ManyToOne(() => Product)
-  @JoinColumn({ name: "product_id" })
+  @JoinColumn({ name: "subcategory_id" })
   product?: Product;
 
   @ManyToOne(() => Measure)

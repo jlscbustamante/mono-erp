@@ -11,7 +11,7 @@ export const get_items = async (): Promise<IItem[]> => {
 
   const items = await db
     .selectFrom("inv_item as it")
-    .innerJoin("inv_subcategory as pro", "pro.id", "it.product_id")
+    .innerJoin("inv_subcategory as pro", "pro.id", "it.subcategory_id")
     .innerJoin("inv_presentation as pre", "pre.id", "it.presentation_id")
     .select([
       "it.id as item_id",
