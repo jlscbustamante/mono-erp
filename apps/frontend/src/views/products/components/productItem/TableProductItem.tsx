@@ -13,7 +13,7 @@ import { RiCoinsLine } from 'react-icons/ri'
 import { useEditPrice } from '../../price-list/edit-price'
 import { useProductItem } from '../../state/useProductItem'
 
-export const TableProductItem = () => {
+export const TableProductItem = ({ ref_table }: { ref_table: any }) => {
   const { open } = useEditPrice()
 
   const { store, loadProducts } = useProductItem()
@@ -78,7 +78,7 @@ export const TableProductItem = () => {
       },
       render: (record: IInvProductItem) => {
         return (
-          <div className="flex justify-around items-center gap-2">
+          <div className="flex justify-around items-center gap-2 print:hidden">
             <div className="cursor-pointer group" onClick={() => open(record)}>
               <RiCoinsLine className="w-5 h-auto" />
             </div>
@@ -122,29 +122,32 @@ export const TableProductItem = () => {
   }, [store.pagination, store.wasUpdateOrCreated])
 
   return (
-    <Table
-      size="small"
-      loading={store.loadings.products}
-      rowKey={'id'}
-      rowClassName={() => 'editable-row'}
-      columns={columns}
-      dataSource={store.productItems}
-      pagination={false}
-      // pagination={{
-      //   pageSize: 20,
-      // }}
-      // onChange={(pagination) => {
-      //   store.onChangePagination({
-      //     page: pagination.current ?? 1,
-      //     lot: pagination.pageSize ?? 15,
-      //   })
-      // }}
-      // pagination={{
-      //   pageSize: store.pagination.lot,
-      //   showSizeChanger: true,
-      //   current: store.pagination.page,
-      //   total: store.totalProducts,
-      // }}
-    />
+    <div ref={ref_table} className="print:p-3">
+      <Table
+        className="table-items-to-print"
+        size="small"
+        loading={store.loadings.products}
+        rowKey={'id'}
+        rowClassName={() => 'editable-row'}
+        columns={columns}
+        dataSource={store.productItems}
+        pagination={false}
+        // pagination={{
+        //   pageSize: 20,
+        // }}
+        // onChange={(pagination) => {
+        //   store.onChangePagination({
+        //     page: pagination.current ?? 1,
+        //     lot: pagination.pageSize ?? 15,
+        //   })
+        // }}
+        // pagination={{
+        //   pageSize: store.pagination.lot,
+        //   showSizeChanger: true,
+        //   current: store.pagination.page,
+        //   total: store.totalProducts,
+        // }}
+      />
+    </div>
   )
 }
