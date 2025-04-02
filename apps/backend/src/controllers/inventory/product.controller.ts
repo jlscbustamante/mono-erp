@@ -128,6 +128,9 @@ export class ProductController {
       where: {
         status: StatusEntityNumber.Active,
       },
+      order: {
+        category: 'ASC',
+      },
     })
 
     res.json({ data: categories })
@@ -327,6 +330,7 @@ export class ProductController {
   async createProductItem(req: Request, res: Response) {
     const product = req.body
     const result = await productItemRepository.insert(product)
+
     res.json({
       message: 'Creado correctamente',
       data: { id: result.raw.insertId },

@@ -79,6 +79,7 @@ export enum ItemRelationship {
 export interface IInvProductItem {
   id: number
   itemName: string
+  categoryId: number
   productId: number
   brandId: number
   itemType: ItemType

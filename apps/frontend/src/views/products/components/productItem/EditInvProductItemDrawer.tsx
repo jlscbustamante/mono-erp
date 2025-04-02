@@ -10,6 +10,7 @@ import { useProduct } from '../../state/useProduct'
 import { useProductItem } from '../../state/useProductItem'
 // import { CreateBrand } from './CreateBrand'
 // import { CreatePresentation } from './CreatePresentation'
+import { useCategories } from '../../hooks/use-categories'
 import { CreateSupplier } from './CreateSupplier'
 
 export const EditProductItemDrawer = () => {
@@ -90,6 +91,8 @@ export const EditProductItemDrawer = () => {
     product?.supplierId,
   ])
 
+  const categoryQuery = useCategories()
+
   const handleEditProduct = async () => {
     try {
       setEditing(true)
@@ -164,6 +167,26 @@ export const EditProductItemDrawer = () => {
               <Select.Option key={'D'} value={'D'}>
                 Derivado
               </Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="Categoria">
+            <Select
+              value={product.categoryId}
+              onChange={(id) => {
+                setEditProductItem({
+                  ...product,
+                  categoryId: id,
+                })
+              }}
+              placeholder="Categoria"
+              showSearch={true}
+              filterOption={filterSelectForm}
+            >
+              {categoryQuery.data?.map((el) => (
+                <Select.Option value={el.id} key={el.id}>
+                  {el.category}
+                </Select.Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item label="Subcategoría">

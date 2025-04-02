@@ -8,9 +8,7 @@ import {
   Select,
 } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
 
-import { NOTIFICATION } from '@/const/notification'
 import {
   IInvProductItem,
   ItemRelationship,
@@ -18,6 +16,9 @@ import {
 } from '@/data/products/types'
 import { filterSelectForm } from '@/utils'
 
+import { NOTIFICATION } from '@/const/notification'
+import { toast } from 'react-toastify'
+import { useCategories } from '../../hooks/use-categories'
 import { useProduct } from '../../state/useProduct'
 import { useProductItem } from '../../state/useProductItem'
 import { CreateBrand } from './CreateBrand'
@@ -55,6 +56,8 @@ export const AddProductItemDrawer: React.FC<{
       measureId: number
     }[]
   >([])
+
+  const categoryQuery = useCategories()
 
   useEffect(() => {
     if (newProduct.itemName) {
@@ -195,6 +198,26 @@ export const AddProductItemDrawer: React.FC<{
             <Select.Option key={'D'} value={'D'}>
               Derivado
             </Select.Option>
+          </Select>
+        </Form.Item>
+        <Form.Item label="Categoria">
+          <Select
+            value={newProduct.categoryId}
+            onChange={(id) => {
+              setNewProduct({
+                ...newProduct,
+                categoryId: id,
+              })
+            }}
+            placeholder="Categoria"
+            showSearch={true}
+            filterOption={filterSelectForm}
+          >
+            {categoryQuery.data?.map((el) => (
+              <Select.Option value={el.id} key={el.id}>
+                {el.category}
+              </Select.Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item label="Subcategoría">

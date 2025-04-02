@@ -33,6 +33,9 @@ export class Item extends EntitiesTimeStamps {
   @Column({ type: "varchar", length: 150, name: "item_name" })
   itemName: string;
 
+  @Column({ type: "int", name: "category_id" })
+  categoryId: number;
+
   @Column({ type: "int", name: "subcategory_id" })
   productId: number;
 
