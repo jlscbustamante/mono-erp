@@ -8,7 +8,11 @@ import {
   suppliers,
 } from "@scope/pizzadb";
 import { asc, eq } from "drizzle-orm";
-import { CostCenterSelecet } from "../../../pizzadb/types/index.ts";
+import {
+  CostCenterSelecet,
+  MoveCashInsert,
+  MoveCashSelect,
+} from "../../../pizzadb/types/index.ts";
 
 export class RequirementResourceService {
   async companies() {
@@ -50,6 +54,25 @@ export class RequirementResourceService {
         status: data.status,
       })
       .where(eq(costCenters.id, data.id));
+  }
+
+  async updateCategory(data: MoveCashSelect) {
+    await db
+      .update(finMoveCash)
+      .set({
+        movecash: data.movecash,
+        account_id: data.account_id,
+        used_to: data.used_to,
+        origin_from: data.origin_from,
+        cash_flow: data.cash_flow,
+        account_flow: data.account_flow,
+        status: data.status,
+      })
+      .where(eq(finMoveCash.id, data.id));
+  }
+
+  async createCategory(data: MoveCashInsert) {
+    await db.insert(finMoveCash).values(data);
   }
 
   async cashBank() {

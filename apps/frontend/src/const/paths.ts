@@ -28,6 +28,7 @@ export const PATHS = {
           supplier: '/erp/modulos/requerimientos/mantenimiento/proveedor',
           cashbank: '/erp/modulos/requerimientos/mantenimiento/caja-banco',
           costCenter: '/erp/modulos/requerimientos/mantenimiento/centro-costo',
+          category: '/erp/modulos/requerimientos/mantenimiento/categoria',
           main: '/erp/modulos/requerimientos/mantenimiento',
         },
         reportes: {

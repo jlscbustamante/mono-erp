@@ -1,6 +1,6 @@
 import { appConfig } from '@/const/config'
-import { hc } from 'hono/client'
 import type { ClientType, ViewType } from '@viewrpc'
+import { hc } from 'hono/client'
 
 const getToken = () => {
   return localStorage.getItem('tk_admin') ?? ''

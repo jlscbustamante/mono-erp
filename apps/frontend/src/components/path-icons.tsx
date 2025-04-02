@@ -107,6 +107,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.requerimientos.mantenimiento.cashbank]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.costCenter]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.supplier]: null,
+  [PATHS.erp.modulos.requerimientos.mantenimiento.category]: null,
 
   [PATHS.erp.modulos.digitalizacion.documentos]: GiConfirmed,
   [PATHS.erp.modulos.digitalizacion.escaneo]: FaFileUpload,

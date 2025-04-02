@@ -42,9 +42,12 @@ const menu: (MenuOption | MenuSeparator)[] = [
     icon: null,
     hide: true,
   },
-  gm('Solicitados', PATHS.erp.modulos.requerimientos.solicitados),
-  gm('Pagados', PATHS.erp.modulos.requerimientos.aprobados),
-  gm('Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
+  gm(
+    'Requerimientos Solicitados',
+    PATHS.erp.modulos.requerimientos.solicitados,
+  ),
+  gm('Requerimientos Pagados', PATHS.erp.modulos.requerimientos.aprobados),
+  gm('Requerimientos Rechazados', PATHS.erp.modulos.requerimientos.rechazados),
   separator(),
   gm(
     'Consulta de movimientos',
@@ -75,6 +78,7 @@ const menu: (MenuOption | MenuSeparator)[] = [
       'Centro de costo',
       PATHS.erp.modulos.requerimientos.mantenimiento.costCenter,
     ),
+    gm('Categoria', PATHS.erp.modulos.requerimientos.mantenimiento.category),
   ]),
 ]
 

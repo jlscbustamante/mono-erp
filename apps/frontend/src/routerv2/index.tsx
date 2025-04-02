@@ -15,6 +15,7 @@ import { ApprovedPage } from '@/app/erp/modules/requerimientos/approved/page'
 import { RequirementeCreation } from '@/app/erp/modules/requerimientos/creation/page'
 import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import CashBankPage from '@/app/erp/modules/requerimientos/mantenimiento/cashbank/page'
+import CategoryPage from '@/app/erp/modules/requerimientos/mantenimiento/category/page'
 import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costCenter/page'
 import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
 import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
@@ -190,6 +191,11 @@ export const routerv2 = createBrowserRouter([
                     path: PATHS.erp.modulos.requerimientos.mantenimiento
                       .costCenter,
                     element: <CostCenterPage />,
+                  },
+                  {
+                    path: PATHS.erp.modulos.requerimientos.mantenimiento
+                      .category,
+                    element: <CategoryPage />,
                   },
                   {
                     path: PATHS.erp.modulos.requerimientos.mantenimiento

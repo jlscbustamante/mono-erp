@@ -27,5 +27,6 @@ export type CompanySelect = InferSelectModel<typeof companies>;
 export type CostCenterSelecet = InferSelectModel<typeof costCenters>;
 export type CashBankSelect = InferSelectModel<typeof cashBanks>;
 export type MoveCashSelect = InferSelectModel<typeof finMoveCash>;
+export type MoveCashInsert = InferInsertModel<typeof finMoveCash>;
 
 export type StoreTableSelect = InferSelectModel<typeof storeTable>;

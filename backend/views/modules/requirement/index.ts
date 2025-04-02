@@ -85,17 +85,26 @@ export const requirementRouter = new Hono()
     await requirementResourceService.updateCostCenter(costCenterCreate);
     return c.json({ message: "ok" });
   })
-
+  .get("resource/movescash", async (c) => {
+    const data = await requirementResourceService.movesCash();
+    return c.json({ data });
+  })
+  .put("resource/movescash/update", async (c) => {
+    const movecash = await c.req.json();
+    await requirementResourceService.updateCategory(movecash);
+    return c.json({ message: "ok" });
+  })
+  .post("/resource/movescash/create", async (c) => {
+    const movecashcreate = await c.req.json();
+    await requirementResourceService.createCategory(movecashcreate);
+    return c.json({ message: "ok" });
+  })
   .get("/resource/cashBanks", async (c) => {
     const data = await requirementResourceService.cashBank();
     return c.json({ data });
   })
   .get("/resource/suppliers", async (c) => {
     const data = await requirementResourceService.suppliers();
-    return c.json({ data });
-  })
-  .get("resource/movescash", async (c) => {
-    const data = await requirementResourceService.movesCash();
     return c.json({ data });
   })
   .get("resource/stores", async (c) => {
