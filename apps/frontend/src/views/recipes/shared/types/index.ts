@@ -1,5 +1,5 @@
 
-type MeasurementUnit = "kg" | "unit" | "1";
+type MeasurementUnit = "kg" | "unit" | "1" | "gr";
 
 export interface IItem  {
     name: string

@@ -12,6 +12,7 @@ export const baseUrl = async <T>(
     formData = false,
     token,
     allResponse,
+    useV2 = false,
   }: {
     method?: 'POST' | 'GET' | 'PUT' | 'DELETE'
     body?: safeAny
@@ -20,6 +21,7 @@ export const baseUrl = async <T>(
     formData?: boolean
     token?: string
     allResponse?: boolean
+    useV2?: boolean
   } = {},
 ): Promise<T> => {
   const bearerToken = token ? token : localStorage.getItem(ITEM.TOKEN)
@@ -35,7 +37,10 @@ export const baseUrl = async <T>(
 
   try {
     const urlQuery = query ? '?' + buildQueryHTTP(query) : ''
-    const response = await fetch(`${config.API}/${endpoint}${urlQuery}`, {
+
+    const base = useV2 ? config.apiV2 : config.API;
+
+    const response = await fetch(`${base}/${endpoint}${urlQuery}`, {
       method,
       headers: headersFinal,
       body: body ? (formData ? body : JSON.stringify(body)) : undefined,

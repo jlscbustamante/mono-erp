@@ -1,22 +1,24 @@
 import { useMemo, useReducer, useState } from "react";
-import { useSupplierQuery } from "../products/provider/useSupplierQuery";
-import { useRecipe } from "./useRecipe";
-import { useRecipeQuery } from "./useRecipeQuery";
-import { ControlRecipe } from "./ControlRecipe";
-import { IFinalRecipe } from "@/data/Recipe/type/Recipe";
-import { EditRecipeDrawer, useRecipeDrawer } from "./EditRecipeDrawer";
 import { ColumnsType } from "antd/es/table";
 import { Modal, Tag, Table } from "antd";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
+import { IFinalRecipe } from "../shared/types";
+import { EditRecipeDrawer, useRecipeDrawer } from "./components/EditRecipeDrawer";
+import { ControlRecipe } from "../ControlRecipe";
+import { useRecipeQuery } from "./hooks/useRecipeQuery";
+import { useRecipe } from "./hooks/useRecipe";
 
 
-export default function Recipe(){
+
+export default function CatalogRecipePage(){
     const [openModal, setOpenModal] = useState(false)
     const [controlerApply, applyFilters] = useReducer((state) => state + 1, 0)
     const {filterName, setFilterName, filters, setFilters} = useRecipe()
 
     const query = useRecipeQuery()
+    console.log(query);
+    
 
     const dataFiltered = useMemo(() => {
         let initialData = query.data ?? []
@@ -40,6 +42,8 @@ export default function Recipe(){
             }
         }
 
+        console.log(initialData);
+        
         return initialData;
     }, [query.data, controlerApply])
 

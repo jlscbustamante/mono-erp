@@ -125,7 +125,7 @@ export const PATHS = {
           main: '/erp/modulos/recetas/mantenimiento',
           recetaBase: '/erp/modulos/recetas/mantenimiento/receta-base',
           porSabor: '/erp/modulos/recetas/mantenimiento/receta-por-sabor',
-          insumos: '/erp/modulos/recetas/mantenimiento/insumos',
+          insumos: '/erp/modulos/recetas/mantenimiento/insumos',          
         },
         catalogoVenta: '/erp/modulos/recetas/catalogo-venta',
       },

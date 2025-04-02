@@ -8,6 +8,7 @@ import { cashBankRouter } from "./modules/cashbank/index.ts";
 import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
+import { recipeRouter } from "./modules/recipe/index.ts";
 
 const app = new Hono();
 
@@ -21,7 +22,8 @@ export const apiRouter = app
   .route("auth", authRouter)
   .route("requirement", requirementRouter)
   .route("costcenter", costCenterRouter)
-  .route("cashbank", cashBankRouter);
+  .route("cashbank", cashBankRouter)
+  .route("recipe", recipeRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

@@ -1,12 +1,13 @@
 import { NOTIFICATION } from "@/const/notification";
-import { editFinalRecipe } from "@/data/Recipe/sdk";
-import { IFinalRecipe } from "@/data/Recipe/type/Recipe";
+//import { editFinalRecipe } from "@/data/Recipe/sdk";
+import { editFinalRecipe } from '@/data/Recipe/sdk'
 import { Drawer, Form } from "antd";
 import Search from "antd/es/input/Search";
 import { useEffect, useMemo, useState } from "react";
 import { FaRProject } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { atom, useRecoilState } from "recoil";
+import { IFinalRecipe } from "../../shared/types";
 
 
 const recipeForEditAtom = atom<IFinalRecipe | undefined>({

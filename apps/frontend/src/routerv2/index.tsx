@@ -67,7 +67,8 @@ import Stock from '@/views/products/Stock'
 import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
-import Recipe from '@/views/recipe/page'
+import CatalogRecipePage from '@/views/recipes/catalog/CatalogRecipePage'
+import CreateRecipePage from '@/views/recipes/final/CreateRecipePage'
 import Reports from '@/views/reports/Reports'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
@@ -451,8 +452,12 @@ export const routerv2 = createBrowserRouter([
             element: <RecetasLayout />,
             children: [
               {
-                path: PATHS.erp.modulos.recetas.catalogoVenta,
-                element: <Recipe />,
+                path: PATHS.erp.modulos.recetas.consultarReceta,
+                element: <CatalogRecipePage />,
+              },
+              {
+                path: PATHS.erp.modulos.recetas.crearReceta,
+                element: <CreateRecipePage />,
               }
             ]
           }

@@ -1,10 +1,10 @@
-import { IFinalRecipe } from "@/data/Recipe/type/Recipe";
 import { Filters3 } from "@/data/types/Filters";
 import { useReducer, useState } from "react";
 import { atom, RecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import * as sdk from '@/data/Recipe/sdk'
 import { toast } from "react-toastify";
 import { NOTIFICATION } from "@/const/notification";
+import { IFinalRecipe } from "../../shared/types";
 
 
 
