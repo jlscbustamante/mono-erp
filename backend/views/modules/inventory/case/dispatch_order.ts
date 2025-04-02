@@ -124,20 +124,22 @@ export class DispatchOrderById {
       warehouse_from_code,
       warehouse_to_code
     );
-    const stock_from = await this.get_stock(
+    const _stock_from = await this.get_stock(
       store_from,
       items_dispatch,
       date,
       "out",
       username
     );
-    const stock_to = await this.get_stock(
+    const _stock_to = await this.get_stock(
       store_to,
       items_dispatch,
       date,
       "in",
       username
     );
+    const stock_from = this.clear_stock(_stock_from);
+    const stock_to = this.clear_stock(_stock_to);
 
     await db.transaction().execute(async (trx) => {
       await trx
@@ -201,20 +203,22 @@ export class DispatchOrderById {
       warehouse_from_code,
       warehouse_to_code
     );
-    const stock_from = await this.get_stock(
+    const _stock_from = await this.get_stock(
       store_from,
       items_dispatch,
       data.dispatchAt,
       "out",
       username
     );
-    const stock_to = await this.get_stock(
+    const _stock_to = await this.get_stock(
       store_to,
       items_dispatch,
       data.dispatchAt,
       "in",
       username
     );
+    const stock_from = this.clear_stock(_stock_from);
+    const stock_to = this.clear_stock(_stock_to);
 
     const item_to_isert: InvDispatchItemInsert[] = items_dispatch.map((el) => ({
       ...el,
@@ -256,6 +260,24 @@ export class DispatchOrderById {
         .values(item_to_isert)
         .executeTakeFirstOrThrow();
     });
+  }
+
+  private clear_stock(stock: InvStockInsert[]): InvStockInsert[] {
+    const filtered = stock.filter((el) => {
+      const qid = el.quantity_in_dp ? +el.quantity_in_dp : 0;
+      const qod = el.quantity_out_dp ? +el.quantity_out_dp : 0;
+      const qim = el.quantity_in_mv ? +el.quantity_in_mv : 0;
+      const qom = el.quantity_out_mv ? +el.quantity_out_mv : 0;
+      const qos = el.quantity_out_sl ? +el.quantity_out_sl : 0;
+      const qip = el.quantity_in_pu ? +el.quantity_in_pu : 0;
+      const current = el.stock_current ? +el.stock_current : 0;
+      const physical = el.stock_physical ? +el.stock_physical : 0;
+      const last = el.stock_last ? +el.stock_last : 0;
+      const sum = qid + qod + qim + qom + qos + qip + current + physical + last;
+      return sum > 0;
+    });
+
+    return filtered.length == 0 ? [stock[0]] : filtered;
   }
 
   private async get_dispatch(id: number): Promise<IDispatch[]> {
@@ -405,6 +427,43 @@ export class DispatchOrderById {
         stock_physical: item_now ? +item_now.stock_physical : 0,
         total_value: item_now ? +item_now.total_value : 0,
       } satisfies InvStockInsert;
+    });
+
+    const items_now_not_template = inventory.filter(
+      (item) => !template.some((el) => el.item_stock.item_id == item.item_id)
+    );
+
+    items_now_not_template.forEach((item) => {
+      calculate_inventory.push({
+        ...item,
+        status: status,
+        id: undefined,
+      });
+    });
+
+    const item_before_not_inventory = inventory_before.filter(
+      (item) =>
+        !calculate_inventory.some((el) => el.item_id == item.item_id) &&
+        +item.stock_physical > 0
+    );
+
+    item_before_not_inventory.forEach((item) => {
+      calculate_inventory.push({
+        ...item,
+        id: undefined,
+        stock_current: item.stock_physical,
+        stock_physical: 0,
+        stock_last: item.stock_physical,
+        total_last: item.total_value,
+        status: status,
+        quantity_in_dp: 0,
+        quantity_out_dp: 0,
+        quantity_in_mv: 0,
+        quantity_out_mv: 0,
+        quantity_in_pu: 0,
+        quantity_out_sl: 0,
+        total_value: 0,
+      });
     });
 
     return calculate_inventory;
