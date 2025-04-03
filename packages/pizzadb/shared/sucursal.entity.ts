@@ -19,7 +19,7 @@ export class Sucursal {
   @Column({ type: "varchar", length: 10, name: "company_id" })
   trademark_id: string;
 
-  @Column({ type: "varchar", name: "id" })
+  // @Column({ type: "varchar", name: "id" })
   codefis: string;
 
   @Column({ type: "varchar" })
