@@ -101,10 +101,10 @@ export const ConsolidatedControls = ({
 
     // Creamos un libro de trabajo con la hoja de cálculo
     const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, 'Dispatch Summary')
+    XLSX.utils.book_append_sheet(wb, ws, 'resumen')
 
     // Guardamos el archivo Excel
-    XLSX.writeFile(wb, 'dispatch_summary2.xlsx')
+    XLSX.writeFile(wb, 'Despacho_consolidado.xlsx')
   }
   return (
     <div className="flex gap-2 justify-between items-center">
