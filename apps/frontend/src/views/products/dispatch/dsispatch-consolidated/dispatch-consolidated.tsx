@@ -26,6 +26,7 @@ export const DispatchConsolidated = () => {
   return (
     <div className="p-3 space-y-3">
       <ConsolidatedControls
+        data={query.data}
         categorySelected={categoriesSelected}
         setCategorySelected={setCategorySelected}
         dates={dates}
