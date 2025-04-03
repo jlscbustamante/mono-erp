@@ -2,7 +2,6 @@ import { SucursalStatus } from '../status/status'
 export interface ISucursal {
   id: string
   title: string
-  codefis: string
   ubi_address: string
   ubi_district: string
   ubi_city: string
@@ -21,7 +20,6 @@ export interface ISucursal {
 export interface IFilterSucursal {
   id?: string
   title?: string
-  codefis?: string
   ubi_address?: string
   ubi_district?: string
   ubi_city?: string

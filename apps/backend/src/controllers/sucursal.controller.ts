@@ -35,7 +35,6 @@ export class SucursalController {
       const args = req.body as {
         id: string
         title: string
-        codefis: string
         ubi_address: string
         ubi_district: string
         ubi_city: string
@@ -107,7 +106,6 @@ export class SucursalController {
       const args = req.body as {
         id: string
         title: string
-        codefis: string
         ubi_address: string
         ubi_district: string
         ubi_city: string

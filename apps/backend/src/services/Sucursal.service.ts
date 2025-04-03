@@ -6,7 +6,6 @@ import { dateNow } from '../utils/getDate'
 type EditSucursal = {
   id: string
   title: string
-  codefis: string
   ubi_address: string
   ubi_district: string
   ubi_city: string
@@ -29,7 +28,6 @@ export class SucursalService {
   ): Promise<void> {
     try {
       existingSucursal.title = args.title
-      existingSucursal.codefis = args.codefis
       existingSucursal.ubi_address = args.ubi_address
       existingSucursal.ubi_district = args.ubi_district
       existingSucursal.ubi_city = args.ubi_city
@@ -61,7 +59,6 @@ export class SucursalService {
       const newSucursal = new Sucursal()
       newSucursal.id = args.id
       newSucursal.title = args.title
-      newSucursal.codefis = args.codefis
       newSucursal.ubi_address = args.ubi_address
       newSucursal.ubi_district = args.ubi_district
       newSucursal.ubi_city = args.ubi_city

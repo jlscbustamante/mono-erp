@@ -10,8 +10,6 @@ export const mapKeyFilterSucursal = (key: keyof ISucursal): OpFilter[] => {
       return [OpFilter.Select]
     case 'title':
       return [OpFilter.Contain, OpFilter.Equal]
-    case 'codefis':
-      return [OpFilter.Equal]
     case 'ubi_address':
       return [OpFilter.Equal]
     case 'ubi_district':
