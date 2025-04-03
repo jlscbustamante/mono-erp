@@ -29,8 +29,8 @@ export class SucursalAsWarehouse {
   @Column({ name: "title", type: "varchar" })
   name: string;
 
-  @Column({ name: "id", type: "varchar" })
-  sucursalId: string;
+  // @Column({ name: "id", type: "varchar" })
+  // sucursalId: string;
 
   @Column({ name: "type_sede", type: "char" })
   type: string;

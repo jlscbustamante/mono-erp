@@ -520,7 +520,7 @@ export class DispatchController {
 
     const lastDispatch = await invDispatchRepository.findOne({
       where: {
-        wareTo: { sucursalId: sucursalCode },
+        wareTo: { id: sucursalCode },
         status: In([
           InvDispatchStatus.APPROVED,
           InvDispatchStatus.NEW,
@@ -540,12 +540,10 @@ export class DispatchController {
         wareTo: {
           id: true,
           name: true,
-          sucursalId: true,
         },
         wareFrom: {
           id: true,
           name: true,
-          sucursalId: true,
         },
       },
       where: whereArr,
@@ -614,12 +612,10 @@ export class DispatchController {
         wareFrom: {
           id: true,
           name: true,
-          sucursalId: true,
         },
         wareTo: {
           id: true,
           name: true,
-          sucursalId: true,
         },
         items: {
           id: true,
