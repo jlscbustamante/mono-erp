@@ -503,10 +503,10 @@ export class DispatchController {
     const end = _end?.split(' ')[0] as string
     const whereArr: any = [
       {
-        wareTo: { sucursalId: sucursalCode },
+        wareTo: { id: sucursalCode },
       },
       {
-        wareFrom: { sucursalId: sucursalCode },
+        wareFrom: { id: sucursalCode },
       },
     ]
     if (start && end) {
