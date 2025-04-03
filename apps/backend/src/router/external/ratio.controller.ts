@@ -53,12 +53,12 @@ export class RatioController {
         : ''
 
     const queryIfThereCompany = company
-      ? `${queryIfThereStores ? 'AND' : ''} suc.trademark_id =
+      ? `${queryIfThereStores ? 'AND' : ''} suc.company_id =
       '${company}' AND `
       : ''
 
     const data: Reporte[] = await AppDataSource.query(
-      `SELECT vrsvt.*, suc.trademark_id company FROM view_rpt_stock_ventax_tienda vrsvt LEFT JOIN adm_sucursal suc ON vrsvt.IdTienda = suc.id WHERE ${queryIfThereStores} ${queryIfThereCompany} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
+      `SELECT vrsvt.*, suc.company_id company FROM view_rpt_stock_ventax_tienda vrsvt LEFT JOIN adm_sucursal suc ON vrsvt.IdTienda = suc.id WHERE ${queryIfThereStores} ${queryIfThereCompany} vrsvt.Fecha BETWEEN '${start}' AND '${end}'`,
     )
 
     if (group == '2') {
