@@ -15,14 +15,14 @@ const options: { label: string; value: REQUIERMENT_TYPE }[] = [
     label: 'Simple',
     value: REQUIERMENT_TYPE.SIMPLE,
   },
-  {
-    label: 'Transferencia',
-    value: REQUIERMENT_TYPE.TRANSFER,
-  },
-  {
-    label: 'Liquidación',
-    value: REQUIERMENT_TYPE.LIQUIDATION,
-  },
+  // {
+  //   label: 'Transferencia',
+  //   value: REQUIERMENT_TYPE.TRANSFER,
+  // },
+  // {
+  //   label: 'Liquidación',
+  //   value: REQUIERMENT_TYPE.LIQUIDATION,
+  // },
 ]
 
 export function SelectRequestType({

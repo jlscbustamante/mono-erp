@@ -1,4 +1,5 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
+import { CustomInputPositive } from '@/components/ant-form/custom-input-negative'
 import { CustomSwitchNumber } from '@/components/ant-form/custom-switch-number'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
@@ -18,6 +19,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   PAYMENT_METHOD,
   REQUIERMENT_TYPE,
+  REQUIREMENT_STATUS,
   REQUIREMENT_TYPE_DOCUMENT,
 } from '@view'
 import {
@@ -141,7 +143,7 @@ export function Review({
           >
             <div className="grid grid-cols-2 gap-x-1">
               <Form.Item label="Id" name={'id'} className="mb-2">
-                <Input />
+                <Input readOnly />
               </Form.Item>
               <div></div>
               <Form.Item label="Empresa" name="company_id" className="mb-2">
@@ -159,15 +161,15 @@ export function Review({
                   <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                     Solicitado
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
-                    Transferencia
-                  </Select.Option>
                   <Select.Option value={REQUIERMENT_TYPE.SUPPLIER}>
                     Proveedor
                   </Select.Option>
+                  {/* <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                    Transferencia
+                  </Select.Option>
                   <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
                     Liquidacion
-                  </Select.Option>
+                  </Select.Option> */}
                 </Select>
               </Form.Item>
               <Form.Item
@@ -188,6 +190,9 @@ export function Review({
                 />
               </Form.Item>
               <div className="flex gap-1">
+                <Form.Item name={'supplier_id'} hidden>
+                  <Input />
+                </Form.Item>
                 <Form.Item
                   className="mb-2 flex-1"
                   label="Proveedor"
@@ -203,9 +208,9 @@ export function Review({
                     messageApi.error(message)
                   }}
                   onCreate={(id, supplier, ruc) => {
-                    form.setFieldValue('supplier', id)
-                    form.setFieldValue('supplier_name', supplier)
-                    form.setFieldValue('ruc', ruc)
+                    form.setFieldValue('supplier_id', id)
+                    form.setFieldValue('legal_name', supplier)
+                    form.setFieldValue('legal_number', ruc)
                     refetchSupplier()
                   }}
                 />
@@ -435,15 +440,17 @@ const RequirementItems = ({
       <div>
         <div>
           <div className="mb-4">
-            <div className="flex justify-between items-center mb-2 hidden">
+            <div className="flex justify-between items-center hidden">
               <Select
+                variant="borderless"
                 placeholder="Seleccionar cuota"
                 value={numQuota}
                 onChange={(index) => {
                   if (isEdited) {
                     Modal.confirm({
                       title: '¿Desea salir de la edicion?',
-                      content: 'Tienes cambios sin guardar ¿Desea continuar?',
+                      content:
+                        'Tienes cambios de esta cuota sin guardar, si continua se perderan ¿Desea continuar?',
                       onOk: () => {
                         setNumQuota(index)
                         const item = items[index]
@@ -457,15 +464,19 @@ const RequirementItems = ({
                     form.setFieldsValue(item)
                   }
                 }}
-                className="w-1/2"
+                // className="w-1/2"
+                className="p-0"
               >
-                {items.map((_item, index) => (
-                  <Select.Option key={index} value={index}>
-                    Cuota {index + 1}
-                  </Select.Option>
-                ))}
+                {items
+                  .filter((el) => el.status == REQUIREMENT_STATUS.PENDING)
+                  .map((_item, index) => (
+                    <Select.Option key={index} value={index}>
+                      Cuota {index + 1}
+                    </Select.Option>
+                  ))}
               </Select>
             </div>
+            <Divider className="my-0 mb-3 hidden" />
             {items.length > 0 && (
               <div>
                 <h5 className="mb-2">Datos del pago:</h5>
@@ -492,10 +503,14 @@ const RequirementItems = ({
                     <Form.Item
                       className="mb-2"
                       label="Monto"
-                      name="amount"
-                      rules={[{ required: true }]}
+                      // name="amount"
+                      // rules={[{ required: true }]}
                     >
-                      <InputNumber className="w-full" />
+                      <InputNumber
+                        className="w-full"
+                        value={requirement.amount}
+                        readOnly
+                      />
                     </Form.Item>
                     <Form.Item
                       className="mb-2"
@@ -546,7 +561,8 @@ const RequirementItems = ({
                       label="Valor cuota"
                       name="amount"
                     >
-                      <InputNumber readOnly className="w-full" />
+                      {/* <InputNumber readOnly className="w-full" /> */}
+                      <CustomInputPositive />
                     </Form.Item>
                     <Form.Item
                       className="mb-2 col-span-2 "

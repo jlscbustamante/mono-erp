@@ -80,7 +80,7 @@ export function RejectModal({
     <Modal
       open={open}
       onCancel={() => onChange(false)}
-      title="Rechazar"
+      title="Rechazar cuotas"
       footer={null}
     >
       <Table
@@ -98,6 +98,21 @@ export function RejectModal({
             {
               title: 'Descripción',
               dataIndex: 'description',
+            },
+            {
+              title: 'Estado',
+              dataIndex: 'status',
+              render: (status) => {
+                if (status == REQUIREMENT_STATUS.PENDING) {
+                  return 'Pendiente'
+                }
+                if (status == REQUIREMENT_STATUS.CANCELLED) {
+                  return 'Cancelado'
+                }
+                if (status == REQUIREMENT_STATUS.APPROVED) {
+                  return 'Aprobado'
+                }
+              },
             },
             {
               title: 'Monto',

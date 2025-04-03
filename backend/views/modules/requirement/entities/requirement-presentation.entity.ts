@@ -40,7 +40,10 @@ export class RequirementPresentation implements IRequirementPresentation {
     this.costCenter = props.reqitem.costcenter_name ?? "";
     this.createdBy = props.reqitem.created_by ?? "";
     this.paymentMethod = props.reqitem.pay_method ?? "";
-    this.numQuota = props.reqitem.nro_quotas ?? 1;
+    // this.numQuota = props.reqitem.nro_quotas ?? 1;
+    this.numQuota = props.items.filter(
+      (el) => el.status != REQUIREMENT_STATUS.CANCELLED
+    ).length;
     this.amount = props.reqitem.amount ?? 0;
     this.status = props.reqitem.status as REQUIREMENT_STATUS;
 

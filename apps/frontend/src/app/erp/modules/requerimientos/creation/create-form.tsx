@@ -160,10 +160,10 @@ export function CreationForm({
   const searchSupplier = (ruc: string) => {
     const supplier = suppliers?.find((el) => el.legal_number === ruc)
     if (supplier) {
-      form.setFieldValue('supplier_name', supplier.legal_name)
+      form.setFieldValue('legal_name', supplier.legal_name)
       form.setFieldValue('supplier', supplier.id)
     } else {
-      form.setFieldValue('supplier_name', undefined)
+      form.setFieldValue('legal_name', undefined)
       form.setFieldValue('supplier', undefined)
       messageApi.error('Proveedor no encontrado')
     }
@@ -311,12 +311,12 @@ export function CreationForm({
                   <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
                     SIMPLE
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                  {/* <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
                     TRANSFERENCIA
                   </Select.Option>
                   <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
                     LIQUIDACION
-                  </Select.Option>
+                  </Select.Option> */}
                 </Select>
               </Form.Item>
             </div>
@@ -351,7 +351,7 @@ export function CreationForm({
                 <Form.Item
                   className="mb-2 flex-1"
                   label="Proveedor"
-                  name="supplier_name"
+                  name="legal_name"
                   rules={[{ required: true }]}
                   labelCol={{ span: 9 }}
                 >
@@ -364,7 +364,7 @@ export function CreationForm({
                   }}
                   onCreate={(id, supplier, ruc) => {
                     form.setFieldValue('supplier', id)
-                    form.setFieldValue('supplier_name', supplier)
+                    form.setFieldValue('legal_name', supplier)
                     form.setFieldValue('ruc', ruc)
                     refetchSupplier()
                   }}
