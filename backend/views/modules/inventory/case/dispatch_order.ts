@@ -316,7 +316,7 @@ export class DispatchOrderById {
     ]);
 
     const template = await get_template(
-      warehouse.trademark_id ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
+      warehouse.company_id ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
     );
 
     const unmatched_dispatch_item = dispatch_items.find(
@@ -486,7 +486,7 @@ export class DispatchOrderById {
       });
     }
 
-    if (!store_from.trademark_id || !store_to.trademark_id) {
+    if (!store_from.company_id || !store_to.company_id) {
       throw new HTTPException(400, {
         message: "El campo compañia es obligatorio",
       });

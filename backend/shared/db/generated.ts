@@ -195,9 +195,10 @@ export interface AdmSucursal {
   cfd_serie_bo: string | null;
   cfd_serie_fa: string | null;
   cfd_serie_gr: string | null;
-  codefis: string | null;
+  company_id: string | null;
   created_at: Generated<Date>;
   efact_pass: string | null;
+  guide_template: string | null;
   id: string;
   legalperson_account_bco: string | null;
   legalperson_account_cci: string | null;
@@ -211,7 +212,6 @@ export interface AdmSucursal {
   sede_razon_social: string | null;
   status: Generated<number>;
   title: string;
-  trademark_id: string | null;
   /**
    * T: Tienda, A: Almacen, O: Oficina
    */
@@ -789,7 +789,7 @@ export interface InvMeasure {
   created_at: Generated<Date>;
   id: Generated<number>;
   measure: string;
-  status: number;
+  status: Generated<number>;
   updated_at: Generated<Date>;
 }
 

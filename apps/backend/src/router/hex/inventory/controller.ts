@@ -232,9 +232,9 @@ export class HexInventoryController {
     )
     const sucursal = sucursales[0]
 
-    if (sucursal.trademark_id == 'PIZZAM') {
+    if (sucursal.company_id == 'PIZZAM') {
       await dispatchItemsPizzam.run(dispatch, token.name)
-    } else if (sucursal.trademark_id == 'STEAKHOUSE') {
+    } else if (sucursal.company_id == 'STEAKHOUSE') {
       await dispatchItemsSteak.run(dispatch, token.name)
     } else {
       await dispatchItemsUseCase.run(dispatch, token.name)
