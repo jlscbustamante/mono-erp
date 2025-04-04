@@ -1,0 +1,339 @@
+import { db } from "#app/config/database.ts";
+import { PARAMETER } from "#app/const/index.ts";
+import { get_inventory_by_date } from "#app/modules/inventory/queries/get_stock.ts";
+import { get_template } from "#app/modules/inventory/queries/get_template.ts";
+import { get_stores } from "#app/modules/sucursales/queries/get_stores.ts";
+import {
+  AdmSucursalSelect,
+  DISPATCH_STATUS,
+  InvDispatchItemSelect,
+  InvStockInsert,
+  SUCURSAL_TYPE,
+} from "@scope/shared";
+import { format } from "date-fns";
+import { parseISO } from "date-fns/parseISO";
+import { sub } from "date-fns/sub";
+import { HTTPException } from "hono/http-exception";
+import { sql } from "kysely";
+
+interface IDispatch extends InvDispatchItemSelect {
+  warehouse_from: string | null;
+  warehouse_to: string | null;
+  date: string;
+  status: number;
+  dispatch_at: Date;
+}
+
+export class ResetDispatch {
+  async execute(dispatch_id: number, username: string) {
+    const items_dispatch = await this.get_dispatch(dispatch_id);
+    if (!items_dispatch.length) {
+      throw new Error("No se encontró el despacho");
+    }
+    const date = items_dispatch[0].date;
+    const status = items_dispatch[0].status;
+    if (status != DISPATCH_STATUS.DISPATCHED) {
+      throw new HTTPException(400, {
+        message: `El despacho no tiene el estado correcto(despachado)`,
+      });
+    }
+
+    const warehouse_from_code = items_dispatch[0].warehouse_from;
+    if (!warehouse_from_code) {
+      throw new HTTPException(400, {
+        message: `No se encontró el almacén de origen`,
+      });
+    }
+    const warehouse_to_code = items_dispatch[0].warehouse_to;
+    if (!warehouse_to_code) {
+      throw new HTTPException(400, {
+        message: `No se encontró el almacén de destino`,
+      });
+    }
+    const { store_from, store_to } = await this.get_involved_stores(
+      warehouse_from_code,
+      warehouse_to_code
+    );
+
+    const _stock_from = await this.get_stock(
+      store_from,
+      items_dispatch,
+      date,
+      "out",
+      username
+    );
+    const _stock_to = await this.get_stock(
+      store_to,
+      items_dispatch,
+      date,
+      "in",
+      username
+    );
+    const stock_from = this.clear_stock(_stock_from);
+    const stock_to = this.clear_stock(_stock_to);
+
+    await db.transaction().execute(async (trx) => {
+      await trx
+        .deleteFrom("inv_stock")
+        .where("warehouse_id", "in", [store_from.id, store_to.id])
+        .where(sql`DATE(stock_at)`, "=", date)
+        .executeTakeFirstOrThrow();
+
+      await trx
+        .insertInto("inv_stock")
+        .values([...stock_from, ...stock_to])
+        .executeTakeFirstOrThrow();
+
+      await trx
+        .updateTable("inv_dispatch")
+        .set({
+          status: DISPATCH_STATUS.NEW,
+          approved_by: username,
+          sucursal_from_id: store_from.id,
+        })
+        .where("id", "=", dispatch_id)
+        .executeTakeFirstOrThrow();
+    });
+  }
+
+  private clear_stock(stock: InvStockInsert[]): InvStockInsert[] {
+    const filtered = stock.filter((el) => {
+      const qid = el.quantity_in_dp ? +el.quantity_in_dp : 0;
+      const qod = el.quantity_out_dp ? +el.quantity_out_dp : 0;
+      const qim = el.quantity_in_mv ? +el.quantity_in_mv : 0;
+      const qom = el.quantity_out_mv ? +el.quantity_out_mv : 0;
+      const qos = el.quantity_out_sl ? +el.quantity_out_sl : 0;
+      const qip = el.quantity_in_pu ? +el.quantity_in_pu : 0;
+      const current = el.stock_current ? +el.stock_current : 0;
+      const physical = el.stock_physical ? +el.stock_physical : 0;
+      const last = el.stock_last ? +el.stock_last : 0;
+      const sum = qid + qod + qim + qom + qos + qip + current + physical + last;
+      return sum > 0;
+    });
+
+    return filtered.length == 0 ? [stock[0]] : filtered;
+  }
+
+  private async get_stock(
+    warehouse: AdmSucursalSelect,
+    dispatch_items: IDispatch[],
+    date: string,
+    dir: "in" | "out" = "out",
+    user: string = "sys"
+  ): Promise<InvStockInsert[]> {
+    const previous_dispatch_date = format(
+      sub(parseISO(date), { days: 1 }),
+      "yyyy-MM-dd"
+    );
+    const [inventory, inventory_before] = await Promise.all([
+      get_inventory_by_date(warehouse.id, date),
+      get_inventory_by_date(warehouse.id, previous_dispatch_date),
+    ]);
+
+    const template = await get_template(
+      warehouse.company_id ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
+    );
+
+    const unmatched_dispatch_item = dispatch_items.find(
+      (el) => !template.some((item) => item.item_dispatch.item_id == el.item_id)
+    );
+
+    if (unmatched_dispatch_item) {
+      throw new HTTPException(400, {
+        message: `El item ${unmatched_dispatch_item.item_id}-${unmatched_dispatch_item.item_name} no esta en la plantilla`,
+      });
+    }
+
+    const status =
+      inventory.length > 0 ? inventory[0].status : DISPATCH_STATUS.NEW;
+
+    const calculate_inventory: InvStockInsert[] = template.map((item) => {
+      const item_before = inventory_before.find(
+        (item_before) => item_before.item_id == item.item_stock.item_id
+      );
+      const item_now = inventory.find(
+        (item_now) => item_now.item_id == item.item_stock.item_id
+      );
+
+      const item_dispatched = dispatch_items.find(
+        (item_dispatched) =>
+          item_dispatched.item_id == item.item_dispatch.item_id
+      );
+      let new_dispatch_quantity = 0;
+      if (item_dispatched) {
+        if (item.equivalency == null) {
+          new_dispatch_quantity = +item_dispatched.quantity;
+        } else {
+          if (
+            // aunque es measure_to, se refiere a presentacion
+            item.item_dispatch.presentation_id == item.equivalency.measure_to
+          ) {
+            // de derecha a izquierda, cantidad * valor /factor
+            new_dispatch_quantity =
+              (+item.equivalency.value_from * +item_dispatched.quantity) /
+              +item.equivalency.value_factor;
+          } else {
+            // de izquierda a derecha (default)
+            new_dispatch_quantity =
+              (+item.equivalency.value_factor * +item_dispatched.quantity) /
+              +item.equivalency.value_from;
+          }
+        }
+      }
+
+      const stock_last = item_before ? +item_before.stock_physical : 0;
+      const quantity_in_mv = item_now ? +item_now.quantity_in_mv : 0;
+      const quantity_out_mv = item_now ? +item_now.quantity_out_mv : 0;
+      let quantity_in_dp = item_now ? +item_now.quantity_in_dp : 0;
+      let quantity_out_dp = item_now ? +item_now.quantity_out_dp : 0;
+      const quantity_in_pu = item_now ? +item_now.quantity_in_pu : 0;
+      const quantity_out_sl = item_now ? +item_now.quantity_out_sl : 0;
+
+      let current =
+        stock_last -
+        quantity_out_dp +
+        quantity_in_dp +
+        quantity_in_pu -
+        quantity_out_sl;
+      let price = 0;
+
+      if (warehouse.type_sede == SUCURSAL_TYPE.WAREHOUSE) {
+        price = item.item_stock.warehouse_cost;
+        if (dir == "in") {
+          quantity_in_dp -= new_dispatch_quantity;
+          current -= new_dispatch_quantity;
+        } else {
+          quantity_out_dp -= new_dispatch_quantity;
+          current += new_dispatch_quantity;
+        }
+      } else {
+        price = item.item_stock.store_price;
+        if (dir == "in") {
+          quantity_in_dp -= new_dispatch_quantity;
+          current -= new_dispatch_quantity;
+        } else {
+          quantity_out_dp -= new_dispatch_quantity;
+          current += new_dispatch_quantity;
+        }
+      }
+
+      return {
+        item_id: item.item_stock.item_id,
+        item_name: item.item_stock.item_name,
+        presentation_id: item.item_stock.presentation_id,
+        presentation_name: item.item_stock.presentation_name,
+        stock_at: parseISO(date),
+        measure_id: item.item_stock.product_measure_id,
+        status,
+        created_by: user,
+        total_last: item_before ? item_before.total_value : 0,
+        stock_last: stock_last,
+        quantity_in_dp: quantity_in_dp,
+        quantity_out_dp: quantity_out_dp,
+        quantity_in_mv: quantity_in_mv,
+        quantity_out_mv: quantity_out_mv,
+        quantity_in_pu: quantity_in_pu,
+        quantity_out_sl: quantity_out_sl,
+        warehouse_id: warehouse.id,
+        updated_at: new Date(),
+        created_at: item_now ? item_now.created_at : new Date(),
+        stock_current: current,
+        unit_value: price,
+        stock_physical: item_now ? +item_now.stock_physical : 0,
+        total_value: item_now ? +item_now.total_value : 0,
+      } satisfies InvStockInsert;
+    });
+
+    const items_now_not_template = inventory.filter(
+      (item) => !template.some((el) => el.item_stock.item_id == item.item_id)
+    );
+
+    items_now_not_template.forEach((item) => {
+      calculate_inventory.push({
+        ...item,
+        status: status,
+        id: undefined,
+      });
+    });
+
+    const item_before_not_inventory = inventory_before.filter(
+      (item) =>
+        !calculate_inventory.some((el) => el.item_id == item.item_id) &&
+        +item.stock_physical > 0
+    );
+
+    item_before_not_inventory.forEach((item) => {
+      calculate_inventory.push({
+        ...item,
+        id: undefined,
+        stock_current: item.stock_physical,
+        stock_physical: 0,
+        stock_last: item.stock_physical,
+        total_last: item.total_value,
+        status: status,
+        quantity_in_dp: 0,
+        quantity_out_dp: 0,
+        quantity_in_mv: 0,
+        quantity_out_mv: 0,
+        quantity_in_pu: 0,
+        quantity_out_sl: 0,
+        total_value: 0,
+      });
+    });
+
+    return calculate_inventory;
+  }
+
+  private async get_involved_stores(
+    code_from: string,
+    code_to: string
+  ): Promise<{
+    store_from: AdmSucursalSelect;
+    store_to: AdmSucursalSelect;
+  }> {
+    const stores = await get_stores();
+    const store_from = stores.find((store) => store.id == code_from);
+    const store_to = stores.find((store) => store.id == code_to);
+
+    if (!store_from || !store_to) {
+      throw new HTTPException(400, {
+        message: "No se encontró la tienda de origen o destino",
+      });
+    }
+
+    if (!store_from.company_id || !store_to.company_id) {
+      throw new HTTPException(400, {
+        message: "El campo compañia es obligatorio",
+      });
+    }
+
+    return { store_from, store_to };
+  }
+
+  private async get_dispatch(id: number): Promise<IDispatch[]> {
+    const items_dispatch = await db
+      .selectFrom("inv_dispatch")
+      .innerJoin(
+        "inv_dispatch_item as idi",
+        "idi.dispatch_id",
+        "inv_dispatch.id"
+      )
+      .selectAll("idi")
+      .select([
+        "inv_dispatch.sucursal_from_id as warehouse_from",
+        "inv_dispatch.sucursal_to_id as warehouse_to",
+        "inv_dispatch.move_at as dispatch_at",
+        "inv_dispatch.status as status",
+        "inv_dispatch.move_at as date",
+      ])
+      .where("inv_dispatch.id", "=", id)
+      .execute();
+    return items_dispatch.map((el) => ({
+      ...el,
+      date:
+        typeof el.date == "string"
+          ? (el.date as string).split(" ")[0]
+          : format(el.date, "yyyy-MM-dd"),
+    }));
+  }
+}

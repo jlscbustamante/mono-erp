@@ -1,17 +1,18 @@
-import {
-  check_status,
-  clear_logs,
-  dispatch_multiple,
-  stop_queue,
-} from "./case/dispatch_order.ts";
 import { zValidator } from "@hono/zod-validator";
 import { DispatchUpdateDto } from "@scope/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
 import {
+  check_status,
+  clear_logs,
+  dispatch_multiple,
+  stop_queue,
+} from "./case/dispatch_order.ts";
+import {
   dispatch_order_by_id_uc,
   dividerDispatchService,
+  reset_dispatch_uc,
 } from "./dependencies.ts";
 
 export const inventoryRouter = new Hono()
@@ -86,6 +87,14 @@ export const inventoryRouter = new Hono()
       user.name,
       body.warehouse_origin
     );
+    return c.json({ message: "ok" });
+  })
+  .post("reset_dispatch", async (c) => {
+    const user = c.get("user");
+    const body = (await c.req.json()) as {
+      dispatch_id: number;
+    };
+    await reset_dispatch_uc.execute(body.dispatch_id, user.name);
     return c.json({ message: "ok" });
   })
   .post("dispatch_multiple", async (c) => {
