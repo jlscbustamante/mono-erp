@@ -1,5 +1,5 @@
 export const PARAMETER = {
   DISPATCH: {
-    DEFAULT_TEMPLATE: "PIZZARAUL",
+    DEFAULT_TEMPLATE: "RAUL",
   },
 };

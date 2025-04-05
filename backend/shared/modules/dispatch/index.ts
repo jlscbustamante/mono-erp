@@ -57,6 +57,15 @@ export interface DispatchUpdateDto extends Omit<Dispatch, "items"> {
   items: DispatchItemAddDto[];
 }
 
+export interface DispatchItemCreateDto
+  extends Omit<DispatchItem, "id" | "measureCode"> {
+  id?: number;
+}
+
+export interface DispatchCreateDto extends Omit<Dispatch, "items" | "id"> {
+  items: DispatchItemCreateDto[];
+}
+
 export interface IItem {
   item_id: number;
   item_name: string;

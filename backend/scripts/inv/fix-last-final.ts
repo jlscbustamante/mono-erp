@@ -7,8 +7,8 @@ import { and, asc, eq, sql } from "drizzle-orm";
 import { db } from "../database.ts";
 
 // INPUTS
-const date = "2025-01-18";
-const warehouseCode = "HABI";
+const date = "2025-04-03";
+const warehouseCode = "SANTA";
 
 // APP
 const before = dayjs(date).subtract(1, "day").format("YYYY-MM-DD");
