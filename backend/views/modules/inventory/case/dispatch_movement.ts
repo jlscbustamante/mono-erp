@@ -11,7 +11,7 @@ import {
   MoveBetweenStoresDto,
   SUCURSAL_TYPE,
 } from "@scope/shared";
-import { parseISO } from "date-fns";
+import { format, parseISO } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 import { sql } from "kysely";
 
@@ -201,6 +201,153 @@ export class DispatchMovement extends Dispatch {
             dispatch_id: Number(dispatch_id),
           }))
         )
+        .executeTakeFirstOrThrow();
+    });
+  }
+
+  async delete(dispatch_id: number, username: string) {
+    const items_dispatch = await this.get_dispatch(dispatch_id);
+    if (items_dispatch.length == 0) {
+      throw new HTTPException(400, {
+        message: `No se encontró el despacho`,
+      });
+    }
+
+    const data: MoveBetweenStoresDto = {
+      storeFrom: items_dispatch[0].warehouse_from ?? "",
+      storeToId: items_dispatch[0].warehouse_to ?? "",
+      moveAt: format(items_dispatch[0].dispatch_at, "yyyy-MM-dd"),
+      gloss: "",
+      items: items_dispatch.map((item) => ({
+        itemId: item.item_id,
+        quantity: item.quantity ? +item.quantity : 0,
+      })),
+    };
+
+    if (data.items.length == 0)
+      throw new HTTPException(400, {
+        message: `No se encontraron items para despachar`,
+      });
+    const stores = await get_stores();
+    const store_from = stores.find((store) => store.id == data.storeFrom);
+    const store_to = stores.find((store) => store.id == data.storeToId);
+    if (!store_from && !store_to) {
+      throw new HTTPException(400, {
+        message: `No se encontró la tienda de origen o destino`,
+      });
+    }
+    if (store_from && !store_from.guide_template)
+      throw new HTTPException(400, {
+        message: `La tienda de origen no tiene plantilla_id definida`,
+      });
+    if (store_to && !store_to.guide_template)
+      throw new HTTPException(400, {
+        message: `La tienda de destino no tiene plantilla_id definida`,
+      });
+
+    const [stock_from, stock_to] = await Promise.all([
+      store_from
+        ? generate_stock_report(
+            store_from.id,
+            data.moveAt,
+            store_from.guide_template!,
+            SUCURSAL_TYPE.STORE
+          )
+        : undefined,
+      store_to
+        ? generate_stock_report(
+            store_to.id,
+            data.moveAt,
+            store_to.guide_template!,
+            SUCURSAL_TYPE.STORE
+          )
+        : undefined,
+    ]);
+
+    if (stock_from) {
+      const items_not_found = data.items.filter(
+        (item) => !stock_from.find((stock) => stock.item_id == item.itemId)
+      );
+      if (items_not_found.length > 0) {
+        throw new HTTPException(400, {
+          message: `No se encontraron los siguientes items en la tienda de origen: ${items_not_found
+            .map((item) => item.itemId)
+            .join(", ")}`,
+        });
+      }
+    }
+    if (stock_to) {
+      const items_not_found = data.items.filter(
+        (item) => !stock_to.find((stock) => stock.item_id == item.itemId)
+      );
+      if (items_not_found.length > 0) {
+        throw new HTTPException(400, {
+          message: `No se encontraron los siguientes items en la tienda de destino: ${items_not_found
+            .map((item) => item.itemId)
+            .join(", ")}`,
+        });
+      }
+    }
+    const stock_from_modified = stock_from?.map((item) => {
+      const item_dispatch = data.items.find((i) => i.itemId == item.item_id);
+      if (!item_dispatch) return item;
+      const quantity_out_mv = +item.quantity_out_mv - +item_dispatch.quantity;
+      const current = +item.stock_current + +item_dispatch.quantity;
+      return {
+        ...item,
+        id: undefined,
+        quantity_out_mv: quantity_out_mv.toString(),
+        stock_current: current.toString(),
+      };
+    });
+    const stock_to_modified = stock_to?.map((item) => {
+      const item_dispatch = data.items.find((i) => i.itemId == item.item_id);
+      if (!item_dispatch) return item;
+      const quantity_in_mv = +item.quantity_in_mv - +item_dispatch.quantity;
+      const current = +item.stock_current - +item_dispatch.quantity;
+      return {
+        ...item,
+        id: undefined,
+        quantity_in_mv: quantity_in_mv.toString(),
+        stock_current: current.toString(),
+      };
+    });
+
+    const stock_from_cleaned = stock_from_modified
+      ? this.clear_stock(stock_from_modified)
+      : undefined;
+    const stock_to_cleaned = stock_to_modified
+      ? this.clear_stock(stock_to_modified)
+      : undefined;
+
+    await db.transaction().execute(async (trx) => {
+      const stores_ids: string[] = [];
+      const items_to_insert: InvStockSelectOptionalId[] = [];
+      if (store_from && stock_from_cleaned) {
+        stores_ids.push(store_from.id);
+        items_to_insert.push(...stock_from_cleaned);
+      }
+      if (store_to && stock_to_cleaned) {
+        stores_ids.push(store_to.id);
+        items_to_insert.push(...stock_to_cleaned);
+      }
+      await trx
+        .deleteFrom("inv_stock")
+        .where("warehouse_id", "in", stores_ids)
+        .where(sql`DATE(stock_at)`, "=", data.moveAt)
+        .executeTakeFirstOrThrow();
+
+      await trx
+        .insertInto("inv_stock")
+        .values(items_to_insert)
+        .executeTakeFirstOrThrow();
+
+      await trx
+        .updateTable("inv_dispatch")
+        .set({
+          status: DISPATCH_STATUS.CANCELLED,
+          created_by: username,
+        })
         .executeTakeFirstOrThrow();
     });
   }
