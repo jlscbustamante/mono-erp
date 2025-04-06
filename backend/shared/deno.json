@@ -14,6 +14,6 @@
     "./services/jwt": "./services/jwt.service.ts"
   },
   "tasks": {
-    "generate": "kysely-codegen --out-file ./db/generated.ts"
+    "generate": "kysely-codegen --date-parser string --numeric-parser number --out-file ./db/generated.ts"
   }
 }

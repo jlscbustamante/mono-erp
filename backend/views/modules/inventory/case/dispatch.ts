@@ -1,16 +1,13 @@
 import { db } from "#app/config/database.ts";
-import { PARAMETER } from "#app/const/index.ts";
-import { get_inventory_by_date } from "#app/modules/inventory/queries/get_stock.ts";
+import { generate_stock_report } from "#app/modules/inventory/queries/get_stock.ts";
 import { get_template } from "#app/modules/inventory/queries/get_template.ts";
 import { get_stores } from "#app/modules/sucursales/queries/get_stores.ts";
 import {
   AdmSucursalSelect,
-  DISPATCH_STATUS,
   InvDispatchItemInsert,
-  InvStockInsert,
+  InvStockSelectOptionalId,
   SUCURSAL_TYPE,
 } from "@scope/shared";
-import { format, parseISO, sub } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 
 export interface IDispatch extends InvDispatchItemInsert {
@@ -18,6 +15,7 @@ export interface IDispatch extends InvDispatchItemInsert {
   warehouse_to: string | null;
   dispatch_at: Date;
   status: number;
+  type: string;
 }
 
 export abstract class Dispatch {
@@ -27,19 +25,12 @@ export abstract class Dispatch {
     date: string,
     dir: "in" | "out" = "out",
     user: string = "sys"
-  ): Promise<InvStockInsert[]> {
-    const previous_dispatch_date = format(
-      sub(parseISO(date), { days: 1 }),
-      "yyyy-MM-dd"
-    );
-    const [inventory, inventory_before] = await Promise.all([
-      get_inventory_by_date(warehouse.id, date),
-      get_inventory_by_date(warehouse.id, previous_dispatch_date),
-    ]);
-
-    const template = await get_template(
-      warehouse.guide_template ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
-    );
+  ): Promise<InvStockSelectOptionalId[]> {
+    if (!warehouse.guide_template)
+      throw new HTTPException(400, {
+        message: `El almacén ${warehouse.title} no tiene plantilla de despacho`,
+      });
+    const template = await get_template(warehouse.guide_template);
 
     const unmatched_dispatch_item = dispatch_items.find(
       (el) => !template.some((item) => item.item_dispatch.item_id == el.item_id)
@@ -51,152 +42,87 @@ export abstract class Dispatch {
       });
     }
 
-    const status =
-      inventory.length > 0 ? inventory[0].status : DISPATCH_STATUS.NEW;
+    const stock = await generate_stock_report(
+      warehouse.id,
+      date,
+      warehouse.guide_template,
+      warehouse.type_sede
+        ? (warehouse.type_sede as SUCURSAL_TYPE)
+        : SUCURSAL_TYPE.STORE
+    );
 
-    const calculate_inventory: InvStockInsert[] = template.map((item) => {
-      const item_before = inventory_before.find(
-        (item_before) => item_before.item_id == item.item_stock.item_id
+    const relation: Record<number, number> = {};
+    for (const item_dispatched of dispatch_items) {
+      const quantity = item_dispatched.quantity
+        ? +item_dispatched.quantity
+        : null;
+      if (quantity == null || quantity <= 0) {
+        throw new HTTPException(400, {
+          message: `La cantidad del item ${item_dispatched.item_id}-${item_dispatched.item_name} no es válida`,
+        });
+      }
+      const template_item = template.find(
+        (item) => item.item_dispatch.item_id == item_dispatched.item_id
       );
-      const item_now = inventory.find(
-        (item_now) => item_now.item_id == item.item_stock.item_id
-      );
-
-      const item_dispatched = dispatch_items.find(
-        (item_dispatched) =>
-          item_dispatched.item_id == item.item_dispatch.item_id
-      );
-      let new_dispatch_quantity = 0;
-      if (item_dispatched) {
-        if (item.equivalency == null) {
-          new_dispatch_quantity = item_dispatched.quantity
-            ? +item_dispatched.quantity
-            : 0;
+      if (template_item) {
+        let new_dispatch_quantity = 0;
+        if (template_item.equivalency == null) {
+          new_dispatch_quantity = quantity;
         } else {
           if (
             // aunque es measure_to, se refiere a presentacion
-            item.item_dispatch.presentation_id == item.equivalency.measure_to
+            template_item.item_dispatch.presentation_id ==
+            template_item.equivalency.measure_to
           ) {
             // de derecha a izquierda, cantidad * valor /factor
             new_dispatch_quantity =
-              (+item.equivalency.value_from *
-                (item_dispatched.quantity ? +item_dispatched.quantity : 0)) /
-              +item.equivalency.value_factor;
+              (+template_item.equivalency.value_from * quantity) /
+              +template_item.equivalency.value_factor;
           } else {
             // de izquierda a derecha (default)
             new_dispatch_quantity =
-              (+item.equivalency.value_factor *
-                (item_dispatched.quantity ? +item_dispatched.quantity : 0)) /
-              +item.equivalency.value_from;
+              (+template_item.equivalency.value_factor * quantity) /
+              +template_item.equivalency.value_from;
           }
         }
+        relation[item_dispatched.item_id] = new_dispatch_quantity;
       }
+    }
 
-      const stock_last = item_before ? +item_before.stock_physical : 0;
-      const quantity_in_mv = item_now ? +item_now.quantity_in_mv : 0;
-      const quantity_out_mv = item_now ? +item_now.quantity_out_mv : 0;
-      let quantity_in_dp = item_now ? +item_now.quantity_in_dp : 0;
-      let quantity_out_dp = item_now ? +item_now.quantity_out_dp : 0;
-      const quantity_in_pu = item_now ? +item_now.quantity_in_pu : 0;
-      const quantity_out_sl = item_now ? +item_now.quantity_out_sl : 0;
+    const stock_modified = stock.map((item) => {
+      const quantity_dispatched = relation[item.item_id];
+      if (!quantity_dispatched) return item;
 
-      let current =
-        stock_last -
-        quantity_out_dp +
-        quantity_in_dp +
-        quantity_in_pu -
-        quantity_out_sl;
-      let price = 0;
-
+      let quantity_in_dp = +item.quantity_in_dp;
+      let quantity_out_dp = +item.quantity_out_dp;
+      let current = +item.stock_current;
       if (warehouse.type_sede == SUCURSAL_TYPE.WAREHOUSE) {
-        price = item.item_stock.warehouse_cost;
         if (dir == "in") {
-          quantity_in_dp += new_dispatch_quantity;
-          current += new_dispatch_quantity;
+          quantity_in_dp += quantity_dispatched;
+          current += quantity_dispatched;
         } else {
-          quantity_out_dp += new_dispatch_quantity;
-          current -= new_dispatch_quantity;
+          quantity_out_dp += quantity_dispatched;
+          current -= quantity_dispatched;
         }
       } else {
-        price = item.item_stock.store_price;
         if (dir == "in") {
-          quantity_in_dp += new_dispatch_quantity;
-          current += new_dispatch_quantity;
+          quantity_in_dp += quantity_dispatched;
+          current += quantity_dispatched;
         } else {
-          quantity_out_dp += new_dispatch_quantity;
-          current -= new_dispatch_quantity;
+          quantity_out_dp += quantity_dispatched;
+          current -= quantity_dispatched;
         }
       }
-
       return {
-        item_id: item.item_stock.item_id,
-        item_name: item.item_stock.item_name,
-        presentation_id: item.item_stock.presentation_id,
-        presentation_name: item.item_stock.presentation_name,
-        stock_at: parseISO(date),
-        measure_id: item.item_stock.product_measure_id,
-        status,
+        ...item,
+        quantity_in_dp: quantity_in_dp.toString(),
+        quantity_out_dp: quantity_out_dp.toString(),
         created_by: user,
-        total_last: item_before ? item_before.total_value : 0,
-        stock_last: stock_last,
-        quantity_in_dp: quantity_in_dp,
-        quantity_out_dp: quantity_out_dp,
-        quantity_in_mv: quantity_in_mv,
-        quantity_out_mv: quantity_out_mv,
-        quantity_in_pu: quantity_in_pu,
-        quantity_out_sl: quantity_out_sl,
-        warehouse_id: warehouse.id,
-        updated_at: new Date(),
-        created_at: item_now ? item_now.created_at : new Date(),
-        stock_current: current,
-        unit_value: price,
-        stock_physical: item_now ? +item_now.stock_physical : 0,
-        total_value: item_now ? +item_now.total_value : 0,
-      } satisfies InvStockInsert;
-    });
-    // console.log(
-    //   "calculate_inv : ",
-    //   calculate_inventory.filter((el) => el.item_name.includes("GASE"))
-    // );
-
-    const items_now_not_template = inventory.filter(
-      (item) => !template.some((el) => el.item_stock.item_id == item.item_id)
-    );
-
-    items_now_not_template.forEach((item) => {
-      calculate_inventory.push({
-        ...item,
-        status: status,
-        id: undefined,
-      });
+        stock_current: current.toString(),
+      };
     });
 
-    const item_before_not_inventory = inventory_before.filter(
-      (item) =>
-        !calculate_inventory.some((el) => el.item_id == item.item_id) &&
-        +item.stock_physical > 0
-    );
-
-    item_before_not_inventory.forEach((item) => {
-      calculate_inventory.push({
-        ...item,
-        id: undefined,
-        stock_current: item.stock_physical,
-        stock_physical: 0,
-        stock_last: item.stock_physical,
-        total_last: item.total_value,
-        status: status,
-        quantity_in_dp: 0,
-        quantity_out_dp: 0,
-        quantity_in_mv: 0,
-        quantity_out_mv: 0,
-        quantity_in_pu: 0,
-        quantity_out_sl: 0,
-        total_value: 0,
-      });
-    });
-
-    return calculate_inventory;
+    return stock_modified;
   }
 
   protected async get_stock_reset(
@@ -205,19 +131,12 @@ export abstract class Dispatch {
     date: string,
     dir: "in" | "out" = "out",
     user: string = "sys"
-  ): Promise<InvStockInsert[]> {
-    const previous_dispatch_date = format(
-      sub(parseISO(date), { days: 1 }),
-      "yyyy-MM-dd"
-    );
-    const [inventory, inventory_before] = await Promise.all([
-      get_inventory_by_date(warehouse.id, date),
-      get_inventory_by_date(warehouse.id, previous_dispatch_date),
-    ]);
-
-    const template = await get_template(
-      warehouse.guide_template ?? PARAMETER.DISPATCH.DEFAULT_TEMPLATE
-    );
+  ): Promise<InvStockSelectOptionalId[]> {
+    if (!warehouse.guide_template)
+      throw new HTTPException(400, {
+        message: `El almacén ${warehouse.title} no tiene plantilla de despacho`,
+      });
+    const template = await get_template(warehouse.guide_template);
 
     const unmatched_dispatch_item = dispatch_items.find(
       (el) => !template.some((item) => item.item_dispatch.item_id == el.item_id)
@@ -229,151 +148,93 @@ export abstract class Dispatch {
       });
     }
 
-    const status =
-      inventory.length > 0 ? inventory[0].status : DISPATCH_STATUS.NEW;
+    const stock = await generate_stock_report(
+      warehouse.id,
+      date,
+      warehouse.guide_template,
+      warehouse.type_sede
+        ? (warehouse.type_sede as SUCURSAL_TYPE)
+        : SUCURSAL_TYPE.STORE
+    );
 
-    const calculate_inventory: InvStockInsert[] = template.map((item) => {
-      const item_before = inventory_before.find(
-        (item_before) => item_before.item_id == item.item_stock.item_id
+    const relation: Record<number, number> = {};
+    for (const item_dispatched of dispatch_items) {
+      const quantity = item_dispatched.quantity
+        ? +item_dispatched.quantity
+        : null;
+      if (quantity == null || quantity <= 0) {
+        throw new HTTPException(400, {
+          message: `La cantidad del item ${item_dispatched.item_id}-${item_dispatched.item_name} no es válida`,
+        });
+      }
+      const template_item = template.find(
+        (item) => item.item_dispatch.item_id == item_dispatched.item_id
       );
-      const item_now = inventory.find(
-        (item_now) => item_now.item_id == item.item_stock.item_id
-      );
-
-      const item_dispatched = dispatch_items.find(
-        (item_dispatched) =>
-          item_dispatched.item_id == item.item_dispatch.item_id
-      );
-      let new_dispatch_quantity = 0;
-      if (item_dispatched) {
-        if (item.equivalency == null) {
-          new_dispatch_quantity = item_dispatched.quantity
-            ? +item_dispatched.quantity
-            : 0;
+      if (template_item) {
+        let new_dispatch_quantity = 0;
+        if (template_item.equivalency == null) {
+          new_dispatch_quantity = quantity;
         } else {
           if (
             // aunque es measure_to, se refiere a presentacion
-            item.item_dispatch.presentation_id == item.equivalency.measure_to
+            template_item.item_dispatch.presentation_id ==
+            template_item.equivalency.measure_to
           ) {
             // de derecha a izquierda, cantidad * valor /factor
             new_dispatch_quantity =
-              (+item.equivalency.value_from *
-                (item_dispatched.quantity ? +item_dispatched.quantity : 0)) /
-              +item.equivalency.value_factor;
+              (+template_item.equivalency.value_from * quantity) /
+              +template_item.equivalency.value_factor;
           } else {
             // de izquierda a derecha (default)
             new_dispatch_quantity =
-              (+item.equivalency.value_factor *
-                (item_dispatched.quantity ? +item_dispatched.quantity : 0)) /
-              +item.equivalency.value_from;
+              (+template_item.equivalency.value_factor * quantity) /
+              +template_item.equivalency.value_from;
           }
         }
+        relation[item_dispatched.item_id] = new_dispatch_quantity;
       }
+    }
 
-      const stock_last = item_before ? +item_before.stock_physical : 0;
-      const quantity_in_mv = item_now ? +item_now.quantity_in_mv : 0;
-      const quantity_out_mv = item_now ? +item_now.quantity_out_mv : 0;
-      let quantity_in_dp = item_now ? +item_now.quantity_in_dp : 0;
-      let quantity_out_dp = item_now ? +item_now.quantity_out_dp : 0;
-      const quantity_in_pu = item_now ? +item_now.quantity_in_pu : 0;
-      const quantity_out_sl = item_now ? +item_now.quantity_out_sl : 0;
+    const stock_modified = stock.map((item) => {
+      const quantity_dispatched = relation[item.item_id];
+      if (!quantity_dispatched) return item;
 
-      let current =
-        stock_last -
-        quantity_out_dp +
-        quantity_in_dp +
-        quantity_in_pu -
-        quantity_out_sl;
-      let price = 0;
-
+      let quantity_in_dp = +item.quantity_in_dp;
+      let quantity_out_dp = +item.quantity_out_dp;
+      let current = +item.stock_current;
       if (warehouse.type_sede == SUCURSAL_TYPE.WAREHOUSE) {
-        price = item.item_stock.warehouse_cost;
         if (dir == "in") {
-          quantity_in_dp -= new_dispatch_quantity;
-          current -= new_dispatch_quantity;
+          quantity_in_dp -= quantity_dispatched;
+          current -= quantity_dispatched;
         } else {
-          quantity_out_dp -= new_dispatch_quantity;
-          current += new_dispatch_quantity;
+          quantity_out_dp -= quantity_dispatched;
+          current += quantity_dispatched;
         }
       } else {
-        price = item.item_stock.store_price;
         if (dir == "in") {
-          quantity_in_dp -= new_dispatch_quantity;
-          current -= new_dispatch_quantity;
+          quantity_in_dp -= quantity_dispatched;
+          current -= quantity_dispatched;
         } else {
-          quantity_out_dp -= new_dispatch_quantity;
-          current += new_dispatch_quantity;
+          quantity_out_dp -= quantity_dispatched;
+          current += quantity_dispatched;
         }
       }
 
       return {
-        item_id: item.item_stock.item_id,
-        item_name: item.item_stock.item_name,
-        presentation_id: item.item_stock.presentation_id,
-        presentation_name: item.item_stock.presentation_name,
-        stock_at: parseISO(date),
-        measure_id: item.item_stock.product_measure_id,
-        status,
+        ...item,
+        quantity_in_dp: quantity_in_dp.toString(),
+        quantity_out_dp: quantity_out_dp.toString(),
         created_by: user,
-        total_last: item_before ? item_before.total_value : 0,
-        stock_last: stock_last,
-        quantity_in_dp: quantity_in_dp,
-        quantity_out_dp: quantity_out_dp,
-        quantity_in_mv: quantity_in_mv,
-        quantity_out_mv: quantity_out_mv,
-        quantity_in_pu: quantity_in_pu,
-        quantity_out_sl: quantity_out_sl,
-        warehouse_id: warehouse.id,
-        updated_at: new Date(),
-        created_at: item_now ? item_now.created_at : new Date(),
-        stock_current: current,
-        unit_value: price,
-        stock_physical: item_now ? +item_now.stock_physical : 0,
-        total_value: item_now ? +item_now.total_value : 0,
-      } satisfies InvStockInsert;
+        stock_current: current.toString(),
+      };
     });
 
-    const items_now_not_template = inventory.filter(
-      (item) => !template.some((el) => el.item_stock.item_id == item.item_id)
-    );
-
-    items_now_not_template.forEach((item) => {
-      calculate_inventory.push({
-        ...item,
-        status: status,
-        id: undefined,
-      });
-    });
-
-    const item_before_not_inventory = inventory_before.filter(
-      (item) =>
-        !calculate_inventory.some((el) => el.item_id == item.item_id) &&
-        +item.stock_physical > 0
-    );
-
-    item_before_not_inventory.forEach((item) => {
-      calculate_inventory.push({
-        ...item,
-        id: undefined,
-        stock_current: item.stock_physical,
-        stock_physical: 0,
-        stock_last: item.stock_physical,
-        total_last: item.total_value,
-        status: status,
-        quantity_in_dp: 0,
-        quantity_out_dp: 0,
-        quantity_in_mv: 0,
-        quantity_out_mv: 0,
-        quantity_in_pu: 0,
-        quantity_out_sl: 0,
-        total_value: 0,
-      });
-    });
-
-    return calculate_inventory;
+    return stock_modified;
   }
 
-  protected clear_stock(stock: InvStockInsert[]): InvStockInsert[] {
+  protected clear_stock(
+    stock: InvStockSelectOptionalId[]
+  ): InvStockSelectOptionalId[] {
     const filtered = stock.filter((el) => {
       const qid = el.quantity_in_dp ? +el.quantity_in_dp : 0;
       const qod = el.quantity_out_dp ? +el.quantity_out_dp : 0;
@@ -405,6 +266,7 @@ export abstract class Dispatch {
         "inv_dispatch.sucursal_to_id as warehouse_to",
         "inv_dispatch.move_at as dispatch_at",
         "inv_dispatch.status as status",
+        "inv_dispatch.move_type as type",
       ])
       .where("inv_dispatch.id", "=", id)
       .execute();

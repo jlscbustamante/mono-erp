@@ -1,31 +1,39 @@
 import { db } from "#app/config/database.ts";
 import { Dispatch } from "#app/modules/inventory/case/dispatch.ts";
-import { DISPATCH_MOVE_TYPE, DISPATCH_STATUS } from "@scope/shared";
+import { DISPATCH_STATUS } from "@scope/shared";
 import { format } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 import { sql } from "kysely";
 
-export class ResetDispatch extends Dispatch {
+export class DeleteDispatch extends Dispatch {
   constructor() {
     super();
   }
 
-  async execute(dispatch_id: number, username: string) {
+  async execute(dispatch_id: number, username: string, reason?: string) {
     const items_dispatch = await this.get_dispatch(dispatch_id);
     if (!items_dispatch.length) {
       throw new Error("No se encontró el despacho");
     }
-    if (items_dispatch[0].type != DISPATCH_MOVE_TYPE.WAREHOUSE_TO_STORE) {
-      throw new HTTPException(400, {
-        message: `El despacho no es de tipo Almacen a Tienda`,
-      });
-    }
     const date = format(items_dispatch[0].dispatch_at, "yyyy-MM-dd");
     const status = items_dispatch[0].status;
-    if (status != DISPATCH_STATUS.DISPATCHED) {
+
+    if (status != DISPATCH_STATUS.NEW && status != DISPATCH_STATUS.INVOICED) {
       throw new HTTPException(400, {
-        message: `El despacho no tiene el estado correcto(despachado)`,
+        message: `El despacho no tiene el estado correcto`,
       });
+    }
+
+    if (status == DISPATCH_STATUS.NEW) {
+      await db
+        .updateTable("inv_dispatch")
+        .set({
+          status: DISPATCH_STATUS.CANCELLED,
+          approved_by: username,
+        })
+        .where("id", "=", dispatch_id)
+        .executeTakeFirstOrThrow();
+      return;
     }
 
     const warehouse_from_code = items_dispatch[0].warehouse_from;
@@ -44,6 +52,17 @@ export class ResetDispatch extends Dispatch {
       warehouse_from_code,
       warehouse_to_code
     );
+
+    if (status == DISPATCH_STATUS.INVOICED) {
+      if (!reason) {
+        throw new HTTPException(400, {
+          message: `Para anular el despacho facturado, debe indicar el motivo`,
+        });
+      }
+      // anular factras
+      // y dejar continuar
+      throw new Error("NOT IMPLEMENTED");
+    }
 
     const _stock_from = await this.get_stock_reset(
       store_from,
@@ -77,7 +96,7 @@ export class ResetDispatch extends Dispatch {
       await trx
         .updateTable("inv_dispatch")
         .set({
-          status: DISPATCH_STATUS.NEW,
+          status: DISPATCH_STATUS.CANCELLED,
           approved_by: username,
           sucursal_from_id: store_from.id,
         })

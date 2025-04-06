@@ -35,6 +35,7 @@ export class DispatchExceptional extends Dispatch {
         dispatch_at: parseISO(data.dispatchAt),
         presentation_id: item.presentationId,
         presentation_name: item.presentationName,
+        type: DISPATCH_MOVE_TYPE.EXCEPTIONAL,
         status: 3,
         warehouse_from: data.wareFromId,
         warehouse_to: data.wareToId,

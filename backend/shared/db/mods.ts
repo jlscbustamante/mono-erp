@@ -14,6 +14,9 @@ export type InvEquivalenceSelect = Selectable<InvEquivalence>;
 
 export type InvStockInsert = Insertable<InvStock>;
 export type InvStockSelect = Selectable<InvStock>;
+export interface InvStockSelectOptionalId extends Omit<InvStockSelect, "id"> {
+  id?: number;
+}
 
 export type InvDispatchSelect = Selectable<InvDispatch>;
 export type InvDispatchItemSelect = Selectable<InvDispatchItem>;

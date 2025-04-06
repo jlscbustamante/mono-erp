@@ -1,5 +1,9 @@
 import { zValidator } from "@hono/zod-validator";
-import { DispatchCreateDto, DispatchUpdateDto } from "@scope/shared";
+import {
+  DispatchCreateDto,
+  DispatchUpdateDto,
+  MoveBetweenStoresDto,
+} from "@scope/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
 import { z } from "zod";
@@ -11,6 +15,7 @@ import {
 } from "./case/dispatch_order.ts";
 import {
   dispatch_exceptional_uc,
+  dispatch_movement,
   dispatch_order_by_id_uc,
   dividerDispatchService,
   reset_dispatch_uc,
@@ -76,8 +81,14 @@ export const inventoryRouter = new Hono()
   .post("dispatch_exceptional", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchCreateDto;
-    const data = await dispatch_exceptional_uc.execute(body, user.name);
-    return c.json({ message: "ok", data });
+    await dispatch_exceptional_uc.execute(body, user.name);
+    return c.json({ message: "ok" });
+  })
+  .post("dispatch_movement", async (c) => {
+    const user = c.get("user");
+    const body = (await c.req.json()) as MoveBetweenStoresDto;
+    await dispatch_movement.execute(body, user.name);
+    return c.json({ message: "ok" });
   })
   .post("dispatch_order_id", async (c) => {
     const user = c.get("user");

@@ -86,3 +86,16 @@ export interface ITemplate {
   item_dispatch: IItem;
   equivalency: InvEquivalenceSelect | null;
 }
+
+export interface MoveItemDto {
+  itemId: number;
+  quantity: number;
+}
+
+export interface MoveBetweenStoresDto {
+  storeToId?: string;
+  storeFrom?: string;
+  moveAt: string;
+  gloss: string;
+  items: MoveItemDto[];
+}
