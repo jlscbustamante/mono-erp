@@ -8,6 +8,6 @@ const dialect = new MysqlDialect({
 });
 
 export const db = new Kysely<DB>({
-  log: ["query"],
+  // log: ["query"],
   dialect: dialect,
 });

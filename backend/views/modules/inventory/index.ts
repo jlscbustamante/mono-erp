@@ -77,7 +77,10 @@ export const inventoryRouter = new Hono()
     await dispatch_order_by_id_uc.execute_and_update(body, user.name);
     return c.json({ message: "ok" });
   })
-
+  .delete("dispatch_order", async (c) => {
+    const user = c.get("user");
+    const body = (await c.req.json()) as { id: number; reason?: string };
+  })
   .post("dispatch_exceptional", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchCreateDto;

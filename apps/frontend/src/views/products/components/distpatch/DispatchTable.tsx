@@ -129,6 +129,12 @@ export const DispatchTable = ({
     },
   })
 
+  const deleteDispatch = useMutation({
+    mutationFn: async (id: number) => {
+      // const req=await viewClient.api.view.inventory.
+    },
+  })
+
   const cancelInvoice = useMutation({
     mutationFn: async (data: { id: number; motivo: string }) => {
       await inventoryApi.cancelInvoice(data)
