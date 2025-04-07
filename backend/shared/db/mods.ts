@@ -2,6 +2,8 @@ import type { Insertable, Selectable } from "kysely";
 import type {
   AdmSucursal,
   InvDispatch,
+  InvDispatchbase,
+  InvDispatchbaseItem,
   InvDispatchItem,
   InvEquivalence,
   InvPurchase,
@@ -17,6 +19,9 @@ export type InvStockSelect = Selectable<InvStock>;
 export interface InvStockSelectOptionalId extends Omit<InvStockSelect, "id"> {
   id?: number;
 }
+
+export type InvDispatchBaseSelect = Selectable<InvDispatchbase>;
+export type InvDispatchBaseItemSelect = Selectable<InvDispatchbaseItem>;
 
 export type InvDispatchSelect = Selectable<InvDispatch>;
 export type InvDispatchItemSelect = Selectable<InvDispatchItem>;

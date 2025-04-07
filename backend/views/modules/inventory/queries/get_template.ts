@@ -1,13 +1,13 @@
 import { db } from "#app/config/database.ts";
+import { IItemTemplate } from "#app/modules/inventory/dto/item_template.dto.ts";
 import { get_equivalencies } from "#app/modules/inventory/queries/get_equivalences.ts";
 import { HTTPException } from "hono/http-exception";
 import { ITemplate } from "../../../../shared/types/index.ts";
 import { get_items } from "./get_items.ts";
 
-export const get_template = async (template_id: string) => {
-  const equivalencies = await get_equivalencies();
-  const items = await get_items();
-
+export const get_items_template = async (
+  template_id: string
+): Promise<IItemTemplate[]> => {
   const items_template = await db
     .selectFrom("inv_dispatchbase")
     .where("sucursal_type", "=", template_id)
@@ -18,6 +18,14 @@ export const get_template = async (template_id: string) => {
     )
     .selectAll()
     .execute();
+  return items_template;
+};
+
+export const get_template = async (template_id: string) => {
+  const equivalencies = await get_equivalencies();
+  const items = await get_items();
+
+  const items_template = await get_items_template(template_id);
 
   const template: ITemplate[] = [];
   for (const item of items_template) {
