@@ -15,7 +15,6 @@ import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 
-import { createDispatchException } from '@/data/hex/inventory'
 import {
   DISPATCH_MOVE_TYPE,
   DISPATCH_STATUS,
@@ -29,7 +28,9 @@ import {
   IInvProductItem,
 } from '@/data/products/types'
 import { fCurrency, filterSelectForm } from '@/utils'
+import type { DispatchCreateDto as IDispatchCreateDto } from '@types'
 
+import { viewClient } from '@/lib/rpc'
 import { useDispatch } from '../../state/useDispatch'
 import { ListItemsDispatchDrawer } from './LIistItemsDispatchDrawer'
 
@@ -96,7 +97,17 @@ export const CreateDispatchDrawer = () => {
   }
 
   const saveDispatchMt = useMutation({
-    mutationFn: createDispatchException,
+    // mutationFn: createDispatchException,
+    mutationFn: async (data: IDispatchCreateDto) => {
+      const request =
+        await viewClient.api.view.inventory.dispatch_exceptional.$post({
+          json: data,
+        })
+      if (!request.ok) {
+        const error = await request.json()
+        throw new Error(error.message ?? 'Error al crear el despacho')
+      }
+    },
     onError: (err) => {
       toast.error(err.message)
     },

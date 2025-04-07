@@ -7,7 +7,7 @@ import { DispatchStatus, IDispatch } from '@/data/products/types'
 import { fNumber } from '@/utils/formatNumber'
 
 import { PATHS } from '@/const/paths'
-import { resetAndDeleteMovement } from '@/data/hex/inventory'
+import { viewClient } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
@@ -21,7 +21,17 @@ export const TableMoves = () => {
 
   const resetAndDeleteMovementMt = useMutation({
     mutationFn: async (id: number) => {
-      await resetAndDeleteMovement(id)
+      // await resetAndDeleteMovement(id)
+      const request =
+        await viewClient.api.view.inventory.dispatch_movement.$delete({
+          json: {
+            id,
+          },
+        })
+      if (!request.ok) {
+        const res = await request.json()
+        throw new Error(res.message ?? 'Error al anular el pedido')
+      }
     },
     onSuccess: () => {
       query.refetch()

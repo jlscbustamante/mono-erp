@@ -83,14 +83,19 @@ export class DispatchExceptional extends Dispatch {
     const stock_to = this.clear_stock(_stock_to);
 
     const items_to_insert: InvDispatchItemInsert[] = items_dispatch.map(
-      (el) => ({
-        ...el,
-        dispatch_at: undefined,
-        status: undefined,
-        warehouse_from: undefined,
-        warehouse_to: undefined,
-        id: undefined,
-      })
+      (el) => {
+        const {
+          warehouse_from: _1,
+          warehouse_to: _2,
+          dispatch_at: _3,
+          status: _4,
+          type: _5,
+          id: _6,
+          ...rest
+        } = el;
+
+        return rest;
+      }
     );
 
     const total = items_dispatch.reduce(

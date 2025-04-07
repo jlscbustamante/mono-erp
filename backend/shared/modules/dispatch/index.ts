@@ -62,7 +62,8 @@ export interface DispatchItemCreateDto
   id?: number;
 }
 
-export interface DispatchCreateDto extends Omit<Dispatch, "items" | "id"> {
+export interface DispatchCreateDto
+  extends Omit<Dispatch, "items" | "id" | "wareFromName" | "wareToName"> {
   items: DispatchItemCreateDto[];
 }
 

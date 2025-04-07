@@ -1,4 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
+import { MoveBetweenStoresDto } from '@types'
 import {
   Button,
   DatePicker,
@@ -17,12 +18,12 @@ import { MdDelete } from 'react-icons/md'
 import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
 
-import { approveMovement } from '@/data/hex/inventory'
 import {
   DispatchCreate,
   getItemsInventario,
   getSucursalList,
 } from '@/data/products/sdk'
+import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 
 const createMoveDrawerAtom = atom({
@@ -93,7 +94,17 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
   }
 
   const crearPedidoMt = useMutation({
-    mutationFn: approveMovement,
+    // mutationFn: approveMovement,
+    mutationFn: async (data: MoveBetweenStoresDto) => {
+      const request =
+        await viewClient.api.view.inventory.dispatch_movement.$post({
+          json: data,
+        })
+      if (!request.ok) {
+        const error = await request.json()
+        throw new Error(error.message ?? 'Error al despachar')
+      }
+    },
     onSuccess: () => {
       toast.success('Movimiento creado y despachado')
       onCreate()

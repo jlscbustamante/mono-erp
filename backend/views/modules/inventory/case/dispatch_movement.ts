@@ -348,6 +348,7 @@ export class DispatchMovement extends Dispatch {
           status: DISPATCH_STATUS.CANCELLED,
           created_by: username,
         })
+        .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
     });
   }

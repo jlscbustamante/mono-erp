@@ -94,6 +94,7 @@ export const inventoryRouter = new Hono()
     const user = c.get("user");
     const body = (await c.req.json()) as { id: number };
     await dispatch_movement.delete(body.id, user.name);
+    return c.json({ message: "ok" });
   })
   .post("dispatch_order_id", async (c) => {
     const user = c.get("user");
