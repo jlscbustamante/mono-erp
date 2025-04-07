@@ -85,7 +85,7 @@ export abstract class Dispatch {
               +template_item.equivalency.value_from;
           }
         }
-        relation[item_dispatched.item_id] = new_dispatch_quantity;
+        relation[template_item.item_stock.item_id] = new_dispatch_quantity;
       }
     }
 
@@ -242,11 +242,11 @@ export abstract class Dispatch {
       const qom = el.quantity_out_mv ? +el.quantity_out_mv : 0;
       const qos = el.quantity_out_sl ? +el.quantity_out_sl : 0;
       const qip = el.quantity_in_pu ? +el.quantity_in_pu : 0;
-      const current = el.stock_current ? +el.stock_current : 0;
+      const current = Math.abs(el.stock_current ? +el.stock_current : 0);
       const physical = el.stock_physical ? +el.stock_physical : 0;
       const last = el.stock_last ? +el.stock_last : 0;
       const sum = qid + qod + qim + qom + qos + qip + current + physical + last;
-      return sum > 0;
+      return sum != 0;
     });
 
     return filtered.length == 0 ? [stock[0]] : filtered;

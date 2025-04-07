@@ -207,13 +207,27 @@ export class DispatchOrderById extends Dispatch {
       "in",
       username
     );
+    console.log(
+      "from : ",
+      _stock_from.filter((el) => el.item_name.includes("ACEITUNA"))
+    );
+    console.log("longitud stock from", _stock_from.length);
     const stock_from = this.clear_stock(_stock_from);
+    console.log("longitud stock from despues de limpiar", stock_from.length);
     const stock_to = this.clear_stock(_stock_to);
 
-    const item_to_isert: InvDispatchItemInsert[] = items_dispatch.map((el) => ({
-      ...el,
-      id: undefined,
-    }));
+    const item_to_isert: InvDispatchItemInsert[] = items_dispatch.map((el) => {
+      const {
+        warehouse_from: _1,
+        warehouse_to: _2,
+        dispatch_at: _3,
+        status: _4,
+        type: _5,
+        id: _6,
+        ...rest
+      } = el;
+      return rest;
+    });
     const total = items_dispatch.reduce(
       (acc, el) => acc + (el.total_value ? +el.total_value : 0),
       0
@@ -231,18 +245,18 @@ export class DispatchOrderById extends Dispatch {
         .values([...stock_from, ...stock_to])
         .executeTakeFirstOrThrow();
 
-      await trx
-        .updateTable("inv_dispatch")
-        .set({
-          status: DISPATCH_STATUS.DISPATCHED,
-          approved_by: username,
-          sucursal_from_id: store_from.id,
-          gloss: data.gloss ?? "",
-          total_value: total.toString(),
-          net_value: total.toString(),
-        })
-        .where("id", "=", data.id)
-        .executeTakeFirstOrThrow();
+      // await trx
+      //   .updateTable("inv_dispatch")
+      //   .set({
+      //     status: DISPATCH_STATUS.DISPATCHED,
+      //     approved_by: username,
+      //     sucursal_from_id: store_from.id,
+      //     gloss: data.gloss ?? "",
+      //     total_value: total.toString(),
+      //     net_value: total.toString(),
+      //   })
+      //   .where("id", "=", data.id)
+      //   .executeTakeFirstOrThrow();
 
       await trx
         .deleteFrom("inv_dispatch_item")

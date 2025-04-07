@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa6'
 
-import { simpleDispatch } from '@/data/hex/inventory'
 import { cn } from '@/utils'
 
 export const ProcessMultipleDispatch = ({
@@ -44,7 +43,7 @@ export const ProcessMultipleDispatch = ({
 
   const dispatchOne = async (id: number, date: string, origin?: string) => {
     try {
-      await simpleDispatch(id, date, origin)
+      // await simpleDispatch(id, date, origin)
     } catch (err: any) {
       const message = err.message ?? 'Error al procesar el despacho'
       throw new Error(id + ' : ' + message)

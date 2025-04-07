@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import type { DispatchUpdateDto as IDispatchUpdateDto } from '@types'
 import {
   Button,
   DatePicker,
@@ -15,7 +16,7 @@ import { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { atom, useRecoilState } from 'recoil'
 
-import { approveDispatch, updateDispatch } from '@/data/hex/inventory'
+import { updateDispatch } from '@/data/hex/inventory'
 import {
   Dispatch,
   DISPATCH_STATUS,
@@ -24,6 +25,7 @@ import {
 } from '@/data/hex/types'
 import { fCurrency } from '@/utils'
 
+import { viewClient } from '@/lib/rpc'
 import { useSucursales } from '../components/stock/hooks/useSucursales'
 import { DispatchEditItemsDrawer } from './dispatch-edit-items-drawer'
 import { useDispatchDetail } from './use-dispatch-detail'
@@ -86,7 +88,16 @@ const DispatchEditStructure = ({
   })
 
   const dispatchItemsMt = useMutation({
-    mutationFn: approveDispatch,
+    // mutationFn: approveDispatch,
+    mutationFn: async (data: IDispatchUpdateDto) => {
+      const request = await viewClient.api.view.inventory.dispatch_order.$post({
+        json: data,
+      })
+      if (!request.ok) {
+        const error = await request.json()
+        throw new Error(error.message ?? 'Error al despachar')
+      }
+    },
     onSuccess: () => {
       onUpdate?.()
     },
