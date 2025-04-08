@@ -11,12 +11,23 @@ export class DeleteDispatch extends Dispatch {
   }
 
   async execute(dispatch_id: number, username: string, reason?: string) {
+    const dispatch_list = await db
+      .selectFrom("inv_dispatch")
+      .select(["num_invoice", "status"])
+      .where("id", "=", dispatch_id)
+      .execute();
+    if (dispatch_list.length == 0)
+      throw new HTTPException(400, {
+        message: `No se encontró el despacho`,
+      });
+    const dispatch = dispatch_list[0];
+
     const items_dispatch = await this.get_dispatch(dispatch_id);
     if (!items_dispatch.length) {
       throw new Error("No se encontró el despacho");
     }
     const date = format(items_dispatch[0].dispatch_at, "yyyy-MM-dd");
-    const status = items_dispatch[0].status;
+    const status = dispatch.status;
 
     if (status != DISPATCH_STATUS.NEW && status != DISPATCH_STATUS.INVOICED) {
       throw new HTTPException(400, {
@@ -53,17 +64,6 @@ export class DeleteDispatch extends Dispatch {
       warehouse_to_code
     );
 
-    if (status == DISPATCH_STATUS.INVOICED) {
-      if (!reason) {
-        throw new HTTPException(400, {
-          message: `Para anular el despacho facturado, debe indicar el motivo`,
-        });
-      }
-      // anular factras
-      // y dejar continuar
-      throw new Error("NOT IMPLEMENTED");
-    }
-
     const _stock_from = await this.get_stock_reset(
       store_from,
       items_dispatch,
@@ -80,6 +80,19 @@ export class DeleteDispatch extends Dispatch {
     );
     const stock_from = this.clear_stock(_stock_from);
     const stock_to = this.clear_stock(_stock_to);
+
+    if (status == DISPATCH_STATUS.INVOICED) {
+      if (!dispatch.num_invoice)
+        throw new HTTPException(400, {
+          message: `No se encontró la factura en el despacho`,
+        });
+      if (!reason)
+        throw new HTTPException(400, {
+          message: `Para anular el despacho facturado, debe indicar el motivo`,
+        });
+
+      await cancelInvoice(dispatch.num_invoice, reason);
+    }
 
     await db.transaction().execute(async (trx) => {
       await trx
@@ -104,4 +117,20 @@ export class DeleteDispatch extends Dispatch {
         .executeTakeFirstOrThrow();
     });
   }
+}
+
+async function cancelInvoice(invoice: string, reason: string) {
+  const request = await fetch(
+    "https://facturacion.pizzaraul.com/api/documentSunatVoided",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        source: "ERP",
+        order_id: invoice,
+        motivo: reason,
+      }),
+    }
+  );
+
+  if (!request.ok) throw new Error("No se puede cancelar la factura");
 }
