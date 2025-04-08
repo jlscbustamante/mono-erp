@@ -158,7 +158,7 @@ export class DispatchOrderById extends Dispatch {
   /**
    * @deprecated Este metodo sigue usando un dto anterior
    */
-  async execute_and_update(data: DispatchUpdateDto, username: string) {
+  async execute_and_update_wrapper(data: DispatchUpdateDto, username: string) {
     let items_dispatch = await this.get_dispatch(data.id);
 
     items_dispatch = items_dispatch.map((item) => {
@@ -177,8 +177,12 @@ export class DispatchOrderById extends Dispatch {
         warehouse_to: data.wareToId,
       };
     });
+    const dispatch_id = data.id;
     const warehouse_from_code = data.wareFromId;
     const warehouse_to_code = data.wareToId;
+    const dispatch_at = data.dispatchAt;
+    const gloss = data.gloss ?? "";
+
     if (!warehouse_from_code) {
       throw new HTTPException(400, {
         message: `No se encontró el almacén de origen`,
@@ -196,14 +200,14 @@ export class DispatchOrderById extends Dispatch {
     const _stock_from = await this.get_stock(
       store_from,
       items_dispatch,
-      data.dispatchAt,
+      dispatch_at,
       "out",
       username
     );
     const _stock_to = await this.get_stock(
       store_to,
       items_dispatch,
-      data.dispatchAt,
+      dispatch_at,
       "in",
       username
     );
@@ -231,7 +235,7 @@ export class DispatchOrderById extends Dispatch {
       await trx
         .deleteFrom("inv_stock")
         .where("warehouse_id", "in", [store_from.id, store_to.id])
-        .where(sql`DATE(stock_at)`, "=", data.dispatchAt)
+        .where(sql`DATE(stock_at)`, "=", dispatch_at)
         .executeTakeFirstOrThrow();
 
       await trx
@@ -245,16 +249,16 @@ export class DispatchOrderById extends Dispatch {
           status: DISPATCH_STATUS.DISPATCHED,
           approved_by: username,
           sucursal_from_id: store_from.id,
-          gloss: data.gloss ?? "",
+          gloss: gloss,
           total_value: total.toString(),
           net_value: total.toString(),
         })
-        .where("id", "=", data.id)
+        .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
 
       await trx
         .deleteFrom("inv_dispatch_item")
-        .where("dispatch_id", "=", data.id)
+        .where("dispatch_id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
       await trx
         .insertInto("inv_dispatch_item")

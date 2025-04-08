@@ -18,7 +18,7 @@ import {
 } from '@/data/hex/types'
 import { cn, fCurrency, filterSelectForm } from '@/utils'
 
-import { modifyDispatched } from '@/data/hex/inventory'
+import { viewClient } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import { useItems } from '../hooks/use-items'
@@ -115,12 +115,28 @@ const ModifyDispatchInformation = ({
     return true
   }, [items, toDelete, toCreate, toUpdate, dispatch])
 
-  // const modifyDispatchMt = useMutation({
-  //   mutationFn: async () => {},
-  // })
-
   const modifyDispatchedMt = useMutation({
-    mutationFn: modifyDispatched,
+    mutationFn: async (data: {
+      dispatchId: number
+      toCreate: DispatchItemAddDto[]
+      toUpdate: DispatchItem[]
+      toDelete: DispatchItem[]
+      taxValue: number
+    }) => {
+      const req = await viewClient.api.view.inventory.update_dispatched.$put({
+        json: {
+          dispatch_id: data.dispatchId,
+          to_create: data.toCreate,
+          to_update: data.toUpdate,
+          to_delete: data.toDelete,
+          tax_value: data.taxValue,
+        },
+      })
+      if (!req.ok) {
+        const error = await req.json()
+        throw new Error(error.message ?? 'Error al modificar el despacho')
+      }
+    },
     onError: (err) => {
       toast.error(err.message)
     },

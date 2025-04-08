@@ -13,7 +13,7 @@ import { cn, filterSelectForm } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
 import { PATHS } from '@/const/paths'
-import { resetAndDeleteDispatch, resetDispatch } from '@/data/hex/inventory'
+import { resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { inventoryApi } from '@/lib/api/inventory'
@@ -119,32 +119,21 @@ export const DispatchTable = ({
     },
   })
 
-  const resetAnDeleteMt = useMutation({
-    mutationFn: resetAndDeleteDispatch,
-    onSuccess: () => {
-      onUpdate()
-    },
-    onError: () => {
-      toast.error('Error al resetear el movimiento')
-    },
-  })
-
-  const deleteDispatch = useMutation({
-    mutationFn: async (id: number) => {
-      // const req=await viewClient.api.view.inventory.
-    },
-  })
-
-  const cancelInvoice = useMutation({
-    mutationFn: async (data: { id: number; motivo: string }) => {
-      await inventoryApi.cancelInvoice(data)
+  const deleteDispatchMt = useMutation({
+    mutationFn: async (props: { id: number; reason?: string }) => {
+      const req = await viewClient.api.view.inventory.dispatch_order.$delete({
+        json: props,
+      })
+      if (!req.ok) {
+        const error = await req.json()
+        throw new Error(error.message)
+      }
     },
     onSuccess: () => {
       onUpdate()
-      setDeleteData(null)
     },
-    onError: () => {
-      toast.error('Error al cancelar la factura')
+    onError: (error) => {
+      toast.error(error.message ?? 'Error al eliminar el despacho')
     },
   })
 
@@ -154,6 +143,7 @@ export const DispatchTable = ({
       dataIndex: 'id',
       key: 'id',
       sorter: (a, b) => a.id - b.id,
+      showSorterTooltip: false,
     },
     {
       title: 'F. despacho',
@@ -164,6 +154,7 @@ export const DispatchTable = ({
         return text.split(' ')[0]
       },
       sorter: (a, b) => dayjs(a.moveAt).unix() - dayjs(b.moveAt).unix(),
+      showSorterTooltip: false,
     },
 
     {
@@ -172,6 +163,7 @@ export const DispatchTable = ({
       key: 'wareFrom',
       sorter: (a, b) =>
         a.wareFrom?.name.localeCompare(b.wareFrom?.name ?? '') ?? -1,
+      showSorterTooltip: false,
     },
     {
       title: 'Destino',
@@ -179,6 +171,7 @@ export const DispatchTable = ({
       sorter: (a, b) =>
         a.wareTo?.name.localeCompare(b.wareTo?.name ?? '') ?? -1,
       key: 'wareTo',
+      showSorterTooltip: false,
       render: (text, record) => {
         const itemIds = record.items?.map((el) => el.itemId) ?? []
         const hasObservados = itemIds.some((el) => observadosItems.includes(el))
@@ -198,11 +191,14 @@ export const DispatchTable = ({
       dataIndex: 'gloss',
       key: 'gloss',
       sorter: (a, b) => a.gloss.localeCompare(b.gloss),
+      showSorterTooltip: false,
     },
     {
       title: 'Guia',
       align: 'center',
       sorter: () => -1,
+      showSorterTooltip: false,
+
       render: (_: unknown, record) => {
         const doc = record.numGuide ? docsData[record.numGuide] : undefined
 
@@ -246,6 +242,8 @@ export const DispatchTable = ({
       title: 'Factura',
       align: 'center',
       sorter: () => -1,
+      showSorterTooltip: false,
+
       render: (_: unknown, record) => {
         const doc = record.numInvoice ? docsData[record.numInvoice] : undefined
 
@@ -288,6 +286,8 @@ export const DispatchTable = ({
       title: 'Total',
       dataIndex: 'totalValue',
       key: 'totalPrice',
+      showSorterTooltip: false,
+
       render: (text) => fNumber(text),
       sorter: (a, b) => a.totalValue - b.totalValue,
     },
@@ -296,11 +296,15 @@ export const DispatchTable = ({
       dataIndex: 'status',
       width: 110,
       key: 'status',
+      showSorterTooltip: false,
+
       render: (status: DISPATCH_STATUS) => <StatusTag status={status} />,
       sorter: () => -1,
     },
     {
       title: '',
+      showSorterTooltip: false,
+
       onCell: () => {
         return {
           width: '20px',
@@ -422,16 +426,10 @@ export const DispatchTable = ({
                   title: 'Eliminar',
                   content: '¿Está seguro de anular este despacho?',
                   onOk: () => {
-                    resetAnDeleteMt.mutate(record.id)
-                    // rejectDispatch(record.id)
-                    //   .then((message) => {
-                    //     toast.success(message.message)
-                    //     query.refetch()
-                    //   })
-                    //   .catch((err) => {
-                    //     console.log('here')
-                    //     toast.error(err.message)
-                    //   })
+                    // resetAnDeleteMt.mutate(record.id)
+                    deleteDispatchMt.mutate({
+                      id: record.id,
+                    })
                   },
                 })
               }}
@@ -551,16 +549,16 @@ export const DispatchTable = ({
       <Modal
         open={!!deleteData}
         title="¿Eliminar despacho facturado?"
-        confirmLoading={cancelInvoice.isPending}
+        confirmLoading={deleteDispatchMt.isPending}
         onCancel={() => {
           setDeleteData(null)
         }}
         okText="Eliminar"
         onOk={() => {
           if (deleteData) {
-            cancelInvoice.mutate({
+            deleteDispatchMt.mutate({
               id: deleteData.id,
-              motivo: deleteData.motivo,
+              reason: deleteData.motivo,
             })
           }
         }}

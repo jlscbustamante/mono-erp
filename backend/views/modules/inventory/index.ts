@@ -1,6 +1,8 @@
 import { zValidator } from "@hono/zod-validator";
 import {
   DispatchCreateDto,
+  DispatchItem,
+  DispatchItemAddDto,
   DispatchUpdateDto,
   MoveBetweenStoresDto,
 } from "@scope/shared";
@@ -14,11 +16,13 @@ import {
   stop_queue,
 } from "./case/dispatch_order.ts";
 import {
+  delete_dispatch_uc,
   dispatch_exceptional_uc,
   dispatch_movement,
   dispatch_order_by_id_uc,
   dividerDispatchService,
   reset_dispatch_uc,
+  update_dispatched_uc,
 } from "./dependencies.ts";
 
 export const inventoryRouter = new Hono()
@@ -74,17 +78,37 @@ export const inventoryRouter = new Hono()
   .post("dispatch_order", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchUpdateDto;
-    await dispatch_order_by_id_uc.execute_and_update(body, user.name);
+    await dispatch_order_by_id_uc.execute_and_update_wrapper(body, user.name);
     return c.json({ message: "ok" });
   })
   .delete("dispatch_order", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as { id: number; reason?: string };
+    await delete_dispatch_uc.execute(body.id, user.name, body.reason);
+
+    return c.json({ message: "ok" });
+  })
+  .put("update_dispatched", async (c) => {
+    const user = c.get("user");
+    const body = (await c.req.json()) as {
+      dispatch_id: number;
+      to_create: DispatchItemAddDto[];
+      to_update: DispatchItem[];
+      to_delete: DispatchItem[];
+      tax_value: number;
+    };
+
+    await update_dispatched_uc.execute(body, user.name);
+
+    return c.json({
+      message: "ok",
+    });
   })
   .post("dispatch_exceptional", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchCreateDto;
     await dispatch_exceptional_uc.execute(body, user.name);
+
     return c.json({ message: "ok" });
   })
   .post("dispatch_movement", async (c) => {

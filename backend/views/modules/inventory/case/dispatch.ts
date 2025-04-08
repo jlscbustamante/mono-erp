@@ -24,7 +24,8 @@ export abstract class Dispatch {
     dispatch_items: IDispatch[],
     date: string,
     dir: "in" | "out" = "out",
-    user: string = "sys"
+    user: string = "sys",
+    stock_base?: InvStockSelectOptionalId[]
   ): Promise<InvStockSelectOptionalId[]> {
     if (!warehouse.guide_template)
       throw new HTTPException(400, {
@@ -42,14 +43,16 @@ export abstract class Dispatch {
       });
     }
 
-    const stock = await generate_stock_report(
-      warehouse.id,
-      date,
-      warehouse.guide_template,
-      warehouse.type_sede
-        ? (warehouse.type_sede as SUCURSAL_TYPE)
-        : SUCURSAL_TYPE.STORE
-    );
+    const stock = stock_base
+      ? stock_base
+      : await generate_stock_report(
+          warehouse.id,
+          date,
+          warehouse.guide_template,
+          warehouse.type_sede
+            ? (warehouse.type_sede as SUCURSAL_TYPE)
+            : SUCURSAL_TYPE.STORE
+        );
 
     const relation: Record<number, number> = {};
     for (const item_dispatched of dispatch_items) {
@@ -191,7 +194,8 @@ export abstract class Dispatch {
               +template_item.equivalency.value_from;
           }
         }
-        relation[item_dispatched.item_id] = new_dispatch_quantity;
+        // relation[item_dispatched.item_id] = new_dispatch_quantity;
+        relation[template_item.item_stock.item_id] = new_dispatch_quantity;
       }
     }
 
