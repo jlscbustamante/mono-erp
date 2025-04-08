@@ -9,6 +9,7 @@ import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
 import { recipeRouter } from "./modules/recipe/index.ts";
+import { catalogRouter } from "#app/modules/recipe/catalog-sales/index.ts";
 
 const app = new Hono();
 
@@ -23,7 +24,8 @@ export const apiRouter = app
   .route("requirement", requirementRouter)
   .route("costcenter", costCenterRouter)
   .route("cashbank", cashBankRouter)
-  .route("recipe", recipeRouter);
+  .route("recipe", recipeRouter)
+  .route("recipe/catalog-sales", catalogRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

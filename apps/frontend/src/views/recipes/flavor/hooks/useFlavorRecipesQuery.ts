@@ -1,8 +1,9 @@
-import { getFlavorsByBaseId } from "@/data/Recipe/sdk"
+import { IRecipeFlavor } from "@/views/recipes/shared/types"
 import { useQuery } from "@tanstack/react-query"
+import { getFlavorsByBaseId } from "@/data/Recipe/sdk"
 
 export const useFlavorRecipesQuery = (baseId?: number) => {
-  return useQuery({
+  return useQuery<IRecipeFlavor[]>({
     queryKey: ["flavor-recipes", baseId],
     queryFn: async () => {
       if (baseId === undefined) throw new Error("baseId is undefined");
@@ -10,6 +11,5 @@ export const useFlavorRecipesQuery = (baseId?: number) => {
     },
     enabled: !!baseId,
     staleTime: Infinity,
-    //staleTime: 5 * 60 * 1000,
   });
-};
+}

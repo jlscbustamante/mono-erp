@@ -4,5 +4,8 @@
     "jsx":"precompile",
     "jsxImportSource":"hono/jsx",
     "strict":true
+  },
+  "imports": {
+    "@pizzadb/": "./pizzadb/"
   }
 }

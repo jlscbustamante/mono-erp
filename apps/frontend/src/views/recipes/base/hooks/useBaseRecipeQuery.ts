@@ -1,11 +1,18 @@
 import { useQuery } from '@tanstack/react-query'
-import { getAllBaseRecipes } from '../services/recipeBaseApi'
+import { baseUrl } from '@/data/api/baseUrl';
+import { IRecipeBase } from '../../shared/types';
 
-export const useBaseRecipesQuery = () => {
+export const useBaseRecipesBySizeQuery = (sizeId?: number) => {
   return useQuery({
-    queryKey: ['base-recipes'],
-    queryFn: getAllBaseRecipes,
-    staleTime: Infinity,
-    //staleTime: 5 * 60 * 1000, // 5 minutos
-  })
-}
+    queryKey: ['base-recipes', sizeId],
+    queryFn: async () => {
+      if (!sizeId) throw new Error("sizeId no esta definido");
+      return baseUrl<IRecipeBase[]>(`/api/view/recipe/base/bySize/${sizeId}`, {
+        method: 'GET',
+        useV2: true
+      });
+    },
+    enabled: !!sizeId,
+    staleTime: Infinity
+  });
+};

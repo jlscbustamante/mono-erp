@@ -4,18 +4,18 @@ import { atom, RecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import * as sdk from '@/data/Recipe/sdk'
 import { toast } from "react-toastify";
 import { NOTIFICATION } from "@/const/notification";
-import { IFinalRecipe } from "../../shared/types";
+import { IFinalRecipePayload } from "../../shared/types";
 
 
 
 
-export const filtersRecipetAtom : RecoilState<Filters3<IFinalRecipe>> = atom({
+export const filtersRecipetAtom : RecoilState<Filters3<IFinalRecipePayload>> = atom({
     key: 'filtersRecipe',
     default: {},
 })
 
 export const useRecipe = () => {
-    const [finalRecipes, setFinalRecipes] = useState<IFinalRecipe[]>([])
+    const [finalRecipes, setFinalRecipes] = useState<IFinalRecipePayload[]>([])
     const [filterName, setFilterName] = useState("")
     const [, onReload] = useReducer((state) => state + 1, 0)
     const [, setControler] = useReducer((state) => state + 1, 0)

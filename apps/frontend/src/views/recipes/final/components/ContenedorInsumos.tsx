@@ -1,14 +1,14 @@
 import { List, Button, Skeleton } from "antd"
 import { useSuppliesQuery } from "@/views/recipes/supplies/hooks/useSuppliesQuery"
-import { ISupplies } from "@/views/recipes/shared/types"
+import { IItem, medidas } from "@/views/recipes/shared/types"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
 
 export const ContenedorInsumos = () => {
   const { data: insumos, isLoading } = useSuppliesQuery()
   const { selected, add, remove } = useRecipeBuilderStore()
 
-  const isSelected = (item: ISupplies) =>
-    selected.some(i => i.name === item.name && i.type === "insumo")
+  const isSelected = (item: IItem) =>
+    selected.some(i => i.item_id === item.id && i.type === 'insumo') // o 'sabor', 'insumo'
 
   return (
     <div className="space-y-3">
@@ -22,17 +22,25 @@ export const ContenedorInsumos = () => {
           <List.Item
             actions={[
               isSelected(item) ? (
-                <Button danger onClick={() => remove(item.name, "insumo")}>
+                <Button danger onClick={() => remove(item.id, 'insumo')}>
                   Remover
                 </Button>
               ) : (
-                <Button type="primary" onClick={() => add({ ...item, type: "insumo" })}>
+                <Button type="primary" 
+                onClick={() => add({
+                  item_id: item.id,
+                  name: item.name,
+                  quantity: item.quantity,
+                  measure_id: item.measure_id,
+                  presentation_id: item.presentation_id,
+                  type: 'insumo'
+                })}>
                   Agregar
                 </Button>
               )
             ]}
           >
-            {item.name} — {item.quantity} {item.unit}
+            {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas] || '??'}
           </List.Item>
         )}
       />

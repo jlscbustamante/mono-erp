@@ -8,6 +8,9 @@ import {
   templateRelation,
   templates,
   templatesItems,
+  inv_product,
+  inv_product_flavor,
+  inv_product_size
 } from "@scope/pizzadb";
 import { drizzle } from "drizzle-orm/mysql2";
 import mysql from "mysql2/promise";
@@ -34,5 +37,8 @@ export const db = drizzle(connection, {
     templateItemsRelation,
     templateRelation,
     stocks,
+    inv_product,
+    inv_product_flavor,
+    inv_product_size,
   },
 });
