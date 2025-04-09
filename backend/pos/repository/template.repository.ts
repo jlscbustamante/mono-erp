@@ -6,7 +6,7 @@ import {
   templates,
 } from "@scope/pizzadb";
 import { minutesToSeconds } from "date-fns";
-import { and, eq, inArray } from "drizzle-orm";
+import { eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
@@ -29,10 +29,7 @@ export class TemplateRepository {
         id: true,
         sucursal_type: true,
       },
-      where: and(
-        eq(templates.sucursal_type, company),
-        eq(templates.used_to, "D")
-      ),
+      where: eq(templates.sucursal_type, company),
       with: {
         items: {
           columns: {
