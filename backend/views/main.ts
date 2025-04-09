@@ -1,3 +1,4 @@
+import { redis } from "#app/config/redis.ts";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
@@ -17,7 +18,15 @@ export const apiRouter = app
   .use(session)
   .route("inventory", inventoryRouter)
   .route("company", companyRouter)
-  .route("purchase", purchase_router);
+  .route("purchase", purchase_router)
+  .get("clear_cache", async (c) => {
+    const key = c.req.query("key");
+    if (key) {
+      await redis.del(key);
+      return c.json({ message: "ok" });
+    }
+    return c.json({ message: "key is required" }, 400);
+  });
 
 apiRouter.onError((err, c) => {
   console.log(err);

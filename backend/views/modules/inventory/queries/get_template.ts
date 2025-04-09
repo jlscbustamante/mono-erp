@@ -1,6 +1,8 @@
 import { db } from "#app/config/database.ts";
+import { redis } from "#app/config/redis.ts";
 import { IItemTemplate } from "#app/modules/inventory/dto/item_template.dto.ts";
 import { get_equivalencies } from "#app/modules/inventory/queries/get_equivalences.ts";
+import { minutesToSeconds } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 import { ITemplate } from "../../../../shared/types/index.ts";
 import { get_items } from "./get_items.ts";
@@ -21,7 +23,13 @@ export const get_items_template = async (
   return items_template;
 };
 
-export const get_template = async (template_id: string) => {
+export const get_template = async (
+  template_id: string
+): Promise<ITemplate[]> => {
+  const cache = await redis.get(`erp:template:${template_id}`);
+  if (cache) {
+    return JSON.parse(cache) as ITemplate[];
+  }
   const equivalencies = await get_equivalencies();
   const items = await get_items();
 
@@ -72,5 +80,11 @@ export const get_template = async (template_id: string) => {
     }
   }
 
+  await redis.set(
+    `erp:template:${template_id}`,
+    JSON.stringify(template),
+    "EX",
+    minutesToSeconds(60 * 5)
+  );
   return template;
 };
