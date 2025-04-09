@@ -13,7 +13,6 @@ import { cn, filterSelectForm } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
 import { PATHS } from '@/const/paths'
-import { resetDispatch } from '@/data/hex/inventory'
 import { DOC_STATUS, DocResponse } from '@/data/hex/pos'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
 import { inventoryApi } from '@/lib/api/inventory'
@@ -99,7 +98,18 @@ export const DispatchTable = ({
   }, [queryDocs.data])
 
   const resetMt = useMutation({
-    mutationFn: resetDispatch,
+    // mutationFn: resetDispatch,
+    mutationFn: async (id: number) => {
+      const req = await viewClient.api.view.inventory.reset_dispatch.$post({
+        json: {
+          dispatch_id: id,
+        },
+      })
+      if (!req.ok) {
+        const error = await req.json()
+        throw new Error(error.message ?? 'Error al resetear el movimiento')
+      }
+    },
     onSuccess: () => {
       onUpdate()
     },

@@ -240,10 +240,10 @@ export abstract class Dispatch {
     stock: InvStockSelectOptionalId[]
   ): InvStockSelectOptionalId[] {
     const filtered = stock.filter((el) => {
-      const qid = el.quantity_in_dp ? +el.quantity_in_dp : 0;
-      const qod = el.quantity_out_dp ? +el.quantity_out_dp : 0;
-      const qim = el.quantity_in_mv ? +el.quantity_in_mv : 0;
-      const qom = el.quantity_out_mv ? +el.quantity_out_mv : 0;
+      const qid = Math.abs(el.quantity_in_dp ? +el.quantity_in_dp : 0);
+      const qod = Math.abs(el.quantity_out_dp ? +el.quantity_out_dp : 0);
+      const qim = Math.abs(el.quantity_in_mv ? +el.quantity_in_mv : 0);
+      const qom = Math.abs(el.quantity_out_mv ? +el.quantity_out_mv : 0);
       const qos = el.quantity_out_sl ? +el.quantity_out_sl : 0;
       const qip = el.quantity_in_pu ? +el.quantity_in_pu : 0;
       const current = Math.abs(el.stock_current ? +el.stock_current : 0);
