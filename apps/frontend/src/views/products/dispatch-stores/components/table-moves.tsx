@@ -47,6 +47,7 @@ export const TableMoves = () => {
       dataIndex: 'id',
       key: 'id',
       sorter: (a, b) => a.id - b.id,
+      showSorterTooltip: false,
     },
     {
       title: 'F. despacho',
@@ -56,6 +57,7 @@ export const TableMoves = () => {
       render: (text: string) => {
         return text.split(' ')[0]
       },
+      showSorterTooltip: false,
     },
 
     {
@@ -64,12 +66,14 @@ export const TableMoves = () => {
       key: 'wareFrom',
       sorter: (a, b) =>
         a.wareFrom?.name.localeCompare(b.wareFrom?.name ?? '') ?? 0,
+      showSorterTooltip: false,
     },
     {
       title: 'Destino',
       dataIndex: ['wareTo', 'name'],
       key: 'wareTo',
       sorter: (a, b) => a.wareTo?.name.localeCompare(b.wareTo?.name ?? '') ?? 0,
+      showSorterTooltip: false,
     },
     {
       title: 'Descripcion',
@@ -77,12 +81,14 @@ export const TableMoves = () => {
       dataIndex: 'gloss',
       key: 'gloss',
       sorter: (a, b) => a.gloss.localeCompare(b.gloss),
+      showSorterTooltip: false,
     },
     {
       title: 'Guia',
       dataIndex: 'numGuide',
       key: 'numGuide',
       sorter: () => -1,
+      showSorterTooltip: false,
     },
     {
       title: 'Total',
@@ -91,12 +97,15 @@ export const TableMoves = () => {
       align: 'right',
       render: (text) => fNumber(text, 2),
       sorter: (a, b) => a.totalValue - b.totalValue,
+      showSorterTooltip: false,
     },
     {
       title: 'Estado',
       dataIndex: 'status',
       width: 110,
       key: 'status',
+      showSorterTooltip: false,
+
       render: (status: DispatchStatus) => {
         if (status == DispatchStatus.NEW)
           return <Tag color="blue">Pedido nuevo</Tag>
@@ -113,6 +122,8 @@ export const TableMoves = () => {
     },
     {
       title: '',
+      showSorterTooltip: false,
+
       onCell: () => {
         return {
           width: '20px',

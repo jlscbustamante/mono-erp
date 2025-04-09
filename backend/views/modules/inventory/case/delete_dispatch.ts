@@ -29,7 +29,11 @@ export class DeleteDispatch extends Dispatch {
     const date = format(items_dispatch[0].dispatch_at, "yyyy-MM-dd");
     const status = dispatch.status;
 
-    if (status != DISPATCH_STATUS.NEW && status != DISPATCH_STATUS.INVOICED) {
+    if (
+      status != DISPATCH_STATUS.NEW &&
+      status != DISPATCH_STATUS.DISPATCHED &&
+      status != DISPATCH_STATUS.INVOICED
+    ) {
       throw new HTTPException(400, {
         message: `El despacho no tiene el estado correcto`,
       });
