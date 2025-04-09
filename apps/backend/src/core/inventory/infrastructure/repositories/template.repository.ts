@@ -1,10 +1,7 @@
 import { Equivalance } from '../../../../entities/inventory/Equivalance'
-import {
-  DispatchUsedTo,
-  InvDispatchBase,
-} from '../../../../entities/inventory/InvDispatchBase'
+import { InvDispatchBase } from '../../../../entities/inventory/InvDispatchBase'
 import { InvDispatchBaseItem } from '../../../../entities/inventory/InvDispatchBaseItem'
-import { cache, cacheApi } from '../../../../lib/cache'
+import { cache } from '../../../../lib/cache'
 import {
   invDispatchBase,
   invDispatchBaseItemRepository,
@@ -61,13 +58,11 @@ export class TemplateRepositoryImpl implements TemplateRepository {
   }
 
   async getTemplate(isWarehouse: boolean): Promise<TemplateItem[]> {
-    const valueCached = cacheApi.get(`template-dispatch-raul-${isWarehouse}`)
-    if (valueCached) return valueCached as TemplateItem[]
-
     const templatebase = await invDispatchBase.findOne({
       where: {
-        sucursal_type: 'PIZZARAUL',
-        used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
+        // sucursal_type: 'PIZZARAUL',
+        sucursal_type: isWarehouse ? 'PIERRES' : 'PIZZARAUL',
+        // used_to: isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store,
       },
     })
     if (!templatebase) {
@@ -137,8 +132,6 @@ export class TemplateRepositoryImpl implements TemplateRepository {
       )
       templateItems.push(itemTemplate)
     }
-
-    cacheApi.set(`template-dispatch-raul-${isWarehouse}`, templateItems)
 
     return templateItems
   }
@@ -223,11 +216,15 @@ export class TemplateRepositoryImpl implements TemplateRepository {
     //   },
     // })
     const templatebase = (await this.templatebass()).find((el) => {
-      return (
-        el.sucursal_type == 'PIZZARAUL' &&
-        el.used_to ==
-          (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
-      )
+      if (isWarehouse) {
+        return el.sucursal_type == 'PIERRES'
+      }
+      return el.sucursal_type == 'PIZZARAUL'
+      // return (
+      // el.sucursal_type == 'PIZZARAUL'
+      // el.used_to ==
+      //   (isWarehouse ? DispatchUsedTo.Warehouse : DispatchUsedTo.Store)
+      // )
     })
     if (!templatebase) {
       if (isWarehouse)
