@@ -107,7 +107,7 @@ export default function EquivalanceMaintenance() {
     },
     {
       title: 'Medida',
-      dataIndex: ['measure', 'measure'],
+      dataIndex: ['measure', 'presentation'],
     },
     {
       title: 'Estado',

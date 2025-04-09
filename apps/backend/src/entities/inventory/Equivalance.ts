@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm'
 
-import { Measure, Presentation } from 'pizzadb'
+import { Presentation } from 'pizzadb'
 import { EntitiesTimeStamps } from '../../config/EntitiesTimestamps'
 import { DecimalTransformer } from '../../config/transformers/decimalTransformer'
 
@@ -44,7 +44,7 @@ export class Equivalance extends EntitiesTimeStamps {
   @JoinColumn({ name: 'presentation_from' })
   presentation: Presentation
 
-  @ManyToOne(() => Measure)
+  @ManyToOne(() => Presentation)
   @JoinColumn({ name: 'measure_to' })
   measure: Presentation
 }
