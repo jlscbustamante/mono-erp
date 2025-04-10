@@ -73,6 +73,8 @@ export class UpdateDispatched extends Dispatch {
         );
       }
 
+      const total = item_create.quantity * item.store_price;
+
       items_modified.push({
         dispatch_at,
         warehouse_from,
@@ -86,6 +88,7 @@ export class UpdateDispatched extends Dispatch {
         presentation_name: item.presentation_name,
         quantity: item_create.quantity,
         unit_value: item.store_price,
+        total_value: total,
         measure_id: item.product_measure_id,
       });
     }
