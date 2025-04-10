@@ -36,6 +36,9 @@ apiRouter.onError((err, c) => {
   return c.json({ message: err.message }, 500);
 });
 
+const startTime = new Date().toLocaleString();
+console.log(`API server started at ${startTime}`);
+
 Deno.serve(
   {
     port: 8001,
