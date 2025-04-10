@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FaSpinner } from 'react-icons/fa6'
 
-import { simpleDispatch } from '@/data/hex/inventory'
+import { viewClient } from '@/lib/rpc'
 import { cn } from '@/utils'
 
 export const ProcessMultipleDispatch = ({
@@ -27,7 +27,19 @@ export const ProcessMultipleDispatch = ({
       setLoading(true)
       for (let index = 0; index < ids.length; index++) {
         const id = ids[index]
-        await dispatchOne(id, date, origin)
+        // await dispatchOne(id, date, origin)
+        const request =
+          await viewClient.api.view.inventory.dispatch_order_id.$post({
+            json: {
+              dispatch_id: id,
+              date: date,
+              warehouse_origin: origin,
+            },
+          })
+        if (!request.ok) {
+          const error = await request.json()
+          throw new Error(error.message ?? 'Error al procesar el despacho')
+        }
         setStep(index + 1)
       }
       onFinish?.()
@@ -42,14 +54,14 @@ export const ProcessMultipleDispatch = ({
     }
   }
 
-  const dispatchOne = async (id: number, date: string, origin?: string) => {
-    try {
-      await simpleDispatch(id, date, origin)
-    } catch (err: any) {
-      const message = err.message ?? 'Error al procesar el despacho'
-      throw new Error(id + ' : ' + message)
-    }
-  }
+  // const dispatchOne = async (id: number, date: string, origin?: string) => {
+  //   try {
+  //     await simpleDispatch(id, date, origin)
+  //   } catch (err: any) {
+  //     const message = err.message ?? 'Error al procesar el despacho'
+  //     throw new Error(id + ' : ' + message)
+  //   }
+  // }
 
   const closeAll = () => {
     if (loading) return

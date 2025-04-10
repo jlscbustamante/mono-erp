@@ -352,6 +352,7 @@ export const DispatchTable = ({
             <Button
               type="text"
               size="small"
+              loading={resetMt.isPending && resetMt.variables == record.id}
               className={cn('inline-flex items-center justify-center', {
                 hidden:
                   record.status !== (DISPATCH_STATUS.DISPATCHED as any) ||
