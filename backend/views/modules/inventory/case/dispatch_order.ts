@@ -6,6 +6,7 @@ import {
   InvDispatchItemInsert,
 } from "@scope/shared";
 import { Queue, Worker } from "bullmq";
+import { parseISO } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 import { sql } from "kysely";
 
@@ -149,6 +150,7 @@ export class DispatchOrderById extends Dispatch {
           status: DISPATCH_STATUS.DISPATCHED,
           approved_by: username,
           sucursal_from_id: store_from.id,
+          move_at: parseISO(date),
         })
         .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
@@ -252,6 +254,7 @@ export class DispatchOrderById extends Dispatch {
           gloss: gloss,
           total_value: total.toString(),
           net_value: total.toString(),
+          move_at: parseISO(dispatch_at),
         })
         .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
