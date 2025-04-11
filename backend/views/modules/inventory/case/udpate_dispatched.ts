@@ -150,9 +150,12 @@ export class UpdateDispatched extends Dispatch {
         .where(sql`DATE(stock_at)`, "=", dispatch_at)
         .executeTakeFirstOrThrow();
 
+      const all_stocks = [...stock_from_cleaned, ...stock_to_cleaned].map(
+        (el) => ({ ...el, id: undefined })
+      );
       await trx
         .insertInto("inv_stock")
-        .values([...stock_from_cleaned, ...stock_to_cleaned])
+        .values(all_stocks)
         .executeTakeFirstOrThrow();
 
       await trx
