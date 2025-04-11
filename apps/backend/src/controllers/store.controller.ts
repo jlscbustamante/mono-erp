@@ -73,6 +73,7 @@ export class StoreController {
     })
   }
 
+  @catchError
   async getCategories(req: Request, response: Response): Promise<void> {
     const categories = await categoryRepository.find({
       where: {
