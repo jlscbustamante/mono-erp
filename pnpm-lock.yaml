@@ -228,6 +228,16 @@ importers:
         specifier: ^5.1.6
         version: 5.8.3
 
+  apps/cheackhealth:
+    dependencies:
+      express:
+        specifier: ^4.18.2
+        version: 4.21.2
+    devDependencies:
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+
   apps/frontend:
     dependencies:
       '@ant-design/icons':
