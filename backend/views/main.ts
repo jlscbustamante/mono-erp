@@ -15,10 +15,6 @@ export const apiRouter = app
   .basePath("/api/view")
   .use(logger())
   .get("/", (c) => c.json({ message: "api view" }))
-  .use(session)
-  .route("inventory", inventoryRouter)
-  .route("company", companyRouter)
-  .route("purchase", purchase_router)
   .get("clear_cache", async (c) => {
     const key = c.req.query("key");
     if (key) {
@@ -26,7 +22,11 @@ export const apiRouter = app
       return c.json({ message: "ok" });
     }
     return c.json({ message: "key is required" }, 400);
-  });
+  })
+  .use(session)
+  .route("inventory", inventoryRouter)
+  .route("company", companyRouter)
+  .route("purchase", purchase_router);
 
 apiRouter.onError((err, c) => {
   console.log(err);

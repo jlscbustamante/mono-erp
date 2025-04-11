@@ -15,6 +15,7 @@ import { productItemRepository } from '../../repositories/inventory/item.reposit
 import { measureRepository } from '../../repositories/inventory/measure.repository'
 import { presentationRepository } from '../../repositories/inventory/presentation.repository'
 import { productCategoryRepository } from '../../repositories/inventory/productCategory.respository'
+import { clearCacheView } from '../../utils/clear_cache_view'
 import { catchError } from '../../utils/decorators'
 
 export class MaintenanceController {
@@ -482,6 +483,18 @@ export class MaintenanceController {
       measureId: number
       measureName: string
     }
+
+    const template = await invDispatchBase.findOne({
+      select: {
+        id: true,
+        used_to: true,
+        sucursal_type: true,
+      },
+      where: {
+        id: body.baseId,
+      },
+    })
+
     const final: Partial<InvDispatchBaseItem> = {
       dispatch_id: body.baseId,
       item_move_id: body.despachoId,
@@ -495,6 +508,8 @@ export class MaintenanceController {
     }
 
     await invDispatchBaseItemRepository.insert(final)
+    if (template?.sucursal_type)
+      clearCacheView(`erp:template:${template?.sucursal_type}`)
 
     res.json({
       message: 'Plantilla actualizada',
@@ -504,7 +519,30 @@ export class MaintenanceController {
   @catchError
   async deleteItemTemplate(req: Request, res: Response) {
     const { id } = req.body as unknown as { id: number }
+    const item = await invDispatchBaseItemRepository.findOne({
+      select: {
+        id: true,
+        dispatch_id: true,
+      },
+      where: {
+        id,
+      },
+    })
+    if (!item) throw notFound('No se encontro el item de la plantilla')
+    const template = await invDispatchBase.findOne({
+      select: {
+        id: true,
+        used_to: true,
+        sucursal_type: true,
+      },
+      where: {
+        id: item?.dispatch_id,
+      },
+    })
     await invDispatchBaseItemRepository.delete(id)
+    if (template?.sucursal_type) {
+      clearCacheView(`erp:template:${template?.sucursal_type}`)
+    }
     res.json({
       message: 'Plantilla actualizada',
     })
