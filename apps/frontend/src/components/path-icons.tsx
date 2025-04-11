@@ -21,6 +21,8 @@ import {
   FaFileInvoiceDollar,
   FaFileUpload,
   FaFilter,
+  FaHandHoldingUsd,
+  FaListUl,
   FaRegCalendarAlt,
 } from 'react-icons/fa'
 import {
@@ -30,9 +32,11 @@ import {
   FaListCheck,
   FaUserTie,
 } from 'react-icons/fa6'
-import { FiBox } from 'react-icons/fi'
+import { FiBox, FiPlus } from 'react-icons/fi'
 import { GiConfirmed, GiFullMotorcycleHelmet } from 'react-icons/gi'
-import { IoIosCheckbox } from 'react-icons/io'
+import { GrDocumentConfig } from 'react-icons/gr'
+import { HiOutlineDocumentReport } from 'react-icons/hi'
+import { IoIosCheckbox, IoMdSearch, IoMdStopwatch } from 'react-icons/io'
 import { IoCalendarNumberOutline, IoStorefrontOutline } from 'react-icons/io5'
 import {
   LiaNetworkWiredSolid,
@@ -55,6 +59,7 @@ import {
   TbReportAnalytics,
   TbReportSearch,
   TbRulerMeasure,
+  TbTransfer,
 } from 'react-icons/tb'
 import { TfiControlStop } from 'react-icons/tfi'
 import {
@@ -132,6 +137,23 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recursosHumanos.asistencia]: IoCalendarNumberOutline,
   [PATHS.erp.modulos.recursosHumanos.cargos]: LiaNetworkWiredSolid,
   [PATHS.erp.modulos.recursosHumanos.motorizados]: MdDeliveryDining,
+
+  // PAGOS
+  [PATHS.erp.modulos.pagos.nuevoRequerimiento]: FiPlus,
+  [PATHS.erp.modulos.pagos.listaEspera]: FaListUl,
+  [PATHS.erp.modulos.pagos.aprobarPagos]: FaListCheck,
+  [PATHS.erp.modulos.pagos.programarPagos]: IoMdStopwatch,
+  [PATHS.erp.modulos.pagos.transferencia]: TbTransfer,
+  [PATHS.erp.modulos.pagos.anticipoGastos]: FaHandHoldingUsd,
+  [PATHS.erp.modulos.pagos.consultaRequerimiento]: IoMdSearch,
+  [PATHS.erp.modulos.pagos.reporteCaja]: HiOutlineDocumentReport,
+  [PATHS.erp.modulos.pagos.mantenimiento.main]: VscSettings,
+  [PATHS.erp.modulos.pagos.mantenimiento.cashbank]: null,
+  [PATHS.erp.modulos.pagos.mantenimiento.costCenter]: null,
+  [PATHS.erp.modulos.pagos.mantenimiento.supplier]: null,
+  [PATHS.erp.modulos.pagos.mantenimiento.category]: null,
+  [PATHS.erp.modulos.pagos.avanzado.config]: null,
+  [PATHS.erp.modulos.pagos.avanzado.main]: GrDocumentConfig,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

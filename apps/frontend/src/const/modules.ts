@@ -10,8 +10,8 @@ export const modules = [
   {
     id: 2,
     module: 'Requerimientos',
-    title: 'Requerimientos',
-    route: PATHS.erp.modulos.requerimientos.main,
+    title: 'Facturación y pagos',
+    route: PATHS.erp.modulos.pagos.main,
   },
   {
     id: 3,

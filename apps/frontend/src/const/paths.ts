@@ -15,6 +15,29 @@ export const PATHS = {
         comprobarCajas: '/erp/modulos/tiendas/comprobar-cajas',
         generarAsientos: '/erp/modulos/tiendas/generar-asientos',
       },
+      pagos: {
+        main: '/erp/modulos/facturacionpagos',
+        nuevoRequerimiento: '/erp/modulos/facturacionpagos/nuevorequerimiento',
+        listaEspera: '/erp/modulos/facturacionpagos/listaespera',
+        programarPagos: '/erp/modulos/facturacionpagos/programarpagos',
+        aprobarPagos: '/erp/modulos/facturacionpagos/aprobarpagos',
+        transferencia: '/erp/modulos/facturacionpagos/transferencia',
+        anticipoGastos: '/erp/modulos/facturacionpagos/anticipogastos',
+        consultaRequerimiento:
+          '/erp/modulos/facturacionpagos/consultarequerimiento',
+        reporteCaja: '/erp/modulos/facturacionpagos/reportecaja',
+        avanzado: {
+          main: '/erp/modulos/facturacionpagos/avanzado',
+          config: '/erp/modulos/facturacionpagos/avanzado/config',
+        },
+        mantenimiento: {
+          main: '/erp/modulos/facturacionpagos/mantenimiento',
+          supplier: '/erp/modulos/facturacionpagos/mantenimiento/proveedor',
+          cashbank: '/erp/modulos/facturacionpagos/mantenimiento/cajabanco',
+          costCenter: '/erp/modulos/facturacionpagos/mantenimiento/centrocosto',
+          category: '/erp/modulos/facturacionpagos/mantenimiento/categoria',
+        },
+      },
       requerimientos: {
         main: '/erp/modulos/requerimientos',
         solicitados: '/erp/modulos/requerimientos/solicitados',
