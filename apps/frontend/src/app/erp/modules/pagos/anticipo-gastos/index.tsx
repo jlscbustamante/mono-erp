@@ -1,4 +1,4 @@
-export function TransferenciaPage() {
+export function AnticipoGastosPage() {
   return (
     <div>
       <div>Na</div>

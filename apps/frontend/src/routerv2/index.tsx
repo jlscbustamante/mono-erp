@@ -7,7 +7,16 @@ import DispatchDivider from '@/app/erp/modules/mercaderia/dispatch-divider'
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
+import { AnticipoGastosPage } from '@/app/erp/modules/pagos/anticipo-gastos'
+import { AprobarPagosPage } from '@/app/erp/modules/pagos/aprobar-pagos'
+import { ConfigPage } from '@/app/erp/modules/pagos/avanzado/config'
+import { ConsultaRequerimientoPage } from '@/app/erp/modules/pagos/consulta-requerimiento'
 import { PagosLayout } from '@/app/erp/modules/pagos/layout'
+import { ListaEsperaPage } from '@/app/erp/modules/pagos/lista-espera'
+import { NuevoRequerimientoPage } from '@/app/erp/modules/pagos/nuevo-requerimiento'
+import { ProgramarPagosPage } from '@/app/erp/modules/pagos/programar-pagos'
+import { ReporteCajaPage } from '@/app/erp/modules/pagos/reportes-caja'
+import { TransferenciaPage } from '@/app/erp/modules/pagos/transferencia'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
@@ -111,6 +120,42 @@ export const routerv2 = createBrowserRouter([
             path: PATHS.erp.modulos.pagos.main,
             element: <PagosLayout />,
             children: [
+              {
+                path: PATHS.erp.modulos.pagos.nuevoRequerimiento,
+                element: <NuevoRequerimientoPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.listaEspera,
+                element: <ListaEsperaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.programarPagos,
+                element: <ProgramarPagosPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.aprobarPagos,
+                element: <AprobarPagosPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.transferencia,
+                element: <TransferenciaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.anticipoGastos,
+                element: <AnticipoGastosPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.consultaRequerimiento,
+                element: <ConsultaRequerimientoPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.reporteCaja,
+                element: <ReporteCajaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.avanzado.config,
+                element: <ConfigPage />,
+              },
               {
                 path: PATHS.erp.modulos.pagos.mantenimiento.main,
                 children: [

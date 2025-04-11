@@ -1,4 +1,4 @@
-export function ReporteCaja() {
+export function ReporteCajaPage() {
   return (
     <div>
       <div>Na</div>
