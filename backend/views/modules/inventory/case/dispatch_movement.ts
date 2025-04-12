@@ -32,6 +32,9 @@ export class DispatchMovement extends Dispatch {
     const stores = await get_stores();
     const store_from = stores.find((store) => store.id == data.storeFrom);
     const store_to = stores.find((store) => store.id == data.storeToId);
+
+    const items = await get_items();
+
     if (!store_from && !store_to) {
       throw new HTTPException(400, {
         message: `No se encontró la tienda de origen o destino`,
@@ -69,25 +72,93 @@ export class DispatchMovement extends Dispatch {
       const items_not_found = data.items.filter(
         (item) => !stock_from.find((stock) => stock.item_id == item.itemId)
       );
-      if (items_not_found.length > 0) {
-        throw new HTTPException(400, {
-          message: `No se encontraron los siguientes items en la tienda de origen: ${items_not_found
-            .map((item) => item.itemId)
-            .join(", ")}`,
+
+      for (const item_not_found of items_not_found) {
+        const item = items.find((i) => i.item_id == item_not_found.itemId);
+        if (!item)
+          throw new HTTPException(400, {
+            message: `No se encontró el item ${item_not_found.itemId} en items`,
+          });
+
+        stock_from.push({
+          item_id: item.item_id,
+          item_name: item.item_name,
+          presentation_id: item.presentation_id,
+          presentation_name: item.presentation_name,
+          unit_value: item.store_price.toString(),
+          total_last: "0",
+          stock_last: "0",
+          quantity_in_dp: "0",
+          quantity_out_dp: "0",
+          quantity_out_mv: "0",
+          quantity_in_mv: "0",
+          stock_current: "0",
+          stock_at: stock_from[0].stock_at,
+          warehouse_id: stock_from[0].warehouse_id,
+          created_at: new Date(),
+          status: stock_from[0].status,
+          updated_at: new Date(),
+          created_by: username,
+          measure_id: item.product_measure_id,
+          quantity_in_pu: "0",
+          quantity_out_sl: "0",
+          stock_physical: "0",
+          total_value: "0",
         });
       }
+
+      // if (items_not_found.length > 0) {
+      //   throw new HTTPException(400, {
+      //     message: `No se encontraron los siguientes items en la tienda de origen: ${items_not_found
+      //       .map((item) => item.itemId)
+      //       .join(", ")}`,
+      //   });
+      // }
     }
     if (stock_to) {
       const items_not_found = data.items.filter(
         (item) => !stock_to.find((stock) => stock.item_id == item.itemId)
       );
-      if (items_not_found.length > 0) {
-        throw new HTTPException(400, {
-          message: `No se encontraron los siguientes items en la tienda de destino: ${items_not_found
-            .map((item) => item.itemId)
-            .join(", ")}`,
+      for (const item_not_found of items_not_found) {
+        const item = items.find((i) => i.item_id == item_not_found.itemId);
+        if (!item)
+          throw new HTTPException(400, {
+            message: `No se encontró el item ${item_not_found.itemId} en items`,
+          });
+
+        stock_to.push({
+          item_id: item.item_id,
+          item_name: item.item_name,
+          presentation_id: item.presentation_id,
+          presentation_name: item.presentation_name,
+          unit_value: item.store_price.toString(),
+          total_last: "0",
+          stock_last: "0",
+          quantity_in_dp: "0",
+          quantity_out_dp: "0",
+          quantity_out_mv: "0",
+          quantity_in_mv: "0",
+          stock_current: "0",
+          stock_at: stock_to[0].stock_at,
+          warehouse_id: stock_to[0].warehouse_id,
+          created_at: new Date(),
+          status: stock_to[0].status,
+          updated_at: new Date(),
+          created_by: username,
+          measure_id: item.product_measure_id,
+          quantity_in_pu: "0",
+          quantity_out_sl: "0",
+          stock_physical: "0",
+          total_value: "0",
         });
       }
+      // if (items_not_found.length > 0) {
+      //   throw new HTTPException(400, {
+      //     message: `No se encontraron los siguientes items en la tienda de destino: ${items_not_found
+      //       .map((item) => item.itemId)
+      //       .join(", ")}`,
+      //   });
+      // }
     }
     const stock_from_modified = stock_from?.map((item) => {
       const item_dispatch = data.items.find((i) => i.itemId == item.item_id);
@@ -121,7 +192,6 @@ export class DispatchMovement extends Dispatch {
       ? this.clear_stock(stock_to_modified)
       : undefined;
 
-    const items = await get_items();
     const items_dispatch_to_insert: InvDispatchItemInsert[] = data.items.map(
       (item) => {
         const item_data = items.find((i) => i.item_id == item.itemId);
