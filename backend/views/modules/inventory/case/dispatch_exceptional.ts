@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { clear_cache } from "#app/modules/inventory/case/clear_cache_stock.ts";
 import { Dispatch, IDispatch } from "#app/modules/inventory/case/dispatch.ts";
 import {
   DISPATCH_MOVE_TYPE,
@@ -149,5 +150,8 @@ export class DispatchExceptional extends Dispatch {
         )
         .executeTakeFirstOrThrow();
     });
+
+    clear_cache(warehouse_from_code, data.dispatchAt);
+    clear_cache(warehouse_to_code, data.dispatchAt);
   }
 }

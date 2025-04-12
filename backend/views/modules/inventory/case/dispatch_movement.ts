@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { clear_cache } from "#app/modules/inventory/case/clear_cache_stock.ts";
 import { Dispatch } from "#app/modules/inventory/case/dispatch.ts";
 import { get_items } from "#app/modules/inventory/queries/get_items.ts";
 import { generate_stock_report } from "#app/modules/inventory/queries/get_stock.ts";
@@ -203,6 +204,14 @@ export class DispatchMovement extends Dispatch {
         )
         .executeTakeFirstOrThrow();
     });
+
+    // clear cache
+    if (store_from) {
+      clear_cache(store_from.id, data.moveAt);
+    }
+    if (store_to) {
+      clear_cache(store_to.id, data.moveAt);
+    }
   }
 
   async delete(dispatch_id: number, username: string) {
