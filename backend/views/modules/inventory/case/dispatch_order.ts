@@ -1,5 +1,5 @@
 import { db } from "#app/config/database.ts";
-import { Dispatch } from "#app/modules/inventory/case/dispatch.ts";
+import { Dispatch, IDispatch } from "#app/modules/inventory/case/dispatch.ts";
 import {
   DISPATCH_STATUS,
   DispatchUpdateDto,
@@ -161,24 +161,50 @@ export class DispatchOrderById extends Dispatch {
    * @deprecated Este metodo sigue usando un dto anterior
    */
   async execute_and_update_wrapper(data: DispatchUpdateDto, username: string) {
-    let items_dispatch = await this.get_dispatch(data.id);
+    // let items_dispatch = await this.get_dispatch(data.id);
 
-    items_dispatch = items_dispatch.map((item) => {
-      const item_data = data.items.find((el) => el.itemId == item.item_id);
-      const quantity = item_data?.quantity
-        ? item_data.quantity.toString()
-        : item.quantity;
-      const total =
-        (item.unit_value ? +item.unit_value : 0) * (quantity ? +quantity : 0);
+    // items_dispatch = items_dispatch.map((item) => {
+    //   const item_data = data.items.find((el) => el.itemId == item.item_id);
+    //   const quantity = item_data?.quantity
+    //     ? item_data.quantity.toString()
+    //     : item.quantity;
+    //   const total =
+    //     (item.unit_value ? +item.unit_value : 0) * (quantity ? +quantity : 0);
 
+    //   return {
+    //     ...item,
+    //     quantity,
+    //     total_value: total.toString(),
+    //     warehouse_from: data.wareFromId,
+    //     warehouse_to: data.wareToId,
+    //   };
+    // });
+
+    const dispatch = await db
+      .selectFrom("inv_dispatch")
+      .where("id", "=", data.id)
+      .selectAll()
+      .executeTakeFirstOrThrow();
+
+    const items_dispatch: IDispatch[] = data.items.map((el) => {
       return {
-        ...item,
-        quantity,
-        total_value: total.toString(),
+        item_id: el.itemId,
+        item_name: el.itemName,
+        quantity: el.quantity,
+        unit_value: el.unitValue,
+        dispatch_at: dispatch.move_at,
+        dispatch_id: data.id,
         warehouse_from: data.wareFromId,
         warehouse_to: data.wareToId,
-      };
+        presentation_id: el.presentationId,
+        presentation_name: el.presentationName,
+        status: dispatch.status,
+        type: dispatch.move_type,
+        total_value: el.totalValue,
+        measure_id: el.measureId,
+      } satisfies IDispatch;
     });
+
     const dispatch_id = data.id;
     const warehouse_from_code = data.wareFromId;
     const warehouse_to_code = data.wareToId;
