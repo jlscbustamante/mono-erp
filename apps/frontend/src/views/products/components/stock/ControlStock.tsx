@@ -163,6 +163,7 @@ export const ControlStock = () => {
     sorter: (a: any, b: any) => a.quantityInMv - b.quantityInMv,
     render: (val: number) => fNumber(val, 3),
     align: 'right',
+    __excelTitle__: 'Ingreso de tienda',
     __cellType__: 'TypeNumeric',
     excelRender: (val: number) => Number(val),
   }
@@ -182,6 +183,7 @@ export const ControlStock = () => {
     sorter: (a: any, b: any) => a.quantityOutMv - b.quantityOutMv,
     render: (val: number) => fNumber(val, 3),
     align: 'right',
+    __excelTitle__: 'Salida de tienda',
     __cellType__: 'TypeNumeric',
     excelRender: (val: number) => Number(val),
   }
@@ -205,7 +207,7 @@ export const ControlStock = () => {
   const diferenciaColumn = {
     title: 'Diferencia',
     align: 'right',
-    render: (record: StockGeneral) => {
+    render: (__na: any, record: StockGeneral) => {
       const diff = record.stockPhysical - record.stockCurrent
       return (
         <p
@@ -217,10 +219,10 @@ export const ControlStock = () => {
         </p>
       )
     },
-    __excelRender__: (_: unknown, record: StockGeneral) => {
-      const diff = record.stockPhysical - record.stockCurrent
-      return Number(diff)
-    },
+    // excelRender: (record: StockGeneral) => {
+    //   const diff = record.stockPhysical - record.stockCurrent
+    //   return Number(diff)
+    // },
     __renderType__: 'TypeNumeric',
     // excelRender: (val: number) => Number(val),
   }
@@ -445,6 +447,7 @@ export const ControlStock = () => {
         queryData.data &&
         queryData.data.stock.length > 0 && (
           <Table
+            showSorterTooltip={false}
             bordered={true}
             pagination={false}
             size="small"
