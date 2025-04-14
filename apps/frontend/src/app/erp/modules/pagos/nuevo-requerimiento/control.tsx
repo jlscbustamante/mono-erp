@@ -1,37 +1,46 @@
 import { Tabs, TabsProps } from 'antd'
-import { useState } from 'react'
-
-const Children1 = () => {
-  const [num, set_num] = useState(0)
-  return (
-    <div>
-      Na val : {num}{' '}
-      <button onClick={() => set_num((el) => el + 1)}>plus</button>
-    </div>
-  )
-}
-
-const Childen2 = () => {
-  return <div>Chldren 2</div>
-}
+import { Anticipo } from './anticipo'
+import { Contrato } from './contrato'
+import { CrearFactura } from './factura'
+import { Transferencia } from './transferencia'
 
 const items: TabsProps['items'] = [
   {
     key: '1',
-    label: 'Tab 1',
-    children: <Children1 />,
+    label: <p className="px-3">Factura</p>,
+    className: 'px-3',
+    children: <CrearFactura />,
   },
   {
     key: '2',
-    label: 'Tab 2',
-    children: <Childen2 />,
+    label: <p className="px-3">Transferencia</p>,
+    className: 'px-3',
+    children: <Transferencia />,
+  },
+  {
+    key: '3',
+    label: <p className="px-3">Anticipo</p>,
+    className: 'px-3',
+    children: <Anticipo />,
+  },
+  {
+    key: '4',
+    label: <p className="px-3">Contrato</p>,
+    className: 'px-3',
+    children: <Contrato />,
   },
 ]
 
 export const Control = () => {
   return (
     <div>
-      <Tabs items={items} defaultActiveKey="1" />
+      <Tabs
+        items={items}
+        defaultActiveKey="1"
+        tabBarStyle={{
+          background: 'white',
+        }}
+      />
     </div>
   )
 }

@@ -2,9 +2,8 @@ import { Control } from './control'
 
 export function NuevoRequerimientoPage() {
   return (
-    <div>
+    <div className="bg-blue-50 h-full">
       <Control />
-      <div>Nuevo requerimiento</div>
     </div>
   )
 }
