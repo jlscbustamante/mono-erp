@@ -9,12 +9,14 @@ import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
 import { AnticipoGastosPage } from '@/app/erp/modules/pagos/anticipo-gastos'
 import { AprobarPagosPage } from '@/app/erp/modules/pagos/aprobar-pagos'
+import { RevisarOrdenPage } from '@/app/erp/modules/pagos/aprobar-pagos/revisar-orden'
 import { ConfigPage } from '@/app/erp/modules/pagos/avanzado/config'
 import { ConsultaRequerimientoPage } from '@/app/erp/modules/pagos/consulta-requerimiento'
 import { PagosLayout } from '@/app/erp/modules/pagos/layout'
 import { ListaEsperaPage } from '@/app/erp/modules/pagos/lista-espera'
 import { NuevoRequerimientoPage } from '@/app/erp/modules/pagos/nuevo-requerimiento'
 import { ProgramarPagosPage } from '@/app/erp/modules/pagos/programar-pagos'
+import { CreateOrderPage } from '@/app/erp/modules/pagos/programar-pagos/create-order'
 import { ReporteCajaPage } from '@/app/erp/modules/pagos/reportes-caja'
 import { TransferenciaPage } from '@/app/erp/modules/pagos/transferencia'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
@@ -129,12 +131,20 @@ export const routerv2 = createBrowserRouter([
                 element: <ListaEsperaPage />,
               },
               {
-                path: PATHS.erp.modulos.pagos.programarPagos,
+                path: PATHS.erp.modulos.pagos.programarPagos.main,
                 element: <ProgramarPagosPage />,
               },
               {
-                path: PATHS.erp.modulos.pagos.aprobarPagos,
+                path: PATHS.erp.modulos.pagos.aprobarPagos.main,
                 element: <AprobarPagosPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.programarPagos.crearOrden,
+                element: <CreateOrderPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.aprobarPagos.revisarOrden,
+                element: <RevisarOrdenPage />,
               },
               {
                 path: PATHS.erp.modulos.pagos.transferencia,

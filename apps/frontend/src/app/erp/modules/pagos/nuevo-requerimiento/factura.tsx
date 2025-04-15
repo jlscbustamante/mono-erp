@@ -1,6 +1,11 @@
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
-import { CompanySelect, MoveCashSelect, SupplierSelect } from '@pizzadb'
+import {
+  CompanySelect,
+  CostCenterSelecet,
+  MoveCashSelect,
+  SupplierSelect,
+} from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
@@ -9,7 +14,7 @@ import {
   DatePicker,
   Form,
   Input,
-  message,
+  InputNumber,
   Select,
 } from 'antd'
 import { Plus } from 'lucide-react'
@@ -25,9 +30,6 @@ export function CrearFactura() {
 }
 
 const DatosPrincipales = () => {
-  const [form] = Form.useForm()
-  const [messageApi, contextHolder] = message.useMessage()
-
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -63,7 +65,6 @@ const DatosPrincipales = () => {
 
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
-      {contextHolder}
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos principales
       </h3>
@@ -157,9 +158,6 @@ const DatosPrincipales = () => {
 }
 
 const CategoriaGasto = () => {
-  const [form] = Form.useForm()
-  const [messageApi, contextHolder] = message.useMessage()
-
   const { data: movesCash } = useQuery({
     queryKey: ['rq:moveCash'],
     queryFn: async () => {
@@ -180,42 +178,15 @@ const CategoriaGasto = () => {
     },
   })
 
-  const { data: companies } = useQuery({
-    queryKey: ['rq:companies'],
-    queryFn: async () => {
-      const request =
-        await viewClient.api.view.requirement.resource.companies.$get()
-      const result = await request.json()
-      return result.data as CompanySelect[]
-    },
-  })
-
-  const { data: suppliers, refetch: _refetchSupplier } = useQuery({
-    queryKey: ['rq:suppliers'],
-    queryFn: async () => {
-      const request =
-        await viewClient.api.view.requirement.resource.suppliers.$get()
-      const result = await request.json()
-      return result.data as SupplierSelect[]
-    },
-  })
-
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
-      {contextHolder}
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Categoría de gasto
       </h3>
       <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item label="Monto" className="mb-1">
-            <Select placeholder="Monto">
-              {companies?.map((company) => (
-                <Select.Option key={company.id} value={company.id}>
-                  {company.title}
-                </Select.Option>
-              ))}
-            </Select>
+            <InputNumber className="w-full" placeholder="0.00" />
           </Form.Item>
           <Form.Item label="Moneda" className="mb-1">
             <Select placeholder="Moneda">

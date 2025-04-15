@@ -1,9 +1,7 @@
 import { viewClient } from '@/lib/rpc'
-import { filterSelectForm } from '@/utils'
-import { CompanySelect, SupplierSelect } from '@pizzadb'
+import { CashBankSelect, CompanySelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
-import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
-import { Form, Input, message, Select } from 'antd'
+import { Button, Form, Input, InputNumber, Select } from 'antd'
 
 export function Transferencia() {
   return (
@@ -14,9 +12,6 @@ export function Transferencia() {
 }
 
 const TransferenciaForm = () => {
-  const [form] = Form.useForm()
-  const [messageApi, contextHolder] = message.useMessage()
-
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -27,32 +22,18 @@ const TransferenciaForm = () => {
     },
   })
 
-  const { data: suppliers, refetch: _refetchSupplier } = useQuery({
-    queryKey: ['rq:suppliers'],
+  const { data: cashBanks } = useQuery({
+    queryKey: ['rq:cashBanks'],
     queryFn: async () => {
       const request =
-        await viewClient.api.view.requirement.resource.suppliers.$get()
+        await viewClient.api.view.requirement.resource.cashBanks.$get()
       const result = await request.json()
-      return result.data as SupplierSelect[]
+      return result.data as CashBankSelect[]
     },
   })
 
-  const searchSupplier = (ruc: string) => {
-    const supplier = suppliers?.find((el) => el.legal_number === ruc)
-    console.log('select : ', supplier)
-    // if (supplier) {
-    //   form.setFieldValue('legal_name', supplier.legal_name)
-    //   form.setFieldValue('supplier', supplier.id)
-    // } else {
-    //   form.setFieldValue('legal_name', undefined)
-    //   form.setFieldValue('supplier', undefined)
-    //   messageApi.error('Proveedor no encontrado')
-    // }
-  }
-
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
-      {contextHolder}
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos principales
       </h3>
@@ -70,27 +51,44 @@ const TransferenciaForm = () => {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
-            label="RUC proveedor"
+            label="Cuenta origen"
             className="mb-1"
             rules={[{ required: true }]}
           >
-            <Input.Search
-              placeholder="RUC proveedor"
-              // loading={getInfoRuc.isPending}
-              onSearch={(ruc) => {
-                searchSupplier(ruc)
-              }}
-              // onSearch={(ruc) => {
-              //   getInfoRuc.mutate(ruc.trim())
-              // }}
-            />
+            <Select placeholder="Caja">
+              {cashBanks
+                // ?.filter((el) => {
+                //   if (company) {
+                //     return el.company_id == company
+                //   }
+                //   return true
+                // })
+                ?.map((cashBank) => (
+                  <Select.Option key={cashBank.id} value={cashBank.id}>
+                    {cashBank.cashbank}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
           <Form.Item
+            label="Cuenta destino"
             className="mb-1"
-            label="Proveedor"
             rules={[{ required: true }]}
           >
-            <Input placeholder="Proveedor" className="" />
+            <Select placeholder="Caja">
+              {cashBanks
+                // ?.filter((el) => {
+                //   if (company) {
+                //     return el.company_id == company
+                //   }
+                //   return true
+                // })
+                ?.map((cashBank) => (
+                  <Select.Option key={cashBank.id} value={cashBank.id}>
+                    {cashBank.cashbank}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -104,42 +102,19 @@ const TransferenciaForm = () => {
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Tipo doc" className="mb-1">
-            <Select placeholder="Requerimiento" filterOption={filterSelectForm}>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.FACTURA}>
-                Factura
-              </Select.Option>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.BOLETA}>
-                Boleta
-              </Select.Option>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.TICKET_SALIDA}>
-                Ticket salida
-              </Select.Option>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.NOTA_CREDITO}>
-                Nota credito
-              </Select.Option>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.NOTA_DEBITO}>
-                Factura
-              </Select.Option>
-              <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.GUIA_REMISION}>
-                Guia remision
-              </Select.Option>
-              <Select.Option
-                value={REQUIREMENT_TYPE_DOCUMENT.GUIA_TRANSPORTISTA}
-              >
-                Guia transportista
-              </Select.Option>
+          <Form.Item label="Monto" className="mb-1">
+            <InputNumber className="w-full" placeholder="0.00" />
+          </Form.Item>
+          <Form.Item label="Moneda" className="mb-1">
+            <Select placeholder="Moneda">
+              <Select.Option value="PEN">S/.</Select.Option>
+              <Select.Option value="USD">$</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="N° doc" className="mb-1">
-            <Input placeholder="N° doc" />
-          </Form.Item>
         </div>
-        <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Contrato">
-            <Input />
-          </Form.Item>
-        </div>
+        <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
+          <Button type="primary">Guardar</Button>
+        </Form.Item>
       </Form>
     </div>
   )

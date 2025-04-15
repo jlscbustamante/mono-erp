@@ -141,8 +141,8 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   // PAGOS
   [PATHS.erp.modulos.pagos.nuevoRequerimiento]: FiPlus,
   [PATHS.erp.modulos.pagos.listaEspera]: FaListUl,
-  [PATHS.erp.modulos.pagos.aprobarPagos]: FaListCheck,
-  [PATHS.erp.modulos.pagos.programarPagos]: IoMdStopwatch,
+  [PATHS.erp.modulos.pagos.aprobarPagos.main]: FaListCheck,
+  [PATHS.erp.modulos.pagos.programarPagos.main]: IoMdStopwatch,
   [PATHS.erp.modulos.pagos.transferencia]: TbTransfer,
   [PATHS.erp.modulos.pagos.anticipoGastos]: FaHandHoldingUsd,
   [PATHS.erp.modulos.pagos.consultaRequerimiento]: IoMdSearch,
