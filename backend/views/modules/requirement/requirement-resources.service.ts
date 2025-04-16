@@ -92,7 +92,7 @@ export class RequirementResourceService {
 
   async movesCash() {
     const data = await db.query.finMoveCash.findMany({
-      orderBy: asc(finMoveCash.movecash),
+      orderBy: asc(finMoveCash.movetype),
     });
     return data;
   }

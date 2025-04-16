@@ -86,6 +86,7 @@ export const Layout = ({
 }
 
 Layout.Header = (_: {
+  keepDefaultTitle?: boolean
   defaultTitle: string
   className?: string
   classNameByPath?: {

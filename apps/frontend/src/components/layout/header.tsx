@@ -13,7 +13,9 @@ export const HeaderLayout = ({
   defaultTitle,
   options,
   classNameByPath,
+  keepDefaultTitle,
 }: {
+  keepDefaultTitle?: boolean
   defaultTitle: string
   className?: string
   options: MenuOption[]
@@ -59,7 +61,9 @@ export const HeaderLayout = ({
           >
             <BiExit className="w-5 h-auto" />
           </button>
-          <p className={cn('font-semibold')}>{title}</p>
+          <p className={cn('font-semibold')}>
+            {keepDefaultTitle ? defaultTitle : title}
+          </p>
         </div>
         <UserAvatar />
       </div>

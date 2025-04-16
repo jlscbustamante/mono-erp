@@ -78,7 +78,7 @@ export const PagosLayout = () => {
 
   return (
     <Layout className="">
-      <Layout.Header defaultTitle="Requerimientos" />
+      <Layout.Header defaultTitle="Requerimientos" keepDefaultTitle={true} />
       <Layout.Sidebar
         options={appConfig.ui.fullAccess ? menu : authorizedViews}
       />
