@@ -1,5 +1,6 @@
 {
   "imports": {
+    "kysely": "npm:kysely@^0.27.6",
     "@hono/zod-validator": "npm:@hono/zod-validator@^0.4.2",
     "@std/path": "jsr:@std/path@^1.0.8",
     "date-fns": "npm:date-fns@^4.1.0",
@@ -7,15 +8,14 @@
     "drizzle-orm": "npm:drizzle-orm@^0.38.3",
     "hono": "npm:hono@^4.6.16",
     "mysql2": "npm:mysql2@^3.12.0",
-    "bcrypt":"https://deno.land/x/bcrypt@v0.4.1/mod.ts",
+    "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
     "xlsx": "npm:xlsx@^0.18.5",
     "zod": "npm:zod@^3.24.1",
-    "#app/":"./"
+    "#app/": "./"
   },
   "tasks": {
-    "dev":"deno run --allow-net --env-file --allow-env --allow-read --allow-write --watch main.ts"
-  }
-  ,
+    "dev": "deno run --allow-net --env-file --allow-env --allow-read --allow-write --watch main.ts"
+  },
   "lint": {
     "rules": {
       "exclude": ["no-explicit-any"]

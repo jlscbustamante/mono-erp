@@ -21,14 +21,15 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "paths": { 
+    "paths": {
       "@/*": ["./src/*"],
       "@viewrpc": ["./../../backend/views/rpc.ts"],
-      "@pizzadb":["./../../backend/pizzadb/types/index.ts"],
-      "@view":["./../../backend/views/modules/types/index.ts"]
+      "@pizzadb": ["./../../backend/pizzadb/types/index.ts"],
+      "@view": ["./../../backend/views/modules/types/index.ts"],
+      "@types": ["./../../backend/shared/types/index.ts"]
     }
   },
   "include": ["src"],
-  "exclude": ["./src/lib/rpc/index.ts","../../backend/**/*","../backend/**/*"],
+  "exclude": ["./src/lib/rpc/index.ts", "../../backend/**/*", "../backend/**/*"]
   // "references": [{ "path": "./tsconfig.node.json" }]
 }

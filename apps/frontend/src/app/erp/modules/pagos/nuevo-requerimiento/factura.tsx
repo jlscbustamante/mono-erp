@@ -1,3 +1,5 @@
+import { CustomCheckbox } from '@/components/ant-form/custom-checkbox'
+import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 import {
@@ -6,30 +8,84 @@ import {
   MoveCashSelect,
   SupplierSelect,
 } from '@pizzadb'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import type { AdmRequirementInsert } from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   Button,
-  Checkbox,
-  DatePicker,
   Form,
+  FormInstance,
   Input,
   InputNumber,
+  message,
   Select,
 } from 'antd'
+import { MessageInstance } from 'antd/es/message/interface'
 import { Plus } from 'lucide-react'
 
+type R = keyof AdmRequirementInsert
+
 export function CrearFactura() {
+  const [formPrincipal] = Form.useForm()
+  const [formCategoria] = Form.useForm()
+  const [messageApi, contextHolder] = message.useMessage()
+
+  const createRequirementMt = useMutation({
+    mutationFn: async (data: AdmRequirementInsert) => {
+      const request =
+        await viewClient.api.view.payment.create_requirement.$post({
+          json: data,
+        })
+      if (!request.ok) {
+        const error = await request.json()
+        throw new Error(error.message)
+      }
+    },
+    onError: (error) => {
+      messageApi.error(error.message)
+    },
+    onSuccess: () => {
+      messageApi.success('Requerimiento creado correctamente')
+      formPrincipal.resetFields()
+      formCategoria.resetFields()
+    },
+  })
+
+  const onSave = async () => {
+    const pricipales = formPrincipal.getFieldsValue()
+    const categoria = formCategoria.getFieldsValue()
+
+    const value: AdmRequirementInsert = {
+      ...pricipales,
+      ...categoria,
+    }
+    await createRequirementMt.mutateAsync(value)
+  }
+
   return (
     <div className="grid gap-1 grid-cols-2">
-      <DatosPrincipales />
+      {contextHolder}
+      <DatosPrincipales
+        formInstance={formPrincipal}
+        messageInstance={messageApi}
+      />
       <DatosProveedor />
-      <CategoriaGasto />
+      <CategoriaGasto
+        onSave={onSave}
+        formInstance={formCategoria}
+        loading={createRequirementMt.isPending}
+      />
     </div>
   )
 }
 
-const DatosPrincipales = () => {
+const DatosPrincipales = ({
+  formInstance,
+  messageInstance,
+}: {
+  formInstance: FormInstance<any>
+  messageInstance?: MessageInstance
+}) => {
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -52,15 +108,17 @@ const DatosPrincipales = () => {
 
   const searchSupplier = (ruc: string) => {
     const supplier = suppliers?.find((el) => el.legal_number === ruc)
-    console.log('select : ', supplier)
-    // if (supplier) {
-    //   form.setFieldValue('legal_name', supplier.legal_name)
-    //   form.setFieldValue('supplier', supplier.id)
-    // } else {
-    //   form.setFieldValue('legal_name', undefined)
-    //   form.setFieldValue('supplier', undefined)
-    //   messageApi.error('Proveedor no encontrado')
-    // }
+    if (supplier) {
+      formInstance.setFieldValue('legal_name' satisfies R, supplier.legal_name)
+      formInstance.setFieldValue(
+        'legal_number' satisfies R,
+        supplier.legal_number,
+      )
+    } else {
+      formInstance.setFieldValue('legal_name' satisfies R, undefined)
+      formInstance.setFieldValue('legal_number' satisfies R, undefined)
+      messageInstance?.warning('Proveedor no encontrado')
+    }
   }
 
   return (
@@ -68,9 +126,18 @@ const DatosPrincipales = () => {
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos principales
       </h3>
-      <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+      <Form
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        form={formInstance}
+        name="formPrincipal"
+      >
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Empresa" className="mb-1">
+          <Form.Item
+            label="Empresa"
+            className="mb-1"
+            name={'company_id' satisfies R}
+          >
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
@@ -85,6 +152,7 @@ const DatosPrincipales = () => {
             label="RUC proveedor"
             className="mb-1"
             rules={[{ required: true }]}
+            name={'legal_number' satisfies R}
           >
             <Input.Search
               placeholder="RUC proveedor"
@@ -100,6 +168,7 @@ const DatosPrincipales = () => {
           <Form.Item
             className="mb-1"
             label="Proveedor"
+            name={'legal_name' satisfies R}
             rules={[{ required: true }]}
           >
             <Input placeholder="Proveedor" className="" />
@@ -111,12 +180,17 @@ const DatosPrincipales = () => {
             className="col-span-2 mb-1"
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 21 }}
+            name={'description' satisfies R}
           >
             <Input.TextArea placeholder="..." rows={1} />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Tipo doc" className="mb-1">
+          <Form.Item
+            label="Tipo doc"
+            className="mb-1"
+            name={'type_document' satisfies R}
+          >
             <Select placeholder="Requerimiento" filterOption={filterSelectForm}>
               <Select.Option value={REQUIREMENT_TYPE_DOCUMENT.FACTURA}>
                 Factura
@@ -143,7 +217,11 @@ const DatosPrincipales = () => {
               </Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="N° doc" className="mb-1">
+          <Form.Item
+            label="N° doc"
+            className="mb-1"
+            name={'num_document' satisfies R}
+          >
             <Input placeholder="N° doc" />
           </Form.Item>
         </div>
@@ -157,7 +235,15 @@ const DatosPrincipales = () => {
   )
 }
 
-const CategoriaGasto = () => {
+const CategoriaGasto = ({
+  onSave,
+  formInstance,
+  loading,
+}: {
+  loading: boolean
+  onSave: () => void
+  formInstance: FormInstance<any>
+}) => {
   const { data: movesCash } = useQuery({
     queryKey: ['rq:moveCash'],
     queryFn: async () => {
@@ -178,17 +264,25 @@ const CategoriaGasto = () => {
     },
   })
 
+  // const hasRetention = formInstance.getFieldValue('has_retention' satisfies R)
+  const hasRetention = Form.useWatch('has_retention', formInstance)
+
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Categoría de gasto
       </h3>
-      <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+      <Form
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        form={formInstance}
+        name="formCategoria"
+      >
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Monto" className="mb-1">
+          <Form.Item label="Monto" className="mb-1" name={'amount' satisfies R}>
             <InputNumber className="w-full" placeholder="0.00" />
           </Form.Item>
-          <Form.Item label="Moneda" className="mb-1">
+          <Form.Item label="Moneda" className="mb-1" name={'money' satisfies R}>
             <Select placeholder="Moneda">
               <Select.Option value="PEN">S/.</Select.Option>
               <Select.Option value="USD">$</Select.Option>
@@ -200,20 +294,29 @@ const CategoriaGasto = () => {
             label="Vencimiento"
             className="mb-1"
             rules={[{ required: true }]}
+            name={'expires_at' satisfies R}
           >
-            <DatePicker className="w-full" />
+            <CustomDatePicker />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Tiene retencion" className="mb-1">
-            <Checkbox />
+          <Form.Item
+            label="Tiene retencion"
+            className="mb-1"
+            name={'has_retention' satisfies R}
+          >
+            <CustomCheckbox />
           </Form.Item>
-          <Form.Item label="Retencion" className="mb-1">
-            <Input placeholder="0.00" />
+          <Form.Item
+            label="Retencion"
+            className="mb-1"
+            name={'amount_ret' satisfies R}
+          >
+            <Input placeholder="0.00" disabled={!(hasRetention == '1')} />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Categoria">
+          <Form.Item label="Categoria" name={'movetype_id' satisfies R}>
             <Select
               placeholder="Categorias"
               showSearch
@@ -226,7 +329,7 @@ const CategoriaGasto = () => {
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="Centro de costo">
+          <Form.Item label="Centro de costo" name={'costcenter_id' satisfies R}>
             <Select
               placeholder="Centro de costo"
               showSearch
@@ -241,7 +344,9 @@ const CategoriaGasto = () => {
           </Form.Item>
         </div>
         <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary">Guardar</Button>
+          <Button type="primary" onClick={onSave} loading={loading}>
+            Guardar
+          </Button>
         </Form.Item>
       </Form>
     </div>

@@ -9,7 +9,7 @@ import {
   varchar,
 } from "drizzle-orm/mysql-core";
 
-export const costCenters = mysqlTable("fin_movetype", {
+export const costCenters = mysqlTable("fin_costcenter", {
   id: int().autoincrement().notNull().primaryKey(),
   costcenter: varchar({ length: 150 }).notNull(),
   company_id: varchar({ length: 10 }),
