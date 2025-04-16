@@ -428,7 +428,10 @@ export const DispatchTable = ({
             >
               <FaTrash className="h-auto w-3.5" />
             </div>
-            <div
+            <Button
+              type="text"
+              size="small"
+              loading={deleteDispatchMt.isPending}
               className={cn('cursor-pointer', {
                 hidden: record.status != DispatchStatus.DISPATCHED || onlyQuery,
               })}
@@ -446,7 +449,7 @@ export const DispatchTable = ({
               }}
             >
               <FaTrash className="h-auto w-3.5" />
-            </div>
+            </Button>
             <div
               className={cn('cursor-pointer', {
                 hidden: record.status != DispatchStatus.INVOICED || onlyQuery,
