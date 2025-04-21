@@ -9,7 +9,7 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { AdmRequirementInsert } from '@types'
+import type { AdmRequirementInsert, AdmRequirementSelect } from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   Button,
@@ -25,16 +25,78 @@ import { Plus } from 'lucide-react'
 
 type R = keyof AdmRequirementInsert
 
-export function CrearFactura() {
+export function CrearFactura({
+  requirement,
+}: {
+  requirement: AdmRequirementSelect
+}) {
   const [formPrincipal] = Form.useForm()
   const [formCategoria] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
 
   const createRequirementMt = useMutation({
     mutationFn: async (data: AdmRequirementInsert) => {
+      const updated_requirement: AdmRequirementSelect = {
+        ...requirement,
+        description: data.description ?? null,
+        type_document: data.type_document ?? null,
+        num_document: data.num_document ?? null,
+        expires_at: data.expires_at ?? null,
+        has_retention: data.has_retention ?? requirement.has_retention,
+        amount_ret:
+          !data.has_retention || data.has_retention == '0'
+            ? '0'
+            : (data.amount_ret?.toString() ?? '0'),
+        money: data.money ?? null,
+        amount: data.amount?.toString() ?? requirement.amount,
+        movetype_id: data.movetype_id ?? null,
+        costcenter_id: data.costcenter_id ?? null,
+        supplier_id: data.supplier_id ?? null,
+        legal_name: data.legal_name ?? null,
+        legal_number: data.legal_number ?? null,
+      }
+      const request = await viewClient.api.view.payment.update_requirement.$put(
+        {
+          json: updated_requirement,
+        },
+      )
+      if (!request.ok) {
+        const error = await request.json()
+        throw new Error(error.message)
+      }
+    },
+    onError: (error) => {
+      messageApi.error(error.message)
+    },
+    onSuccess: () => {
+      messageApi.success('Requerimiento actualizado')
+    },
+  })
+
+  const approve_requirement_mt = useMutation({
+    mutationFn: async (data: AdmRequirementInsert) => {
+      const updated_requirement: AdmRequirementSelect = {
+        ...requirement,
+        description: data.description ?? null,
+        type_document: data.type_document ?? null,
+        num_document: data.num_document ?? null,
+        expires_at: data.expires_at ?? null,
+        has_retention: data.has_retention ?? requirement.has_retention,
+        amount_ret:
+          !data.has_retention || data.has_retention == '0'
+            ? '0'
+            : (data.amount_ret?.toString() ?? '0'),
+        money: data.money ?? null,
+        amount: data.amount?.toString() ?? requirement.amount,
+        movetype_id: data.movetype_id ?? null,
+        costcenter_id: data.costcenter_id ?? null,
+        supplier_id: data.supplier_id ?? null,
+        legal_name: data.legal_name ?? null,
+        legal_number: data.legal_number ?? null,
+      }
       const request =
-        await viewClient.api.view.payment.create_requirement.$post({
-          json: data,
+        await viewClient.api.view.payment.approve_requirement.$put({
+          json: updated_requirement,
         })
       if (!request.ok) {
         const error = await request.json()
@@ -45,9 +107,7 @@ export function CrearFactura() {
       messageApi.error(error.message)
     },
     onSuccess: () => {
-      messageApi.success('Requerimiento creado correctamente')
-      formPrincipal.resetFields()
-      formCategoria.resetFields()
+      messageApi.success('Requerimiento aprobado')
     },
   })
 
@@ -62,16 +122,30 @@ export function CrearFactura() {
     await createRequirementMt.mutateAsync(value)
   }
 
+  const approve = async () => {
+    const pricipales = formPrincipal.getFieldsValue()
+    const categoria = formCategoria.getFieldsValue()
+
+    const value: AdmRequirementInsert = {
+      ...pricipales,
+      ...categoria,
+    }
+    await approve_requirement_mt.mutateAsync(value)
+  }
+
   return (
     <div className="grid gap-1 grid-cols-2">
       {contextHolder}
       <DatosPrincipales
+        requirement={requirement}
         formInstance={formPrincipal}
         messageInstance={messageApi}
       />
       <DatosProveedor />
       <CategoriaGasto
+        approve={approve}
         onSave={onSave}
+        requirement={requirement}
         formInstance={formCategoria}
         loading={createRequirementMt.isPending}
       />
@@ -82,9 +156,11 @@ export function CrearFactura() {
 const DatosPrincipales = ({
   formInstance,
   messageInstance,
+  requirement,
 }: {
   formInstance: FormInstance<any>
   messageInstance?: MessageInstance
+  requirement: AdmRequirementSelect
 }) => {
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
@@ -114,11 +190,9 @@ const DatosPrincipales = ({
         'legal_number' satisfies R,
         supplier.legal_number,
       )
-      formInstance.setFieldValue('supplier_id' satisfies R, supplier.id)
     } else {
       formInstance.setFieldValue('legal_name' satisfies R, undefined)
       formInstance.setFieldValue('legal_number' satisfies R, undefined)
-      formInstance.setFieldValue('supplier_id' satisfies R, undefined)
       messageInstance?.warning('Proveedor no encontrado')
     }
   }
@@ -133,6 +207,7 @@ const DatosPrincipales = ({
         wrapperCol={{ span: 18 }}
         form={formInstance}
         name="formPrincipal"
+        initialValues={requirement}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -147,6 +222,9 @@ const DatosPrincipales = ({
                 </Select.Option>
               ))}
             </Select>
+          </Form.Item>
+          <Form.Item label="ID" className="mb-1">
+            <Input value={requirement.id} readOnly />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -187,9 +265,6 @@ const DatosPrincipales = ({
             <Input.TextArea placeholder="..." rows={1} />
           </Form.Item>
         </div>
-        <Form.Item hidden name="supplier_id">
-          <Input />
-        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Tipo doc"
@@ -244,9 +319,13 @@ const CategoriaGasto = ({
   onSave,
   formInstance,
   loading,
+  requirement,
+  approve,
 }: {
+  requirement: AdmRequirementSelect
   loading: boolean
   onSave: () => void
+  approve: () => void
   formInstance: FormInstance<any>
 }) => {
   const { data: movesCash } = useQuery({
@@ -282,6 +361,7 @@ const CategoriaGasto = ({
         wrapperCol={{ span: 18 }}
         form={formInstance}
         name="formCategoria"
+        initialValues={requirement}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item label="Monto" className="mb-1" name={'amount' satisfies R}>
@@ -348,10 +428,15 @@ const CategoriaGasto = ({
             </Select>
           </Form.Item>
         </div>
-        <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary" onClick={onSave} loading={loading}>
-            Guardar
-          </Button>
+        <Form.Item className="flex justify-end" wrapperCol={{ span: 24 }}>
+          <div className="flex gap-2">
+            <Button type="primary" onClick={approve}>
+              Aprobar pago
+            </Button>
+            <Button type="primary" onClick={onSave} loading={loading}>
+              Guardar
+            </Button>
+          </div>
         </Form.Item>
       </Form>
     </div>

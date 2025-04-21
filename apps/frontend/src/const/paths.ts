@@ -18,6 +18,7 @@ export const PATHS = {
       pagos: {
         main: '/erp/modulos/facturacionpagos',
         nuevoRequerimiento: '/erp/modulos/facturacionpagos/nuevorequerimiento',
+        revisar: '/erp/modulos/facturacionpagos/revisar/:id',
         listaEspera: '/erp/modulos/facturacionpagos/listaespera',
         programarPagos: {
           main: '/erp/modulos/facturacionpagos/programarpagos',

@@ -18,6 +18,7 @@ import { NuevoRequerimientoPage } from '@/app/erp/modules/pagos/nuevo-requerimie
 import { ProgramarPagosPage } from '@/app/erp/modules/pagos/programar-pagos'
 import { CreateOrderPage } from '@/app/erp/modules/pagos/programar-pagos/create-order'
 import { ReporteCajaPage } from '@/app/erp/modules/pagos/reportes-caja'
+import { ReviewPage } from '@/app/erp/modules/pagos/review'
 import { TransferenciaPage } from '@/app/erp/modules/pagos/transferencia'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
@@ -122,6 +123,10 @@ export const routerv2 = createBrowserRouter([
             path: PATHS.erp.modulos.pagos.main,
             element: <PagosLayout />,
             children: [
+              {
+                path: PATHS.erp.modulos.pagos.revisar,
+                element: <ReviewPage />,
+              },
               {
                 path: PATHS.erp.modulos.pagos.nuevoRequerimiento,
                 element: <NuevoRequerimientoPage />,
