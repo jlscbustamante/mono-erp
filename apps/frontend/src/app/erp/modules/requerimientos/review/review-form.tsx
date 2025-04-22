@@ -462,7 +462,7 @@ export function ReviewForm({
                 >
                   {movesCash?.map((moveCash) => (
                     <Select.Option key={moveCash.id} value={moveCash.id}>
-                      {moveCash.movecash}
+                      {moveCash.movetype}
                     </Select.Option>
                   ))}
                 </Select>

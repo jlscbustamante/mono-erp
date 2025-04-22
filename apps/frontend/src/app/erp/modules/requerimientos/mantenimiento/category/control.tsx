@@ -22,7 +22,7 @@ export const menuOptions: FilterOption<MoveCashSelect>[] = [
     label: 'Nombre',
     operators: ['contain'],
     whereOption: {
-      field: 'movecash',
+      field: 'movetype',
     },
   },
   {
@@ -53,21 +53,21 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
   const { open } = useCreateCategory()
 
   const name = useMemo(() => {
-    const element = filters.find((el) => el.field == 'movecash')
+    const element = filters.find((el) => el.field == 'movetype')
 
     return (element?.value as string) ?? ''
   }, [filters])
 
   const changeName = (value: string) => {
     if (value === '') {
-      setFilters(filters.filter((el) => el.field !== 'movecash'))
+      setFilters(filters.filter((el) => el.field !== 'movetype'))
       return
     }
-    const exist = filters.find((el) => el.field == 'movecash')
+    const exist = filters.find((el) => el.field == 'movetype')
     if (exist) {
       setFilters(
         filters.map((el) =>
-          el.field == 'movecash'
+          el.field == 'movetype'
             ? {
                 ...el,
                 value,
@@ -79,7 +79,7 @@ export function Control({ onSearch }: { onSearch?: () => void }) {
       setFilters([
         ...filters,
         {
-          field: 'movecash',
+          field: 'movetype',
           operator: 'contain',
           value,
           key: 'costcenter',

@@ -140,7 +140,7 @@ export function CreationForm({
   useEffect(() => {
     const category = movesCash?.find((el) => el.id === categoryId)
     if (category) {
-      form.setFieldValue('category_name', category.movecash)
+      form.setFieldValue('category_name', category.movetype)
     } else {
       form.setFieldValue('category_name', '')
     }
@@ -444,7 +444,7 @@ export function CreationForm({
                 >
                   {movesCash?.map((moveCash) => (
                     <Select.Option key={moveCash.id} value={moveCash.id}>
-                      {moveCash.movecash}
+                      {moveCash.movetype}
                     </Select.Option>
                   ))}
                 </Select>

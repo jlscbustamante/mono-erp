@@ -64,7 +64,7 @@ export function FilterComponent<T>({
 
   const clearFilters = () => {
     const keys = options.map((el) => el.key)
-    setFilters?.(filters.filter((el) => !keys.includes(el.key as keyof T)))
+    setFilters?.(filters.filter((el) => !keys.includes(el.key)))
   }
 
   const clearFilter = (key: string) => {

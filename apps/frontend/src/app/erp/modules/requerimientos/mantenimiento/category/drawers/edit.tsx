@@ -49,7 +49,7 @@ export const UpdateCategory = ({ onUpdate }: { onUpdate?: () => void }) => {
     if (category) {
       form.setFieldsValue({
         id: category.id,
-        movecash: category.movecash,
+        movetype: category.movetype,
         account_flow: category.account_flow,
         account_id: category.account_id,
         cash_flow: category.cash_flow,

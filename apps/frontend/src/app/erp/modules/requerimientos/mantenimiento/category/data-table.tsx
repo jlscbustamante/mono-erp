@@ -14,14 +14,14 @@ const columns = [
     title: 'Nombre',
     dataIndex: 'movecash',
     sorter: (a: MoveCashSelect, b: MoveCashSelect) =>
-      a.movecash.localeCompare(b.movecash),
+      a.movetype.localeCompare(b.movetype),
     showSorterTooltip: false,
   },
   {
     title: 'Cuenta',
     dataIndex: 'account_id',
     sorter: (a: MoveCashSelect, b: MoveCashSelect) =>
-      a.movecash?.localeCompare(b.movecash ?? '') ?? -1,
+      a.movetype?.localeCompare(b.movetype ?? '') ?? -1,
     showSorterTooltip: false,
   },
   {
@@ -29,7 +29,7 @@ const columns = [
     dataIndex: 'used_to',
     showSorterTooltip: false,
     sorter: (a: MoveCashSelect, b: MoveCashSelect) =>
-      a.movecash?.localeCompare(b.movecash ?? '') ?? -1,
+      a.movetype?.localeCompare(b.movetype ?? '') ?? -1,
     render: (used_to) => {
       if (used_to == '1') return 'Para las tiendas'
       if (used_to == '4') return 'Para requerimientos'
