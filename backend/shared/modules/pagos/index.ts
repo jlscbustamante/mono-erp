@@ -1,4 +1,4 @@
-import { AdmPaymentOrderInsert } from "../../db/mods.ts";
+import { AdmPaymentOrderInsert, AdmReqNondocsSelect } from "../../db/mods.ts";
 
 export interface ICreateRequirementDto {
   company_id: string;
@@ -37,6 +37,11 @@ export interface RequirementViewDto {
   requested_at: string;
   expires_at: string | null;
   status: PAYMENT_STATUS;
+}
+
+export interface AdmReqNondocsViewDto extends AdmReqNondocsSelect {
+  cashbank_source_name: string | null;
+  cashbank_target_name: string | null;
 }
 
 export interface CreateOrderDto extends AdmPaymentOrderInsert {

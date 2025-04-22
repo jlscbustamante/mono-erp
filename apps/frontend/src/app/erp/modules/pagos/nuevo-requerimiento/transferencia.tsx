@@ -21,9 +21,10 @@ const TransferenciaForm = () => {
 
   const create_mt = useMutation({
     mutationFn: async (data: AdmReqNondocsInsert) => {
-      const request = await viewClient.api.view.nondoc.requirement.$post({
-        json: data,
-      })
+      const request =
+        await viewClient.api.view.nondoc.requirement.transfer.$post({
+          json: data,
+        })
       const result = await request.json()
       if (!request.json) {
         throw new Error(result.message ?? 'Error al crear el requerimiento')

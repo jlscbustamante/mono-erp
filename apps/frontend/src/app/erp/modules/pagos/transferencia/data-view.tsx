@@ -1,50 +1,51 @@
 import { Table } from 'antd'
+import { format } from 'date-fns'
+import { PaymentStatusBadge } from '../components/status-bage'
+import { useTransferenciasQuery } from './state'
 
 export function DataView() {
+  const { data } = useTransferenciasQuery()
   return (
     <div>
       <Table
         size="small"
         pagination={false}
-        dataSource={[
-          {
-            nro: '13213',
-          },
-        ]}
+        dataSource={data}
+        rowKey={'id'}
         columns={[
           {
             title: 'Nro',
-            dataIndex: 'nro',
+            dataIndex: 'id',
           },
           {
-            title: 'Fecha emision',
+            title: 'Caja origen',
+            dataIndex: 'cashbank_source_name',
           },
           {
-            title: 'Tipo de operación',
+            title: 'Caja destino',
+            dataIndex: 'cashbank_target_name',
           },
           {
-            title: 'Importe',
+            title: 'Detalle',
+            dataIndex: 'description',
           },
           {
-            title: 'Moneda',
+            title: 'Monto',
+            dataIndex: 'amount',
           },
           {
-            title: 'Empresa',
+            title: 'Regis. por',
+            dataIndex: 'created_by',
           },
           {
-            title: 'Cuenta',
-          },
-          {
-            title: 'Autoriza1',
-          },
-          {
-            title: 'Autoriza2',
-          },
-          {
-            title: 'Programado por',
+            title: 'Solicitado',
+            dataIndex: 'requested_at',
+            render: (val) => format(new Date(val), 'yyyy-MM-dd'),
           },
           {
             title: 'Estado',
+            dataIndex: 'status',
+            render: (val) => <PaymentStatusBadge status={val} />,
           },
         ]}
       />

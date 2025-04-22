@@ -12,3 +12,4 @@ export type AdmPaymentOrderInsert = Insertable<AdmPaymentOrder>;
 export type AdmPaymentOrderSelect = Selectable<AdmPaymentOrder>;
 
 export type AdmReqNondocsInsert = Insertable<AdmReqNondocs>;
+export type AdmReqNondocsSelect = Selectable<AdmReqNondocs>;
