@@ -7,7 +7,6 @@ import { useEffect, useMemo, useState } from "react";
 import { FaRProject } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { atom, useRecoilState } from "recoil";
-import { IFinalRecipe } from "../../shared/types";
 
 
 const recipeForEditAtom = atom<IFinalRecipe | undefined>({

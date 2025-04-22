@@ -1,7 +1,7 @@
 import { List, Button, Skeleton } from "antd"
-import { useSuppliesQuery } from "@/views/recipes/supplies/hooks/useSuppliesQuery"
 import { IItem, medidas } from "@/views/recipes/shared/types"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
+import { useSuppliesQuery } from "../hooks/useSuppliesQuery"
 
 export const ContenedorInsumos = () => {
   const { data: insumos, isLoading } = useSuppliesQuery()
@@ -9,6 +9,13 @@ export const ContenedorInsumos = () => {
 
   const isSelected = (item: IItem) =>
     selected.some(i => i.item_id === item.id && i.type === 'insumo') // o 'sabor', 'insumo'
+
+  const baseYPorSaborIds = selected
+  .filter(i => i.type !== 'insumo')
+  .map(i => i.item_id)
+
+  const insumosFiltrados = (insumos || []).filter(insumo => !baseYPorSaborIds.includes(insumo.id))
+
 
   return (
     <div className="space-y-3">

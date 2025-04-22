@@ -18,7 +18,14 @@ export const createSizeSchema = z.object({
   menusize_id: z.number().int(),
 });
 
+export const createProductWithSizeAndFlavorSchema = z.object({
+  product: createProductSchema,
+  flavors: z.array(createFlavorSchema).optional(),
+  sizes: z.array(createSizeSchema).optional(),
+});
+
 //Carga por lotes
 export const createManyProductsSchema = z.array(createProductSchema);
 export const createManyFlavorsSchema = z.array(createFlavorSchema);
 export const createManySizesSchema = z.array(createSizeSchema);
+export const createManyProductsWithSizesAndFlavorsSchema = z.array(createProductWithSizeAndFlavorSchema);

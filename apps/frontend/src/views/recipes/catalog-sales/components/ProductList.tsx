@@ -1,17 +1,33 @@
 import { useQuery } from '@tanstack/react-query'
 import {
-  Table, Button, Space, Typography, Divider, message, Spin, Alert, Input, Card
+  Table,
+  Button,
+  Space,
+  Typography,
+  message,
+  Spin,
+  Alert,
+  Input,
+  Card,
+  Drawer
 } from 'antd'
-import { PlusOutlined, SyncOutlined, DownOutlined, UpOutlined } from '@ant-design/icons'
+import {
+  PlusOutlined,
+  SyncOutlined,
+  DownOutlined,
+  UpOutlined
+} from '@ant-design/icons'
 import { useState, useMemo } from 'react'
 
 import { useCatalogSyncQuery } from '../hooks/useCatalogSyncQuery'
-import { getProductsFromDB, syncManyProducts } from '../services/catalogSalesApi'
+import { getProductsFromDB, syncProduct, syncSize } from '../services/catalogSalesApi'
 import { IProduct } from '../../shared/types'
-import { useAddProduct } from '../hooks/useAddProduct'
-import { useAddAllWithRefetch } from '../hooks/useAddAllWithFeedback'
 import { useItemLoading } from '../hooks/useItemLoading'
+import { ICommercialProduct } from '../types/catalog'
 
+import { useAddAllWithRefetch  } from '../hooks/useAddAllWithFeedback'
+import { syncManyProducts } from '../services/catalogSalesApi'
+import { CreateProductDto, SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 
 const { Title } = Typography
 const { Search } = Input
@@ -19,73 +35,130 @@ const { Search } = Input
 export default function ProductList() {
   const [messageApi, contextHolder] = message.useMessage()
   const [showRegistered, setShowRegistered] = useState(true)
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [searchSynced, setSearchSynced] = useState('')
-  const [searchUnsynced, setSearchUnsynced] = useState('')  
+  const [searchUnsynced, setSearchUnsynced] = useState('')
+  
 
-
-  const addProductMutation = useAddProduct()
   const { isLoading, start, stop } = useItemLoading()
 
-  // const { mutate: addAllProducts, isPending: isAddingAll } = useAddAllProducts()
-
-  const { data: syncedProducts = [], isLoading: loadingSynced, refetch: refetchSynced  } = useQuery<IProduct[]>({
+  const {
+    data: syncedProducts = [],
+    isLoading: loadingSynced,
+    refetch: refetchSynced
+  } = useQuery<IProduct[]>({
     queryKey: ['products-synced'],
     queryFn: getProductsFromDB
   })
 
-  const { data: commercialData, isLoading: loadingCommercial, refetch } = useCatalogSyncQuery()
+  const {
+    data: commercialData,
+    isLoading: loadingCommercial,
+    refetch
+  } = useCatalogSyncQuery()
+
+  const commercialFlavors = commercialData?.flavors ?? []
+  const commercialSizes = commercialData?.sizes ?? []
+
   const commercialProducts = commercialData?.products ?? []
-  const syncedIds = new Set(syncedProducts.map(p => p.menuprod_id))
-  const unsyncedProducts = commercialProducts.filter(p => !syncedIds.has(p.id))
+  const syncedIds = new Set(syncedProducts.map((p) => p.menuprod_id))
+  const unsyncedProducts = commercialProducts.filter((p) => !syncedIds.has(p.id))
 
-  const { mutate: addAllProducts, isPending: loadingAddAll } = useAddAllWithRefetch(
-    syncManyProducts,
-    refetchSynced,
-    'productos'
-  )
-
-
-  const handleAddProduct = async (product: typeof commercialProducts[number]) => {
-    const payload: IProduct = {
-      company_id: product.company_id,
-      product: product.product,
-      menuprod_id: product.id
-    }
-
-    start(product.id)
-    try {
-      await addProductMutation.mutateAsync(payload)
-    } catch {
-      message.error(`Error al agregar producto: ${product.product}`)
-    }
-    stop()
+  const handleToggleDrawer = async () => {
+    await refetch()
+    setIsDrawerOpen((prev) => !prev)
   }
 
-  const handleAddAll = () => {
-    // addAll(unsyncedProducts.map(p => ({
-    //   company_id: p.company_id,
-    //   product: p.product,
-    //   menuprod_id: p.id
-    // })))
+  const findSizeLabelById = (id: number): string => {
+    return commercialData?.sizes.find((s) => s.id === id)?.size || 'Desconocido'
+  }
 
-    const payload: IProduct[] = unsyncedProducts.map(p => ({
-      company_id: p.company_id,
-      product: p.product,
-      menuprod_id: p.id
-    }))
+  const { mutate: addAllProducts, isPending: loadingAddAll } = useAddAllWithRefetch(async () => {
+    await Promise.all([refetch(), refetchSynced()])
+  })
 
-    addAllProducts(payload)
+  const handleAddAllProducts = async() =>{
+
+    const productsWithSizesAndFlavors: SyncProductWithSizesAndFlavorsDto[] = unsyncedProducts.map<SyncProductWithSizesAndFlavorsDto>((product) => ({
+        product: {
+          product: product.product,
+          menuprod_id: product.id,
+          company_id: product.company_id
+        },
+        sizes: product.size_id?.map((size) => {
+          const sizeOfProduct = commercialSizes.find((s)=> s.id === size.id)!;
+          return {
+            company_id: sizeOfProduct.company_id,
+            menusize_id: sizeOfProduct.id,
+            size: sizeOfProduct.size,
+          }
+        }) ?? [],
+        flavors: product.flavor_id?.map((flavor) => {
+          const flavorOfProduct = commercialFlavors.find((f)=> f.id === flavor.id)!;
+
+          return{
+            company_id: flavorOfProduct.company_id,
+            menuflav_id: flavorOfProduct.id,
+            flavor: flavorOfProduct.flavor,
+          }
+        }) ?? []
+      }))
+
+    console.log(productsWithSizesAndFlavors)
+    addAllProducts(productsWithSizesAndFlavors)
+
+  }
+
+  const handleAddProduct = async (product: ICommercialProduct) => {
+    start(product.id)
+
+    const productWithSizesAndFlavors : SyncProductWithSizesAndFlavorsDto = {
+      product: {
+        product: product.product,
+        menuprod_id: product.id,
+        company_id: product.company_id
+      },
+      sizes: product.size_id?.map((size) => {
+        const sizeOfProduct = commercialSizes.find((s)=> s.id === size.id)!;
+        return {
+          company_id: sizeOfProduct.company_id,
+          menusize_id: sizeOfProduct.id,
+          size: sizeOfProduct.size,
+        }
+      }) ?? [],
+      flavors: product.flavor_id?.map((flavor) => {
+        const flavorOfProduct = commercialFlavors.find((f)=> f.id === flavor.id)!;
+
+        return{
+          company_id: flavorOfProduct.company_id,
+          menuflav_id: flavorOfProduct.id,
+          flavor: flavorOfProduct.flavor,
+        }
+      }
+      ) ?? []
+    }
+    try {
+      // 1. Registrar producto
+      await syncProduct(productWithSizesAndFlavors)
+      message.success(`✅ "${product.product}", tamaños y sabores sincronizados`)
+      await refetchSynced()
+      await refetch()
+    } catch {
+      message.error(`❌ Error al agregar "${product.product}"`)
+    }
+
+    stop()
   }
 
   const filteredSyncedProducts = useMemo(() => {
     return [...syncedProducts]
-      .filter(p => p.product.toLowerCase().includes(searchSynced.toLowerCase()))
+      .filter((p) => p.product.toLowerCase().includes(searchSynced.toLowerCase()))
       .sort((a, b) => a.product.localeCompare(b.product))
   }, [searchSynced, syncedProducts])
 
   const filteredUnsyncedProducts = useMemo(() => {
     return [...unsyncedProducts]
-      .filter(p => p.product.toLowerCase().includes(searchUnsynced.toLowerCase()))
+      .filter((p) => p.product.toLowerCase().includes(searchUnsynced.toLowerCase()))
       .sort((a, b) => a.product.localeCompare(b.product))
   }, [searchUnsynced, unsyncedProducts])
 
@@ -96,13 +169,25 @@ export default function ProductList() {
       <Card
         title={
           <Space>
-            <Title level={4} className="!mb-0">Productos registrados</Title>
-            <Button
+            <Title level={4} className="!mb-0">
+              Productos registrados
+            </Title>
+            {/* <Button
               type="link"
               icon={showRegistered ? <UpOutlined /> : <DownOutlined />}
               onClick={() => setShowRegistered(!showRegistered)}
             >
               {showRegistered ? 'Colapsar' : 'Expandir'}
+            </Button> */}
+            <Button
+              icon={<SyncOutlined />}
+              onClick={handleToggleDrawer}
+              loading={loadingCommercial}
+              type="link"
+            >
+              {isDrawerOpen
+                ? 'Ocultar productos disponibles'
+                : 'Sincronizar nuevos productos'}
             </Button>
           </Space>
         }
@@ -115,7 +200,7 @@ export default function ProductList() {
               onChange={(e) => setSearchSynced(e.target.value)}
               style={{ marginBottom: 12 }}
             />
-            <div style={{ maxHeight: 250, overflowY: 'auto' }}>
+            <div style={{ maxHeight: 600 ,overflowY: 'auto' }}>
               <Table
                 rowKey="id"
                 loading={loadingSynced}
@@ -129,25 +214,13 @@ export default function ProductList() {
         )}
       </Card>
 
-      <Divider plain />
-
-      <Card title={<Title level={4} className="!mb-0">Productos disponibles para agregar</Title>}>
-        <Space style={{ marginBottom: 16 }}>
-          <Button icon={<SyncOutlined />} onClick={() => refetch()} loading={loadingCommercial}>
-            Sincronizar nuevos productos
-          </Button>
-          {unsyncedProducts.length > 0 && (
-            <Button
-              type="primary"
-              icon={loadingAddAll ? <Spin size="small" /> : <PlusOutlined />}
-              onClick={handleAddAll}
-              disabled={loadingAddAll}
-            >
-              {loadingAddAll ? 'Agregando...' : 'Agregar todos'}
-            </Button>
-          )}
-        </Space>
-
+      <Drawer
+        title="Productos disponibles para agregar"
+        placement="right"
+        width={500}
+        onClose={() => setIsDrawerOpen(false)}
+        open={isDrawerOpen}
+      >
         <Search
           placeholder="Buscar producto para agregar"
           allowClear
@@ -155,14 +228,23 @@ export default function ProductList() {
           style={{ marginBottom: 12 }}
         />
 
-        {(filteredUnsyncedProducts.length === 0 && searchUnsynced.trim() === '' )? (
-          <Alert
-            message="✅ ¡Todos los productos están sincronizados!"
-            type="success"
-            showIcon
-          />
+      {filteredUnsyncedProducts.length > 0 && (
+        <Button
+        type="primary"
+        icon={loadingAddAll ? <Spin size="small" /> : <PlusOutlined />}
+        onClick={() => handleAddAllProducts()}
+        disabled={loadingAddAll}
+        style={{ marginBottom: 12 }}
+        block
+      >
+        {loadingAddAll ? 'Agregando todos...' : 'Agregar todos'}
+      </Button>
+      )}
+
+        {filteredUnsyncedProducts.length === 0 && searchUnsynced.trim() == "" ? (
+          <Alert message="✅ ¡Todos los productos están sincronizados!" type="success" showIcon />
         ) : (
-          <div style={{ maxHeight: 300, overflowY: 'auto' }}>
+          <div style={{ maxHeight: 1000, overflowY: 'auto' }}>
             <Table
               rowKey="id"
               dataSource={filteredUnsyncedProducts}
@@ -176,9 +258,9 @@ export default function ProductList() {
                       icon={isLoading(record.id) ? <Spin size="small" /> : <PlusOutlined />}
                       onClick={() => handleAddProduct(record)}
                       loading={isLoading(record.id)}
-                      disabled={isLoading(record.id) || loadingAddAll}
+                      disabled={isLoading(record.id)}
                     >
-                      {isLoading(record.id) ? 'Agregando...' : 'Agregar producto'}
+                      {isLoading(record.id) ? 'Agregando...' : 'Agregar'}
                     </Button>
                   )
                 }
@@ -188,7 +270,7 @@ export default function ProductList() {
             />
           </div>
         )}
-      </Card>
+      </Drawer>
     </div>
   )
 }

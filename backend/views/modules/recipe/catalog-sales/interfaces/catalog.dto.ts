@@ -18,3 +18,8 @@ export interface CreateProductDto {
     menusize_id: number;
   }
   
+  export interface SyncProductWithSizesAndFlavorsDto{
+    product: CreateProductDto;
+    flavors?: CreateFlavorDto[];
+    sizes?: CreateSizeDto[];
+  }

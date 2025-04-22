@@ -1,4 +1,3 @@
-
 export const medidas = {
   1: 'kg',
   2: 'gr',
@@ -24,7 +23,7 @@ export interface IProductSize {
 
 // 🍕 Producto
 export interface IProduct {
-  id?: number
+  id: number
   product: string
   menuprod_id: number
   status?: number

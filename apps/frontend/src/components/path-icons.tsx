@@ -137,9 +137,9 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recetas.consultarReceta]: GiFullPizza,
   [PATHS.erp.modulos.recetas.crearReceta]: IoCreateSharp,
   [PATHS.erp.modulos.recetas.mantenimiento.main]: VscSettings,
-  [PATHS.erp.modulos.recetas.mantenimiento.recetaBase]: BiSolidPizza,
-  [PATHS.erp.modulos.recetas.mantenimiento.porSabor]: GiTomato,
-  [PATHS.erp.modulos.recetas.mantenimiento.insumos]: LuCupSoda,
+  [PATHS.erp.modulos.recetas.mantenimiento.RecetasBase]: BiSolidPizza,
+  [PATHS.erp.modulos.recetas.mantenimiento.RecetasPorSabor]: GiTomato,
+  [PATHS.erp.modulos.recetas.mantenimiento.Insumos]: LuCupSoda,
   [PATHS.erp.modulos.recetas.catalogoVenta]: MdOutlineSell,
 }
 

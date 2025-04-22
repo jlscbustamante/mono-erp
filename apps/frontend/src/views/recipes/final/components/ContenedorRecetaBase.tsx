@@ -2,10 +2,11 @@
 import { useState } from "react"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
 import { IItem, medidas } from "../../shared/types"
-import { useBaseRecipesBySizeQuery } from "../../base/hooks/useBaseRecipeQuery"
 import { Button, List, Select, Skeleton } from "antd"
 import { PlusOutlined } from "@ant-design/icons"
 import { CrearRecetaBaseDrawer } from "../../base/components/CrearRecetaBaseDrawer"
+import { useBaseRecipesQuery } from "../hooks/useBaseRecipesQuery"
+import { useProductsQuery } from "../hooks/useProductsQuery"
 
 export const ContenedorRecetaBase = () => {
   const [recetaIdSeleccionada, setRecetaIdSeleccionada] = useState<number | null>(null)
@@ -18,16 +19,21 @@ export const ContenedorRecetaBase = () => {
     setRecetaBaseId,
     tamanios,
     factor,
+    productoId,
   } = useRecipeBuilderStore()
 
   const productSizeId = tamanios.find(t => t.factor === factor)?.id
 
-  const { data: recetas = [], isLoading } = useBaseRecipesBySizeQuery(productSizeId)
+  const { data: recetas = [], isLoading } = useBaseRecipesQuery()
 
   const recetaSeleccionada = recetas.find(r => r.id === recetaIdSeleccionada) || null
 
   const isSelected = (item: IItem) =>
     selected.some(i => i.item_id === item.id && i.type === 'base')
+
+  const { data: products = [] } = useProductsQuery()
+  const selectedProduct = products.find(p => p.id === productoId)
+  const companyId = selectedProduct?.company_id ?? ''
 
 
     return (
@@ -94,6 +100,7 @@ export const ContenedorRecetaBase = () => {
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         availableSizes={tamanios}
+        companyId={companyId}
       />
     </div>
     )

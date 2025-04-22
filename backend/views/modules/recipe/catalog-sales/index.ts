@@ -5,9 +5,10 @@ import {
   createProductSchema,
   createFlavorSchema,
   createSizeSchema,
-  createManyProductsSchema,
   createManyFlavorsSchema,
   createManySizesSchema,
+  createManyProductsWithSizesAndFlavorsSchema,
+  createProductWithSizeAndFlavorSchema,
 } from "./validators/catalog.validator.ts";
 
 export const catalogRouter = new Hono()
@@ -15,13 +16,12 @@ export const catalogRouter = new Hono()
   // POST: agregar producto
   .post(
     "/products/add",
-    zValidator("json", createProductSchema),
+    zValidator("json", createProductWithSizeAndFlavorSchema),
     async (c) => {
         
       const body = c.req.valid("json");
-      console.log(body);
-      await catalogService.addProduct(body);
-      return c.json({ message: "Producto agregado con éxito" }, 201);
+      const result = await catalogService.addProductWithSizesAndFlavors(body);
+      return c.json({ message: "Producto agregado con éxito", ...result }, 201);
     }
   )
 
@@ -48,13 +48,23 @@ export const catalogRouter = new Hono()
   )
 
   // Agregar muchos productos
+  // .post(
+  //   "/products/add-many",
+  //   zValidator("json", createManyProductsSchema),
+  //   async (c) => {
+  //     const body = c.req.valid("json");
+  //     await catalogService.addManyProducts(body);
+  //     return c.json({ message: "Productos agregados con éxito" }, 201);
+  //   }
+  // )
+
   .post(
-    "/products/add-many",
-    zValidator("json", createManyProductsSchema),
+    "products/add-many",
+    zValidator("json", createManyProductsWithSizesAndFlavorsSchema),
     async (c) => {
       const body = c.req.valid("json");
-      await catalogService.addManyProducts(body);
-      return c.json({ message: "Productos agregados con éxito" }, 201);
+      const result = await catalogService.addmanyProductsWithSizesAndFlavors(body);
+      return c.json({ message: "Sincronización completa", ...result }, 201);
     }
   )
   

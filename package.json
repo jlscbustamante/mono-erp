@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4.2",
+    "@uidotdev/usehooks": "^2.4.1",
     "concurrently": "^9.1.2",
     "dayjs": "^1.11.9",
     "drizzle-orm": "^0.39.1",

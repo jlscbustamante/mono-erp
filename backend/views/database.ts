@@ -7,6 +7,9 @@ import {
   dispatchesRelation,
   dispatchItemRelation,
   finMoveCash,
+  inv_product_flavor,
+  inv_recipe_base,
+  inv_recipemix_detail,
   requirementItems,
   requirementItemsRelation,
   requirementRelation,
@@ -58,5 +61,8 @@ export const db = drizzle(connection, {
     requirements,
     companies,
     cashBanks,
+    inv_recipe_base,
+    inv_product_flavor,
+    inv_recipemix_detail
   },
 });

@@ -41,6 +41,10 @@ export const useGuardarReceta = () => {
         return message.warning("Debe agregar al menos un ingrediente base o de sabor")
       }
 
+      if (!tamanios.some(t => t.factor === factor)) {
+        return message.warning("Selecciona un tamaño válido del producto");
+      }
+
       const recetaFinal = buildFinalRecipePayload({
         product_id: productoId!,
         product_size_id: tamanios.find(t => t.factor === factor)?.id || 0,

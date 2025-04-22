@@ -8,8 +8,9 @@ import { cashBankRouter } from "./modules/cashbank/index.ts";
 import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
-import { recipeRouter } from "./modules/recipe/index.ts";
+import { recipeRouter } from "#app/modules/recipe/create-recipe/index.ts";
 import { catalogRouter } from "#app/modules/recipe/catalog-sales/index.ts";
+
 
 const app = new Hono();
 

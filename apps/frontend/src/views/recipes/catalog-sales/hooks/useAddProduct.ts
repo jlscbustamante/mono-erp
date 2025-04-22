@@ -3,12 +3,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
 import { IProduct } from '../../shared/types'
 import { syncProduct } from '../services/catalogSalesApi'
+import { SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 
 export const useAddProduct = () => {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async (product: IProduct) => {
+    mutationFn: async (product: SyncProductWithSizesAndFlavorsDto) => {
       // 🧪 Sincronizacion
 
       await syncProduct(product)

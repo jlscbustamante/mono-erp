@@ -4,6 +4,8 @@ export interface ICommercialProduct {
     product: string
     menuprod_id: number
     status: number
+    flavor_id: FlavorId[]
+    size_id: SizeId[]
   }
   
   export interface ICommercialSize {
@@ -11,6 +13,14 @@ export interface ICommercialProduct {
     company_id: string
     size: string
     menusize_id: number
+  }
+
+  export interface SizeId {
+    id: number;
+  }
+
+  export interface FlavorId{
+    id: number;
   }
   
   export interface ICommercialFlavor {
@@ -25,4 +35,4 @@ export interface ICommercialProduct {
     sizes: ICommercialSize[]
     flavors: ICommercialFlavor[]
   }
-  
+ 

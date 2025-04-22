@@ -3,6 +3,7 @@ import type {
   CreateProductDto,
   CreateFlavorDto,
   CreateSizeDto,
+  SyncProductWithSizesAndFlavorsDto,
 } from "../interfaces/catalog.dto.ts";
 
 export const catalogService = {
@@ -42,5 +43,12 @@ export const catalogService = {
   addManySizes: (data: CreateSizeDto[]) => {
     catalogRepository.insertManySizes(data)
   },
+  
+  async addmanyProductsWithSizesAndFlavors(data: SyncProductWithSizesAndFlavorsDto[]) {
+   return await catalogRepository.insertManyProductsWithSizesAndFlavors(data)
+  },
 
+  async addProductWithSizesAndFlavors(data: SyncProductWithSizesAndFlavorsDto) {
+    return await catalogRepository.insertProductWithSizesAndFlavors(data)
+  } 
 };

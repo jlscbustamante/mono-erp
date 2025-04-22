@@ -1,49 +1,25 @@
-import { useState } from 'react'
 import { message } from 'antd'
 import { useMutation } from '@tanstack/react-query'
-import { syncManyProducts, syncManyFlavors, syncManySizes } from '../services/catalogSalesApi'
-import { IProduct, IProductFlavor, IProductSize } from '../../shared/types'
+import { syncManyProducts, syncManySizes, syncManyFlavors, syncManyProductsWithSizes } from '../services/catalogSalesApi'
+import { SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 
-
-type MutationFn<T> = (data: T[]) => Promise<any>
-
-export function useAddAllWithRefetch<T>(
-  mutationFn: MutationFn<T>,
-  refetch: () => void,
-  entityName: string // productos, sabores, etc.
+export function useAddAllWithRefetch(
+  refetch: () => void
 ) {
   return useMutation({
-    mutationFn,
+    mutationFn: async (productsWithSizeAndFlavors: SyncProductWithSizesAndFlavorsDto[]) => {
+
+      // 2. Hacer requests en paralelo
+      await syncManyProductsWithSizes(productsWithSizeAndFlavors)
+    },
+
     onSuccess: () => {
-      message.success(`✅ ${entityName} agregados con éxito`)
+      message.success('✅ Productos y sus dependencias agregados con éxito')
       refetch()
     },
+
     onError: () => {
-      message.error(`❌ Error al agregar ${entityName}`)
-    },
-  })
-}
-
-export function useAddAllProducts() {
-  return useMutation({
-    mutationFn: (products: IProduct[]) => syncManyProducts(products),
-    onSuccess: () => message.success('Productos agregados con éxito'),
-    onError: () => message.error('Error al agregar productos'),
-  })
-}
-
-export function useAddAllFlavors() {
-  return useMutation({
-    mutationFn: (flavors: IProductFlavor[]) => syncManyFlavors(flavors),
-    onSuccess: () => message.success('Sabores agregados con éxito'),
-    onError: () => message.error('Error al agregar sabores'),
-  })
-}
-
-export function useAddAllSizes() {
-  return useMutation({
-    mutationFn: (sizes: IProductSize[]) => syncManySizes(sizes),
-    onSuccess: () => message.success('Tamaños agregados con éxito'),
-    onError: () => message.error('Error al agregar tamaños'),
+      message.error('❌ Error al agregar productos o sus dependencias')
+    }
   })
 }

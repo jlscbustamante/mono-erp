@@ -12,9 +12,9 @@ const menu : (MenuOption | MenuSeparator)[] = [
     gm('Regitrar receta', PATHS.erp.modulos.recetas.crearReceta),
     separator(),
     gm('Mantenimiento', PATHS.erp.modulos.recetas.mantenimiento.main, [
-        gm('Receta base', PATHS.erp.modulos.recetas.mantenimiento.recetaBase),
-        gm('Receta por sabor', PATHS.erp.modulos.recetas.mantenimiento.porSabor),
-        gm('Insumos', PATHS.erp.modulos.recetas.mantenimiento.insumos),
+        gm('Receta base insumos', PATHS.erp.modulos.recetas.mantenimiento.RecetasBase),
+        gm('Sabores insumos', PATHS.erp.modulos.recetas.mantenimiento.RecetasPorSabor),
+        gm('Insumos', PATHS.erp.modulos.recetas.mantenimiento.Insumos),
     ]),
     separator(),
     gm('Catalogo venta', PATHS.erp.modulos.recetas.catalogoVenta),

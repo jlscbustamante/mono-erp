@@ -1,11 +1,12 @@
 import { Select, List, Button, Skeleton } from "antd"
 import { useState } from "react"
-import { useFlavorRecipesQuery } from "@/views/recipes/flavor/hooks/useFlavorRecipesQuery"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
 import { IItem, medidas } from "../../shared/types"
 import { IRecipeFlavorIngredient } from "../../shared/types"
 import { PlusOutlined } from "@ant-design/icons"
 import { CrearSaborDrawer } from "../../flavor/components/CrearSaborDrawer"
+import { useFlavorsQuery } from "../hooks/useFlavorsQuery"
+import { useProductsQuery } from "../hooks/useProductsQuery"
 
 
 export const ContenedorRecetaPorSabor = () => {
@@ -18,14 +19,19 @@ export const ContenedorRecetaPorSabor = () => {
     remove,
     recetaBaseId,
     setRecipeFlavorId,
+    productoId
   } = useRecipeBuilderStore()
 
-  const { data: sabores = [], isLoading } = useFlavorRecipesQuery(recetaBaseId ?? undefined)
+  const { data: sabores = [], isLoading } = useFlavorsQuery()
 
   const recetaSeleccionada = sabores.find(f => f.id === flavorIdSeleccionado) || null
 
   const isSelected = (item: IRecipeFlavorIngredient) =>
     selected.some(i => i.item_id === item.item_id && i.type === 'sabor')
+
+  const { data: products = [] } = useProductsQuery()
+  const selectedProduct = products.find(p => p.id === productoId)
+  const companyId = selectedProduct?.company_id ?? ''
 
   return (
     <div className="space-y-3">
@@ -94,6 +100,7 @@ export const ContenedorRecetaPorSabor = () => {
       <CrearSaborDrawer
         open={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        companyId={companyId}
       />
     </div>
   )

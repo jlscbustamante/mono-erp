@@ -1,130 +1,118 @@
-import { Drawer, Form, Input, Button, List, Skeleton, message } from "antd"
-import { PlusOutlined } from "@ant-design/icons"
-import { useState } from "react"
-import { useSuppliesQuery } from "@/views/recipes/supplies/hooks/useSuppliesQuery"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-
-import { useRecipeBuilderStore } from "../../final/store/useRecipeBuilderStore"
-import { IItem, medidas } from "../../shared/types"
-import { createFlavorRecipe } from "../../shared/services/recipeBaseApi"
+import { Drawer, Input, Button, List, message } from 'antd'
+import { useState } from 'react'
+import { useItemsQuery } from '@/views/recipes/final/hooks/useItemsQuery'
+import { medidas, IItem } from '@/views/recipes/shared/types'
+import { useCreateFlavorWithIngredients } from '@/views/recipes/final/hooks/useCreateFlavorWithIngredients'
+import { CreateFlavorWithIngredientsDto } from '../../shared/dtos/CreateRecipe.dto'
 
 interface Props {
   open: boolean
   onClose: () => void
+  companyId: string
 }
 
-export const CrearSaborDrawer = ({ open, onClose }: Props) => {
-  const [form] = Form.useForm()
-  const { data: insumos = [], isLoading } = useSuppliesQuery()
+export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
+  const [flavorName, setFlavorName] = useState('')
   const [ingredientes, setIngredientes] = useState<IItem[]>([])
-  const queryClient = useQueryClient()
-  const { recetaBaseId } = useRecipeBuilderStore()
+  const { data: items = [], isLoading } = useItemsQuery()
+  const { mutate: guardarSabor, isPending } = useCreateFlavorWithIngredients()
 
-  const mutation = useMutation({
-    mutationFn: createFlavorRecipe,
-    onSuccess: () => {
-      message.success("Sabor creado correctamente")
-      queryClient.invalidateQueries({ queryKey: ['flavor-recipes', recetaBaseId] })
-      onClose()
-      form.resetFields()
-      setIngredientes([])
-    },
-    onError: (err: any) => {
-      message.error(`Error al crear sabor: ${err.message}`)
-    }
-  })
-
-  const addIngrediente = (item: IItem) => {
+  const handleAgregar = (item: IItem) => {
     if (ingredientes.some(i => i.id === item.id)) return
-    setIngredientes(prev => [...prev, item])
+    setIngredientes([...ingredientes, item])
   }
 
-  const removeIngrediente = (id: number) => {
-    setIngredientes(prev => prev.filter(i => i.id !== id))
+  const handleRemover = (id: number) => {
+    setIngredientes(ingredientes.filter(i => i.id !== id))
   }
 
-  const handleFinish = (values: any) => {
-    const payload = {
-      flavor: values.flavor,
-      base_id: recetaBaseId!,
+  const handleGuardar = () => {
+    if (!flavorName.trim() || ingredientes.length === 0) {
+      return message.warning('Debe ingresar un nombre y seleccionar ingredientes')
+    }
+
+    const payload: CreateFlavorWithIngredientsDto = {
+      flavor: {
+        flavor: flavorName.trim(),
+        menuflav_id: 1001, // dummy por ahora
+        company_id: companyId,
+      },
       ingredients: ingredientes.map(i => ({
         item_id: i.id,
         quantity: i.quantity,
         measure_id: i.measure_id,
-        presentation_id: i.presentation_id
+        presentation_id: i.presentation_id,
       }))
     }
-    mutation.mutate(payload)
+
+    guardarSabor(payload, {
+      onSuccess: () => {
+        setFlavorName('')
+        setIngredientes([])
+        onClose()
+      }
+    })
   }
 
   return (
     <Drawer
-      title="Crear sabor"
-      width={600}
+      title="Crear nuevo sabor"
+      placement="right"
       open={open}
       onClose={onClose}
+      width={650}
     >
-      <Form form={form} layout="vertical" onFinish={handleFinish}>
-        <Form.Item
-          name="flavor"
-          label="Nombre del sabor"
-          rules={[{ required: true, message: "Ingrese el nombre del sabor" }]}
+      <div className="space-y-4">
+        <Input
+          placeholder="Nombre del sabor"
+          value={flavorName}
+          onChange={(e) => setFlavorName(e.target.value)}
+        />
+
+        <List
+          header="Ingredientes disponibles"
+          bordered
+          loading={isLoading}
+          dataSource={items}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                ingredientes.some(i => i.id === item.id) ? (
+                  <Button danger onClick={() => handleRemover(item.id)}>Quitar</Button>
+                ) : (
+                  <Button type="primary" onClick={() => handleAgregar(item)}>Agregar</Button>
+                )
+              ]}
+            >
+              {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas] ?? ''}
+            </List.Item>
+          )}
+        />
+
+        <List
+          header="Ingredientes seleccionados"
+          bordered
+          dataSource={ingredientes}
+          renderItem={(item) => (
+            <List.Item
+              actions={[
+                <Button danger onClick={() => handleRemover(item.id)}>Quitar</Button>
+              ]}
+            >
+              {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas] ?? ''}
+            </List.Item>
+          )}
+        />
+
+        <Button
+          type="primary"
+          block
+          loading={isPending}
+          onClick={handleGuardar}
         >
-          <Input placeholder="Ej: Napolitano" />
-        </Form.Item>
-
-        <div className="mt-4">
-          <h3 className="font-semibold mb-2">Agregar ingredientes</h3>
-          <Skeleton loading={isLoading} active />
-          <List
-            bordered
-            dataSource={insumos}
-            renderItem={(item) => (
-              <List.Item
-                actions={[
-                  <Button key="add" type="primary" onClick={() => addIngrediente(item)}>
-                    Agregar
-                  </Button>
-                ]}
-              >
-                {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas]}
-              </List.Item>
-            )}
-          />
-        </div>
-
-        {ingredientes.length > 0 && (
-          <div className="mt-4">
-            <h4>Ingredientes seleccionados</h4>
-            <List
-              bordered
-              dataSource={ingredientes}
-              renderItem={(item) => (
-                <List.Item
-                  actions={[
-                    <Button key="remove" danger onClick={() => removeIngrediente(item.id)}>
-                      Quitar
-                    </Button>
-                  ]}
-                >
-                  {item.name} – {item.quantity} {medidas[item.measure_id as keyof typeof medidas]}
-                </List.Item>
-              )}
-            />
-          </div>
-        )}
-
-        <Form.Item className="mt-6">
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={mutation.isPending}
-            icon={<PlusOutlined />}
-          >
-            Crear sabor
-          </Button>
-        </Form.Item>
-      </Form>
+          Guardar sabor
+        </Button>
+      </div>
     </Drawer>
   )
 }
