@@ -1,5 +1,6 @@
 import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import { filter_nondocs } from "#app/modules/adm_nondoc/case/filter.ts";
+import { get_one } from "#app/modules/adm_nondoc/queries/get_one.ts";
 import { zValidator } from "@hono/zod-validator";
 import { AdmReqNondocsInsert } from "@scope/shared";
 import { Hono } from "hono";
@@ -37,11 +38,12 @@ export const admNondocRouter = new Hono()
     zValidator(
       "query",
       z.object({
-        id: z.number().min(1),
+        id: z.string(),
       })
     ),
     async (c) => {
       const { id } = c.req.valid("query");
-      return c.json({ message: "ok" });
+      const data = await get_one(+id);
+      return c.json({ message: "ok", data });
     }
   );

@@ -1,30 +1,31 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { AdmRequirementSelect } from '@types'
+import { AdmReqNondocsViewDto } from '@types'
 import { useParams } from 'react-router'
 import { Control } from './control'
 
-export function ReviewPage() {
+export function ReviewNonDocPage() {
   const { id } = useParams()
 
   const requirement_query = useQuery({
-    queryKey: ['rq:get_one', id],
+    queryKey: ['rq:non_doc:get_one', id],
+    enabled: !!id,
     queryFn: async () => {
-      const request = await viewClient.api.view.payment.get_one.$get({
+      const request = await viewClient.api.view.nondoc.get_one.$get({
         query: {
-          id: Number(id),
+          id: id!,
         },
       })
       const content = await request.json()
       if (!request.ok) {
         throw new Error(content.message)
       }
-      return content.data as AdmRequirementSelect
+      return content.data as AdmReqNondocsViewDto
     },
   })
 
   return (
-    <div className="bg-blue-50 min-h-screen">
+    <div className="bg-blue-50 min-h-screen p-3">
       {requirement_query.data && (
         <Control requirement={requirement_query.data} />
       )}

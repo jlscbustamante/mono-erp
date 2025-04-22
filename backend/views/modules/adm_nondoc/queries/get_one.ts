@@ -7,11 +7,13 @@ export const get_one = async (id: number): Promise<AdmReqNondocsViewDto> => {
     .selectAll()
     .leftJoin("fin_cashbank as fn1", "fn1.id", "arn.cashbank_source_id")
     .leftJoin("fin_cashbank as fn2", "fn2.id", "arn.cashbank_target_id")
-    .where("id", "=", id)
+    .selectAll("arn")
+    .select([
+      "fn1.cashbank as cashbank_source_name",
+      "fn2.cashbank as cashbank_target_name",
+    ])
+    .where("arn.id", "=", id)
     .executeTakeFirstOrThrow();
 
-  console.log(requirement);
-
-  // return requirement;
-  return {} as any;
+  return requirement satisfies AdmReqNondocsViewDto;
 };
