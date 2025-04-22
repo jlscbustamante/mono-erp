@@ -1,4 +1,4 @@
-import { Button, Divider, Input, Select } from "antd"
+import { Button, Input, Select } from "antd"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
 import { ContenedorRecetaBase } from "./ContenedorRecetaBase"
 import { ContenedorRecetaPorSabor } from "./ContenedorRecetaPorSabors"
@@ -6,7 +6,6 @@ import { ContenedorInsumos } from "./ContenedorInsumos"
 import { VistaPreviaRecetaFinal } from "./VistaPreviaRecetaFinal"
 import { useGuardarReceta } from "../hooks/useGuardarReceta"
 import { MdSave, MdDeleteOutline } from "react-icons/md"
-import { Size } from "../../shared/types"
 import { useProductsQuery } from "../hooks/useProductsQuery"
 import { useSizesQuery } from "../hooks/useSizesQuery"
 
@@ -25,15 +24,6 @@ export const RecetaFinalBuilder = () => {
   } = useRecipeBuilderStore()
 
   const { handleGuardar, isSaving, canSave } = useGuardarReceta()
-
-  // const fetchSizesByProduct = async (): Promise<Size[]> => {
-  //   return [
-  //     { id: 1, name: "Pequeño", factor: 1 },
-  //     { id: 2, name: "Mediano", factor: 1.5 },
-  //     { id: 3, name: "Grande", factor: 2 },
-  //   ]
-  // }
-
   const { data: products = [] } = useProductsQuery()
   const { data: sizes = [] } = useSizesQuery()
 

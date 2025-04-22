@@ -1,6 +1,6 @@
 import { message } from 'antd'
 import { useMutation } from '@tanstack/react-query'
-import { syncManyProducts, syncManySizes, syncManyFlavors, syncManyProductsWithSizes } from '../services/catalogSalesApi'
+import { syncManyProductsWithSizes } from '../services/catalogSalesApi'
 import { SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 
 export function useAddAllWithRefetch(

@@ -31,7 +31,7 @@ export const useRecipe = () => {
     const loadFinalRecipes = async () => {
         try{
             setLoading(true)
-            const response : IFinalRecipe[] = await sdk.getFinalRecipes()
+            const response : any[] = await sdk.getFinalRecipes()
             setFinalRecipes(response)  
         }catch(err: any){
             toast.error(err.message, NOTIFICATION.error)            

@@ -1,6 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
 import { message } from 'antd'
-import { IFinalRecipePayload } from '@/views/recipes/shared/types'
 import { createFinalRecipe } from '../services/recipeFinalService'
 
 export const useCreateFinalRecipe = () => {

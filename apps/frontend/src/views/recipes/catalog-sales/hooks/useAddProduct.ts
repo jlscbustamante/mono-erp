@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import { message } from 'antd'
-import { IProduct } from '../../shared/types'
 import { syncProduct } from '../services/catalogSalesApi'
 import { SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 

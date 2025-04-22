@@ -3,7 +3,7 @@ import { ColumnsType } from "antd/es/table";
 import { Modal, Tag, Table } from "antd";
 import { MdEdit } from "react-icons/md";
 import { FaTrash } from "react-icons/fa";
-import { IFinalRecipe } from "../shared/types";
+import { IFinalRecipeSummary } from "../shared/types";
 import { EditRecipeDrawer, useRecipeDrawer } from "./components/EditRecipeDrawer";
 import { ControlRecipe } from "../ControlRecipe";
 import { useRecipeQuery } from "./hooks/useRecipeQuery";
@@ -12,7 +12,7 @@ import { useRecipe } from "./hooks/useRecipe";
 
 
 export default function CatalogRecipePage(){
-    const [openModal, setOpenModal] = useState(false)
+    const [, setOpenModal] = useState(false)
     const [controlerApply, applyFilters] = useReducer((state) => state + 1, 0)
     const {filterName, setFilterName, filters, setFilters} = useRecipe()
 
@@ -22,25 +22,25 @@ export default function CatalogRecipePage(){
 
     const dataFiltered = useMemo(() => {
         let initialData = query.data ?? []
-        if(filterName != ''){
-            initialData = initialData.filter((item)=>{
-                return item.name.toLowerCase().includes(filterName.toLowerCase())
-            })
-        }
+        // if(filterName != ''){
+        //     initialData = initialData.filter((item)=>{
+        //         return item..toLowerCase().includes(filterName.toLowerCase())
+        //     })
+        // }
 
-        if(filters.id){
+        if(filters.product_id){
             const idEqual: number | undefined = (filters as any)?.id?.[1]
             if(idEqual){
                 initialData = initialData.filter((item)=> item.id == idEqual)
             }
         }
 
-        if(filters.status){
-            const status: number | undefined = (filters as any)?.status?.[1]
-            if(status != undefined){
-                initialData = initialData.filter((item)=> item.status == status)
-            }
-        }
+        // if(filters.status){
+        //     const status: number | undefined = (filters as any)?.status?.[1]
+        //     if(status != undefined){
+        //         initialData = initialData.filter((item)=> item.status == status)
+        //     }
+        // }
 
         console.log(initialData);
         
@@ -80,12 +80,12 @@ const TableRecipe = ({
     loading,
     onReload
 }:{
-    recipes: IFinalRecipe[]
+    recipes: IFinalRecipeSummary[]
     loading: boolean
     onReload: () => void
 }) => {
     const {onOpen} = useRecipeDrawer()
-    const columnsTable: ColumnsType<IFinalRecipe> = [
+    const columnsTable: ColumnsType<IFinalRecipeSummary> = [
         {
             title: 'Id',
             dataIndex: 'id',
@@ -113,7 +113,7 @@ const TableRecipe = ({
         {
             title:'',
             width: 50,
-            render: (record: IFinalRecipe) => {
+            render: (record: IFinalRecipeSummary) => {
                 return(
                     <div className="flex items-center justify-between gap-2">
                         <div

@@ -1,5 +1,5 @@
 import { baseUrl } from "@/data/api/baseUrl"
-import { IFinalRecipePayload, IFinalRecipeSummary, IItem, IProductFlavor, IRecipeBase, IRecipeFlavor } from "@/views/recipes/shared/types";
+import { IFinalRecipePayload, IFinalRecipeSummary, IItem, IProductFlavor, IRecipeBase } from "@/views/recipes/shared/types";
 
 
 export const getAllBaseRecipes = async (): Promise<IRecipeBase[]> => {

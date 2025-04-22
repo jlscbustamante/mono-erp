@@ -9,7 +9,8 @@ import {
     timestamp,
   } from "drizzle-orm/mysql-core"
   import dayjs from "dayjs";
-  import { decimalNumber } from "@pizzadb/drizzle-extend.ts";
+  import { decimalNumber } from "../../drizzle-extend.ts";
+
   
   export const inv_product = mysqlTable("inv_products", {
     id: int("id").primaryKey().autoincrement(),

@@ -14,27 +14,24 @@ import {
 import {
   PlusOutlined,
   SyncOutlined,
-  DownOutlined,
-  UpOutlined
 } from '@ant-design/icons'
 import { useState, useMemo } from 'react'
 
 import { useCatalogSyncQuery } from '../hooks/useCatalogSyncQuery'
-import { getProductsFromDB, syncProduct, syncSize } from '../services/catalogSalesApi'
+import { getProductsFromDB, syncProduct } from '../services/catalogSalesApi'
 import { IProduct } from '../../shared/types'
 import { useItemLoading } from '../hooks/useItemLoading'
 import { ICommercialProduct } from '../types/catalog'
 
 import { useAddAllWithRefetch  } from '../hooks/useAddAllWithFeedback'
-import { syncManyProducts } from '../services/catalogSalesApi'
-import { CreateProductDto, SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
+import { SyncProductWithSizesAndFlavorsDto } from '../../shared/dtos/Catalog.dto'
 
 const { Title } = Typography
 const { Search } = Input
 
 export default function ProductList() {
-  const [messageApi, contextHolder] = message.useMessage()
-  const [showRegistered, setShowRegistered] = useState(true)
+  const [, contextHolder] = message.useMessage()
+  const [showRegistered, ] = useState(true)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [searchSynced, setSearchSynced] = useState('')
   const [searchUnsynced, setSearchUnsynced] = useState('')
@@ -67,10 +64,6 @@ export default function ProductList() {
   const handleToggleDrawer = async () => {
     await refetch()
     setIsDrawerOpen((prev) => !prev)
-  }
-
-  const findSizeLabelById = (id: number): string => {
-    return commercialData?.sizes.find((s) => s.id === id)?.size || 'Desconocido'
   }
 
   const { mutate: addAllProducts, isPending: loadingAddAll } = useAddAllWithRefetch(async () => {

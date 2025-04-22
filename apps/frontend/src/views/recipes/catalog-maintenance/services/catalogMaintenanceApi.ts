@@ -1,5 +1,5 @@
 import { baseUrl } from '@/data/api/baseUrl'
-import { IProduct, IProductFlavor, IRecipeBase } from '../../shared/types'
+import { IProductFlavor, IRecipeBase } from '../../shared/types'
 
 export const getRecipeBasesFromDB = async (): Promise<IRecipeBase[]> => {
   return baseUrl<IRecipeBase[]>(`api/view/recipe/catalog-maintenance/recipe-base`, {

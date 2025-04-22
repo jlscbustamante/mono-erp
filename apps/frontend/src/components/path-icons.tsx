@@ -32,7 +32,7 @@ import {
   FaUserTie,
 } from 'react-icons/fa6'
 import { FiBox } from 'react-icons/fi'
-import { GiCampCookingPot, GiConfirmed, GiFullMotorcycleHelmet, GiFullPizza, GiTomato } from 'react-icons/gi'
+import { GiConfirmed, GiFullMotorcycleHelmet, GiFullPizza, GiTomato } from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
 import { IoCalendarNumberOutline, IoCreateSharp, IoStorefrontOutline } from 'react-icons/io5'
 import {

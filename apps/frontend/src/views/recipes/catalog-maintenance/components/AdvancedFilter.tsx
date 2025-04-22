@@ -1,6 +1,6 @@
 import { Button, Dropdown, InputNumber, Input, Select, Space, Tag } from 'antd'
-import { FilterOutlined, CloseOutlined } from '@ant-design/icons'
-import { useDeferredValue, useState } from 'react'
+import { FilterOutlined } from '@ant-design/icons'
+import { useState } from 'react'
 
 const { Option } = Select
 

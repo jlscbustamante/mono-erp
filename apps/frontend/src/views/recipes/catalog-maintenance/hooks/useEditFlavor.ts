@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
-import { IProductFlavor } from '../../shared/types'
 import { editFlavor } from '../services/catalogMaintenanceApi'
 
 

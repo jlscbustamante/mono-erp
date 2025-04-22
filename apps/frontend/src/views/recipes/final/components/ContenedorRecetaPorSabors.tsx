@@ -1,7 +1,7 @@
 import { Select, List, Button, Skeleton } from "antd"
 import { useState } from "react"
 import { useRecipeBuilderStore } from "../store/useRecipeBuilderStore"
-import { IItem, medidas } from "../../shared/types"
+import { medidas } from "../../shared/types"
 import { IRecipeFlavorIngredient } from "../../shared/types"
 import { PlusOutlined } from "@ant-design/icons"
 import { CrearSaborDrawer } from "../../flavor/components/CrearSaborDrawer"

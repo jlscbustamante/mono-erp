@@ -4,12 +4,11 @@ import { editFinalRecipe } from '@/data/Recipe/sdk'
 import { Drawer, Form } from "antd";
 import Search from "antd/es/input/Search";
 import { useEffect, useMemo, useState } from "react";
-import { FaRProject } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { atom, useRecoilState } from "recoil";
 
 
-const recipeForEditAtom = atom<IFinalRecipe | undefined>({
+const recipeForEditAtom = atom<any | undefined>({
     key: 'recipeForEditIngredients',
     default: undefined,
 })
@@ -17,7 +16,7 @@ const recipeForEditAtom = atom<IFinalRecipe | undefined>({
 export const useRecipeDrawer = () => {
     const [recipe, setRecipe] = useRecoilState(recipeForEditAtom)
 
-    const onOpen = (rec: IFinalRecipe) => {
+    const onOpen = (rec: any) => {
         setRecipe(rec)
     }
     const onClose = () => {
@@ -39,9 +38,9 @@ export const useRecipeDrawer = () => {
 export const EditRecipeDrawer = ({ onUpdate }: { onUpdate?: () => void }) => {
     const [form] = Form.useForm()
     const { isOpen, onClose, recipe } = useRecipeDrawer()
-    const [loading, setLoading] = useState(false)
+    const [, setLoading] = useState(false)
 
-    const handleUpdate = async (recipeUp: IFinalRecipe) => {
+    const handleUpdate = async (recipeUp: any) => {
         if (!recipe) return
         try {
             setLoading(true)
@@ -90,9 +89,9 @@ export const EditRecipeDrawer = ({ onUpdate }: { onUpdate?: () => void }) => {
                 >
                     <Search
                         placeholder="Nombre de receta"
-                        onSearch={(nameRecipe) => {
-                            //form.setFieldsValue({ nameRecipe })
-                        }}
+                        // onSearch={(nameRecipe) => {
+                        //     //form.setFieldsValue({ nameRecipe })
+                        // }}
                     />
                 </Form.Item>
             </Form>

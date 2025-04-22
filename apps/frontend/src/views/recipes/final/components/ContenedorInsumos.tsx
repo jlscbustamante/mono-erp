@@ -10,12 +10,6 @@ export const ContenedorInsumos = () => {
   const isSelected = (item: IItem) =>
     selected.some(i => i.item_id === item.id && i.type === 'insumo') // o 'sabor', 'insumo'
 
-  const baseYPorSaborIds = selected
-  .filter(i => i.type !== 'insumo')
-  .map(i => i.item_id)
-
-  const insumosFiltrados = (insumos || []).filter(insumo => !baseYPorSaborIds.includes(insumo.id))
-
 
   return (
     <div className="space-y-3">

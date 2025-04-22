@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { IItemUI, Size } from '@/views/recipes/shared/types'
+import { Size } from '@/views/recipes/shared/types'
 
 // El tipo extendido para el store
 export type IngredientType = 'base' | 'sabor' | 'insumo'

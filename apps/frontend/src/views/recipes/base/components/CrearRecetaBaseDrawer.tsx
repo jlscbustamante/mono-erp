@@ -108,7 +108,7 @@ export const CrearRecetaBaseDrawer = ({ open, onClose, availableSizes, companyId
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button danger onClick={() => handleRemoverIngrediente(item.id)}>Quitar</Button>
+                <Button danger key={item.id} onClick={() => handleRemoverIngrediente(item.id)}>Quitar</Button>
               ]}
             >
               {item.name} - {item.quantity} {medidas[item.measure_id as keyof typeof medidas] ?? ''}

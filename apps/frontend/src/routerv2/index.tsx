@@ -69,10 +69,8 @@ import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
 import FlavorMaintenance from '@/views/recipes/catalog-maintenance/FlavorMaintenance'
 import RecipeBaseMaintenance from '@/views/recipes/catalog-maintenance/RecipeBaseMaintenance'
-import CatalogMaintenanceProducts from '@/views/recipes/catalog-maintenance/RecipeBaseMaintenance'
 import CatalogSalesPage from '@/views/recipes/catalog-sales/CatalogSalesPage'
 import CatalogRecipePage from '@/views/recipes/Consulta-receta/CatalogRecipePage'
-
 import CreateRecipePage from '@/views/recipes/final/CreateRecipePage'
 import Reports from '@/views/reports/Reports'
 import GetIamRole from '@/views/security/Get/GetIamRole'
@@ -476,14 +474,14 @@ export const routerv2 = createBrowserRouter([
                     element: <RecipeBaseMaintenance />,
                   },
                   {
-                    path: PATHS.erp.modulos.recetas.mantenimiento.RecetasPorSabor,
+                    path: PATHS.erp.modulos.recetas.mantenimiento
+                      .RecetasPorSabor,
                     element: <FlavorMaintenance />,
-                  }
-                ]
-              }
-            ]
-            
-          }
+                  },
+                ],
+              },
+            ],
+          },
         ],
       },
     ],
