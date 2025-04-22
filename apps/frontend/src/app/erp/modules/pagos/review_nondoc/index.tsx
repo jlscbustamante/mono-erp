@@ -25,7 +25,7 @@ export function ReviewNonDocPage() {
   })
 
   return (
-    <div className="bg-blue-50 min-h-screen p-3">
+    <div className="bg-blue-50 min-h-screen">
       {requirement_query.data && (
         <Control requirement={requirement_query.data} />
       )}

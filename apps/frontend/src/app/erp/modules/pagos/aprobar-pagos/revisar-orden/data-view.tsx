@@ -16,48 +16,48 @@ export const DataView = ({
         dataSource={requirements}
         columns={[
           {
-            title: 'Nro',
+            title: 'N°',
             dataIndex: 'id',
           },
           {
-            title: 'RUC DEL PROVEEDOR (11 digitos)',
+            title: 'Ruc',
             dataIndex: 'legal_number',
           },
           {
-            title: 'RÁZON SOCIAL (se consideran lkos primeros 60 caracteres)',
+            title: 'Razón social',
             dataIndex: 'legal_name',
           },
           {
-            title: 'TIPO DE CUENTA',
+            title: 'Tipo cuenta',
           },
           {
-            title: 'CUENTA SCOTIABANK (10 digitos)',
+            title: 'Banco',
           },
           {
-            title: 'CUENTA INTERBANCARIA(CCI)',
+            title: 'Nro cuenta',
           },
           {
-            title: 'DETALLE PAGO',
+            title: 'Detalle de pago',
             dataIndex: 'description',
           },
           {
-            title: 'IMPORTE',
+            title: 'Importe',
             dataIndex: 'amount',
           },
           {
-            title: 'TIPO DE DOCUMENTO DE PAGO',
+            title: 'Tipo doc',
             dataIndex: 'type_document',
           },
           {
-            title: 'N° DOCUMENTO (max 20 caracteres)',
+            title: 'Nro doc',
             dataIndex: 'num_document',
           },
           {
-            title: 'FECHA EMISION DOCUMENTO',
+            title: 'Fecha emisión',
             dataIndex: 'requested_at',
           },
           {
-            title: 'CORREO ELECTRONICO',
+            title: 'Correo proveedor',
           },
         ]}
       />
