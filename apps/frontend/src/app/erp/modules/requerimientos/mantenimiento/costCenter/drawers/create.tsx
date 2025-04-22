@@ -81,6 +81,7 @@ export const CreateCostCenter = ({ onUpdate }: { onUpdate?: () => void }) => {
         <Form.Item label="Tipo" name={'type_cc'} rules={[{ required: true }]}>
           <Select>
             <Select.Option value="T">Tienda</Select.Option>
+            <Select.Option value="A">Area oficina</Select.Option>
           </Select>
         </Form.Item>
         <Form.Item label="Cuenta 1" name={'account_link1'}>

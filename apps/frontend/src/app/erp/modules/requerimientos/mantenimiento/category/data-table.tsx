@@ -12,7 +12,7 @@ const columns = [
   },
   {
     title: 'Nombre',
-    dataIndex: 'movecash',
+    dataIndex: 'movetype',
     sorter: (a: MoveCashSelect, b: MoveCashSelect) =>
       a.movetype.localeCompare(b.movetype),
     showSorterTooltip: false,

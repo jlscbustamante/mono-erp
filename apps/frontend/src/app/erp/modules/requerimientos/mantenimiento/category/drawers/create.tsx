@@ -44,12 +44,7 @@ export const CreateCategory = ({ onUpdate }: { onUpdate?: () => void }) => {
   }
 
   return (
-    <Drawer
-      open={isOpen}
-      onClose={close}
-      title="Nuevo centro de costo"
-      width={500}
-    >
+    <Drawer open={isOpen} onClose={close} title="Nueva Categoria" width={500}>
       <Form
         onFinish={onFinish}
         form={form}
@@ -63,7 +58,7 @@ export const CreateCategory = ({ onUpdate }: { onUpdate?: () => void }) => {
       >
         <Form.Item
           label="Nombre"
-          name={'movecash'}
+          name={'movetype'}
           rules={[{ required: true }]}
         >
           <Input />
