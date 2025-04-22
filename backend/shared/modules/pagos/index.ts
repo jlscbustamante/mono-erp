@@ -1,3 +1,5 @@
+import { AdmPaymentOrderInsert } from "../../db/mods.ts";
+
 export interface ICreateRequirementDto {
   company_id: string;
 }
@@ -11,6 +13,11 @@ export enum PAYMENT_STATUS {
   REJECTED = "R",
   PAID = "P",
   CANCELED = "X",
+}
+
+export enum ORDER_PAYMENT_STATUS {
+  REGISTERED = "I",
+  AUTHORIZED = "A",
 }
 
 export interface RequirementViewDto {
@@ -29,4 +36,8 @@ export interface RequirementViewDto {
   requested_at: string;
   expires_at: string | null;
   status: PAYMENT_STATUS;
+}
+
+export interface CreateOrderDto extends AdmPaymentOrderInsert {
+  requirement_ids: number[];
 }

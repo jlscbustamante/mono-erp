@@ -1,48 +1,92 @@
-import { DatePicker, Form, Input, InputNumber, Select } from 'antd'
+import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
+import { AdmPaymentOrderInsert, AdmPaymentOrderSelect } from '@types'
+import { Form, Input, InputNumber, Select } from 'antd'
+import dayjs from 'dayjs'
 import { CompanySelectForm } from '../../../requerimientos/components/company-select'
 
-export const CreateOrderForm = () => {
+type T = keyof AdmPaymentOrderInsert
+
+export const CreateOrderForm = ({
+  order,
+}: {
+  order: AdmPaymentOrderSelect
+}) => {
+  const [form] = Form.useForm()
   return (
     <div>
       <div className="bg-white p-3 rounded-md">
         <Form
+          name="req:create-order"
+          form={form}
           wrapperCol={{ span: 18 }}
           labelCol={{ span: 6 }}
           className="grid grid-cols-[400px_400px_1fr] gap-x-3"
+          initialValues={order}
         >
-          <Form.Item label="Empresa" className="mb-1">
+          <Form.Item
+            label="Empresa"
+            className="mb-1"
+            name={'company_id' satisfies T}
+          >
             <CompanySelectForm />
           </Form.Item>
-          <Form.Item label="Operación" className="mb-1">
+          <Form.Item
+            label="Operación"
+            className="mb-1"
+            name={'operation' satisfies T}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Fecha carga" className="w-[440px] ml-auto mb-1">
-            <DatePicker className="w-full" />
+          <Form.Item
+            label="Fecha carga"
+            className="w-[440px] ml-auto mb-1"
+            name={'payment_at' satisfies T}
+          >
+            <CustomDatePicker
+              className="w-full"
+              props={{
+                minDate: dayjs(new Date()),
+              }}
+            />
           </Form.Item>
-          <Form.Item label="Cuenta" className="mb-1">
+          <Form.Item
+            label="Cuenta"
+            className="mb-1"
+            name={'bankaccount_number' satisfies T}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Tipo de cuenta" className="mb-1">
-            <Select>
-              <Select.Option>Cuenta 1</Select.Option>
-              <Select.Option>Cuenta 1</Select.Option>
+          <Form.Item
+            label="Tipo de cuenta"
+            className="mb-1"
+            name={'bankaccount_type' satisfies T}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Moneda"
+            className="w-[440px] ml-auto mb-1"
+            name={'money' satisfies T}
+          >
+            <Select placeholder="Moneda">
+              <Select.Option value="PEN">S/.</Select.Option>
+              <Select.Option value="USD">$</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Moneda" className="w-[440px] ml-auto mb-1">
+          <Form.Item
+            label="Banco"
+            className="mb-1"
+            name={'bankaccount_name' satisfies T}
+          >
             <Input />
-          </Form.Item>
-          <Form.Item label="Banco" className="mb-1">
-            <Select>
-              <Select.Option>Banco 1</Select.Option>
-              <Select.Option>Banco 2</Select.Option>
-            </Select>
           </Form.Item>
           <div></div>
           <Form.Item
-            label="Informe a cargar"
+            label="Importe a cargar"
             className="w-[440px] ml-auto mb-1"
+            name={'amount' satisfies T}
           >
-            <InputNumber className="w-full" />
+            <InputNumber className="w-full" readOnly />
           </Form.Item>
         </Form>
       </div>

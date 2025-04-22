@@ -269,7 +269,6 @@ const CategoriaGasto = ({
     },
   })
 
-  // const hasRetention = formInstance.getFieldValue('has_retention' satisfies R)
   const hasRetention = Form.useWatch('has_retention', formInstance)
 
   return (

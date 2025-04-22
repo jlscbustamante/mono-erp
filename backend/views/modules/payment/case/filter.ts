@@ -53,5 +53,5 @@ export const filter = async (
     } satisfies RequirementViewDto;
   });
 
-  return Promise.resolve(result);
+  return result;
 };

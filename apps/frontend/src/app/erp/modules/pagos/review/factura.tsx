@@ -1,7 +1,7 @@
 import { CustomCheckbox } from '@/components/ant-form/custom-checkbox'
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { viewClient } from '@/lib/rpc'
-import { filterSelectForm } from '@/utils'
+import { cn, filterSelectForm } from '@/utils'
 import {
   CompanySelect,
   CostCenterSelecet,
@@ -9,7 +9,11 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { AdmRequirementInsert, AdmRequirementSelect } from '@types'
+import {
+  PAYMENT_STATUS,
+  type AdmRequirementInsert,
+  type AdmRequirementSelect,
+} from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   Button,
@@ -208,6 +212,7 @@ const DatosPrincipales = ({
         form={formInstance}
         name="formPrincipal"
         initialValues={requirement}
+        disabled={requirement.status != PAYMENT_STATUS.REGISTERED}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -357,6 +362,7 @@ const CategoriaGasto = ({
         Categoría de gasto
       </h3>
       <Form
+        disabled={requirement.status != PAYMENT_STATUS.REGISTERED}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={formInstance}
@@ -428,7 +434,12 @@ const CategoriaGasto = ({
             </Select>
           </Form.Item>
         </div>
-        <Form.Item className="flex justify-end" wrapperCol={{ span: 24 }}>
+        <Form.Item
+          className={cn('flex justify-end ', {
+            hidden: requirement.status != PAYMENT_STATUS.REGISTERED,
+          })}
+          wrapperCol={{ span: 24 }}
+        >
           <div className="flex gap-2">
             <Button type="primary" onClick={approve}>
               Aprobar pago

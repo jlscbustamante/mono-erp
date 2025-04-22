@@ -1,10 +1,23 @@
 import { FilterComponent } from '@/components/fifi'
+import { FilterOption } from '@/components/fifi/type'
+import { AdmPaymentOrderSelect } from '@types'
 import { DatePicker, Select } from 'antd'
 import { CompanySelectForm } from '../../requerimientos/components/company-select'
+import { useAprobarPagosQuery, useAprobarPagosStore } from './state'
 
 const RangePicker = DatePicker.RangePicker
+const options: FilterOption<AdmPaymentOrderSelect>[] = []
 
 export default function Control() {
+  const filters = useAprobarPagosStore((state) => state.filters)
+  const set_filters = useAprobarPagosStore((state) => state.set_filters)
+  const refresh = useAprobarPagosStore((state) => state.refresh)
+  const { isLoading } = useAprobarPagosQuery()
+
+  const handle_filter = () => {
+    refresh()
+  }
+
   return (
     <div className="flex gap-1 bg-white p-2 rounded-md">
       <CompanySelectForm className="w-48" />
@@ -27,7 +40,13 @@ export default function Control() {
         <Select.Option value="S">Pendiente</Select.Option>
         <Select.Option value="T">Aprobados</Select.Option>
       </Select>
-      <FilterComponent />
+      <FilterComponent
+        options={options}
+        filters={filters}
+        setFilters={set_filters}
+        onSearch={handle_filter}
+        loading={isLoading}
+      />
     </div>
   )
 }

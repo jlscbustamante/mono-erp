@@ -27,7 +27,7 @@ export const PATHS = {
         aprobarPagos: {
           main: '/erp/modulos/facturacionpagos/aprobarpagos',
           revisarOrden:
-            '/erp/modulos/facturacionpagos/aprobarpagos/revisarorden',
+            '/erp/modulos/facturacionpagos/aprobarpagos/revisarorden/:id',
         },
         transferencia: '/erp/modulos/facturacionpagos/transferencia',
         anticipoGastos: '/erp/modulos/facturacionpagos/anticipogastos',
