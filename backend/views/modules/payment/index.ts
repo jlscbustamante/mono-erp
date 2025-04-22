@@ -3,6 +3,7 @@ import { approve_requirement } from "#app/modules/payment/case/approve.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
 import { filter } from "#app/modules/payment/case/filter.ts";
 import { create_order } from "#app/modules/payment/case/order/create_order.ts";
+import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
@@ -80,6 +81,23 @@ export const paymentRouter = new Hono()
       return c.json({
         message: "ok",
         data: requirement,
+      });
+    }
+  )
+  .delete(
+    "order",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number(),
+        delete_related: z.boolean(),
+      })
+    ),
+    async (c) => {
+      const data = c.req.valid("json");
+      await delete_order(data.id, data.delete_related);
+      return c.json({
+        message: "ok",
       });
     }
   )

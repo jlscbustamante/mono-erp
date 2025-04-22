@@ -26,7 +26,7 @@ export const create_order = async (data: CreateOrderDto, username: string) => {
       .updateTable("adm_requirement")
       .set({
         status: PAYMENT_STATUS.SCHEDULED,
-        payment_order_id: data.id,
+        payment_order_id: Number(insertId),
       })
       .where("id", "in", requirement_ids)
       .execute();

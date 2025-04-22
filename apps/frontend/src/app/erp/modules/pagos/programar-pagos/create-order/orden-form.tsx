@@ -35,7 +35,7 @@ export const CreateOrderForm = ({
     },
     onSuccess: () => {
       set_requirements([])
-      navigate(PATHS.erp.modulos.pagos.aprobarPagos.main)
+      navigate(PATHS.erp.modulos.pagos.programarPagos.main)
     },
     onError: (error) => {
       toast.error(error.message)

@@ -11,6 +11,7 @@ export const DataView = ({
       <Table
         pagination={false}
         size="small"
+        rowKey={'id'}
         bordered={true}
         dataSource={requirements}
         columns={[
