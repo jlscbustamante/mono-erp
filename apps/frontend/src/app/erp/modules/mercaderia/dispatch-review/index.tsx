@@ -440,8 +440,13 @@ const DispatchItemTablePrint = ({
 }) => {
   return (
     <div ref={refList} className="print:block print:p-2">
-      <div className="hidden print:flex gap-1 justify-between my-2">
-        <p className="font-semibold text-sm">PEDIDO {dispatch.wareToName}</p>
+      <div className="hidden print:flex gap-1 justify-between my-2 text-sm">
+        <p className="font-semibold text-sm">
+          PEDIDO {dispatch.wareToName} {dispatch.wareToId == 'MALL' ? ': ' : ''}
+          {dispatch.wareToId == 'MALL'
+            ? 'AV COLONIAL 3866 LS 97 MALL PLAZA'
+            : ''}{' '}
+        </p>
         <p>N° Pedido {dispatch.id}</p>
         <p>Fecha : {dispatch.dispatchAt}</p>
       </div>
