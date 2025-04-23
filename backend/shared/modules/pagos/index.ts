@@ -1,7 +1,16 @@
-import { AdmPaymentOrderInsert, AdmReqNondocsSelect } from "../../db/mods.ts";
+import type {
+  AdmPaymentOrderInsert,
+  AdmReqNondocsSelect,
+} from "../../db/mods.ts";
 
 export interface ICreateRequirementDto {
   company_id: string;
+}
+
+export enum REQUIREMENT_TYPE {
+  SUPPLIER = "U",
+  SIMPLE = "S",
+  LIQUIDATION = "L",
 }
 
 // I: Ingresado; D: Programado; A: Aprobado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado (S: Solicitado; A: Aprobado;  P: Pagado; R: Rechazado;
