@@ -114,7 +114,7 @@ export const paymentRouter = new Hono()
     async (c) => {
       const { ruc, legal_name, invoice_number } = c.req.valid("query");
 
-      const requirement = await search_requirement({
+      const data = await search_requirement({
         ruc,
         legal_name,
         invoice_number,
@@ -122,7 +122,7 @@ export const paymentRouter = new Hono()
 
       return c.json({
         message: "ok",
-        data: requirement,
+        data,
       });
     }
   )

@@ -1,9 +1,17 @@
 import { viewClient } from '@/lib/rpc'
 import { SearchOutlined } from '@ant-design/icons'
 import { AdmRequirementSelect } from '@types'
-import { Button, Divider, Drawer, Input } from 'antd'
+import {
+  AutoComplete,
+  AutoCompleteProps,
+  Button,
+  Divider,
+  Drawer,
+  Input,
+  message,
+} from 'antd'
 import { atom, useAtom } from 'jotai'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'react-toastify'
 import { requirement_type_doc_text } from '../../components/requirement_type_text'
 import { useCreateOrderStore } from './state'
@@ -20,6 +28,12 @@ export const useAgregarRequerimiento = () => {
   }
 }
 
+interface ISuplier {
+  id: number
+  supplier: string
+  legal_number: string
+}
+
 export const AgregarRequerimiento = () => {
   const { isOpen, close } = useAgregarRequerimiento()
   const [ruc, setRuc] = useState('')
@@ -28,10 +42,23 @@ export const AgregarRequerimiento = () => {
   const [requirement, set_requirement] = useState<null | AdmRequirementSelect>(
     null,
   )
+  const [options, set_options] = useState<AdmRequirementSelect[]>([])
+
+  const options_autocomplete: AutoCompleteProps['options'] = useMemo(() => {
+    return options.map((opt) => {
+      return {
+        label: `${opt.num_document} - ${opt.description?.slice(0, 20)}`,
+        value: opt.num_document?.toString(),
+      }
+    }) satisfies AutoCompleteProps['options']
+  }, [options])
+
   const requirements = useCreateOrderStore((st) => st.requirements)
   const set_requirements = useCreateOrderStore((st) => st.set_requirements)
+  const [message_instance, context] = message.useMessage()
 
-  const handle_sarch = async () => {
+  const handle_search = async () => {
+    set_requirement(null)
     const req = await viewClient.api.view.payment.search_requirement.$get({
       query: {
         ruc: ruc ? ruc : undefined,
@@ -44,8 +71,25 @@ export const AgregarRequerimiento = () => {
     if (!req.ok) {
       toast.error(content.message)
     }
-    const selected_requirement = content.data as AdmRequirementSelect
-    set_requirement(selected_requirement)
+    const selected_requirement = content.data as {
+      related: AdmRequirementSelect[]
+      supplier: ISuplier | null
+    }
+    if (selected_requirement.related.length == 0) {
+      message_instance.warning('No se encontró el requerimiento')
+    } else {
+      if (selected_requirement.supplier) {
+        setRuc(selected_requirement.supplier.legal_number)
+        setRazonSocial(selected_requirement.supplier.supplier)
+      }
+      set_options(selected_requirement.related)
+      if (documentNumber) {
+        const req = selected_requirement.related.find(
+          (el) => el.num_document == documentNumber,
+        )
+        if (req) set_requirement(req)
+      }
+    }
   }
 
   const add_requirement = () => {
@@ -67,6 +111,7 @@ export const AgregarRequerimiento = () => {
       title="Agregar requerimiento para pago"
       width={450}
     >
+      {context}
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <p className="w-24 shrink-0">Ruc:</p>
@@ -82,7 +127,7 @@ export const AgregarRequerimiento = () => {
             htmlType="button"
             type="primary"
             shape="circle"
-            onClick={handle_sarch}
+            onClick={handle_search}
             icon={<SearchOutlined />}
           />
         </div>
@@ -99,23 +144,37 @@ export const AgregarRequerimiento = () => {
             type="primary"
             htmlType="button"
             shape="circle"
-            onClick={handle_sarch}
+            onClick={handle_search}
             icon={<SearchOutlined />}
           />
         </div>
         <div className="flex items-center gap-2">
           <p className="w-24 shrink-0">Factura N°:</p>
-          <Input
+          <AutoComplete
+            value={documentNumber}
+            onSelect={(val) => {
+              const requirement = options.find((opt) => opt.num_document == val)
+              if (requirement) {
+                set_requirement(requirement)
+              }
+            }}
+            onChange={(val) => {
+              setDocumentNumber(val)
+            }}
+            options={options_autocomplete}
+            className="w-full"
+          />
+          {/* <Input
             value={documentNumber}
             onChange={(val) => {
               setDocumentNumber(val.target.value)
             }}
-          />
+          /> */}
           <Button
             className="rounded-full"
             type="primary"
             htmlType="button"
-            onClick={handle_sarch}
+            onClick={handle_search}
             shape="circle"
             icon={<SearchOutlined />}
           />

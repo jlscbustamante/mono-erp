@@ -4,29 +4,76 @@ import { AdmRequirementSelect, PAYMENT_STATUS } from "@scope/shared";
 export const search_requirement = async ({
   ruc,
   legal_name,
-  invoice_number,
+  invoice_number: num_doc,
 }: {
   ruc?: string;
   legal_name?: string;
   invoice_number?: string;
-}): Promise<AdmRequirementSelect> => {
-  let query = db.selectFrom("adm_requirement").selectAll();
+}): Promise<{
+  supplier: {
+    id: number;
+    supplier: string;
+    legal_number: string;
+  } | null;
+  related: AdmRequirementSelect[];
+}> => {
+  let query_supplier = db
+    .selectFrom("inv_supplier")
+    .select(["id", "supplier", "legal_number", "legal_name"]);
 
-  if (ruc) {
-    query = query.where("legal_number", "like", `%${ruc}%`);
-  }
   if (legal_name) {
-    query = query.where("legal_name", "like", `%${legal_name}%`);
+    query_supplier = query_supplier.where(
+      "legal_name",
+      "like",
+      `%${legal_name}%`
+    );
+  } else if (ruc) {
+    query_supplier = query_supplier.where("legal_number", "like", `%${ruc}%`);
   }
-  if (invoice_number) {
-    query = query.where("num_document", "like", `%${invoice_number}%`);
+  let supplier;
+  if (ruc || legal_name) {
+    const result = await query_supplier.executeTakeFirst();
+    if (!result) {
+      // RETORNAR VACIO
+      return {
+        supplier: null,
+        related: [],
+      };
+    }
+    supplier = result;
   }
 
-  const requirement = await query
+  let query_requirements = db.selectFrom("adm_requirement").selectAll();
+
+  if (supplier) {
+    query_requirements = query_requirements.where(
+      "supplier_id",
+      "=",
+      supplier.id
+    );
+  }
+  if (num_doc) {
+    query_requirements = query_requirements.where(
+      "num_document",
+      "like",
+      `%${num_doc}%`
+    );
+  }
+
+  const requirements = await query_requirements
     .where("status", "=", PAYMENT_STATUS.APPROVED)
-    .orderBy("adm_requirement.requested_at", "desc")
-    .limit(1)
-    .executeTakeFirstOrThrow();
+    .limit(20)
+    .orderBy("id", "desc")
+    .execute();
 
-  return requirement;
+  return {
+    supplier: supplier
+      ? {
+          id: supplier.id,
+          supplier: supplier.legal_name ?? supplier.supplier,
+          legal_number: supplier.legal_number ?? "",
+        }
+      : null,
+    related: requirements,
+  };
 };
