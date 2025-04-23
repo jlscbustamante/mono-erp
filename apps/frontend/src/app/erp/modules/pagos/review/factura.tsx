@@ -390,6 +390,9 @@ const CategoriaGasto = ({
             <CustomDatePicker />
           </Form.Item>
         </div>
+        <Form.Item hidden name="supplier_id">
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Tiene retencion"

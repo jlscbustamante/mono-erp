@@ -6,6 +6,9 @@ export const create_requirement = async (
   data: AdmRequirementInsert,
   username: string
 ) => {
+  if (!data.supplier_id && data.legal_number) {
+    throw new Error("Supplier ID es requerido cuando se proporciona ruc");
+  }
   const identifier = generate_identifier();
   const new_requirement: AdmRequirementInsert = {
     ...data,

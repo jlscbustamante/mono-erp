@@ -42,7 +42,13 @@ export const CreateOrderForm = ({
     },
   })
 
-  const handle_save = () => {
+  const handle_save = async () => {
+    try {
+      await form.validateFields()
+    } catch {
+      console.log('error: validacion de form')
+      return
+    }
     const order_data = form.getFieldsValue()
     if (requirements.length === 0) {
       toast.error('No hay requerimientos seleccionados')
@@ -75,6 +81,7 @@ export const CreateOrderForm = ({
             label="Empresa"
             className="mb-1"
             name={'company_id' satisfies T}
+            rules={[{ required: true }]}
           >
             <CompanySelectForm />
           </Form.Item>
@@ -82,6 +89,7 @@ export const CreateOrderForm = ({
             label="Operación"
             className="mb-1"
             name={'operation' satisfies T}
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
@@ -89,6 +97,7 @@ export const CreateOrderForm = ({
             label="Fecha carga"
             className="w-[440px] ml-auto mb-1"
             name={'payment_at' satisfies T}
+            rules={[{ required: true }]}
           >
             <CustomDatePicker
               className="w-full"
@@ -101,6 +110,7 @@ export const CreateOrderForm = ({
             label="Cuenta"
             className="mb-1"
             name={'bankaccount_number' satisfies T}
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
@@ -108,6 +118,7 @@ export const CreateOrderForm = ({
             label="Tipo de cuenta"
             className="mb-1"
             name={'bankaccount_type' satisfies T}
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
@@ -115,6 +126,7 @@ export const CreateOrderForm = ({
             label="Moneda"
             className="w-[440px] ml-auto mb-1"
             name={'money' satisfies T}
+            rules={[{ required: true }]}
           >
             <Select placeholder="Moneda">
               <Select.Option value="PEN">S/.</Select.Option>
@@ -125,6 +137,7 @@ export const CreateOrderForm = ({
             label="Banco"
             className="mb-1"
             name={'bankaccount_name' satisfies T}
+            rules={[{ required: true }]}
           >
             <Input />
           </Form.Item>
