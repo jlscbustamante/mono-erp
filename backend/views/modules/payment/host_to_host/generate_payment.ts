@@ -12,6 +12,16 @@ export const generate_payment = async (order_id: number) => {
     .where("payment_order_id", "=", order_id)
     .execute();
 
+  // await main_process();
+  console.log("Main.js ejecutado exitosamente con Node");
+
+  return {
+    order,
+    requirements,
+  };
+};
+
+const main_process = async () => {
   const relative_path_bcp = "./../../bcp";
   const placeholder_bank_file = `xxxxx-4444 USUSARIO NOMBRE 3143.33\nxxxxx-4444 USUSARI2 NOMBRE 1543.12`;
   await Deno.writeTextFile(
@@ -40,11 +50,4 @@ export const generate_payment = async (order_id: number) => {
       `La ejecución de main.js no retornó 'ok'. Resultado: ${output}`
     );
   }
-
-  console.log("Main.js ejecutado exitosamente con Node");
-
-  return {
-    order,
-    requirements,
-  };
 };
