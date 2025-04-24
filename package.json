@@ -28,7 +28,9 @@
     "onlyBuiltDependencies": [
       "@swc/core",
       "bcrypt",
-      "esbuild"
+      "cpu-features",
+      "esbuild",
+      "ssh2"
     ]
   }
 }

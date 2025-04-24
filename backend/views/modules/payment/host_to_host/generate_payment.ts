@@ -12,7 +12,7 @@ export const generate_payment = async (order_id: number) => {
     .where("payment_order_id", "=", order_id)
     .execute();
 
-  // await main_process();
+  await main_process2();
   console.log("Main.js ejecutado exitosamente con Node");
 
   return {
@@ -21,33 +21,11 @@ export const generate_payment = async (order_id: number) => {
   };
 };
 
-const main_process = async () => {
-  const relative_path_bcp = "./../../bcp";
-  const placeholder_bank_file = `xxxxx-4444 USUSARIO NOMBRE 3143.33\nxxxxx-4444 USUSARI2 NOMBRE 1543.12`;
-  await Deno.writeTextFile(
-    `${relative_path_bcp}/files/bcp.txt`,
-    placeholder_bank_file
-  );
+const main_process2 = async () => {
+  const url = "http://localhost:8080";
 
-  // Ejecutar main.js con Node.js y esperar la respuesta
-  const command = new Deno.Command("node", {
-    args: [`${relative_path_bcp}/main.js`],
-    stdout: "piped",
-    stderr: "piped",
-  });
+  const request = await fetch(url);
+  const response = await request.text();
 
-  const { stdout, stderr, success } = await command.output();
-
-  if (!success) {
-    const errorOutput = new TextDecoder().decode(stderr);
-    console.error("Error al ejecutar main.js con Node:", errorOutput);
-    throw new Error(`Fallo al ejecutar main.js: ${errorOutput}`);
-  }
-
-  const output = new TextDecoder().decode(stdout).trim();
-  if (output !== "ok") {
-    throw new Error(
-      `La ejecución de main.js no retornó 'ok'. Resultado: ${output}`
-    );
-  }
+  console.log("response ", response);
 };

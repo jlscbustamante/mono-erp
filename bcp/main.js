@@ -1,48 +1,27 @@
+import cors from "cors";
+import express from "express";
+import { save_file } from "./funcs/save_file";
 
-import { mkdir, writeFile } from 'fs/promises';
-import path from 'path';
-import Client from 'ssh2-sftp-client';
+const app = express();
+const port = 8080;
 
+app.use(cors()).use(express.json());
 
-const sftp=new Client()
+// Define a base route
+app.get("/", (req, res) => {
+  return res.json({
+    message: "generar archivos de pago",
+  });
+});
 
-const delay=async(ms)=> {
-  return new Promise((resolve,reject)=>{
-    setTimeout(()=>{
-      resolve()
-    },ms)
-  })
-}
+app.post("/send_file", async (req, res) => {
+  await save_file();
+  return res.json({
+    message: "ok",
+  });
+});
 
-const app=async()=>{
-  await delay(2000)
-  const responseDir = './response';
-  const filePath = path.join(responseDir, 'conten.txt');
-  const content = 'done';
-
-    // await sftp.connect({
-  //   host: '',
-  //   port: 22,
-  //   username: '',
-  //   password: ''
-  // })
-
-  try {
-    await mkdir(responseDir, { recursive: true });
-    await writeFile(filePath, content);
-    console.log(`Successfully wrote "${content}" to ${filePath}`);
-  } catch (err) {
-    console.error('Error writing file:', err);
-    throw err; // Re-throw the error to be caught by the main catch block
-  }
-
-
-}
-
-
-app().then(el=>{
-  console.log("done")
-  return 'ok'
-}).catch(err=>{
-  console.log("error",err)
-})
+// Start the server
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
+});
