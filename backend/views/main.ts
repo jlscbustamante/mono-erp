@@ -28,7 +28,7 @@ export const apiRouter = app
   .route("nondoc", admNondocRouter);
 
 apiRouter.onError((err, c) => {
-  // console.log(err);
+  console.log(err);
   console.log(`ERROR : ${err.message}`);
   if (err instanceof HTTPException) {
     return c.json({ message: err.message }, err.status);

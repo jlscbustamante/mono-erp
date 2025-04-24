@@ -5,6 +5,7 @@ import { filter } from "#app/modules/payment/case/filter.ts";
 import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
+import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
@@ -134,4 +135,21 @@ export const paymentRouter = new Hono()
       message: "ok",
       data,
     });
-  });
+  })
+  .get(
+    "generate_payment",
+    zValidator(
+      "query",
+      z.object({
+        order_id: z.string(),
+      })
+    ),
+    async (c) => {
+      const { order_id } = c.req.valid("query");
+      const data = await generate_payment(+order_id);
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  );
