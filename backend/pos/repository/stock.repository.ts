@@ -309,7 +309,7 @@ export class StockRepository {
           unit_value: item.unit_price,
           status: 1,
           updated_at: format(new Date(), "yyyy-MM-dd"),
-          categoryName: item.product.category.category ?? "",
+          categoryName: item.product.category?.category ?? "",
           // created_at: format,
         });
       }
