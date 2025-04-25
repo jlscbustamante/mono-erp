@@ -11,3 +11,5 @@ files/*
 **/.env
 **/.env.production
 .env
+
+sftp_data

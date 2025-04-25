@@ -199,6 +199,15 @@ export const generate_stock_report = async (
       stock_last: stock_last.toString(),
       total_last: total_last.toString(),
       stock_current: stock_last.toString(),
+      quantity_in_dp: "0",
+      quantity_in_mv: "0",
+      quantity_out_dp: "0",
+      quantity_out_mv: "0",
+      quantity_in_pu: "0",
+      quantity_out_sl: "0",
+      stock_physical: "0",
+      total_value: "0",
+      status: stock_calculated[0]?.status ?? DISPATCH_STATUS.NEW,
       stock_at: parseISO(date),
     });
   });
