@@ -72,10 +72,13 @@ export class StockRepository {
     end: string;
     companyId?: string;
   }) {
-    const stock = await this.getStockStore(props);
     const lastClosed = await this.getLastClose(props.storeId);
     const stores = await this.stores();
     const store = stores.find((s) => s.id === props.storeId);
+    const stock = await this.getStockStore({
+      ...props,
+      companyId: store?.guide_template ?? props.companyId ?? undefined,
+    });
 
     const oldStock: OldResponseStock[] = stock.map((s) => {
       const current =
@@ -137,7 +140,10 @@ export class StockRepository {
     end: string;
     companyId?: string;
   }): Promise<StockSelectWithCategory[]> {
-    const company = props.companyId ?? "PIZZARAUL";
+    const stores = await this.stores();
+    const store = stores.find((s) => s.id === props.storeId);
+
+    const company = store?.guide_template ?? props.companyId ?? "PIZZARAUL";
     if (props.start === props.end) {
       return await this.stock(props.storeId, props.start, company);
     }
@@ -329,6 +335,9 @@ export class StockRepository {
     stock: IStock[];
     companyId?: string;
   }) {
+    const stores = await this.stores();
+    const store = stores.find((s) => s.id === props.warehouse);
+    const companyId = store?.guide_template ?? props.companyId;
     // const last_closed = await this.getLastClose(props.warehouse);
 
     // if (last_closed) {
@@ -354,7 +363,7 @@ export class StockRepository {
       storeId: props.warehouse,
       start: props.date,
       end: props.date,
-      companyId: props.companyId,
+      companyId: companyId,
     });
     const newStock = this.newStock({
       before: stockBefore,
@@ -368,7 +377,7 @@ export class StockRepository {
       props.warehouse,
       props.date,
       newStock,
-      props.companyId
+      companyId
     );
 
     const all_stock: StockInsert[] = [...newStock, ...(fix_stock?.stock ?? [])];

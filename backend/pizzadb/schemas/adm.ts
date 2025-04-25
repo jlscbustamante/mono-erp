@@ -19,6 +19,7 @@ export const sucursalTable = mysqlTable("adm_sucursal", {
    * @description [PIZZARAUL,PIZZAM]
    */
   trademark_id: varchar("company_id", { length: 10 }).notNull(),
+  guide_template: varchar({ length: 15 }),
 });
 
 export const trademarkTable = mysqlTable("adm_trademark", {
