@@ -7,6 +7,7 @@ import { ShowFilters } from '@/components/filter/ShowFilters'
 import { OpFilter } from '@/data/types/Filters'
 
 import { usePurchaseStore } from '../../state/usePurchase'
+import { SelectTradeMarker } from '../select-trademarker'
 
 export const ControlPurchase = () => {
   const store = usePurchaseStore()
@@ -56,6 +57,21 @@ export const ControlPurchase = () => {
   return (
     <div className="flex">
       <div className="flex gap-1 mb-3 items-center flex-1">
+        <SelectTradeMarker
+          value={store.filters.companySap?.[1]}
+          onChange={(val) => {
+            if (val == '')
+              store.setFilters({
+                ...store.filters,
+                companySap: undefined,
+              })
+            else
+              store.setFilters({
+                ...store.filters,
+                companySap: [OpFilter.Equal, val],
+              })
+          }}
+        />
         <Input
           addonBefore="Descripción"
           placeholder="Buscar"
@@ -84,7 +100,7 @@ export const ControlPurchase = () => {
           rootClass="flex gap-1"
           options={items}
           userFilters={store.filters}
-          ignore={['gloss']}
+          ignore={['gloss', 'companySap']}
           setUserFilters={(filters) => {
             store.setFilters(filters)
             // store.addControlLoadPurchase()

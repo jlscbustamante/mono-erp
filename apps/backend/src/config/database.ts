@@ -55,7 +55,7 @@ const AppDataSource = new DataSource({
     RhEmployee,
     Attendance,
     JobTitle,
-    InvKardex
+    InvKardex,
   ],
   logging: config.showTypeormLog,
 })
@@ -73,7 +73,8 @@ AppDataSource.initialize()
   })
   .catch((err) => {
     // eslint-disable-next-line no-console
-    console.log('Error during Data Source initialization:', err)
+    console.log('mkysql : ', config.mysqlUser, config.mysqlPassword)
+    console.log('Error during Data Source initialization back :', err)
   })
 
 // const AppDataSource_Courrier = new DataSource({

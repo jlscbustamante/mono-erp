@@ -181,6 +181,7 @@ export const TablePurchase = () => {
       loading={store.loadings.purchases}
       rowKey={'id'}
       columns={columns}
+      showSorterTooltip={false}
       dataSource={store.purchases}
       pagination={false}
       // pagination={{
