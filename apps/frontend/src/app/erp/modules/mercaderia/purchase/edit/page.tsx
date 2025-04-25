@@ -162,6 +162,9 @@ const PurchaseBody = ({
           <Form.Item label="Id">
             <Input readOnly value={purchase.id} />
           </Form.Item>
+          {/* <Form.Item label="Compañia">
+            <SelectCompanyPurchase value={purchase.} />
+          </Form.Item> */}
           <Form.Item label="Proveedor">
             <Select
               placeholder="Proveedor"

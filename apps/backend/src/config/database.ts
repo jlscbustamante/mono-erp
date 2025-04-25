@@ -73,7 +73,6 @@ AppDataSource.initialize()
   })
   .catch((err) => {
     // eslint-disable-next-line no-console
-    console.log('mkysql : ', config.mysqlUser, config.mysqlPassword)
     console.log('Error during Data Source initialization back :', err)
   })
 

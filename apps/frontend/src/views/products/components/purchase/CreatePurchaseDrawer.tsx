@@ -21,12 +21,11 @@ import { IInvPurchase, IInvPurchaseItem } from '@/data/products/types/purchase'
 import { filterOption, filterSelectForm, safeAny } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 
-import { OpFilter } from '@/data/types/Filters'
 import { useProductItem } from '../../state/useProductItem'
 import { usePurchase } from '../../state/usePurchase'
 import { AddProductItemDrawer } from '../productItem/CreateProductItemDrawer'
 import { CreateSupplier } from '../productItem/CreateSupplier'
-import { SelectTradeMarker } from '../select-trademarker'
+import { SelectCompanyPurchase } from './select_company_pu'
 
 interface INewPurchase extends Partial<Omit<IInvPurchase, 'items'>> {
   items: (Partial<IInvPurchaseItem> & {
@@ -186,7 +185,16 @@ export const CreatePurchaseDrawer: React.FC<{
     >
       <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
         <Form.Item label="Compañia" required name={'companySap'}>
-          <SelectTradeMarker
+          <SelectCompanyPurchase
+            value={newPurchase.companySap ?? undefined}
+            onChange={(val) => {
+              setNewPurchase({
+                ...newPurchase,
+                companySap: val,
+              })
+            }}
+          />
+          {/* <SelectTradeMarker
             value={store.filters.companySap?.[1]}
             onChange={(val) => {
               if (val == '')
@@ -200,7 +208,7 @@ export const CreatePurchaseDrawer: React.FC<{
                   companySap: [OpFilter.Equal, val],
                 })
             }}
-          />
+          /> */}
         </Form.Item>
         <Form.Item label="Proveedor" required>
           <div className="flex gap-1">
