@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { xml_pago_proveedores } from "#app/modules/payment/host_to_host/schemas/pago_proveedores.ts";
 
 export const generate_payment = async (order_id: number) => {
   const order = await db
@@ -12,20 +13,29 @@ export const generate_payment = async (order_id: number) => {
     .where("payment_order_id", "=", order_id)
     .execute();
 
-  await main_process2();
-  console.log("Main.js ejecutado exitosamente con Node");
+  const xml = xml_pago_proveedores({
+    id: 12,
+  });
+  await bcp_api_send_file(xml);
 
   return {
-    order,
-    requirements,
+    success: true,
   };
 };
 
-const main_process2 = async () => {
-  const url = "http://localhost:8080";
+const bcp_api_send_file = async (content: string) => {
+  const url = "http://localhost:2221/send_file";
 
-  const request = await fetch(url);
-  const response = await request.text();
+  const request = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content,
+    }),
+  });
+  const response = await request.json();
 
   console.log("response ", response);
 };

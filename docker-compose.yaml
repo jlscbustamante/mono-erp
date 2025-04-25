@@ -14,7 +14,7 @@ services:
     ports:
       - "2222:22" # Puerto externo 2222 mapeado al puerto 22 del contenedor
     volumes:
-      - ./sftp_data:/home/foo/upload # Volumen local montado en el home del usuario
+      - ./sftp_data:/upload # Volumen local montado en el home del usuario
     environment:
       - SFTP_USERS=foo:pass:1001 # usuario:contraseña:uid
     restart: unless-stopped

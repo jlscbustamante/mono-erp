@@ -10,6 +10,7 @@
     "mysql2": "npm:mysql2@^3.12.0",
     "bcrypt": "https://deno.land/x/bcrypt@v0.4.1/mod.ts",
     "xlsx": "npm:xlsx@^0.18.5",
+    "xmlbuilder2": "npm:xmlbuilder2@^3.1.1",
     "zod": "npm:zod@^3.24.1",
     "#app/": "./"
   },
