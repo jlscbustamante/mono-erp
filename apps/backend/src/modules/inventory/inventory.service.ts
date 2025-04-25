@@ -387,10 +387,16 @@ export class InventoryService {
   }
 
   async getDispatchTemplate(warehouseCode: string, company: string) {
-    const cached = cacheApi.get(`template_dispatch_${warehouseCode}`)
+    const store = await this.sucursalRepository.findOne({
+      where: {
+        id: warehouseCode,
+      },
+    })
+    const template_guide = store?.guide_template ?? company
+    const cached = cacheApi.get(`template_dispatch_${template_guide}`)
     if (cached) return cached
 
-    const dispatchBase = await this.getTemplate(company)
+    const dispatchBase = await this.getTemplate(template_guide)
 
     const stock = await this.getLastClosedStock(warehouseCode)
 
