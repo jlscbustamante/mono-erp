@@ -197,7 +197,13 @@ export class InventoryService {
   /**
    * @description Obtiene template para que el usuario edite lo neceario de una tienda
    */
-  async getStockToEdit(store: string, date: string, company?: string) {
+  async getStockToEdit(store: string, date: string, _company?: string) {
+    const store_db = await this.sucursalRepository.findOne({
+      where: {
+        id: store,
+      },
+    })
+    const company = store_db?.guide_template ?? _company
     const beforeDay = format(sub(parseISO(date), { days: 1 }), 'yyyy-MM-dd')
     const [before, now, template] = await Promise.all([
       this.stockRepository.find({
