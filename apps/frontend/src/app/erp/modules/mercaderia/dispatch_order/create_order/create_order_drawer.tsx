@@ -25,7 +25,7 @@ export const useCreateOrderDrawer = () => {
 
 type T = keyof InvDispatchInsert
 
-export function CreateOrderDrawer() {
+export function CreateOrderDrawer({ onCreate }: { onCreate?: () => void }) {
   const { open, open_change } = useCreateOrderDrawer()
   const [open_list, set_list] = useState(false)
   const [form] = Form.useForm<InvDispatchInsert>()
@@ -81,6 +81,7 @@ export function CreateOrderDrawer() {
       form.resetFields()
       set_items([])
       toast.success('Despacho creado correctamente')
+      onCreate?.()
     },
     onError: (err) => {
       toast.error(err.message)

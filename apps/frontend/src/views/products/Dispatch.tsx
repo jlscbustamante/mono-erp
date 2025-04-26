@@ -35,7 +35,7 @@ export default function Dispatch() {
       {/* <InfoDispatchDrawer /> */}
       <DispatchDetailDrawer onUpdate={() => refetch()} />
       {/* <DispatchEditDrawer onUpdate={() => refetch()} /> */}
-      <CreateOrderDrawer />
+      <CreateOrderDrawer onCreate={() => refetch()} />
     </div>
   )
 }
