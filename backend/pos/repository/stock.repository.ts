@@ -3,6 +3,7 @@ import {
   stocks,
   StockSelect,
   SucursalSelect,
+  sucursalTable,
 } from "@scope/pizzadb";
 import {
   add,
@@ -12,7 +13,7 @@ import {
   parseISO,
   sub,
 } from "date-fns";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, asc, desc, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import { redis } from "../cache/index.ts";
 import { db } from "../database.ts";
@@ -64,6 +65,70 @@ export class StockRepository {
     );
 
     return stores;
+  }
+
+  async getStockByCompany({
+    company_id,
+    date,
+  }: {
+    company_id: string;
+    date: string;
+  }) {
+    const cached = await redis.get(
+      "pos:stock_company:" + company_id + ":" + date
+    );
+    if (cached) return JSON.parse(cached);
+    const stores = await db.query.sucursalTable.findMany({
+      columns: {
+        id: true,
+      },
+      where: eq(sucursalTable.trademark_id, company_id),
+      orderBy: asc(sucursalTable.title),
+    });
+    const storeIds = stores.map((s) => s.id).slice(0, 3);
+    const [stock] = await db.execute(
+      sql`SELECT ist.*,icat.category FROM inv_stock ist LEFT JOIN inv_item ii ON ist.item_id =ii.id LEFT JOIN inv_product ipro ON ipro.id=ii.subcategory_id LEFT JOIN inv_category icat ON icat.id=ipro.category_id WHERE warehouse_id IN ${storeIds} AND DATE(stock_at)=${date}`
+    );
+    const stock_result: OldResponseStock[] = (
+      stock as unknown as (StockSelect & {
+        category: string;
+      })[]
+    ).map(
+      (el) =>
+        ({
+          id: el.id,
+          itemId: el.item_id,
+          itemName: el.item_name,
+          categoryName: el.category ?? "",
+          presentationId: el.presentation_id,
+          presentationName: el.presentation_name,
+          measureId: el.measure_id,
+          createdBy: el.created_by,
+          stockAt: format(parseISO(el.stock_at), "yyyy-MM-dd"),
+          stockCurrent: +el.stock_current,
+          stockPhysical: +el.stock_physical,
+          unitValue: +el.unit_value,
+          totalValue: +el.total_value,
+          totalInitial: +el.total_last,
+          initialStock: +el.stock_last,
+          quantityInDispatch: +el.quantity_in_dp,
+          quantityInMv: +el.quantity_in_mv,
+          quantityInPurchase: +el.quantity_in_pu,
+          quantityOutDispatch: +el.quantity_out_dp,
+          quantityOutMv: +el.quantity_out_mv,
+          quantityOutSale: +el.quantity_out_sl,
+          warehouseId: el.warehouse_id,
+          status: el.status,
+        } satisfies OldResponseStock)
+    );
+
+    await redis.set(
+      "pos:stock_company:" + company_id + ":" + date,
+      JSON.stringify(stock_result),
+      "EX",
+      minutesToSeconds(5)
+    );
+    return stock_result;
   }
 
   async getStockWrapper(props: {

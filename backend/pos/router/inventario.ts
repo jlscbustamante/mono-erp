@@ -39,6 +39,33 @@ export const invetarioRouter = new Hono()
       });
     }
   )
+  .get(
+    "/info_company",
+    rateLimiter({
+      windowMs: 1000 * 2,
+      limit: 1,
+      standardHeaders: "draft-6",
+      keyGenerator: (c) => c.req.query()?.company_id ?? "",
+    }),
+    async (c) => {
+      const { company_id, date } = c.req.query() as {
+        company_id: string;
+        date: string;
+      };
+      if (!company_id || !date) {
+        throw new Error("Faltan parametros");
+      }
+
+      const data = await stockRepository.getStockByCompany({
+        company_id,
+        date,
+      });
+
+      return c.json({
+        data,
+      });
+    }
+  )
   .get("/clearcache", async (c) => {
     const { warehouse, date } = c.req.query() as {
       warehouse: string;
