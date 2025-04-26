@@ -6,6 +6,8 @@ export interface ICommercialProduct {
     status: number
     flavor_id: FlavorId[]
     size_id: SizeId[]
+    category_id: number
+    category: string
   }
   
   export interface ICommercialSize {
@@ -27,7 +29,6 @@ export interface ICommercialProduct {
     id: number
     company_id: string
     flavor: string
-    menuflav_id: number
   }
   
   export interface ICommercialCatalogResponse {

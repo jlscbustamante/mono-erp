@@ -4,7 +4,9 @@ export const createProductSchema = z.object({
   company_id: z.string(),
   product: z.string().min(1),
   menuprod_id: z.number().int(),
-});
+  flavor_id: z.number().int(),
+  size_id: z.number().int(),
+})
 
 export const createFlavorSchema = z.object({
   company_id: z.string(),

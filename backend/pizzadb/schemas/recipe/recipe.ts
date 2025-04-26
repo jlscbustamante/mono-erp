@@ -12,19 +12,22 @@ import {
   import { decimalNumber } from "../../drizzle-extend.ts";
 
   
-  export const inv_product = mysqlTable("inv_products", {
+  export const inv_product = mysqlTable("inv_product", {
     id: int("id").primaryKey().autoincrement(),
     company_id: varchar("company_id", { length: 10 }).notNull(),
     product: varchar("product", { length: 150 }).notNull(),
-    menuprod_id: int("menuprod_id").notNull(),
-    status: smallint("status").notNull(),
-    created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
-        dayjs().format("YYYY-MM-DD HH:mm:ss")
-    ),
-    updated_at: timestamp({ mode: "string", fsp: 2 })
-        .notNull()
-        .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
-  })
+    flavor_id: int("flavor_id"), // Puede ser null por defecto
+    size_id: int("size_id"),     // Puede ser null por defecto
+    menuprod_id: varchar("menuprod_id", { length: 10 }).notNull(),
+    status: smallint("status").notNull().default(1),
+    created_at: datetime("created_at", { mode: "string", fsp: 2 })
+      .notNull()
+      .$defaultFn(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+    updated_at: timestamp("updated_at", { mode: "string", fsp: 2 })
+      .notNull()
+      .$defaultFn(() => dayjs().format("YYYY-MM-DD HH:mm:ss"))
+      .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+  });
   
   export const inv_product_flavor = mysqlTable("inv_product_flavor", {
     id: int("id").primaryKey().autoincrement(),
@@ -59,7 +62,6 @@ import {
   
   export const inv_recipemix_detail = mysqlTable("inv_recipemix_detail", {
       id: int("id").primaryKey().autoincrement(),
-      company_id: varchar("company_id", { length: 10 }).notNull(),
       product_id: int("product_id").notNull(),
       product_flavor_id: int("product_flavor_id"), // puede ser null
       product_size_id: int("product_size_id").notNull(),
@@ -101,7 +103,6 @@ import {
   
   export const inv_recipemix_base = mysqlTable("inv_recipemix_base", {
     id: int("id").primaryKey().autoincrement(),
-    company_id: varchar("company_id", { length: 10 }).notNull(),
     recipe_base_id: int("recipe_base_id").notNull(),
     item_id: int("item_id").notNull(),
     quantity: decimalNumber("quantity", { precision: 16, scale: 3 }).notNull().default(0.0),
@@ -118,7 +119,6 @@ import {
   
   export const inv_recipemix_flavor = mysqlTable("inv_recipemix_flavor", {
     id: int("id").primaryKey().autoincrement(),
-    company_id: varchar("company_id", { length: 10 }).notNull(),
     flavor_id: int("flavor_id").notNull(),
     item_id: int("item_id").notNull(),
     quantity: decimalNumber("quantity", { precision: 16, scale: 3 }).notNull().default(0.0),

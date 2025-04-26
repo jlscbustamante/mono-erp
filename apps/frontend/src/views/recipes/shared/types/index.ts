@@ -28,6 +28,12 @@ export interface IProduct {
   menuprod_id: number
   status?: number
   company_id?: string
+  flavor_id?: number
+  size_id?: number
+
+  // nuevos campos
+  flavor_name?: string
+  size_name?: string
 }
 
 // 🌈 Sabor de producto
