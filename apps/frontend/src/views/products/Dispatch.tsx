@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 
+import { CreateOrderDrawer } from '@/app/erp/modules/mercaderia/dispatch_order/create_order/create_order_drawer'
 import { ControlDispatch } from './components/distpatch/ControlDispatch'
 import { CreateDispatchDrawer } from './components/distpatch/CreateDispatchDrawer'
 import { DispatchTable } from './components/distpatch/DispatchTable'
@@ -34,6 +35,7 @@ export default function Dispatch() {
       {/* <InfoDispatchDrawer /> */}
       <DispatchDetailDrawer onUpdate={() => refetch()} />
       {/* <DispatchEditDrawer onUpdate={() => refetch()} /> */}
+      <CreateOrderDrawer />
     </div>
   )
 }

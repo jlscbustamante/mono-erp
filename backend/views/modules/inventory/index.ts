@@ -1,9 +1,13 @@
+import { create_dispatch } from "#app/modules/inventory/case/create_dispatch.ts";
+import { get_items_to_dispatch_by_warehouse } from "#app/modules/inventory/queries/get_template.ts";
 import { zValidator } from "@hono/zod-validator";
 import {
   DispatchCreateDto,
   DispatchItem,
   DispatchItemAddDto,
   DispatchUpdateDto,
+  InvDispatchInsert,
+  InvDispatchItemInsert,
   MoveBetweenStoresDto,
 } from "@scope/shared";
 import { Hono } from "hono";
@@ -75,6 +79,22 @@ export const inventoryRouter = new Hono()
       return c.json({ message: "ok" }, 200);
     }
   )
+  .post("create_dispatch", zValidator("json", z.any()), async (c) => {
+    const user = c.get("user");
+    const body = c.req.valid("json") as {
+      dispatch: InvDispatchInsert;
+      items: InvDispatchItemInsert[];
+    };
+    await create_dispatch({
+      dispatch: body.dispatch,
+      items: body.items,
+      username: user.name,
+    });
+
+    return c.json({
+      message: "ok",
+    });
+  })
   .post("dispatch_order", async (c) => {
     const user = c.get("user");
     const body = (await c.req.json()) as DispatchUpdateDto;
@@ -146,6 +166,24 @@ export const inventoryRouter = new Hono()
     await reset_dispatch_uc.execute(body.dispatch_id, user.name);
     return c.json({ message: "ok" });
   })
+  .get(
+    "get_items_to_dispatch",
+    zValidator(
+      "query",
+      z.object({
+        warehouse_id: z.string(),
+      })
+    ),
+    async (c) => {
+      const { warehouse_id } = c.req.valid("query");
+      const data = await get_items_to_dispatch_by_warehouse(warehouse_id);
+
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  )
   .post("dispatch_multiple", async (c) => {
     const props = (await c.req.json()) as {
       ids: number[];

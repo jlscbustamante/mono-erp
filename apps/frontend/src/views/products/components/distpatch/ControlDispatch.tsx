@@ -9,6 +9,7 @@ import { DispatchStatus } from '@/data/products/types'
 import { OpFilter } from '@/data/types/Filters'
 
 import { DispatchItemSelector } from '@/app/erp/modules/mercaderia/dispatch-item-selector'
+import { useCreateOrderDrawer } from '@/app/erp/modules/mercaderia/dispatch_order/create_order/create_order_drawer'
 import config from '@/config'
 import { zipedFiles } from '@/data/hex/inventory'
 import { useWarehousesRoute } from '@/hooks/data/iventory/use-warehouses-route'
@@ -16,6 +17,7 @@ import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 import { useMutation } from '@tanstack/react-query'
 import { format } from 'date-fns'
+import { Plus } from 'lucide-react'
 import { useMemo } from 'react'
 import { toast } from 'react-toastify'
 import { useDocs } from '../../hooks/use-docs'
@@ -24,6 +26,7 @@ import { useDispatch, useDispatchQuery } from '../../state/useDispatch'
 export const ControlDispatch = () => {
   const query = useDispatchQuery()
   const { store } = useDispatch()
+  const { open_change } = useCreateOrderDrawer()
   const items = [
     {
       label: 'id',
@@ -285,7 +288,7 @@ export const ControlDispatch = () => {
           danger
         />
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <Button
           onClick={() =>
             Modal.confirm({
@@ -355,6 +358,9 @@ export const ControlDispatch = () => {
             icon={<TfiReload className="" />}
           />
         </div>
+        <Button type="primary" onClick={() => open_change(true)}>
+          <Plus />
+        </Button>
       </div>
     </div>
   )

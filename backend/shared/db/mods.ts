@@ -24,6 +24,8 @@ export type InvDispatchBaseSelect = Selectable<InvDispatchbase>;
 export type InvDispatchBaseItemSelect = Selectable<InvDispatchbaseItem>;
 
 export type InvDispatchSelect = Selectable<InvDispatch>;
+export type InvDispatchInsert = Insertable<InvDispatch>;
+
 export type InvDispatchItemSelect = Selectable<InvDispatchItem>;
 export type InvDispatchItemInsert = Insertable<InvDispatchItem>;
 

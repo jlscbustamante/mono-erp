@@ -5,6 +5,7 @@ import { get_equivalencies } from "#app/modules/inventory/queries/get_equivalenc
 import { minutesToSeconds } from "date-fns";
 import { HTTPException } from "hono/http-exception";
 import { ITemplate } from "../../../../shared/types/index.ts";
+import { get_stores } from "../../sucursales/queries/get_stores.ts";
 import { get_items } from "./get_items.ts";
 
 export const get_items_template = async (
@@ -87,4 +88,27 @@ export const get_template = async (
     minutesToSeconds(60 * 5)
   );
   return template;
+};
+
+export const get_items_to_dispatch_by_warehouse = async (
+  warehouse_id: string
+) => {
+  const stores = await get_stores();
+  const store = stores.find((s) => s.id == warehouse_id);
+  if (!store) throw new HTTPException(400, { message: "Tienda no encontrada" });
+  if (!store.guide_template)
+    throw new HTTPException(400, {
+      message: "La tienda no tiene plantilla de despacho",
+    });
+  const template = await get_template(store.guide_template);
+
+  const items = template
+    .map((item) => {
+      return item.item_dispatch;
+    })
+    .sort((a, b) => {
+      return a.item_name.localeCompare(b.item_name);
+    });
+
+  return items;
 };
