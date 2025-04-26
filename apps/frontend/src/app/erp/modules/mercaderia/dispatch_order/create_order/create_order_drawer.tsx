@@ -7,6 +7,7 @@ import { Button, Divider, Drawer, Form, Input, Modal } from 'antd'
 import { format } from 'date-fns'
 import { atom, useAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'react-toastify'
 import { IItemToCreateDto, ListDispatchDrawer } from './list_dispatch_drawer'
 
 const create_order_atom = atom(false)
@@ -75,6 +76,14 @@ export function CreateOrderDrawer() {
         throw new Error(data_response.message ?? 'Error al crear el despacho')
       }
       return data_response
+    },
+    onSuccess: () => {
+      form.resetFields()
+      set_items([])
+      toast.success('Despacho creado correctamente')
+    },
+    onError: (err) => {
+      toast.error(err.message)
     },
   })
 
@@ -170,6 +179,7 @@ export function CreateOrderDrawer() {
               }}
               htmlType="button"
               disabled={!items.length || !sucursal_to_id}
+              loading={create_order_mt.isPending}
             >
               Crear
             </Button>
