@@ -1,5 +1,9 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
-import { AdmPaymentOrderInsert, AdmPaymentOrderSelect } from '@types'
+import {
+  AdmPaymentOrderInsert,
+  AdmPaymentOrderSelect,
+  ORDER_PAYMENT_STATUS,
+} from '@types'
 import { Form, Input, InputNumber, Select } from 'antd'
 import dayjs from 'dayjs'
 import { CompanySelectForm } from '../../../requerimientos/components/company-select'
@@ -16,6 +20,7 @@ export const CreateOrderForm = ({
     <div>
       <div className="bg-white p-3 rounded-md">
         <Form
+          disabled={order.status != ORDER_PAYMENT_STATUS.REGISTERED}
           name="req:create-order"
           form={form}
           wrapperCol={{ span: 18 }}

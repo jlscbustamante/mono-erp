@@ -1,9 +1,16 @@
+import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
+import { cn } from '@/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AdmPaymentOrderSelect, AdmRequirementSelect } from '@types'
+import {
+  AdmPaymentOrderSelect,
+  AdmRequirementSelect,
+  ORDER_PAYMENT_STATUS,
+} from '@types'
 import { Button, Checkbox, Modal } from 'antd'
 import { useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
+import { toast } from 'react-toastify'
 import { DataView } from './data-view'
 import { CreateOrderForm } from './orden-form'
 
@@ -57,8 +64,32 @@ export const RevisarOrdenPage = () => {
       })
   }
 
-  const handle_authorization = () => {
-    //
+  // send to bank
+  const approve_payment_mt = useMutation({
+    mutationFn: async (order_id: number) => {
+      const req = await viewClient.api.view.payment.generate_payment.$get({
+        query: {
+          order_id: order_id.toString(),
+        },
+      })
+      if (!req.ok) {
+        const content = await req.json()
+        throw new Error(content.message)
+      }
+    },
+    onSuccess: () => {
+      toast.success('Orden de pago enviada al banco')
+      navigate(PATHS.erp.modulos.pagos.aprobarPagos.main)
+    },
+    onError: (error: any) => {
+      toast.error('No se pudo enviar el pago al banco: ', error.message)
+    },
+  })
+
+  const handle_authorization = async () => {
+    if (query.data?.order.id) {
+      await approve_payment_mt.mutateAsync(query.data.order.id)
+    }
   }
 
   return (
@@ -94,7 +125,12 @@ export const RevisarOrdenPage = () => {
             <CreateOrderForm order={query.data.order} />
             <div className="space-y-3 bg-white p-3 rounded-md">
               <DataView requirements={query.data.requirements} />
-              <div className="flex justify-end gap-1">
+              <div
+                className={cn('flex justify-end gap-1', {
+                  hidden:
+                    query.data.order.status != ORDER_PAYMENT_STATUS.REGISTERED,
+                })}
+              >
                 <Button
                   danger
                   type="primary"

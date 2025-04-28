@@ -1,5 +1,6 @@
 import { AdmRequirementSelect } from '@types'
 import { Table } from 'antd'
+import { format } from 'date-fns'
 
 export const DataView = ({
   requirements,
@@ -55,6 +56,9 @@ export const DataView = ({
           {
             title: 'Fecha emisión',
             dataIndex: 'requested_at',
+            render: (val) => {
+              return format(new Date(val), 'yyyy-MM-dd HH:mm')
+            },
           },
           {
             title: 'Correo proveedor',
