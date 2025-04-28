@@ -13,15 +13,12 @@ export function ProgramarPagosPage() {
 
   const handle_navigation = () => {
     if (selected_row_keys.length > 0) {
-      console.log(selected_row_keys)
       navigate(
         `${PATHS.erp.modulos.pagos.programarPagos.crearOrden}?initial=${selected_row_keys}`,
       )
-      console.log('navigate ')
     } else {
-      console.log('test keys')
+      navigate(PATHS.erp.modulos.pagos.programarPagos.crearOrden)
     }
-    // navigate(PATHS.erp.modulos.pagos.programarPagos.crearOrden)
   }
 
   return (
