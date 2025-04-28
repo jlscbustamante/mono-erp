@@ -137,7 +137,7 @@ export class PurchaseRepositoryImpl implements PurchaseRepository {
         supplierName: purchase.supplierName ?? '',
         numGuide: purchase.numGuide,
         numInvoice: purchase.numInvoice,
-        purchaseAt: diffDays > 2 ? purchaseDb.purchaseAt : purchase.purchaseAt,
+        purchaseAt: diffDays > 7 ? purchaseDb.purchaseAt : purchase.purchaseAt,
         netValue,
         totalValue,
       })
