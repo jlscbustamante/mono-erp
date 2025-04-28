@@ -1,7 +1,10 @@
 import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import { approve_requirement } from "#app/modules/payment/case/approve.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
-import { filter } from "#app/modules/payment/case/filter.ts";
+import {
+  filter,
+  get_requirements_by_ids,
+} from "#app/modules/payment/case/filter.ts";
 import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
@@ -147,6 +150,26 @@ export const paymentRouter = new Hono()
     async (c) => {
       const { order_id } = c.req.valid("query");
       const data = await generate_payment(+order_id);
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  )
+  .get(
+    "get_requirements_by_ids",
+    zValidator(
+      "query",
+      z.object({
+        ids: z.string(),
+      })
+    ),
+    async (c) => {
+      const { ids } = c.req.valid("query");
+      const ids_array = ids.split(",").map((id) => parseInt(id));
+
+      const data = await get_requirements_by_ids(ids_array);
+
       return c.json({
         message: "ok",
         data,

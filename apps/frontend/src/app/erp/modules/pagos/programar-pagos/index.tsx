@@ -1,29 +1,43 @@
 import { PATHS } from '@/const/paths'
 import { Button } from 'antd'
 import { Plus } from 'lucide-react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import Control from './control'
 import { DataView } from './data-view'
 
 export function ProgramarPagosPage() {
+  const [selected_row_keys, set_selected_row_keys] = useState<React.Key[]>([])
+
   const navigate = useNavigate()
+
+  const handle_navigation = () => {
+    if (selected_row_keys.length > 0) {
+      console.log(selected_row_keys)
+      navigate(
+        `${PATHS.erp.modulos.pagos.programarPagos.crearOrden}?initial=${selected_row_keys}`,
+      )
+      console.log('navigate ')
+    } else {
+      console.log('test keys')
+    }
+    // navigate(PATHS.erp.modulos.pagos.programarPagos.crearOrden)
+  }
+
   return (
     <div className="min-h-screen bg-blue-50">
       <div className="bg-white p-3 font-semibold text-slate-800 mb-3 flex justify-between items-center">
         <h4 className="font-semibold text-slate-800">Pagos programados</h4>
-        <Button
-          type="primary"
-          size="small"
-          onClick={() =>
-            navigate(PATHS.erp.modulos.pagos.programarPagos.crearOrden)
-          }
-        >
+        <Button type="primary" size="small" onClick={handle_navigation}>
           <Plus />
         </Button>
       </div>
       <div className="px-3">
         <Control />
-        <DataView />
+        <DataView
+          set_selected_row_keys={set_selected_row_keys}
+          selected_row_keys={selected_row_keys}
+        />
       </div>
     </div>
   )

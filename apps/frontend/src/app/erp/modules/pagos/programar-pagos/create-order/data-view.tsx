@@ -1,6 +1,9 @@
+import { viewClient } from '@/lib/rpc'
+import { AdmRequirementSelect } from '@types'
 import { Button, Table } from 'antd'
 import { format } from 'date-fns'
 import { Plus } from 'lucide-react'
+import { useEffect } from 'react'
 import { requirement_type_doc_text } from '../../components/requirement_type_text'
 import {
   AgregarRequerimiento,
@@ -8,10 +11,31 @@ import {
 } from './agregar-requirement'
 import { useCreateOrderStore } from './state'
 
-export const DataView = () => {
+export const DataView = ({ initial_ids }: { initial_ids: number[] }) => {
   const { open } = useAgregarRequerimiento()
 
   const requirements = useCreateOrderStore((st) => st.requirements)
+  const set_requirements = useCreateOrderStore((st) => st.set_requirements)
+
+  const load_initial_requirements = async () => {
+    console.log('calling apis : ids . ', initial_ids)
+    const req = await viewClient.api.view.payment.get_requirements_by_ids.$get({
+      query: { ids: initial_ids.join(',') },
+    })
+    const data = await req.json()
+    if (!req.ok) {
+      throw new Error(data.message)
+    } else {
+      const requirements_founded = data.data as AdmRequirementSelect[]
+      set_requirements(requirements_founded)
+    }
+  }
+
+  useEffect(() => {
+    if (initial_ids.length > 0) {
+      load_initial_requirements()
+    }
+  }, [initial_ids])
 
   return (
     <div>

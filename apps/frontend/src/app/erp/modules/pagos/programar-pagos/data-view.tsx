@@ -1,16 +1,38 @@
 import { PATHS } from '@/const/paths'
+import { PAYMENT_STATUS, RequirementViewDto } from '@types'
 import { Button, Table } from 'antd'
 import { Eye } from 'lucide-react'
+import React from 'react'
 import { useNavigate } from 'react-router'
 import { PaymentStatusBadge } from '../components/status-bage'
 import { useProgramarPagosQuery } from './state'
 
-export function DataView() {
+export function DataView({
+  selected_row_keys,
+  set_selected_row_keys,
+}: {
+  selected_row_keys: React.Key[]
+  set_selected_row_keys: (selected_row_key: React.Key[]) => void
+}) {
   const { data } = useProgramarPagosQuery()
   const navigate = useNavigate()
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    set_selected_row_keys(newSelectedRowKeys)
+  }
+
   return (
     <div>
       <Table
+        rowSelection={{
+          type: 'checkbox',
+          getCheckboxProps: (record: RequirementViewDto) => ({
+            disabled: record.status != PAYMENT_STATUS.APPROVED, // Column configuration not to be checked
+            name: record.id.toString(),
+          }),
+          selectedRowKeys: selected_row_keys,
+          onChange: onSelectChange,
+        }}
         size="small"
         pagination={false}
         dataSource={data}

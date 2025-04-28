@@ -55,3 +55,15 @@ export const filter = async (
 
   return result;
 };
+
+export const get_requirements_by_ids = async (
+  ids: number[]
+): Promise<AdmRequirementSelect[]> => {
+  const requirements = await db
+    .selectFrom("adm_requirement")
+    .where("id", "in", ids)
+    .selectAll()
+    .execute();
+
+  return requirements;
+};
