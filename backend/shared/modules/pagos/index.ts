@@ -28,6 +28,9 @@ export enum ORDER_PAYMENT_STATUS {
   REGISTERED = "I",
   AUTHORIZED = "A",
   CANCELED = "X",
+  SENT_TO_BANK = "N",
+  REJECTED = "R",
+  PAYMENT_COMPLETED = "P",
 }
 
 export interface RequirementViewDto {

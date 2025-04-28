@@ -16,15 +16,22 @@ app.get("/", (req, res) => {
 });
 
 app.post("/send_file", async (req, res) => {
-  /** @type {{ content: string }} */
-  const { content } = req.body;
-  await save_file({
-    content,
-  });
+  try {
+    /** @type {{ content: string }} */
+    const { content } = req.body;
+    await save_file({
+      content,
+    });
 
-  return res.json({
-    message: "ok",
-  });
+    return res.json({
+      message: "ok",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "error",
+    });
+  }
 });
 
 // Start the server

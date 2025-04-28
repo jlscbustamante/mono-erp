@@ -1,5 +1,6 @@
 import { db } from "#app/config/database.ts";
 import { xml_pago_proveedores } from "#app/modules/payment/host_to_host/schemas/pago_proveedores.ts";
+import { ORDER_PAYMENT_STATUS } from "../../../../shared/types/index.ts";
 
 export const generate_payment = async (order_id: number) => {
   const order = await db
@@ -17,6 +18,14 @@ export const generate_payment = async (order_id: number) => {
     id: 12,
   });
   await bcp_api_send_file(xml);
+
+  await db
+    .updateTable("adm_payment_order")
+    .set({
+      status: ORDER_PAYMENT_STATUS.SENT_TO_BANK,
+    })
+    .where("id", "=", order_id)
+    .execute();
 
   return {
     success: true,
@@ -36,6 +45,7 @@ const bcp_api_send_file = async (content: string) => {
     }),
   });
   const response = await request.json();
-
-  console.log("response ", response);
+  if (!request.ok) {
+    throw new Error(response.message ?? "Error pos service");
+  }
 };

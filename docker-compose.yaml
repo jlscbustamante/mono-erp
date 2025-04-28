@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   redis:
     image: redis:latest
@@ -12,12 +10,11 @@ services:
     image: atmoz/sftp
     container_name: sftp_server
     ports:
-      - "2222:22" # Puerto externo 2222 mapeado al puerto 22 del contenedor
+      - "2222:22" # Externo:Interno
     volumes:
-      - ./sftp_data:/upload # Volumen local montado en el home del usuario
+      - ./sftp_data:/home/foo/upload
     environment:
-      - SFTP_USERS=foo:pass:1001 # usuario:contraseña:uid
-    restart: unless-stopped
+      - SFTP_USERS=foo:pass:1001:::upload
 volumes:
   redis_data:
     driver: local
