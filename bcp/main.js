@@ -18,9 +18,10 @@ app.get("/", (req, res) => {
 app.post("/send_file", async (req, res) => {
   try {
     /** @type {{ content: string }} */
-    const { content } = req.body;
+    const { content, file_identifier } = req.body;
     await save_file({
       content,
+      file_identifier,
     });
 
     return res.json({

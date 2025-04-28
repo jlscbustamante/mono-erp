@@ -1,6 +1,6 @@
 import Client from "ssh2-sftp-client";
 
-export const save_file = async ({ content }) => {
+export const save_file = async ({ content, file_identifier }) => {
   const sftp = new Client();
 
   await sftp.connect({
@@ -10,7 +10,7 @@ export const save_file = async ({ content }) => {
     password: "pass",
   });
 
-  const remote_path = "/upload/planilla.xml";
+  const remote_path = `/upload/${file_identifier}.xml`;
   const buffer = Buffer.from(content, "utf-8");
 
   await sftp.put(buffer, remote_path);

@@ -2,22 +2,25 @@ import builder from "xmlbuilder2";
 
 export interface PagoProveedoresSchema {
   id: number;
+  file_date: string;
+  quantity_transactions: number;
+  company_legal_name: string;
 }
 
 // prettier-ignore
-export const xml_pago_proveedores = (data: PagoProveedoresSchema): string => {
+export const xml_pago_proveedores = (file_identifier:string,data: PagoProveedoresSchema): string => {
   const doc= builder
     .create()
       .ele('Document')
         .ele('CstmrCdtTrfInitn')
           .ele('GrpHdr')
-            .ele('MsgId').txt("Archivo141").up()
-            .ele('CreDtTm').txt("2023-10-10T12:00:00").up()
+            .ele('MsgId').txt(file_identifier).up()
+            .ele('CreDtTm').txt(data.file_date).up()
             .ele('Authstn').up()
-            .ele('NbOfTxs').txt("da").up()
+            .ele('NbOfTxs').txt(data.quantity_transactions.toString()).up()
             .ele('CtrlSum').up()
             .ele('InitgPty')
-              .ele('Nm').txt('Nombre').up()
+              .ele('Nm').txt(data.company_legal_name).up()
               .ele('PstlAdr').up()
               .ele('Id')
                 .ele('OrgId')
