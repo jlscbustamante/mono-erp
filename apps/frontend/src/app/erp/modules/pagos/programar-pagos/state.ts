@@ -6,6 +6,7 @@ import {
   PAYMENT_STATUS,
   RequirementViewDto,
 } from '@types'
+import { format, startOfISOWeek } from 'date-fns'
 import { create } from 'zustand'
 
 interface IStore {
@@ -20,12 +21,21 @@ export const useProgramarPagosStore = create<IStore>((set, get) => ({
     {
       key: 'status',
       field: 'status',
-      operator: 'in',
+      operator: 'equal',
+      value: PAYMENT_STATUS.APPROVED,
+    },
+    {
+      key: 'request_at',
+      field: 'requested_at',
+      operator: 'range',
       value: [
-        PAYMENT_STATUS.APPROVED,
-        PAYMENT_STATUS.SCHEDULED,
-        PAYMENT_STATUS.SENT_TO_BANK,
+        format(startOfISOWeek(new Date()), 'yyyy-MM-dd'),
+        format(new Date(), 'yyyy-MM-dd'),
       ],
+      useMods: true,
+      mods: {
+        field: 'DATE',
+      },
     },
   ],
   set_filters: (filters) => set({ filters }),

@@ -2,7 +2,7 @@ import { FilterComponent } from '@/components/fifi'
 import { FilterOption } from '@/components/fifi/type'
 import { AdmRequirementSelect, PAYMENT_STATUS, REQUIREMENT_TYPE } from '@types'
 import { DatePicker, Select } from 'antd'
-import { format, startOfWeek } from 'date-fns'
+import { format, startOfISOWeek } from 'date-fns'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { CompanySelectForm } from '../../requerimientos/components/company-select'
@@ -28,14 +28,6 @@ const options: FilterOption<AdmRequirementSelect>[] = [
     },
   },
   {
-    label: 'Fecha',
-    operators: ['equal'],
-    key: 'request_at',
-    whereOption: {
-      field: 'requested_at',
-    },
-  },
-  {
     label: 'Descripción',
     operators: ['contain', 'equal'],
     key: 'description',
@@ -56,26 +48,14 @@ export default function Control() {
     // console.log('filterss.  ', filters)
   }
 
-  //
-  // const [value, set_value] = useSingleFilter(
-  //   filters,
-  //   set_filters,
-  //   'request_at',
-  //   [
-  //     format(startOfWeek(new Date()), 'yyyy-MM-dd'),
-  //     format(new Date(), 'yyyy-MM-dd'),
-  //   ],
-  //   'equal',
-  // )
-
   // INICIA LOGICA PARA MENJAR SOLO UN ITEM DE FILTROS
-  const param_1_option = 'equal'
+  const param_1_option = 'range'
 
   const request_at: [string, string] = useMemo(() => {
     const data = filters.find((el) => el.field == 'requested_at')
     if (!data)
       return [
-        format(startOfWeek(new Date()), 'yyyy-MM-dd'),
+        format(startOfISOWeek(new Date()), 'yyyy-MM-dd'),
         format(new Date(), 'yyyy-MM-dd'),
       ]
 
@@ -109,12 +89,12 @@ export default function Control() {
       ])
     }
   }
-  //
 
   return (
     <div className="flex gap-1 bg-white p-2 rounded-md my-1">
       <CompanySelectForm className="w-48" />
       <RangePicker
+        allowClear={false}
         className="w-72"
         onChange={(val) => {
           if (val && val[0] && val[1]) {
@@ -130,7 +110,7 @@ export default function Control() {
         className="w-48"
         placeholder="Tipo"
         allowClear={true}
-        defaultValue={'T'}
+        defaultValue={REQUIREMENT_TYPE.SUPPLIER}
       >
         <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>Simple</Select.Option>
         <Select.Option value={REQUIREMENT_TYPE.SUPPLIER}>

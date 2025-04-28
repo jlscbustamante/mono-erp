@@ -1,7 +1,8 @@
 import { viewClient } from '@/lib/rpc'
 import { WhereOption } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
-import { AdmPaymentOrderSelect } from '@types'
+import { AdmPaymentOrderSelect, ORDER_PAYMENT_STATUS } from '@types'
+import { format, startOfISOWeek } from 'date-fns'
 import { create } from 'zustand'
 
 interface IStore {
@@ -12,7 +13,27 @@ interface IStore {
 }
 
 export const useAprobarPagosStore = create<IStore>((set, get) => ({
-  filters: [],
+  filters: [
+    {
+      key: 'status',
+      field: 'status',
+      operator: 'equal',
+      value: ORDER_PAYMENT_STATUS.REGISTERED,
+    },
+    {
+      key: 'payment_at',
+      field: 'payment_at',
+      operator: 'range',
+      value: [
+        format(startOfISOWeek(new Date()), 'yyyy-MM-dd'),
+        format(new Date(), 'yyyy-MM-dd'),
+      ],
+      useMods: true,
+      mods: {
+        field: 'DATE',
+      },
+    },
+  ],
   set_filters: (filters) => set({ filters }),
   refresh_controller: 1,
   refresh: () => {
