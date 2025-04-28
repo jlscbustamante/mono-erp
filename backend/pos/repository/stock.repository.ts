@@ -91,8 +91,9 @@ export class StockRepository {
     });
     const storeIds = stores.map((s) => s.id);
     const [stock] = await db.execute(
-      sql`SELECT ist.*,icat.category,adsu.title FROM inv_stock ist LEFT JOIN adm_sucursal adsu ON ist.warehouse_id=adsu.id LEFT JOIN inv_item ii ON ist.item_id =ii.id LEFT JOIN inv_product ipro ON ipro.id=ii.subcategory_id LEFT JOIN inv_category icat ON icat.id=ipro.category_id WHERE warehouse_id IN ${storeIds} AND DATE(stock_at)=${date}`
+      sql`SELECT ist.*,icat.category,adsu.title FROM inv_stock ist LEFT JOIN adm_sucursal adsu ON ist.warehouse_id=adsu.id LEFT JOIN inv_item ii ON ist.item_id =ii.id LEFT JOIN inv_subcategory ipro ON ipro.id=ii.subcategory_id LEFT JOIN inv_category icat ON icat.id=ipro.category_id WHERE warehouse_id IN ${storeIds} AND DATE(stock_at)=${date}`
     );
+
     const stock_result: OldResponseStock[] = (
       stock as unknown as (StockSelect & {
         category: string;
