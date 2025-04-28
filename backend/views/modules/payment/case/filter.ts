@@ -8,7 +8,6 @@ import { sql } from "kysely";
 export const filter = async (
   filters: WhereOption<AdmRequirementSelect>[]
 ): Promise<RequirementViewDto[]> => {
-  console.log("filttros : ", filters);
   const query = transformWhere(filters, "rq").join(" AND ");
 
   const data = await sql`SELECT 
