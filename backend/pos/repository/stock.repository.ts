@@ -83,7 +83,10 @@ export class StockRepository {
       columns: {
         id: true,
       },
-      where: eq(sucursalTable.trademark_id, company_id),
+      where: and(
+        eq(sucursalTable.trademark_id, company_id),
+        eq(sucursalTable.type_sede, "T")
+      ),
       orderBy: asc(sucursalTable.title),
     });
     const storeIds = stores.map((s) => s.id);
