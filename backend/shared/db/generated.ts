@@ -459,6 +459,12 @@ export interface FinBalance {
 
 export interface FinCashbank {
   account_id: string | null;
+  bank_account_cci: string | null;
+  bank_account_mny: string | null;
+  bank_account_num: string | null;
+  bank_account_type: string | null;
+  bank_code: string | null;
+  bank_name: string | null;
   cashbank: string;
   company_id: string | null;
   created_at: Generated<Date>;
@@ -852,8 +858,8 @@ export interface InvItem {
    */
   item_used_to: string | null;
   measure_id: number | null;
+  old_product_id: number | null;
   presentation_id: number;
-  product_id: number | null;
   /**
    * 1: Nuevo; 2: Pendiente y recibido; 3: En revisión; 4: En observación; 5: Alta; 9: Baja
    */
@@ -932,18 +938,17 @@ export interface InvPresentation {
 }
 
 export interface InvProduct {
-  category_id: number | null;
+  company_id: string;
   created_at: Generated<Date>;
-  external_code: string | null;
-  formula_id: number | null;
+  flavor_id: number | null;
   id: Generated<number>;
-  measure_id: number | null;
-  product: string;
   /**
-   * 1: Nuevo; 2: Pendiente y recibido; 3: En revisión; 4: En observación; 5: Disponible; 9: Caducado
+   * concatenar el id
    */
+  menuprod_id: string;
+  product: string;
+  size_id: number | null;
   status: Generated<number>;
-  unit_price: Decimal | null;
   updated_at: Generated<Date>;
 }
 
@@ -1059,6 +1064,16 @@ export interface InvPurchaseItem {
   updated_at: Generated<Date>;
 }
 
+export interface InvRecipe {
+  company_id: string;
+  created_at: Generated<Date>;
+  id: Generated<number>;
+  product_id: number;
+  recipe: string;
+  status: Generated<number>;
+  updated_at: Generated<Date>;
+}
+
 export interface InvRecipeBase {
   company_id: string;
   created_at: Generated<Date>;
@@ -1070,7 +1085,6 @@ export interface InvRecipeBase {
 }
 
 export interface InvRecipemixBase {
-  company_id: string;
   created_at: Generated<Date>;
   id: Generated<number>;
   item_id: number;
@@ -1082,25 +1096,21 @@ export interface InvRecipemixBase {
 }
 
 export interface InvRecipemixDetail {
-  company_id: string;
   created_at: Generated<Date>;
   id: Generated<number>;
   item_id: number | null;
   measure_id: number | null;
   presentation_id: number | null;
-  product_flavor_id: number;
-  product_id: number;
-  product_size_id: number;
   quantity: Generated<Decimal | null>;
   recipe_base_id: number | null;
-  recipe_falvor_id: number | null;
+  recipe_flavor_id: number | null;
   recipe_group: string;
+  recipe_id: number;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
 export interface InvRecipemixFlavor {
-  company_id: string;
   created_at: Generated<Date>;
   flavor_id: number;
   id: Generated<number>;
@@ -1158,15 +1168,29 @@ export interface InvStock {
   warehouse_id: string | null;
 }
 
-export interface InvSupplier {
-  address: string | null;
+export interface InvSubcategory {
+  category_id: number | null;
   created_at: Generated<Date>;
   id: Generated<number>;
-  legal_account_bco: string | null;
-  legal_account_cci: string | null;
-  legal_account_cur: string | null;
-  legal_account_num: string | null;
-  legal_account_type: string | null;
+  measure_id: number | null;
+  /**
+   * 1: Nuevo; 2: Pendiente y recibido; 3: En revisión; 4: En observación; 5: Disponible; 9: Caducado
+   */
+  status: Generated<number>;
+  subcategory: string;
+  updated_at: Generated<Date>;
+}
+
+export interface InvSupplier {
+  address: string | null;
+  bank_account_cci: string | null;
+  bank_account_mny: string | null;
+  bank_account_num: string | null;
+  bank_account_type: string | null;
+  bank_code: string | null;
+  bank_name: string | null;
+  created_at: Generated<Date>;
+  id: Generated<number>;
   legal_name: string | null;
   legal_number: string | null;
   /**
@@ -1696,11 +1720,13 @@ export interface DB {
   inv_products: InvProducts;
   inv_purchase: InvPurchase;
   inv_purchase_item: InvPurchaseItem;
+  inv_recipe: InvRecipe;
   inv_recipe_base: InvRecipeBase;
   inv_recipemix_base: InvRecipemixBase;
   inv_recipemix_detail: InvRecipemixDetail;
   inv_recipemix_flavor: InvRecipemixFlavor;
   inv_stock: InvStock;
+  inv_subcategory: InvSubcategory;
   inv_supplier: InvSupplier;
   inv_tmplt_dispatch: InvTmpltDispatch;
   inv_tmplt_dispatch_item: InvTmpltDispatchItem;

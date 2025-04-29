@@ -3,6 +3,7 @@ import type {
   AdmPaymentOrder,
   AdmReqNondocs,
   AdmRequirement,
+  FinCashbank,
 } from "./generated.ts";
 
 export type AdmRequirementInsert = Insertable<AdmRequirement>;
@@ -13,3 +14,5 @@ export type AdmPaymentOrderSelect = Selectable<AdmPaymentOrder>;
 
 export type AdmReqNondocsInsert = Insertable<AdmReqNondocs>;
 export type AdmReqNondocsSelect = Selectable<AdmReqNondocs>;
+
+export type FinCashbankSelect = Selectable<FinCashbank>;

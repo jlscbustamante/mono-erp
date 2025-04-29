@@ -2,13 +2,13 @@
 <Document>
   <CstmrCdtTrfInitn>
     <GrpHdr>
-      <MsgId>P20250428000011P</MsgId>
-      <CreDtTm>2025-04-28174581640000000:00:00</CreDtTm>
+      <MsgId>P20250430000015P</MsgId>
+      <CreDtTm>2025-04-29T14:57:02</CreDtTm>
       <Authstn/>
-      <NbOfTxs>da</NbOfTxs>
+      <NbOfTxs>1</NbOfTxs>
       <CtrlSum/>
       <InitgPty>
-        <Nm>Nombre</Nm>
+        <Nm>PIZZA RAUL SAC</Nm>
         <PstlAdr/>
         <Id>
           <OrgId>

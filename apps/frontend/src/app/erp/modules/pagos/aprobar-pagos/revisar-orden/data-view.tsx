@@ -57,7 +57,7 @@ export const DataView = ({
             title: 'Fecha emisión',
             dataIndex: 'requested_at',
             render: (val) => {
-              return format(new Date(val), 'yyyy-MM-dd HH:mm')
+              return format(new Date(val), 'yyyy-MM-dd')
             },
           },
           {

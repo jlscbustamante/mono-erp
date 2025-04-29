@@ -1,8 +1,11 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
+import { viewClient } from '@/lib/rpc'
+import { filterSelectForm } from '@/utils'
+import { useQuery } from '@tanstack/react-query'
 import {
   AdmPaymentOrderInsert,
   AdmPaymentOrderSelect,
-  ORDER_PAYMENT_STATUS,
+  FinCashbankSelect,
 } from '@types'
 import { Form, Input, InputNumber, Select } from 'antd'
 import dayjs from 'dayjs'
@@ -16,11 +19,24 @@ export const CreateOrderForm = ({
   order: AdmPaymentOrderSelect
 }) => {
   const [form] = Form.useForm()
+  const query_cash_bank = useQuery({
+    queryKey: ['req:cash-banks'],
+    queryFn: async () => {
+      const req = await viewClient.api.view.cashbank.$get()
+      const body = await req.json()
+      if (!req.ok) {
+        throw new Error(body.message ?? 'Error al cargar los bancos')
+      }
+      return body.data as FinCashbankSelect[]
+    },
+  })
+
   return (
     <div>
       <div className="bg-white p-3 rounded-md">
         <Form
-          disabled={order.status != ORDER_PAYMENT_STATUS.REGISTERED}
+          // disabled={order.status != ORDER_PAYMENT_STATUS.REGISTERED}
+          disabled={true}
           name="req:create-order"
           form={form}
           wrapperCol={{ span: 18 }}
@@ -51,14 +67,34 @@ export const CreateOrderForm = ({
               className="w-full"
               props={{
                 minDate: dayjs(new Date()),
+                allowClear: false,
               }}
             />
           </Form.Item>
           <Form.Item
             label="Cuenta"
             className="mb-1"
-            name={'bankaccount_number' satisfies T}
+            name={'cashbank_id' satisfies T}
+            rules={[{ required: true }]}
           >
+            {/* <Input /> */}
+            <Select
+              className="w-64"
+              placeholder="Tiendas"
+              filterOption={filterSelectForm}
+              showSearch={true}
+              allowClear
+            >
+              {query_cash_bank.data
+                ?.filter((el) => el.type_cash == 3)
+                ?.map((s) => (
+                  <Select.Option key={s.id} value={s.id}>
+                    {s.cashbank}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name={'bankaccount_number' satisfies T} hidden>
             <Input />
           </Form.Item>
           <Form.Item

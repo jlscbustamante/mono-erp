@@ -1,8 +1,13 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { PATHS } from '@/const/paths'
 import { viewClient } from '@/lib/rpc'
-import { useMutation } from '@tanstack/react-query'
-import { AdmPaymentOrderInsert, CreateOrderDto } from '@types'
+import { filterSelectForm } from '@/utils'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import {
+  AdmPaymentOrderInsert,
+  CreateOrderDto,
+  FinCashbankSelect,
+} from '@types'
 import { Button, Form, Input, InputNumber, Select } from 'antd'
 import dayjs from 'dayjs'
 import React, { useEffect } from 'react'
@@ -22,6 +27,19 @@ export const CreateOrderForm = ({
   const requirements = useCreateOrderStore((st) => st.requirements)
   const set_requirements = useCreateOrderStore((st) => st.set_requirements)
   const navigate = useNavigate()
+  const query_cash_bank = useQuery({
+    queryKey: ['req:cash-banks'],
+    queryFn: async () => {
+      const req = await viewClient.api.view.cashbank.$get()
+      const body = await req.json()
+      if (!req.ok) {
+        throw new Error(body.message ?? 'Error al cargar los bancos')
+      }
+      return body.data as FinCashbankSelect[]
+    },
+  })
+
+  const cashbank_id = Form.useWatch('cashbank_id', form)
 
   const create_payment_order_mt = useMutation({
     mutationFn: async (data: CreateOrderDto) => {
@@ -59,6 +77,24 @@ export const CreateOrderForm = ({
       })
     }
   }
+
+  useEffect(() => {
+    const cashbank = query_cash_bank.data?.find((el) => el.id == cashbank_id)
+    if (cashbank) {
+      form.setFieldsValue({
+        bankaccount_number: cashbank.bank_account_num,
+        bankaccount_type: cashbank.bank_account_type,
+        bankaccount_name: cashbank.bank_name,
+      })
+    } else {
+      form.setFieldsValue({
+        bankaccount_number: undefined,
+        bankaccount_type: undefined,
+        bankaccount_name: undefined,
+        cashbank_id: undefined,
+      })
+    }
+  }, [cashbank_id])
 
   useEffect(() => {
     const total = requirements.reduce((acc, req) => {
@@ -109,9 +145,27 @@ export const CreateOrderForm = ({
           <Form.Item
             label="Cuenta"
             className="mb-1"
-            name={'bankaccount_number' satisfies T}
+            name={'cashbank_id' satisfies T}
             rules={[{ required: true }]}
           >
+            {/* <Input /> */}
+            <Select
+              className="w-64"
+              placeholder="Tiendas"
+              filterOption={filterSelectForm}
+              showSearch={true}
+              allowClear
+            >
+              {query_cash_bank.data
+                ?.filter((el) => el.type_cash == 3)
+                ?.map((s) => (
+                  <Select.Option key={s.id} value={s.id}>
+                    {s.cashbank}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+          <Form.Item name={'bankaccount_number' satisfies T} hidden>
             <Input />
           </Form.Item>
           <Form.Item

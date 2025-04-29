@@ -31,11 +31,11 @@ export const generate_payment = async (order_id: number) => {
 
   const xml = xml_pago_proveedores(payment_file_identifier, {
     id: 12,
-    file_date: format(new Date(), "yyyy-MM-ddTHH:mm:ss"),
+    file_date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
     quantity_transactions: requirements.length,
     company_legal_name: company.legal_name,
   });
-  // await bcp_api_send_file(xml, payment_file_identifier);
+  await bcp_api_send_file(xml, payment_file_identifier);
 
   // await db
   //   .updateTable("adm_payment_order")
