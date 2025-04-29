@@ -44,30 +44,37 @@ export const sumPendingRequestsSt: RecoilValueReadOnly<[number, number]> =
     },
   })
 
-export const sumApprovedRequestsSt: RecoilValueReadOnly<[number, number]> =
-  selector({
-    key: 'sumApprovedRequests',
-    get: ({ get }) => {
-      const requests = get(approvedRequestsSt)
-      // [sin retencion, con retencion]
-      const sum: [number, number] = [0, 0]
-      requests.forEach((request) => {
-        if (!request.currency || request.currency == 'PEN') {
+export const sumApprovedRequestsSt: RecoilValueReadOnly<
+  [number, number, number]
+> = selector({
+  key: 'sumApprovedRequests',
+  get: ({ get }) => {
+    const requests = get(approvedRequestsSt)
+    // [cont retencion , dolares,sin retencion]
+    const sum: [number, number, number] = [0, 0, 0]
+    requests.forEach((request) => {
+      if (!request.currency || request.currency == 'PEN') {
+        if (request.retention == '1') {
+          sum[2] = sum[2] + (request.amount_net ?? 0)
           sum[0] = sum[0] + request.amount
-        } else if (request.currency == 'USD') {
-          sum[1] = sum[1] + request.amount
+        } else {
+          sum[0] = sum[0] + request.amount
+          sum[2] = sum[2] + request.amount
         }
-        // sum[1] = sum[1] + request.amount
-        // if (request.retention == Retention.Yes) {
-        //   sum[0] = sum[0] + (request.amount_net ?? 0)
-        // } else {
-        //   sum[0] = sum[0] + request.amount
-        // }
-      })
+      } else if (request.currency == 'USD') {
+        sum[1] = sum[1] + request.amount
+      }
+      // sum[2] = sum[2] + request.amount
+      // if (request.retention == Retention.Yes) {
+      //   sum[0] = sum[0] + (request.amount_net ?? 0)
+      // } else {
+      //   sum[0] = sum[0] + request.amount
+      // }
+    })
 
-      return sum
-    },
-  })
+    return sum
+  },
+})
 
 export const sumRejectedRequestsSt: RecoilValueReadOnly<[number, number]> =
   selector({

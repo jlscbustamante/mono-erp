@@ -70,6 +70,7 @@ const TableApproved: React.FC<{
     <div>
       <Table
         dataSource={approvedRequests}
+        showSorterTooltip={false}
         onRow={(record) => ({
           onClick: () => {
             onSelect(record)
