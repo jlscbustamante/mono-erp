@@ -77,7 +77,8 @@ export const DispatchEditItemsDrawer = ({
         presentationName: itemDb.presentationName,
       } satisfies DispatchItemEdit,
     ]
-    setItems(newItems.sort((a, b) => a.itemName.localeCompare(b.itemName)))
+    // setItems(newItems.sort((a, b) => a.itemName.localeCompare(b.itemName)))
+    setItems(newItems)
     setItemSelected(0)
   }
 
