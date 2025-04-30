@@ -1,6 +1,6 @@
 import { atom, RecoilState, RecoilValueReadOnly, selector } from 'recoil'
 
-import { IFilteredRequest, Retention } from '@/data/requests/types/'
+import { IFilteredRequest } from '@/data/requests/types/'
 
 export const pendingRequestsSt: RecoilState<IFilteredRequest[]> = atom({
   key: 'requestsPendingState',
@@ -17,32 +17,39 @@ export const rejectedRequestsSt: RecoilState<IFilteredRequest[]> = atom({
   default: [] as IFilteredRequest[],
 })
 
-export const sumPendingRequestsSt: RecoilValueReadOnly<[number, number]> =
-  selector({
-    key: 'sumPendingRequests',
-    get: ({ get }) => {
-      const requests = get(pendingRequestsSt)
-      // [sin retencion, con retencion]
-      const sum: [number, number] = [0, 0]
-      requests.forEach((request) => {
-        if (!request.currency || request.currency == 'PEN') {
+export const sumPendingRequestsSt: RecoilValueReadOnly<
+  [number, number, number]
+> = selector({
+  key: 'sumPendingRequests',
+  get: ({ get }) => {
+    const requests = get(pendingRequestsSt)
+    // [sin retencion, con retencion]
+    const sum: [number, number, number] = [0, 0, 0]
+    requests.forEach((request) => {
+      if (!request.currency || request.currency == 'PEN') {
+        if (request.retention == '1') {
+          sum[2] = sum[2] + (request.amount_net ?? 0)
           sum[0] = sum[0] + request.amount
-        } else if (request.currency == 'USD') {
-          sum[1] = sum[1] + request.amount
+        } else {
+          sum[0] = sum[0] + request.amount
+          sum[2] = sum[2] + request.amount
         }
+      } else if (request.currency == 'USD') {
+        sum[1] = sum[1] + request.amount
+      }
 
-        // sum[1] = sum[1] + request.amount
+      // sum[1] = sum[1] + request.amount
 
-        // if (request.retention == Retention.Yes) {
-        //   sum[0] = sum[0] + (request.amount_net ?? 0)
-        // } else {
-        //   sum[0] = sum[0] + request.amount
-        // }
-      })
+      // if (request.retention == Retention.Yes) {
+      //   sum[0] = sum[0] + (request.amount_net ?? 0)
+      // } else {
+      //   sum[0] = sum[0] + request.amount
+      // }
+    })
 
-      return sum
-    },
-  })
+    return sum
+  },
+})
 
 export const sumApprovedRequestsSt: RecoilValueReadOnly<
   [number, number, number]
@@ -76,22 +83,29 @@ export const sumApprovedRequestsSt: RecoilValueReadOnly<
   },
 })
 
-export const sumRejectedRequestsSt: RecoilValueReadOnly<[number, number]> =
-  selector({
-    key: 'sumRejectedRequests',
-    get: ({ get }) => {
-      const requests = get(rejectedRequestsSt)
-      // [sin retencion, con retencion]
-      const sum: [number, number] = [0, 0]
-      requests.forEach((request) => {
-        sum[1] = sum[1] + request.amount
-        if (request.retention == Retention.Yes) {
-          sum[0] = sum[0] + (request.amount_net ?? 0)
+export const sumRejectedRequestsSt: RecoilValueReadOnly<
+  [number, number, number]
+> = selector({
+  key: 'sumRejectedRequests',
+  get: ({ get }) => {
+    const requests = get(rejectedRequestsSt)
+    // [sin retencion, con retencion]
+    const sum: [number, number, number] = [0, 0, 0]
+    requests.forEach((request) => {
+      sum[1] = sum[1] + request.amount
+      if (!request.currency || request.currency == 'PEN') {
+        if (request.retention == '1') {
+          sum[2] = sum[2] + (request.amount_net ?? 0)
+          sum[0] = sum[0] + request.amount
         } else {
           sum[0] = sum[0] + request.amount
+          sum[2] = sum[2] + request.amount
         }
-      })
+      } else if (request.currency == 'USD') {
+        sum[1] = sum[1] + request.amount
+      }
+    })
 
-      return sum
-    },
-  })
+    return sum
+  },
+})
