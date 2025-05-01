@@ -28,23 +28,6 @@ export const ListDispatchDrawer = ({
     undefined,
   )
 
-  const _handle_add_item = () => {
-    if (!selected_item) return
-    const exist = items.find((item) => item.item_id == selected_item.item_id)
-    if (exist) {
-      toast.error('El item ya fue agregado')
-    } else {
-      set_items([
-        ...items,
-        {
-          ...selected_item,
-          quantity: 1,
-          total: selected_item.store_price,
-        },
-      ])
-    }
-  }
-
   const add_item = (item: IItem) => {
     const exist = items.find((i) => i.item_id == item.item_id)
     if (exist) {
