@@ -827,6 +827,10 @@ export class HexInventoryController {
       },
     })
 
+    if (originalStores.some((el) => el.type_sede == 'W')) {
+      throw badRequest('No se puede modificar un almacen')
+    }
+
     const sucursales: Sucursal[] = []
 
     for (const store of stores) {
