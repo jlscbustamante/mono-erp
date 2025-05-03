@@ -92,16 +92,26 @@ export class InventoryService {
           transporte_razon_social: transport?.transportCompanyName ?? '',
         },
       )
+      const update: {
+        cfd_correlativo: number
+        guide_correlativo?: number
+      } = {
+        cfd_correlativo: invoiceCorrelative,
+      }
+      if (guideNumber != '') {
+        update['guide_correlativo'] = guideCorrelative
+      }
       await manager.update(
         Sucursal,
         {
           id: wareFrom.code,
         },
-        {
-          cfd_correlativo: invoiceCorrelative + 1,
-          guide_correlativo:
-            guideNumber != '' ? guideCorrelative + 1 : guideCorrelative,
-        },
+        update,
+        // {
+        //   cfd_correlativo: invoiceCorrelative,
+        //   guide_correlativo:
+        //     guideNumber != '' ? guideCorrelative + 1 : guideCorrelative,
+        // },
       )
     })
 
@@ -125,7 +135,7 @@ export class InventoryService {
         Sucursal,
         { id: wareFrom.code },
         {
-          cfd_correlativo: correlative + 1,
+          cfd_correlativo: correlative,
         },
       )
     })
@@ -153,7 +163,7 @@ export class InventoryService {
         Sucursal,
         { id: wareFrom.code },
         {
-          guide_correlativo: correlative + 1,
+          guide_correlativo: correlative,
         },
       )
     })
@@ -199,7 +209,7 @@ export class InventoryService {
         Sucursal,
         { id: wareFrom.code },
         {
-          guide_correlativo: correlative + 1,
+          guide_correlativo: correlative,
         },
       )
     })
@@ -220,7 +230,7 @@ export class InventoryService {
     if (!wareFrom.serie)
       throw new Error('Serie no encontrada - ' + wareFrom.legalName)
 
-    const correlative = wareFrom.correlativo
+    const correlative = wareFrom.correlativo + 1
     const serie = wareFrom.serie
 
     const invoiceSchema: InvoiceSchema = {
@@ -272,7 +282,7 @@ export class InventoryService {
     if (!wareFrom.guideSerie)
       throw new Error('Serie no encontrada - ' + wareFrom.legalName)
 
-    const correlative = wareFrom.guideCorrelativo
+    const correlative = wareFrom.guideCorrelativo + 1
     const serie = wareFrom.guideSerie
 
     const guideSchema: GuideSchema = {
@@ -334,10 +344,10 @@ export class InventoryService {
     //   throw new Error('Serie no encontrada - ' + wareFrom.legalName)
 
     const invoiceSerie = wareFrom.serie
-    const invoiceCorrelative = wareFrom.correlativo
+    const invoiceCorrelative = wareFrom.correlativo + 1
 
     const guideSerie = wareFrom.guideSerie
-    const guideCorrelative = wareFrom.guideCorrelativo
+    const guideCorrelative = wareFrom.guideCorrelativo + 1
 
     const invoiceSchema: InvoiceSchema = {
       store_direction: wareFrom.legalAddress,

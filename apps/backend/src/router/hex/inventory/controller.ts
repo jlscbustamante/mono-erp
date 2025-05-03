@@ -853,7 +853,7 @@ export class HexInventoryController {
       if (store.cfd_serie_fa) {
         if (!originalStore || originalStore.cfd_serie != store.cfd_serie_fa) {
           sucursal.cfd_serie = store.cfd_serie_fa
-          sucursal.cfd_correlativo = 1
+          sucursal.cfd_correlativo = store.cfd_seql_fa ?? 0
         }
       }
       sucursal.status = originalStore?.status ?? store.status
