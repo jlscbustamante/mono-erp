@@ -827,9 +827,9 @@ export class HexInventoryController {
       },
     })
 
-    if (originalStores.some((el) => el.type_sede == 'W')) {
-      throw badRequest('No se puede modificar un almacen')
-    }
+    // if (originalStores.some((el) => el.type_sede == 'W')) {
+    //   throw badRequest('No se puede modificar un almacen')
+    // }
 
     const sucursales: Sucursal[] = []
 
@@ -846,12 +846,18 @@ export class HexInventoryController {
       sucursal.legalperson_name = store.sede_razon_social
       sucursal.cfd_igv = store.cfd_igv ?? 0
       sucursal.efact_pass = store.efact_pass
-      if (store.cfd_serie_fa) sucursal.cfd_serie = store.cfd_serie_fa
-      if (store.cfd_seql_fa) sucursal.cfd_correlativo = store.cfd_seql_fa
+      // if (store.cfd_serie_fa) sucursal.cfd_serie = store.cfd_serie_fa
+      // if (store.cfd_seql_fa) sucursal.cfd_correlativo = store.cfd_seql_fa
       if (store.cfd_serie_bo) sucursal.cfd_serie_bo = store.cfd_serie_bo ?? null
       if (store.cfd_seql_bo) sucursal.cfd_seql_bo = store.cfd_seql_bo
+      if (store.cfd_serie_fa) {
+        if (!originalStore || originalStore.cfd_serie != store.cfd_serie_fa) {
+          sucursal.cfd_serie = store.cfd_serie_fa
+          sucursal.cfd_correlativo = 1
+        }
+      }
       sucursal.status = originalStore?.status ?? store.status
-      sucursal.type_sede = 'T'
+      sucursal.type_sede = originalStore?.type_sede ?? store.type_sede
 
       sucursales.push(sucursal)
     }
