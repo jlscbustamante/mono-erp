@@ -8,7 +8,7 @@ import {
 
 import { DateTransformer } from '../config/transformers/dateTransformer'
 
-@Entity({ name: 'parameters' })
+@Entity({ name: 'sys_parameters' })
 export class Parameter {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number

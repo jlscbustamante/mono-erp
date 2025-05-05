@@ -197,7 +197,7 @@ export class PurchaseController {
   ) {
     const accounts: { id: number; account: string; name: string }[] =
       await AppDataSource.query(
-        `SELECT ac.id,ac.account,par.name FROM account ac INNER JOIN parameters par ON par.value=ac.id
+        `SELECT ac.id,ac.account,par.name FROM account ac INNER JOIN sys_parameters par ON par.value=ac.id
     WHERE par.type=?`,
         [PARAMETERS.ASIENTO_COMPRA],
       )
