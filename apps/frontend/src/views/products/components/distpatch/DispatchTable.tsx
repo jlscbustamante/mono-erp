@@ -86,14 +86,18 @@ export const DispatchTable = ({
     }),
   }
 
-  const docsData: Record<string, DocResponse> = useMemo(() => {
+  const docsData: Record<string, Record<number, DocResponse>> = useMemo(() => {
     if (!queryDocs.data) return {}
     return queryDocs.data.reduce(
       (acc, el) => {
-        acc[el.doc_operacion] = el
+        // acc[el.doc_operacion] = el
+        if (!acc[el.doc_operacion]) {
+          acc[el.doc_operacion] = {}
+        }
+        acc[el.doc_operacion][el.orden_nro] = el
         return acc
       },
-      {} as Record<string, DocResponse>,
+      {} as Record<string, Record<number, DocResponse>>,
     )
   }, [queryDocs.data])
 
@@ -210,7 +214,9 @@ export const DispatchTable = ({
       showSorterTooltip: false,
 
       render: (_: unknown, record) => {
-        const doc = record.numGuide ? docsData[record.numGuide] : undefined
+        const doc = record.numGuide
+          ? docsData[record.numGuide]?.[record.id]
+          : undefined
 
         if (!doc) return null
 
@@ -255,7 +261,9 @@ export const DispatchTable = ({
       showSorterTooltip: false,
 
       render: (_: unknown, record) => {
-        const doc = record.numInvoice ? docsData[record.numInvoice] : undefined
+        const doc = record.numInvoice
+          ? docsData[record.numInvoice]?.[record.id]
+          : undefined
 
         if (!doc) return null
 
