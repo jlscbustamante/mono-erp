@@ -165,9 +165,6 @@ export const CreateOrderForm = ({
                 ))}
             </Select>
           </Form.Item>
-          <Form.Item name={'bankaccount_number' satisfies T} hidden>
-            <Input />
-          </Form.Item>
           <Form.Item
             label="Tipo de cuenta"
             className="mb-1"
@@ -195,7 +192,14 @@ export const CreateOrderForm = ({
           >
             <Input />
           </Form.Item>
-          <div></div>
+          <Form.Item
+            label="Número de cuenta"
+            className="mb-1"
+            name={'bankaccount_number' satisfies T}
+            rules={[{ required: true }]}
+          >
+            <Input />
+          </Form.Item>
           <Form.Item
             label="Importe a cargar"
             className="w-[440px] ml-auto mb-1"

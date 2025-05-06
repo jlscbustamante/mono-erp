@@ -22,7 +22,7 @@ export const useProgramarPagosStore = create<IStore>((set, get) => ({
       key: 'status',
       field: 'status',
       operator: 'equal',
-      value: PAYMENT_STATUS.APPROVED,
+      value: PAYMENT_STATUS.SCHEDULED,
     },
     {
       key: 'request_at',

@@ -49,10 +49,12 @@ export function DataView() {
             dataIndex: 'bankaccount_number',
           },
           {
-            title: 'Autoriza1',
+            title: 'Autorización 1',
+            dataIndex: 'approved1_by',
           },
           {
-            title: 'Autoriza2',
+            title: 'Autorización 2',
+            dataIndex: 'approved2_by',
           },
           {
             title: 'Programado por',

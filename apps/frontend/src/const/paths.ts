@@ -38,6 +38,7 @@ export const PATHS = {
         avanzado: {
           main: '/erp/modulos/facturacionpagos/avanzado',
           config: '/erp/modulos/facturacionpagos/avanzado/config',
+          seguridad: '/erp/modulos/facturacionpagos/avanzado/seguridad',
         },
         mantenimiento: {
           main: '/erp/modulos/facturacionpagos/mantenimiento',

@@ -61,7 +61,7 @@ export const search_requirement = async ({
   }
 
   const requirements = await query_requirements
-    .where("status", "=", PAYMENT_STATUS.APPROVED)
+    .where("status", "=", PAYMENT_STATUS.REGISTERED)
     .limit(20)
     .orderBy("id", "desc")
     .execute();

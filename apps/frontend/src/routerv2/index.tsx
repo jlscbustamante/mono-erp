@@ -11,6 +11,7 @@ import { AnticipoGastosPage } from '@/app/erp/modules/pagos/anticipo-gastos'
 import { AprobarPagosPage } from '@/app/erp/modules/pagos/aprobar-pagos'
 import { RevisarOrdenPage } from '@/app/erp/modules/pagos/aprobar-pagos/revisar-orden'
 import { ConfigPage } from '@/app/erp/modules/pagos/avanzado/config'
+import { AvanzadoSeguridad } from '@/app/erp/modules/pagos/avanzado/seguridad'
 import { ConsultaRequerimientoPage } from '@/app/erp/modules/pagos/consulta-requerimiento'
 import { PagosLayout } from '@/app/erp/modules/pagos/layout'
 import { ListaEsperaPage } from '@/app/erp/modules/pagos/lista-espera'
@@ -175,6 +176,10 @@ export const routerv2 = createBrowserRouter([
               {
                 path: PATHS.erp.modulos.pagos.avanzado.config,
                 element: <ConfigPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.avanzado.seguridad,
+                element: <AvanzadoSeguridad />,
               },
               {
                 path: PATHS.erp.modulos.pagos.mantenimiento.main,

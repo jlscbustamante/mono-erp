@@ -37,7 +37,8 @@ const menu: (MenuOption | MenuSeparator)[] = [
   ]),
   separator(),
   gm('Avanzado', PATHS.erp.modulos.pagos.avanzado.main, [
-    gm('Configuración', PATHS.erp.modulos.pagos.avanzado.config),
+    // gm('Configuración', PATHS.erp.modulos.pagos.avanzado.config),
+    gm('Seguridad', PATHS.erp.modulos.pagos.avanzado.seguridad),
   ]),
 ]
 

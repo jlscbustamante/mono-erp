@@ -15,6 +15,7 @@ export function DataView() {
         size="small"
         pagination={false}
         dataSource={data}
+        rowKey={'id'}
         columns={[
           {
             title: 'Id',

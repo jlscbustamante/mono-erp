@@ -51,6 +51,7 @@ import {
   MdDeliveryDining,
   MdOutlineCategory,
   MdOutlinePayment,
+  MdSecurity,
 } from 'react-icons/md'
 import { RiCoinLine } from 'react-icons/ri'
 import {
@@ -154,6 +155,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.pagos.mantenimiento.category]: null,
   [PATHS.erp.modulos.pagos.avanzado.config]: null,
   [PATHS.erp.modulos.pagos.avanzado.main]: GrDocumentConfig,
+  [PATHS.erp.modulos.pagos.avanzado.seguridad]: MdSecurity,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

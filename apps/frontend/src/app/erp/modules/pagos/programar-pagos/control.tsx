@@ -160,7 +160,6 @@ export default function Control() {
           }
         }}
       >
-        <Select.Option value={PAYMENT_STATUS.APPROVED}>Aprobados</Select.Option>
         <Select.Option value={PAYMENT_STATUS.SCHEDULED}>
           Programado
         </Select.Option>

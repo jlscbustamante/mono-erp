@@ -1,5 +1,6 @@
 import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import { approve_requirement } from "#app/modules/payment/case/approve.ts";
+import { authorize_order } from "#app/modules/payment/case/authorize_order.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
 import {
   filter,
@@ -173,6 +174,30 @@ export const paymentRouter = new Hono()
       return c.json({
         message: "ok",
         data,
+      });
+    }
+  )
+  .post(
+    "/order/authorize",
+    zValidator(
+      "json",
+      z.object({
+        order_id: z.number(),
+        otp: z.string(),
+        user: z.string(),
+        password: z.string(),
+      })
+    ),
+    async (c) => {
+      const { order_id, otp, user, password } = c.req.valid("json");
+      await authorize_order({
+        order_id,
+        otp,
+        user,
+        password,
+      });
+      return c.json({
+        message: "ok",
       });
     }
   );
