@@ -4,20 +4,29 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   AdmPaymentOrderSelect,
   AdmRequirementSelect,
+  ISelectMockAuthorizedUserDto,
   ORDER_PAYMENT_STATUS,
 } from '@types'
 import { Button, Checkbox, Form, Input, Modal } from 'antd'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
-import { useSeguridadStore } from '../../avanzado/seguridad/state'
 import { DataView } from './data-view'
 import { CreateOrderForm } from './orden-form'
 
 export const RevisarOrdenPage = () => {
   const { id } = useParams()
-  // NOTE: estoy debe venir de la db
-  const authorized_users = useSeguridadStore((st) => st.users)
+  const { data: authorized_users } = useQuery({
+    queryKey: ['req:sec:users'],
+    queryFn: async () => {
+      const req = await viewClient.api.view.payment.order.authorized_user.$get()
+      const data = await req.json()
+      if (!req.ok) {
+        throw new Error(data.message)
+      }
+      return data.data as ISelectMockAuthorizedUserDto[]
+    },
+  })
   const [form] = Form.useForm()
 
   const query = useQuery({
@@ -45,7 +54,7 @@ export const RevisarOrdenPage = () => {
     if (!order) return false
 
     const autorizaciones = [order.approved1_by, order.approved2_by]
-    if (authorized_users.every((el) => autorizaciones.includes(el.name))) {
+    if (authorized_users?.every((el) => autorizaciones.includes(el.name))) {
       return false
     }
 

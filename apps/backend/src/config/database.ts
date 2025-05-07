@@ -55,7 +55,7 @@ const AppDataSource = new DataSource({
     RhEmployee,
     Attendance,
     JobTitle,
-    InvKardex
+    InvKardex,
   ],
   logging: config.showTypeormLog,
 })

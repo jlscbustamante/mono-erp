@@ -59,3 +59,18 @@ export interface AdmReqNondocsViewDto extends AdmReqNondocsSelect {
 export interface CreateOrderDto extends AdmPaymentOrderInsert {
   requirement_ids: number[];
 }
+
+// NOTE: This interface is used to mock the authorized user in the tests
+export interface IMockAuthorizedUser {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+}
+
+export interface ICreateMockAuthorizedUserDto
+  extends Omit<IMockAuthorizedUser, "id"> {}
+
+export interface ISelectMockAuthorizedUserDto
+  extends Omit<IMockAuthorizedUser, "password"> {}

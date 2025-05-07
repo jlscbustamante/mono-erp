@@ -1,7 +1,9 @@
 import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
+import { add_authorized_user } from "#app/modules/payment/case/add_authorized_user.ts";
 import { approve_requirement } from "#app/modules/payment/case/approve.ts";
 import { authorize_order } from "#app/modules/payment/case/authorize_order.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
+import { delete_authorized_user } from "#app/modules/payment/case/delete_authorized_user.ts";
 import {
   filter,
   get_requirements_by_ids,
@@ -11,11 +13,16 @@ import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
+import { get_authorized_users } from "#app/modules/payment/queries/get_authorized_users.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
 import { search_requirement } from "#app/modules/payment/queries/search_requirement.ts";
 import { zValidator } from "@hono/zod-validator";
-import { AdmRequirementInsert, CreateOrderDto } from "@scope/shared";
+import {
+  AdmRequirementInsert,
+  CreateOrderDto,
+  ICreateMockAuthorizedUserDto,
+} from "@scope/shared";
 import { Hono } from "hono";
 import { z } from "zod";
 
@@ -174,6 +181,38 @@ export const paymentRouter = new Hono()
       return c.json({
         message: "ok",
         data,
+      });
+    }
+  )
+  .get("/order/authorized_user", async (c) => {
+    const users = await get_authorized_users();
+    return c.json({
+      message: "ok",
+      data: users,
+    });
+  })
+  .post("/order/authorized_user", zValidator("json", z.any()), async (c) => {
+    const new_user = (await c.req.valid(
+      "json"
+    )) as ICreateMockAuthorizedUserDto;
+    add_authorized_user(new_user);
+    return c.json({
+      message: "ok",
+    });
+  })
+  .delete(
+    "/order/authorized_user",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number(),
+      })
+    ),
+    (c) => {
+      const { id } = c.req.valid("json");
+      delete_authorized_user(id);
+      return c.json({
+        message: "ok",
       });
     }
   )

@@ -1,6 +1,6 @@
 import { Button } from 'antd'
 import { Plus } from 'lucide-react'
-import { AddUserDrawer, useAddUser } from './add_user_drawer'
+import { useAddUser } from './add_user_drawer'
 import { TableUsers } from './table_users'
 
 export function AvanzadoSeguridad() {
@@ -18,7 +18,6 @@ export function AvanzadoSeguridad() {
       <div className="px-3">
         <TableUsers />
       </div>
-      <AddUserDrawer />
     </div>
   )
 }

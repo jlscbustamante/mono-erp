@@ -1,13 +1,40 @@
+import { viewClient } from '@/lib/rpc'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { ISelectMockAuthorizedUserDto } from '@types'
 import { Modal, Table } from 'antd'
-import { useSeguridadStore } from './state'
+import { AddUserDrawer } from './add_user_drawer'
 
 export const TableUsers = () => {
-  const users = useSeguridadStore((st) => st.users)
-  const set_users = useSeguridadStore((st) => st.set_users)
+  const { data: users, refetch } = useQuery({
+    queryKey: ['req:sec:users'],
+    queryFn: async () => {
+      const req = await viewClient.api.view.payment.order.authorized_user.$get()
+      const data = await req.json()
+      if (!req.ok) {
+        throw new Error(data.message)
+      }
+      return data.data as ISelectMockAuthorizedUserDto[]
+    },
+  })
 
-  const remove_user = (id: number) => {
-    const new_users = users.filter((user) => user.id !== id)
-    set_users(new_users)
+  const remove_user_mt = useMutation({
+    mutationFn: async (id: number) => {
+      const req =
+        await viewClient.api.view.payment.order.authorized_user.$delete({
+          json: { id },
+        })
+      if (!req.ok) {
+        const data = await req.json()
+        throw new Error(data.message)
+      }
+    },
+    onSuccess: () => {
+      refetch()
+    },
+  })
+
+  const remove_user = async (id: number) => {
+    await remove_user_mt.mutateAsync(id)
   }
 
   return (
@@ -58,6 +85,7 @@ export const TableUsers = () => {
           },
         ]}
       />
+      <AddUserDrawer refetch={() => refetch()} />
     </div>
   )
 }

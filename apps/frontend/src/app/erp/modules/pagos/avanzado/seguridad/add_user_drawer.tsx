@@ -1,7 +1,9 @@
+import { viewClient } from '@/lib/rpc'
+import { useMutation } from '@tanstack/react-query'
+import { ICreateMockAuthorizedUserDto } from '@types'
 import { Button, Drawer, Form, Input } from 'antd'
 import { atom, useAtom } from 'jotai'
-import { useSeguridadStore } from './state'
-import { IMockAuthorizedUser } from './type_mock'
+import { toast } from 'react-toastify'
 
 const add_user_atom = atom<boolean>(false)
 
@@ -17,17 +19,32 @@ export const useAddUser = () => {
   }
 }
 
-export const AddUserDrawer = () => {
+export const AddUserDrawer = ({ refetch }: { refetch: () => void }) => {
   const { is_open, close } = useAddUser()
   const [form] = Form.useForm()
-  const users = useSeguridadStore((st) => st.users)
-  const add_user = useSeguridadStore((st) => st.add_user)
 
-  const handle_submit = (values: IMockAuthorizedUser) => {
-    add_user({
-      ...values,
-      id: users.length + 1,
-    })
+  const add_user_mt = useMutation({
+    mutationFn: async (user: ICreateMockAuthorizedUserDto) => {
+      const req = await viewClient.api.view.payment.order.authorized_user.$post(
+        {
+          json: user,
+        },
+      )
+      if (!req.ok) {
+        const data = await req.json()
+        throw new Error(data.message)
+      }
+    },
+    onSuccess: () => {
+      refetch()
+    },
+    onError: (err) => {
+      toast.error(err.message)
+    },
+  })
+
+  const handle_submit = async (values: ICreateMockAuthorizedUserDto) => {
+    await add_user_mt.mutateAsync(values)
     form.resetFields()
     close()
   }
