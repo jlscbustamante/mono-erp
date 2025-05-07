@@ -547,6 +547,7 @@ export interface InvCarrier {
 export interface InvCategory {
   category: string;
   created_at: Generated<Date>;
+  has_detraction: Generated<number | null>;
   id: Generated<number>;
   priority: Generated<number>;
   status: Generated<number>;
@@ -555,6 +556,7 @@ export interface InvCategory {
 
 export interface InvDispatch {
   approved_by: string | null;
+  company_id: string | null;
   /**
    * conductor apellidos
    */
@@ -581,8 +583,10 @@ export interface InvDispatch {
   conductor_tipo_doc: string | null;
   created_at: Generated<Date>;
   created_by: Generated<string>;
+  detra_value: Generated<Decimal>;
   doc_url: string | null;
   gloss: string | null;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   move_at: Date;
   /**
