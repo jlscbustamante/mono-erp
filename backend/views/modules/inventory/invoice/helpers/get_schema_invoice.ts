@@ -11,6 +11,8 @@ export const get_schema_invoice = (props: {
     legal_name: string;
     legal_number: string;
     legal_address: string;
+    name: string;
+    district: string;
   };
   warehouse: {
     correlativo: number;
@@ -19,6 +21,7 @@ export const get_schema_invoice = (props: {
     legal_number: string;
     name: string;
     legal_address: string;
+    district: string;
     id: string;
   };
 }) => {

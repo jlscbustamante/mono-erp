@@ -28,6 +28,8 @@ export const apiRouter = app
   .route("company", companyRouter)
   .route("purchase", purchase_router);
 
+export type ViewType = typeof apiRouter;
+
 apiRouter.onError((err, c) => {
   console.log(err);
   if (err instanceof HTTPException) {
