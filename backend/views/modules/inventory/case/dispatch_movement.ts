@@ -429,6 +429,13 @@ export class DispatchMovement extends Dispatch {
         })
         .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
+
+      if (store_from) {
+        clear_cache(store_from.id, data.moveAt);
+      }
+      if (store_to) {
+        clear_cache(store_to.id, data.moveAt);
+      }
     });
   }
 }
