@@ -3,12 +3,6 @@ import { JwtService } from "@scope/shared/services/jwt";
 import { createMiddleware } from "hono/factory";
 import { appConfig } from "../config/index.ts";
 
-declare module "hono" {
-  interface ContextVariableMap {
-    user: Session;
-  }
-}
-
 const jwtService = new JwtService(appConfig.jwt.secret);
 
 export const session = createMiddleware(async (c, next) => {
