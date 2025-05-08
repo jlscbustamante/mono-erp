@@ -1,15 +1,12 @@
 export interface IParametersApp {
   detraction_meat: {
     percentage: number;
-    messsage: {
-      "Producto sujeto detraccion": string;
-      "Cuenta detraccion": string;
-    };
+    messsages: Record<string, string>;
   };
   moturider: {
-    cia_raul: number;
+    cia: number;
   };
-  job_titles: {
+  job_titles_ids: {
     delivery: number;
   };
 }

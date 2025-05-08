@@ -9,7 +9,10 @@ import type {
   InvPurchase,
   InvPurchaseItem,
   InvStock,
+  SysParameters,
 } from "./generated.ts";
+
+export type SysParametersSelect = Selectable<SysParameters>;
 
 export type AdmSucursalSelect = Selectable<AdmSucursal>;
 export type InvEquivalenceSelect = Selectable<InvEquivalence>;
