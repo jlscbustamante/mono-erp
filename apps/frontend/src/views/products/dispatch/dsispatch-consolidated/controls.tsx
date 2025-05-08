@@ -52,7 +52,7 @@ export const ConsolidatedControls = ({
 
     // Encabezados de las columnas
     const headers = ['categoria', 'item', ...all_days, 'total']
-    rows.push(headers)
+    // rows.push(headers)
 
     // Iteramos sobre cada elemento de DispatchSummary
     info.dispatches.forEach((summary) => {
@@ -76,8 +76,11 @@ export const ConsolidatedControls = ({
       rows.push(row)
     })
 
+    const ordered_rows = rows.sort((a, b) => {
+      return a[0]?.localeCompare(b[0] ?? '') ?? 0
+    })
     // Creamos una hoja de cálculo desde los datos
-    const ws = XLSX.utils.aoa_to_sheet(rows)
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...ordered_rows])
 
     const borderStyle = {
       top: { style: 'thin', color: { rgb: '000000' } },
