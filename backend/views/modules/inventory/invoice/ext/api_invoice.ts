@@ -47,7 +47,7 @@ export const generateInvoiceApi = async (
   );
 
   if (!is2xxStatusCode(request.status) || !request.ok) {
-    console.log("schema error : ", invoceSchema);
+    // console.log("schema error : ", invoceSchema);
     await handleError(request);
   }
   const data: ApiResponse = await request.json();

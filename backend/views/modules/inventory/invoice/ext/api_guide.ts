@@ -64,7 +64,7 @@ export const generateGuideApi = async (
   );
 
   if (!is2xxStatusCode(request.status) || !request.ok) {
-    console.log("schema error : ", guideSchema);
+    // console.log("schema error : ", guideSchema);
     await handleError(request);
   }
   const data: ApiResponse = await request.json();
