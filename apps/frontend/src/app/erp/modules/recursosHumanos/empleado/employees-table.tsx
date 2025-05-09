@@ -95,7 +95,18 @@ export const EmployeesTable = ({
             {
               title: 'Estado',
               dataIndex: 'status',
-              render: (status) => (status == 1 ? 'Activo' : 'Inactivo'),
+              // render: (status) => (status == 1 ? 'Activo' : 'Inactivo'),
+              render: (status) => {
+                return (
+                  <span
+                    className={cn({
+                      'text-red-600': status == 0,
+                    })}
+                  >
+                    {status == 1 ? 'Activo' : 'Inactivo'}
+                  </span>
+                )
+              },
               sorter: (a, b) => a.status - b.status,
             },
             {
@@ -113,6 +124,7 @@ export const EmployeesTable = ({
             },
           ] satisfies ColumnsType<RhEmployee>
         }
+        showSorterTooltip={false}
       />
     </div>
   )
