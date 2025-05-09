@@ -3,11 +3,9 @@ import { generateGuideWithTransportApi } from "#app/modules/inventory/invoice/ex
 import { generateInvoiceApi } from "#app/modules/inventory/invoice/ext/api_invoice.ts";
 import { get_schema_guide } from "#app/modules/inventory/invoice/helpers/get_schema_guide.ts";
 import { get_schema_invoice } from "#app/modules/inventory/invoice/helpers/get_schema_invoice.ts";
+import { validate_suscursal_legal_attrs } from "#app/modules/inventory/invoice/helpers/validate_sucursal_legal_attrs.ts";
 import { HTTPException } from "hono/http-exception";
-import {
-  AdmSucursalSelect,
-  AdmSucursalUpdate,
-} from "../../../../../shared/db/mods.ts";
+import { AdmSucursalUpdate } from "../../../../../shared/db/mods.ts";
 import {
   DISPATCH_STATUS,
   TransportInfoDto,
@@ -168,15 +166,3 @@ export const invoice_and_generate_guide = async (
       .execute();
   });
 };
-
-function validate_suscursal_legal_attrs(sucursal: AdmSucursalSelect) {
-  if (!sucursal.sede_nro_ruc) {
-    throw new Error(`Sucursal ${sucursal.title} no tiene nro de ruc`);
-  }
-  if (!sucursal.sede_razon_social) {
-    throw new Error(`Sucursal ${sucursal.title} no tiene razon social`);
-  }
-  if (!sucursal.ubi_address) {
-    throw new Error(`Sucursal ${sucursal.title} no tiene direccion`);
-  }
-}
