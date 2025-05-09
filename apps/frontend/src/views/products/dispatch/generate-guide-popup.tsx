@@ -3,13 +3,11 @@ import { Button, Form, Input, Modal, Popover, Segmented, Select } from 'antd'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-import {
-  generateGuideWithTransportista,
-  generateInvoiceAndGuide,
-} from '@/data/hex/inventory'
 import { Dispatch, DispatchTransport } from '@/data/hex/types'
 
+import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
+import { TransportInfoDto } from '@types'
 import { useDrivers } from './use-drivers'
 
 type TypeGuide = 'Externo' | 'Interno'
@@ -26,7 +24,36 @@ export const GenerateGuidePopup = ({
   const [open, setOpen] = useState(false)
 
   const generateInvoiceAndGuideMt = useMutation({
-    mutationFn: generateInvoiceAndGuide,
+    // mutationFn: generateInvoiceAndGuide,
+    mutationFn: async (data: {
+      id: number
+      transport: DispatchTransport | null
+    }) => {
+      if (!data.transport || !data.transport.driverDocumentNumber) {
+        throw new Error('No se puede generar guia sin datos de transporte')
+      }
+      const req =
+        await viewClient.api.view.inventory.invoice.generate_invoice_and_guide.$post(
+          {
+            json: {
+              dispatch_id: data.id,
+              transport: {
+                driver_document_number: data.transport.driverDocumentNumber,
+                driver_document_type: data.transport.driverDocumentType,
+                driver_first_name: data.transport.driverFirstName,
+                driver_last_name: data.transport.driverLastName,
+                driver_license_number: data.transport.driverLicenseNumber,
+                lincense_plate_number: data.transport.licensePlateNumber,
+                transport_company_name: data.transport.transportCompanyName,
+              } satisfies Partial<TransportInfoDto>,
+            },
+          },
+        )
+      if (!req.ok) {
+        const error = await req.json()
+        throw new Error(error.message)
+      }
+    },
     onError: (err) => {
       toast.error(err.message, {
         autoClose: false,
@@ -40,8 +67,32 @@ export const GenerateGuidePopup = ({
     },
   })
 
+  // Este tipo es definido para evitar reemplzar todo
+  type DataGuideWithTransport = { dispatchId: number } & DispatchTransport
   const generateGuideMt = useMutation({
-    mutationFn: generateGuideWithTransportista,
+    // mutationFn: generateGuideWithTransportista,
+    mutationFn: async (data: DataGuideWithTransport) => {
+      const req =
+        await viewClient.api.view.inventory.invoice.generate_guide.$post({
+          json: {
+            dispatch_id: data.dispatchId,
+            transport: {
+              driver_document_number: data.driverDocumentNumber,
+              driver_document_type: data.driverDocumentType,
+              driver_first_name: data.driverFirstName,
+              driver_last_name: data.driverLastName,
+              driver_license_number: data.driverLicenseNumber,
+              lincense_plate_number: data.licensePlateNumber,
+              transport_company_name: data.transportCompanyName,
+            } satisfies TransportInfoDto,
+          },
+        })
+
+      if (!req.ok) {
+        const error = await req.json()
+        throw new Error(error.message)
+      }
+    },
     onError: (err) => {
       toast.error(err.message, {
         autoClose: false,

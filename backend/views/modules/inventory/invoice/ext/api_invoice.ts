@@ -1,3 +1,5 @@
+import { appConfig } from "#app/config/index.ts";
+
 export interface InvoiceSchema {
   store_direction: string;
   store_ruc: string;
@@ -33,13 +35,16 @@ interface ApiResponse {
 export const generateInvoiceApi = async (
   invoceSchema: InvoiceSchema
 ): Promise<string> => {
-  const request = await fetch("URL_FACTURACION", {
-    method: "POST",
-    body: JSON.stringify(invoceSchema),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const request = await fetch(
+    `${appConfig.facturacion.host}/api/documentSaleInvoiceDocument`,
+    {
+      method: "POST",
+      body: JSON.stringify(invoceSchema),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!is2xxStatusCode(request.status) || !request.ok) {
     console.log("schema error : ", invoceSchema);

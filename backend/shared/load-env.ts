@@ -12,4 +12,6 @@ export const loadGlobalEnv = async () => {
   Deno.env.set("DB_PASSWORD", parsed.DB_PASSWORD);
   Deno.env.set("DB_PORT", parsed.DB_PORT);
   Deno.env.set("DB_DATABASE", parsed.DB_DATABASE);
+
+  Deno.env.set("FACTURACION_HOST", parsed.FACTURACION_HOST);
 };

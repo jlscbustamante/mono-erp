@@ -17,4 +17,7 @@ export const appConfig = {
     database: Deno.env.get("DB_DATABASE") as string,
     url: Deno.env.get("DATABASE_URL") as string,
   },
+  facturacion: {
+    host: Deno.env.get("FACTURACION_HOST") as string,
+  },
 };

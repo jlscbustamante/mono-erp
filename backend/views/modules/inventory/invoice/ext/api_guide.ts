@@ -1,3 +1,5 @@
+import { appConfig } from "#app/config/index.ts";
+
 export interface GuideSchema {
   store_from: {
     store_id: string;
@@ -50,13 +52,16 @@ interface ApiResponse {
 export const generateGuideApi = async (
   guideSchema: GuideSchema
 ): Promise<string> => {
-  const request = await fetch("url_guia", {
-    method: "POST",
-    body: JSON.stringify(guideSchema),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const request = await fetch(
+    `${appConfig.facturacion.host}/api/documentSunatGuia`,
+    {
+      method: "POST",
+      body: JSON.stringify(guideSchema),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!is2xxStatusCode(request.status) || !request.ok) {
     console.log("schema error : ", guideSchema);
