@@ -1,7 +1,7 @@
 import { db } from "#app/config/database.ts";
 import { get_schema_invoice } from "#app/modules/inventory/invoice/helpers/get_schema_invoice.ts";
 
-export const dispatch_invoice = async (dispatch_id: number) => {
+export const generate_invoice = async (dispatch_id: number) => {
   const dispatch = await db
     .selectFrom("inv_dispatch")
     .selectAll()

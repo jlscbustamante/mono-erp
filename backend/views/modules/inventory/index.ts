@@ -1,4 +1,7 @@
 import { create_dispatch } from "#app/modules/inventory/case/create_dispatch.ts";
+import { generate_guide } from "#app/modules/inventory/invoice/case/generate_guide.ts";
+import { invoice_and_generate_guide } from "#app/modules/inventory/invoice/case/invoice_and_generate_guide.ts";
+import { generate_invoice } from "#app/modules/inventory/invoice/case/invoice_dispatch.ts";
 import { get_items_to_dispatch_by_warehouse } from "#app/modules/inventory/queries/get_template.ts";
 import { zValidator } from "@hono/zod-validator";
 import {
@@ -9,6 +12,7 @@ import {
   InvDispatchInsert,
   InvDispatchItemInsert,
   MoveBetweenStoresDto,
+  TransportInfoDto,
 } from "@scope/shared";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
@@ -207,4 +211,57 @@ export const inventoryRouter = new Hono()
   .post("stop_queue", async (c) => {
     await stop_queue();
     return c.json({ message: "ok" });
-  });
+  })
+  // facturas
+  .post(
+    "/invoice/generate_invoice_and_guide",
+    zValidator(
+      "json",
+      z.object({
+        dispatch_id: z.number().int(),
+        transport: z.any(),
+      })
+    ),
+    async (c) => {
+      const { dispatch_id, transport } = c.req.valid("json");
+      await invoice_and_generate_guide(
+        dispatch_id,
+        transport as TransportInfoDto
+      );
+
+      return c.json({ message: "ok" });
+    }
+  )
+  .post(
+    "/invoice/generate_guide",
+    zValidator(
+      "json",
+      z.object({
+        dispatch_id: z.number().int(),
+        transport: z.any(),
+      })
+    ),
+    async (c) => {
+      const { dispatch_id, transport } = c.req.valid("json");
+      await generate_guide(dispatch_id, transport as TransportInfoDto);
+      return c.json({
+        message: "ok",
+      });
+    }
+  )
+  .post(
+    "/invoice/generate_invoice",
+    zValidator(
+      "json",
+      z.object({
+        dispatch_id: z.number().int(),
+      })
+    ),
+    async (c) => {
+      const { dispatch_id } = c.req.valid("json");
+      await generate_invoice(dispatch_id);
+      return c.json({
+        message: "ok",
+      });
+    }
+  );

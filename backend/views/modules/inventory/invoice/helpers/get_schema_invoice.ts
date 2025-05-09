@@ -36,7 +36,7 @@ export const get_schema_invoice = (props: {
     store_razon_social: props.warehouse.legal_name,
     client_razon_social: props.client.legal_name,
     client_email: null,
-    client_nro_doc: props.client.legal_name,
+    client_nro_doc: props.client.legal_number,
     client_direction: props.client.legal_address,
     orden_nro: props.dispatch.id,
     total_price: +props.dispatch.total_value,

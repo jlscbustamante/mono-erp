@@ -33,7 +33,6 @@ interface ApiResponse {
 export const generateInvoiceApi = async (
   invoceSchema: InvoiceSchema
 ): Promise<string> => {
-  return Promise.resolve("F31313");
   const request = await fetch("URL_FACTURACION", {
     method: "POST",
     body: JSON.stringify(invoceSchema),

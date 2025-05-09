@@ -1,4 +1,5 @@
 import type { Insertable, Selectable } from "kysely";
+import { Updateable } from "kysely";
 import type {
   AdmSucursal,
   InvDispatch,
@@ -15,6 +16,8 @@ import type {
 export type SysParametersSelect = Selectable<SysParameters>;
 
 export type AdmSucursalSelect = Selectable<AdmSucursal>;
+export type AdmSucursalUpdate = Updateable<AdmSucursal>;
+
 export type InvEquivalenceSelect = Selectable<InvEquivalence>;
 
 export type InvStockInsert = Insertable<InvStock>;

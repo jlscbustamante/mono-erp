@@ -16,6 +16,6 @@ const schemas = await invoice_and_generate_guide(dispatch_id, {
   driver_last_name: "Zhang",
   driver_license_number: "12344",
 });
-console.log(schemas.guide);
+console.log(schemas.invoice);
 
 // export {};

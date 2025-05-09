@@ -100,3 +100,13 @@ export interface MoveBetweenStoresDto {
   gloss: string;
   items: MoveItemDto[];
 }
+
+export interface TransportInfoDto {
+  transport_company_name: string;
+  lincense_plate_number: string;
+  driver_document_type: string;
+  driver_document_number: string;
+  driver_first_name: string;
+  driver_last_name: string;
+  driver_license_number: string;
+}

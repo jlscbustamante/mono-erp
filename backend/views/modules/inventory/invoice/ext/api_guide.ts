@@ -70,7 +70,6 @@ export const generateGuideApi = async (
 export const generateGuideWithTransportApi = async (
   guideSchema: GuideWithTransportScheme
 ): Promise<string> => {
-  return Promise.resolve("T01313");
   const request = await fetch("url_guide", {
     method: "POST",
     body: JSON.stringify(guideSchema),
@@ -93,7 +92,7 @@ const handleError = async (res: Response) => {
     const data: any = await res.json();
     console.log("Error al generar la guia: ", data);
     throw new Error(data.message);
-  } catch (err: any) {
+  } catch {
     throw new Error("Error al generar la guia");
   }
 };
