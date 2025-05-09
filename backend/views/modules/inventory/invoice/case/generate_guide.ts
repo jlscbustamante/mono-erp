@@ -19,9 +19,9 @@ export const generate_guide = async (
     .where("id", "=", dispatch_id)
     .executeTakeFirstOrThrow();
 
-  if (dispatch.status != DISPATCH_STATUS.DISPATCHED) {
+  if (dispatch.status != DISPATCH_STATUS.INVOICED) {
     throw new HTTPException(400, {
-      message: "El despacho no se encuentra en estado DESPACHADO",
+      message: "El despacho no se encuentra en estado FACTURADO",
     });
   }
 
