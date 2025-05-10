@@ -75,13 +75,16 @@ export const generateGuideApi = async (
 export const generateGuideWithTransportApi = async (
   guideSchema: GuideWithTransportScheme
 ): Promise<string> => {
-  const request = await fetch("url_guide", {
-    method: "POST",
-    body: JSON.stringify(guideSchema),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  const request = await fetch(
+    `${appConfig.facturacion.host}/api/documentSunatGuia`,
+    {
+      method: "POST",
+      body: JSON.stringify(guideSchema),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
   if (!is2xxStatusCode(request.status) || !request.ok) {
     console.log("schema error : ", guideSchema);
