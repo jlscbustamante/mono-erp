@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { MoveBetweenStoresDto } from '@types'
 import {
   Button,
+  Checkbox,
   DatePicker,
   Drawer,
   Form,
@@ -21,8 +22,10 @@ import { atom, useRecoilState } from 'recoil'
 import {
   DispatchCreate,
   getItemsInventario,
+  getItemsInventarioAll,
   getSucursalList,
 } from '@/data/products/sdk'
+import { IInvProductItem } from '@/data/products/types'
 import { viewClient } from '@/lib/rpc'
 import { filterSelectForm } from '@/utils'
 
@@ -54,6 +57,7 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
   const { isOpen, close } = useCreateMoveDrawer()
   const [form] = Form.useForm()
   const [items, setItems] = useState<ItemList[]>([])
+  const [showAllItems, setShowAllItems] = useState<boolean>(false)
   const validItems = useMemo(() => {
     return items.filter((el) => el.itemId != -1 && el.quantity > 0)
   }, [items])
@@ -67,6 +71,30 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
     queryKey: ['itemsInventario'],
     queryFn: getItemsInventario,
   })
+
+  const itemsInventarioAllQuery = useQuery({
+    queryKey: ['itemsInventarioAll'],
+    queryFn: getItemsInventarioAll,
+    staleTime: Infinity,
+  })
+
+  const items_list: IInvProductItem[] | undefined = useMemo(() => {
+    if (!itemsInventarioAllQuery.data && !itemsInventarioQuery.data) return []
+
+    if (showAllItems) {
+      if (itemsInventarioAllQuery.data) {
+        return itemsInventarioAllQuery.data
+      } else {
+        return itemsInventarioQuery.data
+      }
+    } else {
+      if (itemsInventarioQuery.data) {
+        return itemsInventarioQuery.data
+      } else {
+        return itemsInventarioAllQuery.data
+      }
+    }
+  }, [itemsInventarioAllQuery.data, itemsInventarioQuery.data, showAllItems])
 
   const sucursalesStores = useMemo(() => {
     if (!sucursalesQuery.data) return []
@@ -216,10 +244,20 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
           <Input />
         </Form.Item>
         <Form.Item>
-          <div>
+          <div className="flex justify-between items-center">
             <a href="#" onClick={addItem}>
               + Agregar item
             </a>
+            <div className="flex gap-1 items-center">
+              <Checkbox
+                id="_show_all_items"
+                checked={showAllItems}
+                onChange={(val) => {
+                  setShowAllItems(val.target.checked)
+                }}
+              />
+              <label htmlFor="_show_all_items">Mosrar todos los items</label>
+            </div>
           </div>
           <Table
             pagination={false}
@@ -248,7 +286,7 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
                         filterOption={filterSelectForm as any}
                         showSearch={true}
                         onChange={(val) => {
-                          const itemFounded = itemsInventarioQuery.data?.find(
+                          const itemFounded = items_list?.find(
                             (el) => el.id == val,
                           )
                           if (itemFounded) {
@@ -273,7 +311,7 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
                           }
                         }}
                       >
-                        {itemsInventarioQuery.data?.map((el) => (
+                        {items_list?.map((el) => (
                           <Select.Option key={el.id} value={el.id}>
                             {el.itemName}
                           </Select.Option>

@@ -222,6 +222,10 @@ export const getItemsInventario = () => {
   return baseUrl<IInvProductItem[]>('inventory/getItemsInventario')
 }
 
+export const getItemsInventarioAll = () => {
+  return baseUrl<IInvProductItem[]>('inventory/getItemsInventarioAll')
+}
+
 export const createWarehouse = (warehousee: Partial<IInvWarehouse>) => {
   return baseUrl<void>('inventory/warehouse/create', {
     method: 'POST',

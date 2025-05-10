@@ -669,6 +669,55 @@ export class MaintenanceController {
       data: itemsUnique,
     })
   }
+
+  @catchError
+  async getItemsInventarioAll(req: Request, res: Response) {
+    const itemsDispatch = await productItemRepository.find({
+      select: {
+        id: true,
+        productId: true,
+        itemName: true,
+        brandId: true,
+        presentationId: true,
+        unitPrice: true,
+        brand: {
+          brand: true,
+        },
+        presentation: {
+          presentation: true,
+        },
+        product: {
+          id: true,
+          measure: {
+            id: true,
+            code: true,
+          },
+        },
+      },
+      relations: {
+        brand: true,
+        presentation: true,
+        product: {
+          measure: true,
+        },
+      },
+      order: {
+        itemName: 'ASC',
+      },
+    })
+    const items = itemsDispatch
+    const itemsUnique = items.reduce((acc, el) => {
+      if (!acc.some((item) => item.id === el.id)) {
+        acc.push(el)
+      }
+      return acc
+    }, [] as Item[])
+
+    res.json({
+      message: 'Plantilla de inventario',
+      data: itemsUnique,
+    })
+  }
 }
 
 export const getTypeTemplate = (type: string) => {

@@ -136,4 +136,9 @@ export const loadInventoryMaintenanceEndpoints = (app: Application) => {
   )
 
   app.get('/api/inventory/getItemsInventario', controller.getItemsInventario)
+
+  app.get(
+    '/api/inventory/getItemsInventarioAll',
+    controller.getItemsInventarioAll,
+  )
 }
