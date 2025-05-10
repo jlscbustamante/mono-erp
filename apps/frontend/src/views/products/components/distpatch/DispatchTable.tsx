@@ -94,7 +94,11 @@ export const DispatchTable = ({
         if (!acc[el.doc_operacion]) {
           acc[el.doc_operacion] = {}
         }
-        acc[el.doc_operacion][el.orden_nro] = el
+        if (!el.orden_nro) {
+          acc[el.doc_operacion][-2] = el
+        } else {
+          acc[el.doc_operacion][el.orden_nro] = el
+        }
         return acc
       },
       {} as Record<string, Record<number, DocResponse>>,
@@ -215,8 +219,11 @@ export const DispatchTable = ({
 
       render: (_: unknown, record) => {
         const doc = record.numGuide
-          ? docsData[record.numGuide]?.[record.id]
+          ? docsData[record.numGuide]?.[record.id] ||
+            docsData[record.numGuide]?.[-2]
           : undefined
+
+        // console.log('docsData', doc)
 
         if (!doc) return null
 
