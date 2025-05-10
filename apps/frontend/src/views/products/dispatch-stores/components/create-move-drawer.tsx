@@ -256,7 +256,7 @@ export const CreateMoveDrawer = ({ onCreate }: { onCreate: () => void }) => {
                   setShowAllItems(val.target.checked)
                 }}
               />
-              <label htmlFor="_show_all_items">Mosrar todos los items</label>
+              <label htmlFor="_show_all_items">Mostrar todos los items</label>
             </div>
           </div>
           <Table
