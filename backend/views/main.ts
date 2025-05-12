@@ -6,6 +6,7 @@ import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
 import { companyRouter } from "./modules/company/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
+import { log_router } from "./modules/log/index.ts";
 import { purchase_router } from "./modules/purchase/index.ts";
 
 const app = new Hono();
@@ -26,7 +27,8 @@ export const apiRouter = app
   .use(session)
   .route("inventory", inventoryRouter)
   .route("company", companyRouter)
-  .route("purchase", purchase_router);
+  .route("purchase", purchase_router)
+  .route("log", log_router);
 
 export type ViewType = typeof apiRouter;
 

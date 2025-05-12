@@ -1,5 +1,6 @@
 import config from '@/config'
 
+import { viewClient } from '@/lib/rpc'
 import { ICourier, ICreateCourier, IUpdateCourier } from './types'
 
 export const getCouriers = async (ciaId: string): Promise<ICourier[]> => {
@@ -41,6 +42,12 @@ export const createCourier = async (ciaId: string, courier: ICreateCourier) => {
   if (data.success === false || response.status == 404) {
     throw new Error(data?.message ?? 'Hubo un problema al crear el motorizado')
   }
+  generate_log([
+    'CREAR',
+    courier.name,
+    courier.phone,
+    courier.doc_number ?? '_sin_doc',
+  ])
 
   return data
 }
@@ -94,6 +101,7 @@ export const updateCourierStore = async (
       data?.message ?? 'Hubo un problema al editar la tienda del motorizado',
     )
   }
+  generate_log(['EDITAR_STORE', body.store_id, body.id.toString()])
 
   return data
 }
@@ -122,6 +130,8 @@ export const updateCourierPassword = async (body: {
         'Hubo un problema al editar la constraseña del motorizado',
     )
   }
+
+  generate_log(['EDITAR_PASSWORD', body.id.toString()])
 }
 
 export const updateCourier = async (ciaId: string, body: IUpdateCourier) => {
@@ -148,6 +158,8 @@ export const updateCourier = async (ciaId: string, body: IUpdateCourier) => {
     throw new Error(data?.message ?? 'Hubo un problema al editar el motorizado')
   }
 
+  generate_log(['EDITAR', body.name, body.phone])
+
   return data
 }
 
@@ -169,5 +181,22 @@ export const deleteCourier = async (id: number) => {
     throw new Error(
       data?.message ?? 'Hubo un problema al eliminar el motorizado',
     )
+  }
+  generate_log(['ELIMINAR', id.toString()])
+}
+
+export const generate_log = async (row: string[]) => {
+  try {
+    const req = await viewClient.api.view.log.motorizer.$post({
+      json: {
+        row,
+      },
+    })
+    if (!req.ok) {
+      const res = await req.json()
+      throw new Error(res.message)
+    }
+  } catch (error: any) {
+    console.log('No se pudo generar el log para motorizados : ', error.message)
   }
 }
