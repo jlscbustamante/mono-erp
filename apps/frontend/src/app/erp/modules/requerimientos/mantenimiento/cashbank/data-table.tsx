@@ -1,3 +1,4 @@
+import { EditIcon } from '@/components/icons/icons_app'
 import { CashBankSelect } from '@pizzadb'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
@@ -67,13 +68,11 @@ export function DataTable({ data }: { data: CashBankSelect[] }) {
           {
             title: 'Acciones',
             render: (_, record) => (
-              <a
-                onClick={() => {
+              <EditIcon
+                on_click={() => {
                   open(record)
                 }}
-              >
-                Editar
-              </a>
+              />
             ),
           },
         ]}

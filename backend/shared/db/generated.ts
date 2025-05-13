@@ -126,7 +126,7 @@ export interface AdmReqNondocs {
   autoentry_id: number | null;
   cashbank_source_id: number | null;
   cashbank_target_id: number | null;
-  company_id: string | null;
+  company_id: string;
   created_at: Generated<Date>;
   created_by: string | null;
   description: string | null;
@@ -138,12 +138,12 @@ export interface AdmReqNondocs {
   /**
    * REQ1234567
    */
-  request_code: string | null;
+  request_code: string;
   /**
    * U: Proveedor; S: Simple; T: Transferencia; L: Liquidacion
    */
-  request_type: string | null;
-  requested_at: Date | null;
+  request_type: string;
+  requested_at: Date;
   /**
    * I: Ingresado; D: Programado; A: Aprobado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado (S: Solicitado; A: Aprobado;  P: Pagado; R: Rechazado;)
    */
@@ -157,7 +157,7 @@ export interface AdmRequirement {
   amount_ret: Decimal | null;
   autoentry_id: number | null;
   cashbank_id: number | null;
-  company_id: string | null;
+  company_id: string;
   contract_id: number | null;
   costcenter_id: number | null;
   created_at: Generated<Date>;
@@ -166,9 +166,9 @@ export interface AdmRequirement {
   doc_url: string | null;
   expires_at: Date | null;
   /**
-   * 1: No tiene; 1: Si tiene
+   * 0: No tiene; 1: Si tiene
    */
-  has_retention: Generated<string | null>;
+  has_retention: Generated<number | null>;
   id: Generated<number>;
   legal_name: string | null;
   legal_number: string | null;
@@ -185,12 +185,12 @@ export interface AdmRequirement {
   /**
    * REQ1234567
    */
-  request_code: string | null;
+  request_code: string;
   /**
    * U: Proveedor; S: Simple; T: Transferencia; L: Liquidacion
    */
-  request_type: string | null;
-  requested_at: Date | null;
+  request_type: string;
+  requested_at: Date;
   /**
    * I: Ingresado; D: Programado; A: Aprobado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado (S: Solicitado; A: Aprobado;  P: Pagado; R: Rechazado;)
    */
@@ -746,8 +746,10 @@ export interface InvDispatch {
   conductor_tipo_doc: string | null;
   created_at: Generated<Date>;
   created_by: Generated<string>;
+  detra_value: Generated<Decimal>;
   doc_url: string | null;
   gloss: string | null;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   move_at: Date;
   /**
@@ -846,6 +848,7 @@ export interface InvItem {
   brand_id: number;
   category_id: number | null;
   created_at: Generated<Date>;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   item_code: Generated<string>;
   item_name: string;
