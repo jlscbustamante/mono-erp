@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { clear_cache } from "#app/modules/inventory/case/clear_cache_stock.ts";
 import { Dispatch } from "#app/modules/inventory/case/dispatch.ts";
 import { DISPATCH_STATUS } from "@scope/shared";
 import { format } from "date-fns";
@@ -119,6 +120,9 @@ export class DeleteDispatch extends Dispatch {
         })
         .where("id", "=", dispatch_id)
         .executeTakeFirstOrThrow();
+
+      clear_cache(warehouse_from_code, date);
+      clear_cache(warehouse_to_code, date);
     });
   }
 }
