@@ -113,9 +113,7 @@ export const RevisarOrdenPage = () => {
         },
       })
       if (!req.ok) {
-        console.log('Hi')
         const content = await req.json()
-        console.log('data . ', content)
         throw new Error(content.message)
       }
     },
