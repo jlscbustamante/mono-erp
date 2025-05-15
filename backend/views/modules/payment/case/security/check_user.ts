@@ -1,12 +1,16 @@
+import { get_authorized_user } from "#app/modules/payment/queries/get_authorized_users.ts";
+
 export const check_user = (
   user: string,
   password: string
 ): Promise<boolean> => {
-  if (
-    user.toLowerCase() === "Gerson".toLowerCase() &&
-    password.toLowerCase() === "123456".toLowerCase()
-  ) {
-    return Promise.resolve(true);
-  }
-  return Promise.resolve(false);
+  const users = get_authorized_user();
+
+  const userFound = users.find(
+    (el) =>
+      el.name.toLowerCase() === user.toLowerCase() &&
+      el.password.toLowerCase() === password.toLowerCase()
+  );
+
+  return Promise.resolve(!!userFound);
 };

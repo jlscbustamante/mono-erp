@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { AdmPaymentOrderUpdate } from "@scope/shared";
 import { HTTPException } from "hono/http-exception";
 
@@ -42,6 +43,7 @@ export const authorize_order = async (props: {
   if (update_payment_order["approved2_by"]) {
     // genera pago
     // poner estado ENviado banco
+    await generate_payment(props.order_id);
   } else {
     // poner estado APROBADO
   }

@@ -48,64 +48,37 @@ export const generate_payment = async (order_id: number) => {
   }, 0);
 
   const COMPANY_CONTRACT_NUMBER = "1234567890";
-  const TYPE_DOCUMENT = "CINV"; // factura del proveedor
-  const DOCUMENT_TYPE = "F001-4143";
 
   const xml = xml_pago_proveedores(payment_file_identifier, {
     generated_file_date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-    // quantity_transactions: requirements.length,
-    quantity_transactions: 2,
+    quantity_transactions: requirements.length,
     company_legal_name: company.legal_name,
     file_name: payment_file_name,
     total_amount: total,
     company_contract_number: COMPANY_CONTRACT_NUMBER,
     payment_date: format(date, "yyyy-MM-dd"),
-    payments: [
-      {
+    payments: requirements.map((el) => {
+      const requirement_amount = el.amount ? +el.amount : 0;
+      return {
         debtor_legal_name: company.legal_name,
         debtor_ruc: company.ruc,
         debtor_account: company.checking_account,
         debtor_type_account: company.account_type,
         debtor_currency: company.currency,
         debtor_reference: company.reference,
-        amount: 13,
+        amount: requirement_amount,
         creditor_name: supplier.legal_name,
         creditor_document_identifier: supplier.type_and_num_doc,
         creditor_account: supplier.account,
         creditor_type_account: supplier.account_type,
         creditor_currency: supplier.currency,
-        payment_document_type: TYPE_DOCUMENT,
-        payment_document_number: DOCUMENT_TYPE,
-        payment_document_amount: 13,
-      },
-      {
-        debtor_legal_name: company.legal_name,
-        debtor_ruc: company.ruc,
-        debtor_account: company.checking_account,
-        debtor_type_account: company.account_type,
-        debtor_currency: company.currency,
-        debtor_reference: company.reference,
-        amount: 14,
-        creditor_name: supplier.legal_name,
-        creditor_document_identifier: supplier.type_and_num_doc,
-        creditor_account: supplier.account,
-        creditor_type_account: supplier.account_type,
-        creditor_currency: supplier.currency,
-        payment_document_type: TYPE_DOCUMENT,
-        payment_document_number: DOCUMENT_TYPE,
-        payment_document_amount: 14,
-      },
-    ],
+        payment_document_type: el.type_document ?? "",
+        payment_document_number: el.num_document ?? "",
+        payment_document_amount: requirement_amount,
+      };
+    }),
   });
   await bcp_api_send_file(xml, payment_file_identifier);
-
-  // await db
-  //   .updateTable("adm_payment_order")
-  //   .set({
-  //     status: ORDER_PAYMENT_STATUS.SENT_TO_BANK,
-  //   })
-  //   .where("id", "=", order_id)
-  //   .execute();
 
   return {
     success: true,

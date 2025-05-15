@@ -11,3 +11,7 @@ export const get_authorized_users = (): Promise<
 
   return Promise.resolve(list);
 };
+
+export const get_authorized_user = () => {
+  return AUTHORIZED_USERS.get;
+};
