@@ -1,4 +1,4 @@
-import type { Insertable, Selectable } from "kysely";
+import type { Insertable, Selectable, Updateable } from "kysely";
 import type {
   AdmPaymentOrder,
   AdmReqNondocs,
@@ -11,6 +11,7 @@ export type AdmRequirementSelect = Selectable<AdmRequirement>;
 
 export type AdmPaymentOrderInsert = Insertable<AdmPaymentOrder>;
 export type AdmPaymentOrderSelect = Selectable<AdmPaymentOrder>;
+export type AdmPaymentOrderUpdate = Updateable<AdmPaymentOrder>;
 
 export type AdmReqNondocsInsert = Insertable<AdmReqNondocs>;
 export type AdmReqNondocsSelect = Selectable<AdmReqNondocs>;

@@ -23,17 +23,79 @@ export const generate_payment = async (order_id: number) => {
   const date = new Date(order.payment_at);
 
   const payment_file_identifier = await get_payment_file_identifier(date);
+  const payment_file_name = `${payment_file_identifier}.xml`;
 
   const company = {
     legal_name: "PIZZA RAUL SAC",
     ruc: "20512345678",
+    checking_account: "1234567890",
+    account_type: "CACC", // CACC corriente, MAST maestra
+    currency: "USD", // USD, PEN
+    reference: "gersonberrocal@gmail.com",
   };
 
+  const supplier = {
+    legal_name: "Vilela Medina Susana",
+    type_and_num_doc: "D/73108198", // D: DNI, C: CE, R:RUC,P:PAS, X:FIC
+    account: "1234567890",
+    account_type: "CACC", // CACC corriente, MAST: Maestra, SVGS: Ahorro, ITBK: interbancario
+    currency: "USD", // USD, PEN
+  };
+
+  const total = requirements.reduce((acc, requirement) => {
+    const amount = requirement.amount ? +requirement.amount : 0;
+    return acc + amount;
+  }, 0);
+
+  const COMPANY_CONTRACT_NUMBER = "1234567890";
+  const TYPE_DOCUMENT = "CINV"; // factura del proveedor
+  const DOCUMENT_TYPE = "F001-4143";
+
   const xml = xml_pago_proveedores(payment_file_identifier, {
-    id: 12,
-    file_date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
-    quantity_transactions: requirements.length,
+    generated_file_date: format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
+    // quantity_transactions: requirements.length,
+    quantity_transactions: 2,
     company_legal_name: company.legal_name,
+    file_name: payment_file_name,
+    total_amount: total,
+    company_contract_number: COMPANY_CONTRACT_NUMBER,
+    payment_date: format(date, "yyyy-MM-dd"),
+    payments: [
+      {
+        debtor_legal_name: company.legal_name,
+        debtor_ruc: company.ruc,
+        debtor_account: company.checking_account,
+        debtor_type_account: company.account_type,
+        debtor_currency: company.currency,
+        debtor_reference: company.reference,
+        amount: 13,
+        creditor_name: supplier.legal_name,
+        creditor_document_identifier: supplier.type_and_num_doc,
+        creditor_account: supplier.account,
+        creditor_type_account: supplier.account_type,
+        creditor_currency: supplier.currency,
+        payment_document_type: TYPE_DOCUMENT,
+        payment_document_number: DOCUMENT_TYPE,
+        payment_document_amount: 13,
+      },
+      {
+        debtor_legal_name: company.legal_name,
+        debtor_ruc: company.ruc,
+        debtor_account: company.checking_account,
+        debtor_type_account: company.account_type,
+        debtor_currency: company.currency,
+        debtor_reference: company.reference,
+        amount: 14,
+        creditor_name: supplier.legal_name,
+        creditor_document_identifier: supplier.type_and_num_doc,
+        creditor_account: supplier.account,
+        creditor_type_account: supplier.account_type,
+        creditor_currency: supplier.currency,
+        payment_document_type: TYPE_DOCUMENT,
+        payment_document_number: DOCUMENT_TYPE,
+        payment_document_amount: 14,
+      },
+    ],
   });
   await bcp_api_send_file(xml, payment_file_identifier);
 

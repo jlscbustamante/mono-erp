@@ -1,4 +1,5 @@
 import { db } from "#app/config/database.ts";
+import { AdmPaymentOrderUpdate } from "@scope/shared";
 import { HTTPException } from "hono/http-exception";
 
 export const authorize_order = async (props: {
@@ -7,6 +8,9 @@ export const authorize_order = async (props: {
   user: string;
   password: string;
 }) => {
+  // VALIDAR USUARIO Y CONTRASEÑA
+  //
+
   const order = await db
     .selectFrom("adm_payment_order")
     .selectAll()
@@ -19,7 +23,7 @@ export const authorize_order = async (props: {
     });
   }
 
-  const update_payment_order = {
+  const update_payment_order: AdmPaymentOrderUpdate = {
     approved1_by: order.approved1_by,
     approved2_by: order.approved2_by,
   };
@@ -27,7 +31,19 @@ export const authorize_order = async (props: {
   if (!order.approved1_by) {
     update_payment_order["approved1_by"] = props.user;
   } else {
+    if (order.approved1_by == props.user) {
+      throw new HTTPException(400, {
+        message: "El usuario ya aprobó la orden de pago",
+      });
+    }
     update_payment_order["approved2_by"] = props.user;
+  }
+
+  if (update_payment_order["approved2_by"]) {
+    // genera pago
+    // poner estado ENviado banco
+  } else {
+    // poner estado APROBADO
   }
 
   await db

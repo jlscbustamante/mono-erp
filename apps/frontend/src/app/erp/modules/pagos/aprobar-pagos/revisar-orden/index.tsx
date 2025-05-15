@@ -66,6 +66,7 @@ export const RevisarOrdenPage = () => {
   const [show_dialog_delete, set_show_dialog_delete] = useState(false)
   const [show_dialog_authorization, set_show_dialog_authorization] =
     useState(false)
+  const [show_otp_input, set_show_otp_input] = useState(false)
 
   const cancel_order_mt = useMutation({
     mutationFn: async (props: { id: number; delete_related: boolean }) => {
@@ -112,17 +113,21 @@ export const RevisarOrdenPage = () => {
         },
       })
       if (!req.ok) {
+        console.log('Hi')
         const content = await req.json()
+        console.log('data . ', content)
         throw new Error(content.message)
       }
     },
     onSuccess: () => {
       toast.success('Orden de pago enviada al banco')
       query.refetch()
+      set_show_otp_input(false)
+      set_show_dialog_authorization(false)
       // navigate(PATHS.erp.modulos.pagos.aprobarPagos.main)
     },
     onError: (error: any) => {
-      toast.error('No se pudo enviar el pago al banco: ', error.message)
+      toast.error(error.message ?? 'Error al enviar el pago al banco')
     },
   })
 
@@ -139,6 +144,35 @@ export const RevisarOrdenPage = () => {
         password,
         user,
       })
+    }
+  }
+
+  const handle_validate_user = async () => {
+    const order_id = query.data?.order.id
+    if (order_id) {
+      const { user, password } = form.getFieldsValue() as {
+        user: string
+        password: string
+      }
+
+      const req = await viewClient.api.view.payment.security.check_user.$post({
+        json: {
+          user,
+          password,
+        },
+      })
+
+      const content = await req.json()
+      if (!req.ok) {
+        toast.error(content.message)
+        return
+      }
+      const is_valid = content.data as boolean
+      if (!is_valid) {
+        toast.error('El usuario no es valido, verifique sus credenciales')
+      } else {
+        set_show_otp_input(true)
+      }
     }
   }
 
@@ -184,11 +218,14 @@ export const RevisarOrdenPage = () => {
         </label>
       </Modal>
       <Modal
-        title="Autorizar orden"
+        title={show_otp_input ? 'Autorizar orden' : 'Validar usuario'}
         open={show_dialog_authorization}
-        okText="Autorizar"
+        width={500}
+        okText={show_otp_input ? 'Autorizar' : 'Continuar'}
         onCancel={() => {
           set_show_dialog_authorization(false)
+          set_show_otp_input(false)
+          form.resetFields()
         }}
         onClose={() => {
           form.resetFields()
@@ -200,18 +237,49 @@ export const RevisarOrdenPage = () => {
           disabled: approve_payment_mt.isPending,
         }}
         onOk={() => {
-          handle_authorization()
+          // handle_authorization()
+          if (show_otp_input) {
+            handle_authorization()
+          } else {
+            handle_validate_user()
+          }
         }}
       >
-        <Form form={form} labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
-          <Form.Item label="Usuario" name="user" className="mb-2">
+        <div
+          className={cn('mb-3', {
+            hidden: !show_otp_input,
+          })}
+        >
+          Ingresa el codigo enviado al número asociado a tu cuenta.
+        </div>
+        <Form
+          form={form}
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 18 }}
+          layout={show_otp_input ? 'vertical' : 'horizontal'}
+        >
+          <Form.Item
+            label="Usuario"
+            name="user"
+            className="mb-2"
+            hidden={show_otp_input}
+          >
             <Input />
           </Form.Item>
-          <Form.Item label="Contraseña" name="password" className="mb-2">
+          <Form.Item
+            label="Contraseña"
+            name="password"
+            className="mb-2"
+            hidden={show_otp_input}
+          >
             <Input.Password />
           </Form.Item>
-          <Form.Item label="Token" name="otp" className="mb-2">
-            <Input.OTP />
+          <Form.Item
+            // label="Token"
+            name="otp"
+            hidden={!show_otp_input}
+          >
+            <Input.OTP className="" />
           </Form.Item>
         </Form>
       </Modal>
@@ -223,7 +291,14 @@ export const RevisarOrdenPage = () => {
           <div className="p-3 space-y-3">
             <CreateOrderForm order={query.data.order} />
             <div className="space-y-3 bg-white p-3 rounded-md">
+              <div></div>
               <DataView requirements={query.data.requirements} />
+              <div className=" grid grid-cols-2 gap-1 w-72 ml-auto">
+                <p>Autorizacion 1 : </p>
+                <p>{query.data.order.approved1_by}</p>
+                <p>Autorizacion 2 : </p>
+                <p>{query.data.order.approved2_by}</p>
+              </div>
               <div
                 className={cn('flex justify-end gap-1', {
                   hidden:

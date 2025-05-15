@@ -10,6 +10,7 @@ import {
 } from "#app/modules/payment/case/filter.ts";
 import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
+import { check_user } from "#app/modules/payment/case/security/check_user.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
@@ -237,6 +238,25 @@ export const paymentRouter = new Hono()
       });
       return c.json({
         message: "ok",
+      });
+    }
+  )
+  .post(
+    "/security/check_user",
+    zValidator(
+      "json",
+      z.object({
+        user: z.string(),
+        password: z.string(),
+      })
+    ),
+    async (c) => {
+      const { user, password } = c.req.valid("json");
+      const is_valid = await check_user(user, password);
+
+      return c.json({
+        message: "ok",
+        data: is_valid,
       });
     }
   );

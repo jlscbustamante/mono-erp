@@ -1,12 +1,11 @@
-<?xml version="1.0"?>
 <Document>
   <CstmrCdtTrfInitn>
     <GrpHdr>
-      <MsgId>P20250430000015P</MsgId>
-      <CreDtTm>2025-04-29T14:57:02</CreDtTm>
+      <MsgId>P20250515000023P.xml</MsgId>
+      <CreDtTm>2025-05-15T16:34:40</CreDtTm>
       <Authstn/>
-      <NbOfTxs>1</NbOfTxs>
-      <CtrlSum/>
+      <NbOfTxs>2</NbOfTxs>
+      <CtrlSum>313</CtrlSum>
       <InitgPty>
         <Nm>PIZZA RAUL SAC</Nm>
         <PstlAdr/>
@@ -15,7 +14,7 @@
             <AnyBIC/>
             <LEI/>
             <Othr>
-              <Id/>
+              <Id>1234567890</Id>
               <SchmeNm/>
             </Othr>
             <Issr/>
@@ -28,7 +27,7 @@
       <FwdgAgt/>
     </GrpHdr>
     <PmtInf>
-      <PmtInfId>nombre archivo</PmtInfId>
+      <PmtInfId>P20250515000023P.xml</PmtInfId>
       <PmtMtd>TRF</PmtMtd>
       <BtchBookg/>
       <NbOfTxs>transacciones</NbOfTxs>
@@ -37,24 +36,24 @@
         <InstrPrty/>
         <LclInstrm/>
         <CtgyPurp>
-          <Cd>TRAN</Cd>
+          <Cd>SUPP</Cd>
           <Prtry/>
         </CtgyPurp>
       </PmtTpInf>
       <ReqdExctnDt>
-        <Dt>dateprocesor</Dt>
+        <Dt>2025-05-15</Dt>
         <Dtm/>
       </ReqdExctnDt>
       <PoolgAdjstmntDt/>
       <Dbtr>
-        <Nm>razon social</Nm>
+        <Nm>PIZZA RAUL SAC</Nm>
         <PstlAdr/>
         <Id>
           <OrgId>
             <AnyBIC/>
             <LEI/>
             <Othr>
-              <Id>RUC</Id>
+              <Id>20512345678</Id>
               <SchmeNm/>
               <Issr/>
             </Othr>
@@ -68,16 +67,16 @@
         <Id>
           <IBAN/>
           <Othr>
-            <Id>cc maestra</Id>
+            <Id>1234567890</Id>
             <SchmeNm/>
           </Othr>
           <Issr/>
         </Id>
         <Tp>
-          <Cd/>
+          <Cd>CACC</Cd>
           <Prtry/>
         </Tp>
-        <Ccy>tipo mneda</Ccy>
+        <Ccy>USD</Ccy>
         <Nm/>
         <Prxy/>
       </DbtrAcct>
@@ -89,7 +88,7 @@
           <Nm/>
           <PstlAdr/>
           <Othr>
-            <Id>Id cargo</Id>
+            <Id>gersonberrocal@gmail.com</Id>
             <SchmeNm/>
             <Issr/>
           </Othr>
@@ -103,13 +102,13 @@
       <ChrgsAcctAgt/>
       <CdtTrfTxInf>
         <PmtId>
-          <InstrId>id Bono</InstrId>
-          <EndToEndId>id bono</EndToEndId>
+          <InstrId>P20250515000023P.xml</InstrId>
+          <EndToEndId>P20250515000023P.xml</EndToEndId>
           <UETR/>
         </PmtId>
         <PmtTpInf/>
         <Amt>
-          <InstdAmt>bono</InstdAmt>
+          <InstdAmt>13</InstdAmt>
           <EqvtAmt/>
         </Amt>
         <XchgRateInf/>
@@ -124,14 +123,14 @@
         <CdtrAgt/>
         <CdtrAgtAcct/>
         <Cdtr>
-          <Nm>full name</Nm>
+          <Nm>Vilela Medina Susana</Nm>
           <PstlAdr/>
           <Id>
             <OrgId>
               <AnyBIC/>
               <LEI/>
               <Othr>
-                <Id/>
+                <Id>D/73108198</Id>
                 <SchmeNm/>
                 <Issr/>
               </Othr>
@@ -145,23 +144,23 @@
             <PhneNb/>
             <MobNb/>
             <FaxNb/>
-            <EmailAdr>b email</EmailAdr>
+            <EmailAdr/>
           </CtcDtls>
         </Cdtr>
         <CdtrAcct>
           <Id>
             <IBAN/>
             <Othr>
-              <Id>numero de cuenta</Id>
+              <Id>1234567890</Id>
               <SchmeNm/>
               <Issr/>
             </Othr>
           </Id>
           <Tp>
-            <Cd>tipo de cuenta</Cd>
+            <Cd>CACC</Cd>
             <Prtry/>
           </Tp>
-          <Ccy>PEN</Ccy>
+          <Ccy>USD</Ccy>
           <Nm/>
           <Proxy/>
         </CdtrAcct>
@@ -173,22 +172,201 @@
         <Tax/>
         <RltdRmtInf/>
         <RmtInf>
-          <Ustrd>S//NINGUNO</Ustrd>
+          <Ustrd>//N/N/000</Ustrd>
           <Strd>
             <RfrdDocInf>
               <Tp>
                 <CdOrPrtry>
-                  <Cd/>
+                  <Cd>CINV</Cd>
                   <Prtry/>
                 </CdOrPrtry>
                 <Issr/>
               </Tp>
-              <Nb/>
+              <Nb>F001-4143</Nb>
               <RltdDt/>
               <LineDtls/>
             </RfrdDocInf>
             <RfrdDocAmt>
-              <DuePyblAmt/>
+              <DuePyblAmt>13</DuePyblAmt>
+              <DscntApldAmt/>
+              <CdtNoteAmt/>
+              <TaxAmt/>
+              <AdjstmntAmtAndRsn/>
+              <RmtdAmt/>
+            </RfrdDocAmt>
+            <CdtrRefInf/>
+            <Invcr/>
+            <Invcee/>
+            <TaxRmt/>
+            <GrnshmtRmt/>
+            <AddtlRmtInf/>
+          </Strd>
+        </RmtInf>
+        <SplmtryData/>
+      </CdtTrfTxInf>
+    </PmtInf>
+    <PmtInf>
+      <PmtInfId>P20250515000023P.xml</PmtInfId>
+      <PmtMtd>TRF</PmtMtd>
+      <BtchBookg/>
+      <NbOfTxs>transacciones</NbOfTxs>
+      <CtrlSum/>
+      <PmtTpInf>
+        <InstrPrty/>
+        <LclInstrm/>
+        <CtgyPurp>
+          <Cd>SUPP</Cd>
+          <Prtry/>
+        </CtgyPurp>
+      </PmtTpInf>
+      <ReqdExctnDt>
+        <Dt>2025-05-15</Dt>
+        <Dtm/>
+      </ReqdExctnDt>
+      <PoolgAdjstmntDt/>
+      <Dbtr>
+        <Nm>PIZZA RAUL SAC</Nm>
+        <PstlAdr/>
+        <Id>
+          <OrgId>
+            <AnyBIC/>
+            <LEI/>
+            <Othr>
+              <Id>20512345678</Id>
+              <SchmeNm/>
+              <Issr/>
+            </Othr>
+          </OrgId>
+          <PrvtId/>
+        </Id>
+        <CtryOfRes/>
+        <CtctDtls/>
+      </Dbtr>
+      <DbtrAcct>
+        <Id>
+          <IBAN/>
+          <Othr>
+            <Id>1234567890</Id>
+            <SchmeNm/>
+          </Othr>
+          <Issr/>
+        </Id>
+        <Tp>
+          <Cd>CACC</Cd>
+          <Prtry/>
+        </Tp>
+        <Ccy>USD</Ccy>
+        <Nm/>
+        <Prxy/>
+      </DbtrAcct>
+      <DbtrAgt>
+        <FinInstnId>
+          <BICFI/>
+          <ClrSysMmbId/>
+          <LEI/>
+          <Nm/>
+          <PstlAdr/>
+          <Othr>
+            <Id>gersonberrocal@gmail.com</Id>
+            <SchmeNm/>
+            <Issr/>
+          </Othr>
+        </FinInstnId>
+      </DbtrAgt>
+      <DbtrAgtAcct/>
+      <InstrForDbtrAgt/>
+      <UltmtDbtr/>
+      <ChrgBr/>
+      <ChrgsAcct/>
+      <ChrgsAcctAgt/>
+      <CdtTrfTxInf>
+        <PmtId>
+          <InstrId>P20250515000023P.xml</InstrId>
+          <EndToEndId>P20250515000023P.xml</EndToEndId>
+          <UETR/>
+        </PmtId>
+        <PmtTpInf/>
+        <Amt>
+          <InstdAmt>14</InstdAmt>
+          <EqvtAmt/>
+        </Amt>
+        <XchgRateInf/>
+        <ChrgBr/>
+        <UltmtDbtr/>
+        <IntrmyAgt1/>
+        <IntrmyAgt1Acct/>
+        <IntrmyAgt2/>
+        <IntrmyAgt2Acct/>
+        <IntrmyAgt3/>
+        <IntrmyAgt3Acct/>
+        <CdtrAgt/>
+        <CdtrAgtAcct/>
+        <Cdtr>
+          <Nm>Vilela Medina Susana</Nm>
+          <PstlAdr/>
+          <Id>
+            <OrgId>
+              <AnyBIC/>
+              <LEI/>
+              <Othr>
+                <Id>D/73108198</Id>
+                <SchmeNm/>
+                <Issr/>
+              </Othr>
+            </OrgId>
+            <PrvtId/>
+          </Id>
+          <CtryOfRes/>
+          <CtcDtls>
+            <NmPrfx/>
+            <Nm/>
+            <PhneNb/>
+            <MobNb/>
+            <FaxNb/>
+            <EmailAdr/>
+          </CtcDtls>
+        </Cdtr>
+        <CdtrAcct>
+          <Id>
+            <IBAN/>
+            <Othr>
+              <Id>1234567890</Id>
+              <SchmeNm/>
+              <Issr/>
+            </Othr>
+          </Id>
+          <Tp>
+            <Cd>CACC</Cd>
+            <Prtry/>
+          </Tp>
+          <Ccy>USD</Ccy>
+          <Nm/>
+          <Proxy/>
+        </CdtrAcct>
+        <UltmtCdtr/>
+        <InstrForCdtrAgt/>
+        <InstrForDbtrAgt/>
+        <Purp/>
+        <RgltryRptg/>
+        <Tax/>
+        <RltdRmtInf/>
+        <RmtInf>
+          <Ustrd>//N/N/000</Ustrd>
+          <Strd>
+            <RfrdDocInf>
+              <Tp>
+                <CdOrPrtry>
+                  <Cd>CINV</Cd>
+                  <Prtry/>
+                </CdOrPrtry>
+                <Issr/>
+              </Tp>
+              <Nb>F001-4143</Nb>
+              <RltdDt/>
+              <LineDtls/>
+            </RfrdDocInf>
+            <RfrdDocAmt>
+              <DuePyblAmt>14</DuePyblAmt>
               <DscntApldAmt/>
               <CdtNoteAmt/>
               <TaxAmt/>
