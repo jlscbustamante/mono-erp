@@ -299,8 +299,10 @@ export const RevisarOrdenPage = () => {
               </div>
               <div
                 className={cn('flex justify-end gap-1', {
-                  hidden:
-                    query.data.order.status != ORDER_PAYMENT_STATUS.REGISTERED,
+                  hidden: ![
+                    ORDER_PAYMENT_STATUS.REGISTERED,
+                    ORDER_PAYMENT_STATUS.APPROVED,
+                  ].includes(query.data.order.status as ORDER_PAYMENT_STATUS),
                 })}
               >
                 <Button

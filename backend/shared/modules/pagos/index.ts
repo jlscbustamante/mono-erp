@@ -1,6 +1,8 @@
 import type {
   AdmPaymentOrderInsert,
   AdmReqNondocsSelect,
+  AdmRequirementSelect,
+  InvSupplierSelect,
 } from "../../db/mods.ts";
 
 export interface ICreateRequirementDto {
@@ -26,7 +28,7 @@ export enum PAYMENT_STATUS {
 
 export enum ORDER_PAYMENT_STATUS {
   REGISTERED = "I",
-  AUTHORIZED = "A",
+  APPROVED = "A",
   CANCELED = "X",
   SENT_TO_BANK = "N",
   REJECTED = "R",
@@ -74,3 +76,7 @@ export interface ICreateMockAuthorizedUserDto
 
 export interface ISelectMockAuthorizedUserDto
   extends Omit<IMockAuthorizedUser, "password"> {}
+
+export interface IAdmRequirementWithSupplier extends AdmRequirementSelect {
+  supplier: InvSupplierSelect;
+}

@@ -1,5 +1,6 @@
 import { db } from "#app/config/database.ts";
 import { AdmRequirementSelect, PAYMENT_STATUS } from "@scope/shared";
+import { InvSupplierSelect } from "../../../../shared/db/mods.ts";
 
 export const search_requirement = async ({
   ruc,
@@ -10,16 +11,10 @@ export const search_requirement = async ({
   legal_name?: string;
   invoice_number?: string;
 }): Promise<{
-  supplier: {
-    id: number;
-    supplier: string;
-    legal_number: string;
-  } | null;
+  supplier: InvSupplierSelect | null;
   related: AdmRequirementSelect[];
 }> => {
-  let query_supplier = db
-    .selectFrom("inv_supplier")
-    .select(["id", "supplier", "legal_number", "legal_name"]);
+  let query_supplier = db.selectFrom("inv_supplier").selectAll();
 
   if (legal_name) {
     query_supplier = query_supplier.where(
@@ -30,9 +25,10 @@ export const search_requirement = async ({
   } else if (ruc) {
     query_supplier = query_supplier.where("legal_number", "like", `%${ruc}%`);
   }
-  let supplier;
+  let supplier: InvSupplierSelect | undefined = undefined;
   if (ruc || legal_name) {
-    const result = await query_supplier.executeTakeFirst();
+    const result: InvSupplierSelect | undefined =
+      await query_supplier.executeTakeFirst();
     if (!result) {
       // RETORNAR VACIO
       return {
@@ -67,13 +63,7 @@ export const search_requirement = async ({
     .execute();
 
   return {
-    supplier: supplier
-      ? {
-          id: supplier.id,
-          supplier: supplier.legal_name ?? supplier.supplier,
-          legal_number: supplier.legal_number ?? "",
-        }
-      : null,
+    supplier: supplier ? supplier : null,
     related: requirements,
   };
 };

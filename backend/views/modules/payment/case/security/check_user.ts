@@ -1,6 +1,6 @@
 import { get_authorized_user } from "#app/modules/payment/queries/get_authorized_users.ts";
 
-export const check_user = (
+export const check_authorized_user = (
   user: string,
   password: string
 ): Promise<boolean> => {
