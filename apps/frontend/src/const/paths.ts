@@ -120,14 +120,18 @@ export const PATHS = {
       recetas: {
         main: '/erp/modulos/recetas',
         consultarReceta: '/erp/modulos/recetas/consultar-receta',
-        crearReceta: '/erp/modulos/recetas/crear-receta',
-        mantenimiento: {
-          main: '/erp/modulos/recetas/mantenimiento',
-          RecetasBase: '/erp/modulos/recetas/mantenimiento/recetas-base',
-          RecetasPorSabor: '/erp/modulos/recetas/mantenimiento/recetas-por-sabor',
-          Insumos: '/erp/modulos/recetas/mantenimiento/insumos',          
+        nuevaReceta: {
+          main: '/erp/modulos/recetas/nueva-receta',
+          productoFinal: '/erp/modulos/recetas/nueva-receta/producto-final',
         },
-        catalogoVenta: '/erp/modulos/recetas/catalogo-venta',
+        nuevaRecetaColecciones: {
+          main: '/erp/modulos/recetas/nueva-receta-colecciones',
+          producto: '/erp/modulos/recetas/nueva-receta-colecciones/producto',
+          sabores: '/erp/modulos/recetas/nueva-receta-colecciones/sabores',
+        },
+        presentacionTamanio: {
+          main: '/erp/modulos/recetas/presentacion-tamanio',
+        },
       },
     },
   },
@@ -143,4 +147,3 @@ export const PATHS_MAIN = [
   PATHS.erp.modulos.recursosHumanos.main,
   PATHS.erp.modulos.recetas.main,
 ]
-

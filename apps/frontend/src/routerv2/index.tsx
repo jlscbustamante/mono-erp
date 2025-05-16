@@ -67,11 +67,6 @@ import Stock from '@/views/products/Stock'
 import WarehouseStockPage from '@/views/products/stock/warehouse-stock/page'
 import EditTemplate from '@/views/products/templates/edit/edit-template.page'
 import TemplatePage from '@/views/products/templates/page'
-import FlavorMaintenance from '@/views/recipes/catalog-maintenance/FlavorMaintenance'
-import RecipeBaseMaintenance from '@/views/recipes/catalog-maintenance/RecipeBaseMaintenance'
-import CatalogSalesPage from '@/views/recipes/catalog-sales/CatalogSalesPage'
-import CatalogRecipePage from '@/views/recipes/Consulta-receta/CatalogRecipePage'
-import CreateRecipePage from '@/views/recipes/final/CreateRecipePage'
 import Reports from '@/views/reports/Reports'
 import GetIamRole from '@/views/security/Get/GetIamRole'
 import GetIamUser from '@/views/security/Get/GetIamUser'
@@ -79,6 +74,7 @@ import PaymentMethods from '@/views/stores/PaymentMethods'
 import SignMovements from '@/views/stores/SignMovements'
 import StoresStates from '@/views/stores/States'
 import { createBrowserRouter } from 'react-router-dom'
+import { NuevaRecetaTabs } from '@/app/erp/modules/recetas/nueva-receta'
 
 export const routerv2 = createBrowserRouter([
   {
@@ -455,31 +451,23 @@ export const routerv2 = createBrowserRouter([
             element: <RecetasLayout />,
             children: [
               {
-                path: PATHS.erp.modulos.recetas.consultarReceta,
-                element: <CatalogRecipePage />,
+                path: PATHS.erp.modulos.recetas.nuevaReceta.productoFinal,
+                element: <NuevaRecetaTabs />,
               },
               {
-                path: PATHS.erp.modulos.recetas.crearReceta,
-                element: <CreateRecipePage />,
+                path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto,
+                element: <NotFound />,
               },
               {
-                path: PATHS.erp.modulos.recetas.catalogoVenta,
-                element: <CatalogSalesPage />,
+                path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores,
+                element: <NotFound />,
               },
+              /*
+              aun no tiene subcomponente
               {
-                path: PATHS.erp.modulos.recetas.mantenimiento.main,
-                children: [
-                  {
-                    path: PATHS.erp.modulos.recetas.mantenimiento.RecetasBase,
-                    element: <RecipeBaseMaintenance />,
-                  },
-                  {
-                    path: PATHS.erp.modulos.recetas.mantenimiento
-                      .RecetasPorSabor,
-                    element: <FlavorMaintenance />,
-                  },
-                ],
-              },
+                path: PATHS.erp.modulos.recetas.presentacionTamanio.main,
+                element: <NotFound />,
+              },*/
             ],
           },
         ],

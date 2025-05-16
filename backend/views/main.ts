@@ -11,7 +11,6 @@ import { requirementRouter } from "./modules/requirement/index.ts";
 import { recipeRouter } from "#app/modules/recipe/create-recipe/index.ts";
 import { catalogRouter } from "#app/modules/recipe/catalog-sales/index.ts";
 
-
 const app = new Hono();
 
 export const apiRouter = app

@@ -8,31 +8,22 @@ import { EmptyModule } from '@/components/empty-module'
 import { appConfig } from '@/const/config'
 
 const menu: (MenuOption | MenuSeparator)[] = [
-  gm('Nueva receta', PATHS.erp.modulos.recetas.main, [
+  gm('Consulta receta', PATHS.erp.modulos.recetas.consultarReceta),
+  gm('Registrar receta', PATHS.erp.modulos.recetas.crearReceta),
+  separator(),
+  gm('Mantenimiento', PATHS.erp.modulos.recetas.mantenimiento.main, [
     gm(
-      'Recetas de producto final',
-      PATHS.erp.modulos.recetas.nuevaReceta.productoFinal,
+      'Receta base insumos',
+      PATHS.erp.modulos.recetas.mantenimiento.RecetasBase,
     ),
+    gm(
+      'Sabores insumos',
+      PATHS.erp.modulos.recetas.mantenimiento.RecetasPorSabor,
+    ),
+    gm('Insumos', PATHS.erp.modulos.recetas.mantenimiento.Insumos),
   ]),
   separator(),
-  gm(
-    'Recetas de colecciones',
-    PATHS.erp.modulos.recetas.nuevaRecetaColecciones.main,
-    [
-      gm(
-        'Catálogo de producto',
-        PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto,
-      ),
-      gm('Sabores', PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores),
-    ],
-  ),
-  separator(),
-  gm(
-    'Presentación o tamaño',
-    PATHS.erp.modulos.recetas.presentacionTamanio.main,
-    [],
-  ),
-  separator(),
+  gm('Catálogo venta', PATHS.erp.modulos.recetas.catalogoVenta),
 ]
 
 export const RecetasLayout = () => {

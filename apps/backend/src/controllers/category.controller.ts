@@ -53,6 +53,8 @@ export class CategoryController {
         return
       }
       await categoryService.updateCategory(existingCategory, args)
+      console.log('Se actualizo un terminal pos en la tabla ')
+
       res
         .status(200)
         .json({ message: 'La category se ha actualizado correctamente' })
@@ -95,6 +97,7 @@ export class CategoryController {
         codEfis: number
       }
       await categoryService.createCategory(args)
+
       res.status(200).json({ message: 'Category se ha creado correctamente' })
     } catch (err) {
       next(err)

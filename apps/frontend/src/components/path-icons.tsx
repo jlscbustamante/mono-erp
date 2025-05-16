@@ -32,9 +32,18 @@ import {
   FaUserTie,
 } from 'react-icons/fa6'
 import { FiBox } from 'react-icons/fi'
-import { GiConfirmed, GiFullMotorcycleHelmet, GiFullPizza, GiTomato } from 'react-icons/gi'
+import {
+  GiConfirmed,
+  GiFullMotorcycleHelmet,
+  GiFullPizza,
+  GiTomato,
+} from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
-import { IoCalendarNumberOutline, IoCreateSharp, IoStorefrontOutline } from 'react-icons/io5'
+import {
+  IoCalendarNumberOutline,
+  IoCreateSharp,
+  IoStorefrontOutline,
+} from 'react-icons/io5'
 import {
   LiaNetworkWiredSolid,
   LiaShippingFastSolid,
@@ -134,13 +143,13 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recursosHumanos.cargos]: LiaNetworkWiredSolid,
   [PATHS.erp.modulos.recursosHumanos.motorizados]: MdDeliveryDining,
 
-  [PATHS.erp.modulos.recetas.consultarReceta]: GiFullPizza,
-  [PATHS.erp.modulos.recetas.crearReceta]: IoCreateSharp,
-  [PATHS.erp.modulos.recetas.mantenimiento.main]: VscSettings,
-  [PATHS.erp.modulos.recetas.mantenimiento.RecetasBase]: BiSolidPizza,
-  [PATHS.erp.modulos.recetas.mantenimiento.RecetasPorSabor]: GiTomato,
-  [PATHS.erp.modulos.recetas.mantenimiento.Insumos]: LuCupSoda,
-  [PATHS.erp.modulos.recetas.catalogoVenta]: MdOutlineSell,
+  [PATHS.erp.modulos.recetas.main]: FaListCheck,
+  [PATHS.erp.modulos.recetas.nuevaReceta.main]: IoCreateSharp,
+  [PATHS.erp.modulos.recetas.nuevaReceta.productoFinal]: VscSettings,
+  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.main]: BiSolidPizza,
+  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto]: GiTomato,
+  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores]: LuCupSoda,
+  [PATHS.erp.modulos.recetas.presentacionTamanio.main]: TbRulerMeasure,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

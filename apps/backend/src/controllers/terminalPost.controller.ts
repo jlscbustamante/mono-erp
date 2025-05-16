@@ -7,6 +7,7 @@ import { EnvFilters } from '../types'
 import { Filters3 } from '../types/filter'
 
 const terminalPostService = new TerminalPostService(terminalPostRepository)
+
 export class TerminalPostController {
   async updateTerminalPost(
     req: Request,
@@ -33,7 +34,16 @@ export class TerminalPostController {
         return
       }
 
-      await terminalPostService.updateTerminalPost(existingTerminalPost, args)
+      const queryExec = await terminalPostService.updateTerminalPost(
+        existingTerminalPost,
+        args,
+      )
+
+      console.log('Datos de ejecucion de la consulta:')
+      console.dir(queryExec)
+      //console.log('Datos de la res:')
+      //console.dir(res)
+
       res
         .status(200)
         .json({ message: 'Terminal Post se ha actualizado correctamente' })
@@ -50,6 +60,7 @@ export class TerminalPostController {
     try {
       // const queries = req.query as EnvFilters<Category>
       const queries = req.body as Filters3<TerminalPost>
+      console.log('queries', queries)
       // const queries: IUserFilter3<Category> = req.body as safeAny
 
       // const requests = await categoryService.getFilteredTypeNt(queries)
@@ -105,7 +116,7 @@ export class TerminalPostController {
       // {sucursal_id:3}
       const queries = req.query as EnvFilters<TerminalPost>
       // const queries: IUserFilter3<Category> = req.body as safeAny
-
+      //1console.log('queries', queries)
       // const requests = await categoryService.getFilteredTypeNt(queries)
       const { data: requests } = await terminalPostRepository.filter3({
         select: {
@@ -118,7 +129,7 @@ export class TerminalPostController {
           sucursal: true,
         },
       })
-
+      //1console.log('requests', requests)
       response.json(requests)
     } catch (err) {
       next(err)

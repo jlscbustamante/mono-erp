@@ -233,6 +233,7 @@ export class CashAccountController {
         return
       }
       await cashAccountService.updateCashAccount(existingCashAccount, args)
+      console.log('Se actualizo cash account en la tabla ')
       res
         .status(200)
         .json({ message: 'La caja se ha actualizado correctamente' })

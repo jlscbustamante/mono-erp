@@ -59,5 +59,5 @@ export const modules = [
     module: 'Recetas',
     title: 'Recetas',
     route: PATHS.erp.modulos.recetas.main,
-  }
+  },
 ]
