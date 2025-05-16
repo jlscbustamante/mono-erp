@@ -253,7 +253,6 @@ export const xml_pago_proveedores = (_file_identifier:string,data: PagoProveedor
 
   const xmlString=structure_payment.end({prettyPrint: true,headless: true})
 
-  Deno.writeTextFile('./content.txt',xmlString)
 
   return xmlString;
 };
