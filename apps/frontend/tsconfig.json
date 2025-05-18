@@ -29,7 +29,7 @@
       "@types": ["./../../backend/shared/types/index.ts"]
     }
   },
-  "include": ["src"],
+  "include": ["src", "./../../backend/shared", "./../../backend/views"],
   "exclude": ["./src/lib/rpc/index.ts", "../../backend/**/*", "../backend/**/*"]
   // "references": [{ "path": "./tsconfig.node.json" }]
 }

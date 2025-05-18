@@ -7,7 +7,12 @@ import type {
   storeTable,
 } from "../schemas/adm.ts";
 import type { cashBanks, costCenters } from "../schemas/fin.ts";
-import type { suppliers } from "../schemas/inv.ts";
+import type {
+  dispatches,
+  dispatchesItems,
+  stocks,
+  suppliers,
+} from "../schemas/inv.ts";
 
 export * from "../filter/index.ts";
 
@@ -30,3 +35,11 @@ export type MoveCashSelect = InferSelectModel<typeof finMoveCash>;
 export type MoveCashInsert = InferInsertModel<typeof finMoveCash>;
 
 export type StoreTableSelect = InferSelectModel<typeof storeTable>;
+
+export type DispatchInsert = InferInsertModel<typeof dispatches>;
+export type DispatchSelect = InferSelectModel<typeof dispatches>;
+export type DispatchItemSelect = InferSelectModel<typeof dispatchesItems>;
+export type DispatchItemInsert = InferInsertModel<typeof dispatchesItems>;
+
+export type StockSelect = InferSelectModel<typeof stocks>;
+export type StockInsert = InferInsertModel<typeof stocks>;

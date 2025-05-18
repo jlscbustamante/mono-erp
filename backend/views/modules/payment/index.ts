@@ -12,6 +12,7 @@ import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { check_authorized_user } from "#app/modules/payment/case/security/check_user.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
+import { funka } from "#app/modules/payment/funka.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_authorized_users } from "#app/modules/payment/queries/get_authorized_users.ts";
@@ -19,13 +20,13 @@ import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
 import { search_requirement } from "#app/modules/payment/queries/search_requirement.ts";
 import { zValidator } from "@hono/zod-validator";
+import { Hono } from "hono";
+import { z } from "zod";
 import {
   AdmRequirementInsert,
   CreateOrderDto,
   ICreateMockAuthorizedUserDto,
-} from "@scope/shared";
-import { Hono } from "hono";
-import { z } from "zod";
+} from "../../../shared/types/index";
 
 export const paymentRouter = new Hono()
   .post("create_requirement", zValidator("json", z.any()), async (c) => {
@@ -259,4 +260,11 @@ export const paymentRouter = new Hono()
         data: is_valid,
       });
     }
-  );
+  )
+  .get("/nothing", (c) => {
+    const result = funka();
+    return c.json({
+      message: "na",
+      data: result,
+    });
+  });

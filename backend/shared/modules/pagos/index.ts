@@ -80,3 +80,8 @@ export interface ISelectMockAuthorizedUserDto
 export interface IAdmRequirementWithSupplier extends AdmRequirementSelect {
   supplier: InvSupplierSelect;
 }
+
+export interface ITest {
+  name: string;
+  age: number;
+}

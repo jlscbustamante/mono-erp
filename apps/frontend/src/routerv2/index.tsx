@@ -30,6 +30,7 @@ import CashBankPage from '@/app/erp/modules/requerimientos/mantenimiento/cashban
 import CategoryPage from '@/app/erp/modules/requerimientos/mantenimiento/category/page'
 import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costCenter/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
+import { TestPage } from '@/app/erp/modules/test_page'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
 import { PATHS } from '@/const/paths'
 import { Login } from '@/views/auth/Login'
@@ -83,6 +84,10 @@ export const routerv2 = createBrowserRouter([
   {
     path: '/',
     element: <ErpLayout />,
+  },
+  {
+    path: '/test',
+    element: <TestPage />,
   },
   {
     path: PATHS.erp.main,

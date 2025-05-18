@@ -1,9 +1,5 @@
 import dayjs from "dayjs";
-import {
-  type InferInsertModel,
-  type InferSelectModel,
-  relations,
-} from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   char,
   datetime,
@@ -186,11 +182,3 @@ export const suppliers = mysqlTable("inv_supplier", {
     .notNull()
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
-
-export type DispatchInsert = InferInsertModel<typeof dispatches>;
-export type DispatchSelect = InferSelectModel<typeof dispatches>;
-export type DispatchItemSelect = InferSelectModel<typeof dispatchesItems>;
-export type DispatchItemInsert = InferInsertModel<typeof dispatchesItems>;
-
-export type StockSelect = InferSelectModel<typeof stocks>;
-export type StockInsert = InferInsertModel<typeof stocks>;
