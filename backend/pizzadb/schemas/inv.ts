@@ -114,8 +114,6 @@ export const stocks = mysqlTable("inv_stock", {
   id: int().autoincrement().notNull().primaryKey(),
   item_id: int().notNull(),
   item_name: varchar({ length: 150 }).notNull(),
-  presentation_id: int().notNull(),
-  presentation_name: varchar({ length: 50 }).notNull(),
   measure_id: int().notNull(),
   warehouse_id: varchar({ length: 10 }).notNull(),
   stock_at: datetime({ mode: "string" }).notNull(),
