@@ -52,8 +52,8 @@ export class DispatchRepositoryImpl implements DispatchRepository {
         quantity: el.quantity,
         unitValue: el.unitValue,
         totalValue: el.totalValue,
-        presentationId: el.presentationId,
-        presentationName: el.presentationName,
+        // presentationId: el.presentationId,
+        // presentationName: el.presentationName,
         dispatchId: dispatchUpdate.id,
         weight: 0,
       } satisfies Partial<InvDispatchItem>

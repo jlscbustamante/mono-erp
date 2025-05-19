@@ -19,19 +19,21 @@ export class InvSupplier extends EntitiesTimeStamps {
   @Column({ type: "varchar", length: 250 })
   address: string;
 
-  @Column({ type: "varchar", length: 15, name: "legal_account_bco" })
+  @Column({ type: "varchar", length: 15, name: "bank_name" })
   legalAccountBco: string;
 
-  @Column({ type: "varchar", length: 15, name: "legal_account_num" })
+  @Column({ type: "varchar", length: 5 })
+  bank_code: string;
+
+  @Column({ type: "varchar", length: 15, name: "bank_account_num" })
   legalAccountNum: string;
 
-  @Column({ type: "varchar", length: 15, name: "legal_account_cci" })
+  @Column({ type: "varchar", length: 15, name: "bank_account_cci" })
   legalAccountCci: string;
 
-  @Column({ type: "varchar", length: 15, name: "legal_account_cur" })
   legalAccountCur: string;
 
-  @Column({ type: "varchar", length: 15, name: "legal_account_type" })
+  @Column({ type: "varchar", length: 15, name: "bank_account_type" })
   legalAccountType: string;
 
   @Column({ type: "tinyint" })

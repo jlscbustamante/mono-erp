@@ -3,7 +3,6 @@ import Joi from 'joi'
 
 import { IamPermissionController } from '../controllers/iamPermission.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
-import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
 
 const iamPermissionController = new IamPermissionController()
