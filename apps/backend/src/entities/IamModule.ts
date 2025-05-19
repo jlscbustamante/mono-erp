@@ -12,7 +12,7 @@ export class IamModule {
   @PrimaryGeneratedColumn({ type: 'int' })
   id: number
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', name: 'module' })
   name: string
 
   @Column({ type: 'int' })

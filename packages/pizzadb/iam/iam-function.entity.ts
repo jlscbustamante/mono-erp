@@ -12,7 +12,7 @@ export class IamFunction {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", name: "function" })
   name: string;
 
   @Column({ type: "int" })
