@@ -20,13 +20,13 @@ import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
 import { search_requirement } from "#app/modules/payment/queries/search_requirement.ts";
 import { zValidator } from "@hono/zod-validator";
-import { Hono } from "hono";
-import { z } from "zod";
 import {
   AdmRequirementInsert,
   CreateOrderDto,
   ICreateMockAuthorizedUserDto,
-} from "../../../shared/types/index";
+} from "@scope/shared";
+import { Hono } from "hono";
+import { z } from "zod";
 
 export const paymentRouter = new Hono()
   .post("create_requirement", zValidator("json", z.any()), async (c) => {
