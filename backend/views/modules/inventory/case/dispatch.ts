@@ -75,7 +75,7 @@ export abstract class Dispatch {
           if (
             // aunque es measure_to, se refiere a presentacion
             template_item.item_dispatch.presentation_id ==
-            template_item.equivalency.measure_to
+            template_item.equivalency.presentation_to
           ) {
             // de derecha a izquierda, cantidad * valor /factor
             new_dispatch_quantity =
@@ -181,7 +181,7 @@ export abstract class Dispatch {
           if (
             // aunque es measure_to, se refiere a presentacion
             template_item.item_dispatch.presentation_id ==
-            template_item.equivalency.measure_to
+            template_item.equivalency.presentation_to
           ) {
             // de derecha a izquierda, cantidad * valor /factor
             new_dispatch_quantity =

@@ -18,7 +18,7 @@ export class Equivalance extends EntitiesTimeStamps {
   @Column({ type: 'int' })
   presentation_from: number
 
-  @Column({ type: 'int' })
+  @Column({ type: 'int', name: 'presentation_to' })
   measure_to: number
 
   @Column({
@@ -45,6 +45,6 @@ export class Equivalance extends EntitiesTimeStamps {
   presentation: Presentation
 
   @ManyToOne(() => Presentation)
-  @JoinColumn({ name: 'measure_to' })
+  @JoinColumn({ name: 'presentation_to' })
   measure: Presentation
 }

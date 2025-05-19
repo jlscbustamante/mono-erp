@@ -83,8 +83,8 @@ export class DispatchMovement extends Dispatch {
         stock_from.push({
           item_id: item.item_id,
           item_name: item.item_name,
-          presentation_id: item.presentation_id,
-          presentation_name: item.presentation_name,
+          // presentation_id: item.presentation_id,
+          // presentation_name: item.presentation_name,
           unit_value: item.store_price.toString(),
           total_last: "0",
           stock_last: "0",
@@ -104,6 +104,7 @@ export class DispatchMovement extends Dispatch {
           quantity_out_sl: "0",
           stock_physical: "0",
           total_value: "0",
+          company_id: null,
         });
       }
 
@@ -129,8 +130,8 @@ export class DispatchMovement extends Dispatch {
         stock_to.push({
           item_id: item.item_id,
           item_name: item.item_name,
-          presentation_id: item.presentation_id,
-          presentation_name: item.presentation_name,
+          // presentation_id: item.presentation_id,
+          // presentation_name: item.presentation_name,
           unit_value: item.store_price.toString(),
           total_last: "0",
           stock_last: "0",
@@ -150,6 +151,7 @@ export class DispatchMovement extends Dispatch {
           quantity_out_sl: "0",
           stock_physical: "0",
           total_value: "0",
+          company_id: null,
         });
       }
       // if (items_not_found.length > 0) {
@@ -202,8 +204,8 @@ export class DispatchMovement extends Dispatch {
             item_id: item_data.item_id,
             dispatch_id: 0,
             item_name: item_data.item_name,
-            presentation_id: item_data.presentation_id,
-            presentation_name: item_data.presentation_name,
+            // presentation_id: item_data.presentation_id,
+            // presentation_name: item_data.presentation_name,
             unit_value: item_data.store_price,
             measure_id: item_data.product_measure_id,
             quantity: item.quantity,
