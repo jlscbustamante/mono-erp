@@ -310,7 +310,7 @@ export class DispatchUtil {
         newStock.categoryName = item.product?.category?.category ?? ''
         newStock.presentation_id = item.presentationId
         newStock.stock_at = date
-        newStock.presentation_name = item.presentation.presentation ?? ''
+        newStock.presentation_name = item.presentation?.presentation ?? ''
         newStock.measure_id = item.measureId
         newStock.status = isClosed
           ? STOCK_STATUS.CLOSED

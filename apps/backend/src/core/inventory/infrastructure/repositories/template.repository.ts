@@ -88,11 +88,11 @@ export class TemplateRepositoryImpl implements TemplateRepository {
         if (!equivalenceFinded) {
           if (isWarehouse) {
             throw new Error(
-              `Almacen: No se encontro una equivalencia entre la presentacion ${item.itemMove.presentation.presentation} -> ${item.itemStock.product?.measure?.measure}. Item: ${item.item_move_name}`,
+              `Almacen: No se encontro una equivalencia entre la presentacion ${item.itemMove.presentation?.presentation} -> ${item.itemStock.product?.measure?.measure}. Item: ${item.item_move_name}`,
             )
           } else {
             throw new Error(
-              `Tienda: No se encontro una equivalencia entre la presentacion ${item.itemMove.presentation.presentation} -> ${item.itemStock.product?.measure?.measure}. Item: ${item.item_move_name}`,
+              `Tienda: No se encontro una equivalencia entre la presentacion ${item.itemMove.presentation?.presentation} -> ${item.itemStock.product?.measure?.measure}. Item: ${item.item_move_name}`,
             )
           }
         }
@@ -110,7 +110,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
         measureId: item.itemMove.product!.measureId,
         name: item.itemMove.itemName,
         presentationId: item.itemMove.presentationId,
-        presentationName: item.itemMove.presentation.presentation,
+        presentationName: item.itemMove.presentation?.presentation ?? '',
         productId: item.itemMove.productId,
         storePrice: item.itemMove.unitPrice,
         warehousePrice: item.itemMove.unitCost,
@@ -122,7 +122,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
         measureId: item.itemStock.product!.measureId,
         name: item.itemStock.itemName,
         presentationId: item.itemStock.presentationId,
-        presentationName: item.itemStock.presentation.presentation,
+        presentationName: item.itemStock.presentation?.presentation ?? '',
         productId: item.itemStock.productId,
         storePrice: item.itemStock.unitPrice,
         warehousePrice: item.itemStock.unitCost,
@@ -247,7 +247,7 @@ export class TemplateRepositoryImpl implements TemplateRepository {
             el.itemStock.product?.category?.category ?? 'Sin categoría',
           measureId: el.itemStock.product!.measureId,
           presentationId: el.itemStock.presentationId,
-          presentationName: el.itemStock.presentation.presentation,
+          presentationName: el.itemStock.presentation?.presentation ?? '',
           productId: el.itemStock.productId,
           storePrice: el.itemStock.unitPrice,
           warehousePrice: el.itemStock.unitCost,

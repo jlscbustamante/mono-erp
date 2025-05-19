@@ -268,7 +268,7 @@ export class DispatchRepositoryImpl implements DispatchRepository {
             product: {
               measure: true,
             },
-            presentation: true,
+            // presentation: true,
           },
         },
         wareTo: true,
@@ -312,7 +312,7 @@ export class DispatchRepositoryImpl implements DispatchRepository {
                 el.item?.measureId ??
                 el.measureId,
               measureCode: el.item?.product?.measure?.code ?? '',
-              presentationId: el.item?.presentationId ?? el.presentationId,
+              presentationId: el.item?.presentationId ?? el.presentationId ?? 0,
               presentationName:
                 el.item?.presentation?.presentation ??
                 el.presentationName ??

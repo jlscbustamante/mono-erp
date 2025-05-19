@@ -78,7 +78,7 @@ export class InvDispatchItem extends EntitiesTimeStamps {
   @JoinColumn({ name: "item_id" })
   item?: Item;
 
-  @OneToOne(() => Presentation, (item) => item.id)
-  @JoinColumn({ name: "presentation_id" })
+  // @OneToOne(() => Presentation, (item) => item.id)
+  // @JoinColumn({ name: "presentation_id" })
   presentation?: Presentation;
 }

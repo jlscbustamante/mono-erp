@@ -180,7 +180,7 @@ export class KardexService {
     kardex.item_id = item.id
     kardex.item_name = item.itemName
     kardex.presentation_id = item.presentationId
-    kardex.presentation_name = item.presentation.presentation
+    kardex.presentation_name = item.presentation?.presentation ?? ''
     kardex.move_type = kardexDto.origin
     kardex.move_id = kardexDto.originId
     kardex.move_flow = kardexDto.moveType
@@ -204,7 +204,7 @@ export class KardexService {
     kardex.item_id = item.id
     kardex.item_name = item.itemName
     kardex.presentation_id = item.presentationId
-    kardex.presentation_name = item.presentation.presentation
+    kardex.presentation_name = item.presentation?.presentation ?? ''
     kardex.move_type = kardexDto.origin
     kardex.move_id = kardexDto.originId
     kardex.move_flow = kardexDto.moveType

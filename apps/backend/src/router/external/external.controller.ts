@@ -459,7 +459,7 @@ export class ExternalController {
         measureName: el.itemMove.product?.measure?.measure,
         unitPrice: el.itemMove.unitPrice,
         presentationId: el.itemMove.presentationId,
-        presentation: el.itemMove.presentation.presentation,
+        presentation: el.itemMove.presentation?.presentation,
         categoryName: el.itemMove.product?.category?.category ?? '',
       }
     })
@@ -1376,7 +1376,7 @@ export const getDefaultStock = (item: Item): InvStock => {
   newStock.item_id = item.id
   newStock.item_name = item.itemName
   newStock.presentation_id = item.presentationId
-  newStock.presentation_name = item.presentation.presentation
+  newStock.presentation_name = item.presentation?.presentation ?? ''
   newStock.measure_id = item.measureId
   newStock.stock_last = 0
   newStock.stock_current = 0
