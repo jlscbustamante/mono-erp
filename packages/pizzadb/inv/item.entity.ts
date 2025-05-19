@@ -42,6 +42,7 @@ export class Item extends EntitiesTimeStamps {
   @Column({ type: "int", name: "brand_id" })
   brandId: number;
 
+  @Column({ type: "int", name: "presentation_id" })
   presentationId: number;
 
   @Column({ type: "int", name: "supplier_id" })
@@ -82,9 +83,9 @@ export class Item extends EntitiesTimeStamps {
   @JoinColumn({ name: "brand_id" })
   brand: Brand;
 
-  // @ManyToOne(() => Presentation)
-  // @JoinColumn({ name: "presentation_id" })
-  presentation?: Presentation;
+  @ManyToOne(() => Presentation)
+  @JoinColumn({ name: "presentation_id" })
+  presentation: Presentation;
 
   @ManyToOne(() => InvSupplier)
   @JoinColumn({ name: "supplier_id" })

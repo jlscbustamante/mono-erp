@@ -60,9 +60,9 @@ export const get_template = async (
       const equivalency = equivalencies.find(
         (e) =>
           (e.presentation_from == item_stock.presentation_id &&
-            e.measure_to == item_dispatch.presentation_id) ||
+            e.presentation_to == item_dispatch.presentation_id) ||
           (e.presentation_from == item_dispatch.presentation_id &&
-            e.measure_to == item_stock.presentation_id)
+            e.presentation_to == item_stock.presentation_id)
       );
 
       if (!equivalency)
