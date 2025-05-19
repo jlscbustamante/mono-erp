@@ -28,10 +28,8 @@ export class InvStock extends EntitiesTimeStamps {
   @Column({ type: "varchar", length: 150 })
   item_name: string;
 
-  @Column({ type: "int" })
   presentation_id: number;
 
-  @Column({ type: "varchar", length: 50 })
   presentation_name: string;
 
   @Column({ type: "int", name: "measure_id" })

@@ -23,7 +23,6 @@ import {
   Sucursal,
   SucursalAsWarehouse,
 } from 'pizzadb'
-import { Parameters } from '../parameters'
 import config from './config'
 
 const AppDataSource = new DataSource({
@@ -64,8 +63,8 @@ AppDataSource.initialize()
   .then(() => {
     // eslint-disable-next-line no-console
     console.log('Data Source has been initialized!')
-    const parameter = Parameters.getInstance()
-    return parameter.loadParameters()
+    // const parameter = Parameters.getInstance()
+    // return parameter.loadParameters()
   })
   .then(() => {
     // eslint-disable-next-line no-console

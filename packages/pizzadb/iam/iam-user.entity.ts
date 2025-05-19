@@ -24,7 +24,7 @@ export class IamUser {
   @Column({ type: "text" })
   password: string;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", name: "role_id" })
   rol_id: number;
 
   @Column({ type: "text" })
@@ -37,7 +37,7 @@ export class IamUser {
   status: number;
 
   @ManyToOne(() => IamRole, (role) => role.id, { eager: true })
-  @JoinColumn({ name: "rol_id" })
+  @JoinColumn({ name: "role_id" })
   role: IamRole;
 
   @CreateDateColumn({

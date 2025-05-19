@@ -14,7 +14,7 @@ export class IamRole {
   @PrimaryGeneratedColumn({ type: "int" })
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", name: "role" })
   name: string;
 
   @Column({ type: "smallint" })

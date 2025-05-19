@@ -131,6 +131,21 @@ export interface AdmCategoryExpense {
   updated_at: Generated<Date>;
 }
 
+export interface AdmCompany {
+  created_at: Generated<Date>;
+  has_accounting: Generated<number>;
+  id: string;
+  nro_ruc: string | null;
+  razon_social: string | null;
+  status: Generated<number>;
+  title: string;
+  /**
+   * C: Comercial, L: Logistica, O: Otros
+   */
+  type_company: Generated<string>;
+  updated_at: Generated<Date>;
+}
+
 export interface AdmFile {
   created_at: Generated<Date>;
   created_by: string | null;
@@ -190,9 +205,11 @@ export interface AdmRequest {
 export interface AdmSucursal {
   cfd_igv: Decimal | null;
   cfd_seql_bo: number | null;
+  cfd_seql_de: number | null;
   cfd_seql_fa: number | null;
   cfd_seql_gr: number | null;
   cfd_serie_bo: string | null;
+  cfd_serie_de: string | null;
   cfd_serie_fa: string | null;
   cfd_serie_gr: string | null;
   company_id: string | null;
@@ -427,30 +444,37 @@ export interface ExtPagosIzipay {
 
 export interface IamFunction {
   created_at: Generated<Date>;
+  function: string;
   id: Generated<number>;
   module_id: number | null;
-  name: string;
   path_function: string | null;
   path_view: string | null;
   priority: number | null;
-  status: number;
+  status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
 export interface IamLog {
+  /**
+   * LOGIN, CREATE, EDIT, DELETE, APPROVED, PAID
+   */
   action: string | null;
   created_at: Generated<Date>;
   id: Generated<number>;
   module_id: number | null;
-  script: string | null;
+  module_name: string | null;
+  tbl_name: string | null;
+  tbl_primary_id: string | null;
+  user_email: string | null;
   user_id: number | null;
+  user_name: string | null;
 }
 
 export interface IamModule {
   created_at: Generated<Date>;
   id: Generated<number>;
-  name: string;
-  status: number;
+  module: string;
+  status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
@@ -459,14 +483,14 @@ export interface IamPermission {
   granted: number | null;
   id: Generated<number>;
   module_id: number | null;
-  rol_id: number | null;
+  role_id: number | null;
 }
 
 export interface IamRole {
   created_at: Generated<Date>;
   id: Generated<number>;
-  name: string;
-  status: number;
+  role: string;
+  status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
@@ -479,7 +503,7 @@ export interface IamUser {
   name: string;
   password: string;
   phone: string | null;
-  rol_id: number | null;
+  role_id: number | null;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
@@ -547,7 +571,6 @@ export interface InvCarrier {
 export interface InvCategory {
   category: string;
   created_at: Generated<Date>;
-  has_detraction: Generated<number | null>;
   id: Generated<number>;
   priority: Generated<number>;
   status: Generated<number>;
@@ -664,9 +687,7 @@ export interface InvDispatchItem {
   /**
    * peso bruto
    */
-  peso_bruto: Decimal | null;
-  presentation_id: number;
-  presentation_name: string;
+  peso_bruto: Generated<Decimal | null>;
   quantity: Generated<Decimal>;
   total_value: Generated<Decimal>;
   /**
@@ -681,9 +702,10 @@ export interface InvDispatchItem {
 export interface InvEquivalence {
   created_at: Generated<Date>;
   id: Generated<number>;
-  measure_to: number;
+  measure_id: number;
   presentation_from: number;
-  status: number;
+  presentation_to: number | null;
+  status: Generated<number>;
   updated_at: Generated<Date>;
   value_factor: Generated<Decimal>;
   value_from: Generated<Decimal>;
@@ -714,8 +736,9 @@ export interface InvFormulaProduct {
 
 export interface InvItem {
   brand_id: number;
-  category_id: number;
+  category_id: number | null;
   created_at: Generated<Date>;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   item_code: Generated<string>;
   item_name: string;
@@ -728,13 +751,13 @@ export interface InvItem {
    */
   item_used_to: string | null;
   measure_id: number | null;
+  old_product_id: number | null;
   presentation_id: number;
-  product_id: number | null;
   /**
    * 1: Nuevo; 2: Pendiente y recibido; 3: En revisión; 4: En observación; 5: Alta; 9: Baja
    */
   status: Generated<number>;
-  subcategory_id: number;
+  subcategory_id: number | null;
   supplier_id: number;
   unit_cost: Generated<Decimal>;
   unit_price: Generated<Decimal>;
@@ -742,9 +765,10 @@ export interface InvItem {
 }
 
 export interface InvKardex {
+  company_id: string | null;
   created_at: Generated<Date>;
   created_by: Generated<string>;
-  id: number;
+  id: Generated<number>;
   item_id: number;
   item_name: string;
   move_at: Date;
@@ -758,8 +782,6 @@ export interface InvKardex {
    */
   move_type: string;
   num_doc: string | null;
-  presentation_id: number;
-  presentation_name: string;
   quantity: Generated<Decimal>;
   /**
    * stock actual
@@ -775,6 +797,9 @@ export interface InvKardex {
    * total precio venta
    */
   total_price: Generated<Decimal>;
+  /**
+   * 01 Factura; 03 Boleta; 04 Ticket de Salida; 07 Nota de crédito; 08 Nota de débito; 09 Guia remisión; 31 Guia transportista
+   */
   type_doc: string | null;
   /**
    * precio venta
@@ -857,7 +882,20 @@ export interface InvProductionItem {
   updated_at: Generated<Date>;
 }
 
+export interface InvProductSize {
+  company_id: string;
+  created_at: Generated<Date>;
+  factor: Decimal | null;
+  id: Generated<number>;
+  is_ref: Generated<number | null>;
+  menusize_id: number;
+  size: string;
+  status: Generated<number>;
+  updated_at: Generated<Date>;
+}
+
 export interface InvPurchase {
+  company_id: string | null;
   company_sap: string | null;
   created_at: Generated<Date>;
   created_by: Generated<string>;
@@ -893,8 +931,6 @@ export interface InvPurchaseItem {
   id: Generated<number>;
   item_id: number;
   item_name: string;
-  presentation_id: number;
-  presentation_name: string;
   purchase_id: number;
   quantity: Generated<Decimal>;
   total_value: Generated<Decimal>;
@@ -903,14 +939,13 @@ export interface InvPurchaseItem {
 }
 
 export interface InvStock {
+  company_id: string | null;
   created_at: Generated<Date>;
   created_by: Generated<string>;
   id: Generated<number>;
   item_id: number;
   item_name: string;
   measure_id: number | null;
-  presentation_id: number;
-  presentation_name: string;
   quantity_in_dp: Generated<Decimal>;
   quantity_in_mv: Generated<Decimal>;
   quantity_in_pu: Generated<Decimal>;
@@ -953,6 +988,7 @@ export interface InvStock {
 export interface InvSubcategory {
   category_id: number | null;
   created_at: Generated<Date>;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   measure_id: number | null;
   /**
@@ -965,13 +1001,14 @@ export interface InvSubcategory {
 
 export interface InvSupplier {
   address: string | null;
+  bank_account_cci: string | null;
+  bank_account_mny: string | null;
+  bank_account_num: string | null;
+  bank_account_type: string | null;
+  bank_code: string | null;
+  bank_name: string | null;
   created_at: Generated<Date>;
   id: Generated<number>;
-  legal_account_bco: string | null;
-  legal_account_cci: string | null;
-  legal_account_cur: string | null;
-  legal_account_num: string | null;
-  legal_account_type: string | null;
   legal_name: string | null;
   legal_number: string | null;
   /**
@@ -979,7 +1016,39 @@ export interface InvSupplier {
    */
   status: Generated<number>;
   supplier: string;
+  /**
+   * M: Mercaderia; O: Otros
+   */
+  type_supplier: Generated<string | null>;
   updated_at: Generated<Date>;
+}
+
+export interface InvTmpltDispatch {
+  created_at: Generated<Date | null>;
+  id: Generated<number>;
+  status: Generated<number>;
+  /**
+   * PIZZA,STEAK,PIZTEK
+   */
+  sucursal_type: string;
+  updated_at: Generated<Date>;
+  /**
+   * D: Plantilla pedido de tienda, I: Plantilla inventario de tienda, W: Plantilla para almacen
+   */
+  used_to: string;
+}
+
+export interface InvTmpltDispatchItem {
+  dispatch_id: number;
+  id: Generated<number>;
+  item_move_id: number;
+  item_move_name: string;
+  item_stock_id: number;
+  item_stock_name: string;
+  measure_id: number | null;
+  quantity: Generated<Decimal>;
+  total_value: Generated<Decimal>;
+  unit_value: Generated<Decimal>;
 }
 
 export interface Kardex {
@@ -1431,26 +1500,6 @@ export interface ViewRedRequest {
   transaction_key: Generated<string>;
 }
 
-export interface ViewRptDispatchItemsResumen {
-  Cantidad: Decimal | null;
-  Estado: string | null;
-  Fecha: string | null;
-  /**
-   * 1: Nuevo pedido por la tienda; 2: Aprobado por almacen; 3: Recibido por la tienda; 0: Anulado
-   */
-  IdEstado: Generated<number>;
-  IdOrigen: string;
-  /**
-   * D: Despacho almacen -tienda / M: Movimiento entre tiendas / E: Despacho excepcional
-   */
-  IdTipo: Generated<string>;
-  Item: string;
-  Origen: string;
-  Presentacion: string;
-  Tipo: string | null;
-  Valor: Decimal | null;
-}
-
 export interface ViewRptStockVentaxTienda {
   Consumo: Decimal | null;
   Despacho: Decimal | null;
@@ -1512,6 +1561,7 @@ export interface DB {
   adm_cash_account_move: AdmCashAccountMove;
   adm_cash_balance: AdmCashBalance;
   adm_category_expense: AdmCategoryExpense;
+  adm_company: AdmCompany;
   adm_file: AdmFile;
   adm_request: AdmRequest;
   adm_sucursal: AdmSucursal;
@@ -1546,6 +1596,7 @@ export interface DB {
   inv_measure: InvMeasure;
   inv_presentation: InvPresentation;
   inv_product: InvProduct;
+  inv_product_size: InvProductSize;
   inv_production: InvProduction;
   inv_production_item: InvProductionItem;
   inv_purchase: InvPurchase;
@@ -1553,6 +1604,8 @@ export interface DB {
   inv_stock: InvStock;
   inv_subcategory: InvSubcategory;
   inv_supplier: InvSupplier;
+  inv_tmplt_dispatch: InvTmpltDispatch;
+  inv_tmplt_dispatch_item: InvTmpltDispatchItem;
   kardex: Kardex;
   log_process: LogProcess;
   measure: Measure;
@@ -1581,7 +1634,6 @@ export interface DB {
   view_red_balance: ViewRedBalance;
   view_red_cashmove: ViewRedCashmove;
   view_red_request: ViewRedRequest;
-  view_rpt_dispatch_items_resumen: ViewRptDispatchItemsResumen;
   view_rpt_stock_ventax_tienda: ViewRptStockVentaxTienda;
   xaccount: Xaccount;
   xadm_saldos_caja: XadmSaldosCaja;

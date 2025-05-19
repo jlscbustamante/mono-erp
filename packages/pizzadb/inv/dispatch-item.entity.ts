@@ -27,10 +27,8 @@ export class InvDispatchItem extends EntitiesTimeStamps {
   @Column({ name: "item_name", type: "varchar", length: 150 })
   itemName: string;
 
-  @Column({ name: "presentation_id", type: "int" })
   presentationId: number;
 
-  @Column({ name: "presentation_name", type: "varchar", length: 50 })
   presentationName: string;
 
   @Column({ name: "measure_id", type: "int" })
