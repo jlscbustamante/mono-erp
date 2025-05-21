@@ -73,7 +73,7 @@ const FormLogin = () => {
       <Form.Item name="email" rules={[{ required: true }]}>
         <Input
           prefix={<AiOutlineUser />}
-          type="emai"
+          type="email"
           placeholder="Ingrese su correo"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

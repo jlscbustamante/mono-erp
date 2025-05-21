@@ -15,14 +15,26 @@ export class IamLog {
   @Column({ type: 'int' })
   user_id: number
 
+  @Column({ type: 'varchar' })
+  user_name: string
+
+  @Column({ type: 'varchar' })
+  user_email: string
+
   @Column({ type: 'int' })
   module_id: number
 
   @Column({ type: 'varchar' })
+  module_name: string
+
+  @Column({ type: 'varchar' })
   action: string
 
-  @Column({ type: 'text', width: 6 })
-  script: string
+  @Column({ type: 'varchar' })
+  tbl_name: string
+
+  @Column({ type: 'int' })
+  tbl_primary_id: number
 
   @CreateDateColumn({
     type: 'timestamp',

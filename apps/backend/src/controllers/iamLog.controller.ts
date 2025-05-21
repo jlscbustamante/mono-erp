@@ -46,9 +46,13 @@ export class IamLogController {
       const args = req.body as {
         id: number
         user_id: number
+        user_name: string
+        user_email: string
         module_id: number
+        module_name: string
         action: string
-        script: string
+        tbl_name: string
+        tbl_primary_id: number
       }
       const existingIamLog = await iamLogRepository.findOne({
         where: {
@@ -81,9 +85,13 @@ export class IamLogController {
       const args = req.body as {
         id: number
         user_id: number
+        user_name: string
+        user_email: string
         module_id: number
+        module_name: string
         action: string
-        script: string
+        tbl_name: string
+        tbl_primary_id: number
       }
       await iamLogService.createIamLog(args)
       res.status(200).json({ message: 'IamLog se ha creado correctamente' })

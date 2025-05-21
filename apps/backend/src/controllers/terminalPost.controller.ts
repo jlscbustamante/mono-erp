@@ -12,7 +12,7 @@ export class TerminalPostController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<void | TerminalPost> {
     try {
       const args = req.body as {
         terminal: string
@@ -32,11 +32,20 @@ export class TerminalPostController {
 
         return
       }
+      /*
+      const val = 1
+      if (val == 1) {
+        throw new Error('No se actualizo')
+      }*/
 
-      await terminalPostService.updateTerminalPost(existingTerminalPost, args)
-      res
-        .status(200)
-        .json({ message: 'Terminal Post se ha actualizado correctamente' })
+      const updTerm = await terminalPostService.updateTerminalPost(
+        existingTerminalPost,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: updTerm,
+        message: 'Terminal Post se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -75,8 +84,9 @@ export class TerminalPostController {
     req: Request,
     res: Response,
     next: NextFunction,
-  ): Promise<void> {
+  ): Promise<void | TerminalPost> {
     try {
+      console.log('EJECUCION')
       const args = req.body as {
         terminal: string
         sucursal_id: string
@@ -84,10 +94,22 @@ export class TerminalPostController {
         status: number
       }
 
-      await terminalPostService.createTerminalPost(args)
+      /*
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          console.log('Await terminado : ')
+          resolve('')
+        }, 2000),
+      )
+        */
+
+      const CreaPos = await terminalPostService.createTerminalPost(args)
       res
         .status(200)
-        .json({ message: 'El terminalPost se ha creado correctamente' })
+        .json({
+          dataTrace: CreaPos,
+          message: 'El terminalPost se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

@@ -1,5 +1,5 @@
 import cors from 'cors'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express'
 import morgan from 'morgan'
 import path from 'path'
 
@@ -62,6 +62,15 @@ morgan.token('only-url', (req) => {
   return req.url?.split('?')[0]
 })
 
+/*
+const myLogger = function (req: Request, res: Response, next: NextFunction) {
+  console.log('Logger!')
+  next()
+}
+
+app.use(myLogger)
+*/
+
 // Express configuration
 app.set('url_depend', config.url_depend)
 app.set('port', config.port)
@@ -77,8 +86,6 @@ app.use(
 app.get('/', (req, res) => {
   res.json({ message: 'Apis admin pr' })
 })
-
-// ---
 
 driverEndpoints(globalRouter)
 commonEndopoints(globalRouter)

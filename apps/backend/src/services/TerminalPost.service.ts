@@ -24,20 +24,21 @@ export class TerminalPostService {
   async updateTerminalPost(
     existingTerminalPost: TerminalPost,
     args: EditTerminalPost,
-  ): Promise<void> {
+  ) {
     try {
       existingTerminalPost.terminal = args.terminal
       existingTerminalPost.sucursal_id = args.sucursal_id
       existingTerminalPost.supplier = args.supplier
       existingTerminalPost.status = args.status
       existingTerminalPost.updated_at = dateNow()
-      await this.terminalPostRepository.save(existingTerminalPost)
+
+      return await this.terminalPostRepository.save(existingTerminalPost)
     } catch (error: any) {
       throw new Error(`Error al actualizar el terminal post: ${error}`)
     }
   }
 
-  async createTerminalPost(args: EditTerminalPost): Promise<void> {
+  async createTerminalPost(args: EditTerminalPost) {
     try {
       const newTerminalPost = new TerminalPost()
       newTerminalPost.terminal = args.terminal
@@ -46,7 +47,7 @@ export class TerminalPostService {
       newTerminalPost.status = args.status
       newTerminalPost.created_at = dateNow()
       newTerminalPost.updated_at = dateNow()
-      await this.terminalPostRepository.save(newTerminalPost)
+      return await this.terminalPostRepository.save(newTerminalPost)
     } catch (err: any) {
       throw new Error(`Error al crear el terminal post: ${err}`)
     }

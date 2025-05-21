@@ -4,6 +4,7 @@ import Joi from 'joi'
 import { TerminalPostController } from '../controllers/terminalPost.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
+import { iamLogger } from '../middleware/iamlog-middleware'
 import validateSchema from '../middleware/validators/validateSchema'
 
 const terminalPostController = new TerminalPostController()
@@ -19,6 +20,7 @@ export const loadTerminalPostEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     terminalPostController.updateTerminalPost,
   )
   app.get(
@@ -32,7 +34,7 @@ export const loadTerminalPostEndpoints = (app: Application): void => {
     '/api/terminal-post/create-terminal-post',
     validateToken,
     validatePermission,
-
+    iamLogger,
     terminalPostController.createTerminalPost,
   )
   app.get(
