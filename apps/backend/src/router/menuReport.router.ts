@@ -5,6 +5,7 @@ import { MenuReportController } from '../controllers/menuReport.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
+import { iamLogger } from '../middleware/iamlog-middleware'
 
 const menuReportController = new MenuReportController()
 
@@ -19,6 +20,7 @@ export const loadMenuReportEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     menuReportController.updateMenuReport,
   )
   app.get(
@@ -43,6 +45,7 @@ export const loadMenuReportEndpoints = (app: Application): void => {
     '/api/menu-report/create-menu-report',
     validateToken,
     validatePermission,
+    iamLogger,
     menuReportController.createMenuReport,
   )
   app.get(

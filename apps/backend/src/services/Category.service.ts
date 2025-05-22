@@ -27,10 +27,7 @@ type EditCategory = {
 export class CategoryService {
   constructor(private readonly categoryRepository: CategoryRepository) {}
 
-  async updateCategory(
-    existingCategory: Category,
-    args: EditCategory,
-  ): Promise<void> {
+  async updateCategory(existingCategory: Category, args: EditCategory) {
     try {
       existingCategory.name = args.name
       existingCategory.account_id = args.account_id
@@ -44,7 +41,7 @@ export class CategoryService {
       existingCategory.status = args.status
       existingCategory.categoryType = args.category_type
       existingCategory.account = args.account
-      await this.categoryRepository.save(existingCategory)
+      return await this.categoryRepository.save(existingCategory)
     } catch (error: any) {
       throw new Error(`Error al actualizar la category: ${error}`)
     }
@@ -54,7 +51,7 @@ export class CategoryService {
     return this.categoryRepository.filterNt(filters)
   }
 
-  async createCategory(args: EditCategory): Promise<void> {
+  async createCategory(args: EditCategory) {
     const newCategory = new Category()
     try {
       newCategory.name = args.name
@@ -70,7 +67,7 @@ export class CategoryService {
       newCategory.status = args.status
       newCategory.categoryType = args.category_type
       newCategory.account = args.account
-      await this.categoryRepository.save(newCategory)
+      return await this.categoryRepository.save(newCategory)
     } catch (error: any) {
       throw new Error(`Error al actualizar la category: ${error}`)
     }

@@ -20,11 +20,7 @@ import { safeAny } from '../utils/someAny'
 const categoryService = new CategoryService(categoryRepository)
 
 export class CategoryController {
-  async updateCategory(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async updateCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
@@ -52,10 +48,16 @@ export class CategoryController {
 
         return
       }
-      await categoryService.updateCategory(existingCategory, args)
+      const UpdCat = await categoryService.updateCategory(
+        existingCategory,
+        args,
+      )
       res
         .status(200)
-        .json({ message: 'La category se ha actualizado correctamente' })
+        .json({
+          dataTrace: UpdCat,
+          message: 'La category se ha actualizado correctamente',
+        })
     } catch (err) {
       next(err)
     }
@@ -74,11 +76,7 @@ export class CategoryController {
     }
   }
 
-  async createCategory(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
@@ -94,8 +92,13 @@ export class CategoryController {
         cash_flow: string
         codEfis: number
       }
-      await categoryService.createCategory(args)
-      res.status(200).json({ message: 'Category se ha creado correctamente' })
+      const PostCat = await categoryService.createCategory(args)
+      res
+        .status(200)
+        .json({
+          dataTrace: PostCat,
+          message: 'Category se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

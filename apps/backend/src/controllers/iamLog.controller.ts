@@ -53,6 +53,7 @@ export class IamLogController {
         action: string
         tbl_name: string
         tbl_primary_id: number
+        created_at: string
       }
       const existingIamLog = await iamLogRepository.findOne({
         where: {
@@ -92,6 +93,7 @@ export class IamLogController {
         action: string
         tbl_name: string
         tbl_primary_id: number
+        created_at: string
       }
       await iamLogService.createIamLog(args)
       res.status(200).json({ message: 'IamLog se ha creado correctamente' })

@@ -5,6 +5,7 @@ import { ParametersController } from '../controllers/parameters.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
+import { iamLogger } from '../middleware/iamlog-middleware'
 
 const parametersController = new ParametersController()
 
@@ -19,6 +20,7 @@ export const loadParametersEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     parametersController.updateParameters,
   )
 
@@ -44,6 +46,7 @@ export const loadParametersEndpoints = (app: Application): void => {
     '/api/parameters/create-parameter',
     validateToken,
     validatePermission,
+    iamLogger,
     parametersController.createParameters,
   )
   app.get(

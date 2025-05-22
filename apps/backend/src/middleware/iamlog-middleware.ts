@@ -83,6 +83,7 @@ export const iamLogger = (
       //URL del enlace del menu donde esta la pantalla con el elemento (React) a interaccionar
       let module_url_submenu
       let nombre_submenu = ''
+      let nombre_submenu2 = ''
       //variables obtenidas en el switch
       let s_action = ''
       let s_tbl_name = ''
@@ -94,21 +95,29 @@ export const iamLogger = (
           //obtener partes del URL
           module_url_submenu = req.path.split('/')
           nombre_submenu = module_url_submenu[2]
+          nombre_submenu2 = module_url_submenu[3]
           switch (nombre_submenu) {
             //caso de motorizados
             //case https://ridertrack.moturider.com/api/v1/getCouriersExtFullApi
             ///api/hex/parameters/public
             case 'category':
+              //hay category/update-categoryType
+              //y category/update-category
+
               s_tbl_name = 'adm_category_expense'
               break
             case 'cash-account':
+              //hay /api/cash-account/update-type-cash
+              // y cash-account/update-cash-account
               s_tbl_name = 'adm_cash_account'
               break
             case 'cash-account-type':
+              //combinar con cash account
               s_tbl_name = 'adm_type_cash'
               break
 
             case 'category-type':
+              //combinar con category
               s_tbl_name = 'adm_type_category'
               break
 
@@ -126,12 +135,55 @@ export const iamLogger = (
           break
 
         case 'PUT':
+          /*
           argsIamLog2 = {
             ...argsIamLog,
             action: 'EDIT',
             tbl_name: 'adm_terminalpos',
             tbl_primary_id: body.dataTrace.id,
+          }*/
+          s_action = 'EDIT'
+          //obtener partes del URL
+          module_url_submenu = req.path.split('/')
+          nombre_submenu = module_url_submenu[2]
+          nombre_submenu2 = module_url_submenu[3]
+          switch (nombre_submenu) {
+            //caso de motorizados
+            //case https://ridertrack.moturider.com/api/v1/getCouriersExtFullApi
+            ///api/hex/parameters/public
+            case 'category':
+              //hay category/update-categoryType
+              //y category/update-category
+
+              s_tbl_name = 'adm_category_expense'
+              break
+            case 'cash-account':
+              //hay /api/cash-account/update-type-cash
+              // y cash-account/update-cash-account
+              s_tbl_name = 'adm_cash_account'
+              break
+            case 'cash-account-type':
+              //combinar con cash account
+              s_tbl_name = 'adm_type_cash'
+              break
+
+            case 'category-type':
+              //combinar con category
+              s_tbl_name = 'adm_type_category'
+              break
+
+            case 'terminal-post':
+              s_tbl_name = 'adm_terminalpos'
+              break
+
+            case 'menu-report':
+              s_tbl_name = 'sys_menu_report'
+              break
+            case 'parameters':
+              s_tbl_name = 'sys_parameters'
+              break
           }
+
           break
         case 'DELETE':
           argsIamLog2 = {

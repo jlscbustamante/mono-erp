@@ -5,6 +5,7 @@ import { CashAccountController } from '../controllers/cashAccount.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
+import { iamLogger } from '../middleware/iamlog-middleware'
 
 const cashAccountController = new CashAccountController()
 
@@ -19,6 +20,7 @@ export const loadCashAccountEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     cashAccountController.updateCashAccount,
   )
 
@@ -32,6 +34,7 @@ export const loadCashAccountEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     cashAccountController.updateTypeChash,
   )
 
@@ -79,6 +82,7 @@ export const loadCashAccountEndpoints = (app: Application): void => {
     '/api/cash-account/create-cash-account',
     validateToken,
     validatePermission,
+    iamLogger,
     cashAccountController.createCashAccount,
   )
 
@@ -86,6 +90,7 @@ export const loadCashAccountEndpoints = (app: Application): void => {
     '/api/cash-account/create-typecash-account',
     validateToken,
     validatePermission,
+    iamLogger,
     cashAccountController.createTypeCashAccount,
   )
   app.post(
