@@ -60,7 +60,7 @@ export class RequirementResourceService {
     await db
       .update(finMoveCash)
       .set({
-        movecash: data.movecash,
+        movetype: data.movetype,
         account_id: data.account_id,
         used_to: data.used_to,
         origin_from: data.origin_from,

@@ -122,6 +122,7 @@ export const RevisarOrdenPage = () => {
       query.refetch()
       set_show_otp_input(false)
       set_show_dialog_authorization(false)
+      form.resetFields()
       // navigate(PATHS.erp.modulos.pagos.aprobarPagos.main)
     },
     onError: (error: any) => {
