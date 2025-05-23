@@ -47,6 +47,9 @@ export const CreateForm: React.FC<{
       onFinish={onFinish}
       labelCol={{ span: 8 }}
       wrapperCol={{ span: 90 }}
+      initialValues={{
+        status: 'A',
+      }}
     >
       <Form.Item
         name="name"

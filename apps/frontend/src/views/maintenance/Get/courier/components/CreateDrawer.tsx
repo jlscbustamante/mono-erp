@@ -71,6 +71,9 @@ export const CreateDrawer = () => {
       // ])
       const dataTrace = await createCourier(data.ciaIdMoturider, dataCreate)
 
+      console.log('Crea motoriz')
+      console.dir(dataTrace)
+
       await rhApi.saveMotorizer(dataCreate)
       //crear el iamlog
       //..obtener los datos del usuario

@@ -449,12 +449,10 @@ export class CashAccountController {
         account: Account
       }
       const CreateData = await cashAccountService.createCashAccount(args)
-      res
-        .status(200)
-        .json({
-          dataTrace: CreateData,
-          message: 'CashAccount se ha creado correctamente',
-        })
+      res.status(200).json({
+        dataTrace: CreateData,
+        message: 'CashAccount se ha creado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -468,12 +466,11 @@ export class CashAccountController {
         status: CashAccountTypeStatus
       }
       const CreateData = await cashAccountService.createTypeCashAccount(args)
-      res
-        .status(200)
-        .json({
-          dataTrace: CreateData,
-          message: 'TypeCashAccount se ha creado correctamente',
-        })
+
+      res.status(200).json({
+        dataTrace: CreateData,
+        message: 'TypeCashAccount se ha creado correctamente',
+      })
     } catch (err) {
       next(err)
     }
