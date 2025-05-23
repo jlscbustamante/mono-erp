@@ -15,7 +15,6 @@ import { useListStores } from '../useListStores'
 
 import { commonApi } from '@/lib/api/common'
 import { useSession } from '@/app/erp/use-session'
-import { ITEM } from '@/const/localStorageItems'
 
 const editDrawerAtom = atom<{
   isOpen: boolean
@@ -101,8 +100,8 @@ export const UpdateDrawer = () => {
       //console.dir(dataUpdate)
       //console.log('originalDoc')
       //console.dir(originalDoc)
-      console.log('dataTrace de motorizado')
-      console.dir(dataTrace)
+      //console.log('dataTrace de motorizado')
+      //console.dir(dataTrace)
 
       ////console.dir(dataTrace)
       //crear el iamlog
