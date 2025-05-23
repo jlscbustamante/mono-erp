@@ -48,7 +48,7 @@ export function CrearFactura({
         expires_at: data.expires_at ?? null,
         has_retention: data.has_retention ?? requirement.has_retention,
         amount_ret:
-          !data.has_retention || data.has_retention == '0'
+          !data.has_retention || data.has_retention == 0
             ? '0'
             : (data.amount_ret?.toString() ?? '0'),
         money: data.money ?? null,
@@ -87,7 +87,7 @@ export function CrearFactura({
         expires_at: data.expires_at ?? null,
         has_retention: data.has_retention ?? requirement.has_retention,
         amount_ret:
-          !data.has_retention || data.has_retention == '0'
+          !data.has_retention || data.has_retention == 0
             ? '0'
             : (data.amount_ret?.toString() ?? '0'),
         money: data.money ?? null,
@@ -210,7 +210,7 @@ const DatosPrincipales = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={formInstance}
-        name="formPrincipal"
+        name="review:formPrincipal"
         initialValues={requirement}
         disabled={requirement.status != PAYMENT_STATUS.REGISTERED}
       >

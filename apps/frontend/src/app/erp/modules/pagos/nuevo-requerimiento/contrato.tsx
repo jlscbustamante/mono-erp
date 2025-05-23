@@ -1,4 +1,5 @@
 import { viewClient } from '@/lib/rpc'
+import { CreateSupplier } from '@/views/products/components/productItem/CreateSupplier'
 import { CompanySelect, SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import {
@@ -94,22 +95,37 @@ const DatosPrincipales = () => {
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item
-            label="RUC proveedor"
-            className="mb-1"
-            rules={[{ required: true }]}
-          >
-            <Input.Search
-              placeholder="RUC proveedor"
-              // loading={getInfoRuc.isPending}
-              onSearch={(ruc) => {
-                searchSupplier(ruc)
+          <div className="relative">
+            <Form.Item
+              label="RUC proveedor"
+              className="mb-1 flex-1"
+              rules={[{ required: true }]}
+            >
+              <Input.Search
+                placeholder="RUC proveedor"
+                className="w-[calc(100%_-_2rem)]"
+                // loading={getInfoRuc.isPending}
+                onSearch={(ruc) => {
+                  searchSupplier(ruc)
+                }}
+                // onSearch={(ruc) => {
+                //   getInfoRuc.mutate(ruc.trim())
+                // }}
+              />
+            </Form.Item>
+            <CreateSupplier
+              className="absolute top-0 right-0"
+              suppliers={suppliers ?? []}
+              onError={(message) => {
+                // messageInstance?.error(message)
               }}
-              // onSearch={(ruc) => {
-              //   getInfoRuc.mutate(ruc.trim())
-              // }}
+              onCreate={(id, supplier, ruc) => {
+                // formInstance.setFieldValue('supplier_id' satisfies R, id)
+                // formInstance.setFieldValue('legal_name' satisfies R, supplier)
+                // formInstance.setFieldValue('legal_number' satisfies R, ruc)
+              }}
             />
-          </Form.Item>
+          </div>
           <Form.Item
             className="mb-1"
             label="Proveedor"

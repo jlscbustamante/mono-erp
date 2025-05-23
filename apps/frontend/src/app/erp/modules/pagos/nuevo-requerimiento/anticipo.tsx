@@ -73,7 +73,7 @@ const AnticipoForm = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={form}
-        name="rq:create_transferencia"
+        name="rq:create_anticipo"
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
