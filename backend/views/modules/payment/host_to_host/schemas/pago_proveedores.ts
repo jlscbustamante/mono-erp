@@ -1,4 +1,18 @@
+import { format_number } from "#app/utils/format_number.ts";
 import builder from "xmlbuilder2";
+
+const f_number = (num: number) => {
+  return format_number(
+    num,
+    {
+      decimal_places: 2,
+      max_digits_integer: 17,
+    },
+    {
+      max_digits_integer: true,
+    }
+  );
+};
 
 export interface PagoProveedoresSchema {
   file_name: string;
@@ -41,7 +55,7 @@ export const xml_pago_proveedores = (_file_identifier:string,data: PagoProveedor
             .ele('CreDtTm').txt(data.generated_file_date).up()
             .ele('Authstn').up()
             .ele('NbOfTxs').txt(data.quantity_transactions.toString()).up()
-            .ele('CtrlSum').txt(data.total_amount.toString()).up()
+            .ele('CtrlSum').txt(f_number(data.total_amount)).up()
             .ele('InitgPty')
               .ele('Nm').txt(data.company_legal_name).up()
               .ele('PstlAdr').up()
@@ -149,7 +163,7 @@ export const xml_pago_proveedores = (_file_identifier:string,data: PagoProveedor
             .up()
             .ele('PmtTpInf').up()
             .ele('Amt')
-              .ele('InstdAmt').txt(payment.amount.toString()).up()
+              .ele('InstdAmt').txt(f_number(payment.amount)).up()
               .ele('EqvtAmt').up()
             .up()
             .ele('XchgRateInf').up()
