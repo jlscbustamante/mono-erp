@@ -7,11 +7,7 @@ import { EnvFilters } from '../types'
 
 const menuReportService = new MenuReportService(reportRepository)
 export class MenuReportController {
-  async updateMenuReport(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async updateMenuReport(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         rpt_name: string
@@ -34,10 +30,14 @@ export class MenuReportController {
 
         return
       }
-      await menuReportService.updateMenuReport(existingMenuReport, args)
-      res
-        .status(200)
-        .json({ message: 'Menu Report  se ha actualizado correctamente' })
+      const UpdData = await menuReportService.updateMenuReport(
+        existingMenuReport,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'Menu Report  se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -56,11 +56,7 @@ export class MenuReportController {
     }
   }
 
-  async createMenuReport(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createMenuReport(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         rpt_name: string
@@ -72,10 +68,13 @@ export class MenuReportController {
         priority: number
       }
 
-      await menuReportService.createMenuReport(args)
+      const CreateData = await menuReportService.createMenuReport(args)
       res
         .status(200)
-        .json({ message: 'Menu Report se ha creado correctamente' })
+        .json({
+          dataTrace: CreateData,
+          message: 'Menu Report se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

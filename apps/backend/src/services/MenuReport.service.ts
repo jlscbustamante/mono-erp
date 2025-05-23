@@ -15,10 +15,7 @@ type EditMenuReport = {
 export class MenuReportService {
   constructor(private readonly reportRepository: ReportRepository) {}
 
-  async updateMenuReport(
-    existingMenuReport: MenuReport,
-    args: EditMenuReport,
-  ): Promise<void> {
+  async updateMenuReport(existingMenuReport: MenuReport, args: EditMenuReport) {
     try {
       existingMenuReport.rpt_name = args.rpt_name
       existingMenuReport.rpt_token = args.rpt_token
@@ -28,7 +25,7 @@ export class MenuReportService {
       existingMenuReport.key_workspc = args.key_workspc
       existingMenuReport.priority = args.priority
       existingMenuReport.updated_at = dateNow()
-      await this.reportRepository.save(existingMenuReport)
+      return await this.reportRepository.save(existingMenuReport)
     } catch (error: any) {
       throw new Error(`Error al actualizar el Menu Report : ${error}`)
     }
@@ -40,7 +37,7 @@ export class MenuReportService {
     return this.reportRepository.filterNt(filters)
   }
 
-  async createMenuReport(args: EditMenuReport): Promise<void> {
+  async createMenuReport(args: EditMenuReport) {
     const newMenuReport = new MenuReport()
     try {
       newMenuReport.rpt_name = args.rpt_name
@@ -52,7 +49,7 @@ export class MenuReportService {
       newMenuReport.priority = args.priority
       newMenuReport.created_at = dateNow()
       newMenuReport.updated_at = dateNow()
-      await this.reportRepository.save(newMenuReport)
+      return await this.reportRepository.save(newMenuReport)
     } catch (error: any) {
       throw new Error(`Error al crear el Menu Report : ${error}`)
     }

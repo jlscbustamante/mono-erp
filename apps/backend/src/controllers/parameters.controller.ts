@@ -7,11 +7,7 @@ import { EnvFilters } from '../types'
 
 const parametersService = new ParametersService(parameterRepository)
 export class ParametersController {
-  async updateParameters(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async updateParameters(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         type: string
@@ -32,10 +28,14 @@ export class ParametersController {
 
         return
       }
-      await parametersService.updateParameters(existingParameter, args)
-      res
-        .status(200)
-        .json({ message: 'Parameter se ha actualizado correctamente' })
+      const UpdData = await parametersService.updateParameters(
+        existingParameter,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'Parameter se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -71,11 +71,7 @@ export class ParametersController {
     }
   }
 
-  async createParameters(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createParameters(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         type: string
@@ -84,8 +80,13 @@ export class ParametersController {
         role: string
         status: 0 | 1
       }
-      await parametersService.createParameters(args)
-      res.status(200).json({ message: 'Parameter se ha creado correctamente' })
+      const CreateData = await parametersService.createParameters(args)
+      res
+        .status(200)
+        .json({
+          dataTrace: CreateData,
+          message: 'Parameter se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

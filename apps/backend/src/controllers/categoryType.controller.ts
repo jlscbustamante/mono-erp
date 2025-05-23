@@ -32,10 +32,14 @@ export class CategoryTypeController {
 
         return
       }
-      await categoryService.updateCategory(existingCategoryType, args)
-      res
-        .status(200)
-        .json({ message: 'Type Category se ha actualizado correctamente' })
+      const UpdData = await categoryService.updateCategory(
+        existingCategoryType,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'Type Category se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -54,21 +58,20 @@ export class CategoryTypeController {
     }
   }
 
-  async createTypeCategory(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createTypeCategory(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
         type_id: CategoryTypeId
         status: 'A' | 'E'
       }
-      await categoryService.createCategoryType(args)
+      const CreateData = await categoryService.createCategoryType(args)
       res
         .status(200)
-        .json({ message: 'CategoryType se ha creado correctamente' })
+        .json({
+          dataTrace: CreateData,
+          message: 'CategoryType se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

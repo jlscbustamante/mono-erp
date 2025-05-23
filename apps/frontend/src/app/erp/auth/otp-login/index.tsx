@@ -25,6 +25,7 @@ export const OtpLoginPage = () => {
     onSuccess: (data) => {
       localStorage.setItem('tk_admin', data.token)
       setSession(data.session)
+      //crear iam-log
     },
   })
 

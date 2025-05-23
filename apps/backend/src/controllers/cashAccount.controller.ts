@@ -236,20 +236,20 @@ export class CashAccountController {
 
         return
       }
-      await cashAccountService.updateCashAccount(existingCashAccount, args)
-      res
-        .status(200)
-        .json({ message: 'La caja se ha actualizado correctamente' })
+      const UpdData = await cashAccountService.updateCashAccount(
+        existingCashAccount,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'La caja se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
   }
 
-  async updateTypeChash(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async updateTypeChash(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
@@ -269,8 +269,14 @@ export class CashAccountController {
         return
       }
 
-      await cashAccountService.updateCashType(existingCashAccount, args)
-      res.status(200).json({ message: 'Type se ha actualizado correctamente' })
+      const UpdData = await cashAccountService.updateCashType(
+        existingCashAccount,
+        args,
+      )
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'Type se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -429,11 +435,7 @@ export class CashAccountController {
     }
   }
 
-  async createCashAccount(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createCashAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
@@ -446,30 +448,32 @@ export class CashAccountController {
         cash_account_type: CashAccountType
         account: Account
       }
-      await cashAccountService.createCashAccount(args)
+      const CreateData = await cashAccountService.createCashAccount(args)
       res
         .status(200)
-        .json({ message: 'CashAccount se ha creado correctamente' })
+        .json({
+          dataTrace: CreateData,
+          message: 'CashAccount se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }
   }
 
-  async createTypeCashAccount(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> {
+  async createTypeCashAccount(req: Request, res: Response, next: NextFunction) {
     try {
       const args = req.body as {
         name: string
         type_id: string
         status: CashAccountTypeStatus
       }
-      await cashAccountService.createTypeCashAccount(args)
+      const CreateData = await cashAccountService.createTypeCashAccount(args)
       res
         .status(200)
-        .json({ message: 'TypeCashAccount se ha creado correctamente' })
+        .json({
+          dataTrace: CreateData,
+          message: 'TypeCashAccount se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

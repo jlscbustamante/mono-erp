@@ -3,6 +3,8 @@ import { authToken } from '../../middleware/auth-token.middleware'
 import { IToken } from '../../types'
 import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
 import { AuthService } from './auth.service'
+import iamLogRepository from '../../repositories/iamLog.repository'
+import { IamLogService } from '../../services/IamLog.service'
 
 export class AuthController {
   constructor(readonly authService: AuthService) {}
@@ -72,6 +74,21 @@ export class AuthController {
       otp,
       token,
     })
+    console.log('Login actual')
+    console.dir(data)
+    const argsIamLog = {
+      user_id: data.session.userId,
+      user_name: data.session.userName,
+      user_email: data.session.mail,
+      module_id: 4,
+      module_name: 'Mantenimiento',
+      action: 'LOGIN',
+      tbl_name: 'iam_user',
+      tbl_primary_id: data.session.userId,
+    }
+
+    const iamLogService = new IamLogService(iamLogRepository)
+    iamLogService.createIamLog(argsIamLog)
     return data
   }
 

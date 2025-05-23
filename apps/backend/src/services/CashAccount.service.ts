@@ -135,7 +135,7 @@ export class CashAccountService {
   async updateCashAccount(
     existingCashAccount: CashAccount,
     args: EditCashAccount,
-  ): Promise<void> {
+  ) {
     try {
       existingCashAccount.updated_at = dateNow()
       existingCashAccount.name = args.name
@@ -149,7 +149,7 @@ export class CashAccountService {
       existingCashAccount.cash_account_type = args.cash_account_type
       existingCashAccount.account = args.account
 
-      await this.cashAccountRepository.save(existingCashAccount)
+      return await this.cashAccountRepository.save(existingCashAccount)
     } catch (error: any) {
       throw new Error(`Error al actualizar la cuenta de efectivo: ${error}`)
     }
@@ -158,19 +158,19 @@ export class CashAccountService {
   async updateCashType(
     existingCashAccount: CashAccountType,
     args: EditCashType,
-  ): Promise<void> {
+  ) {
     try {
       existingCashAccount.name = args.name
       existingCashAccount.type_id = args.type_id
       existingCashAccount.status = args.status
 
-      await this.cashTypeAccountRepository.save(existingCashAccount)
+      return await this.cashTypeAccountRepository.save(existingCashAccount)
     } catch (error: any) {
       throw new Error(`Error al actualizar la cuenta de efectivo: ${error}`)
     }
   }
 
-  async createCashAccount(args: EditCashAccount): Promise<void> {
+  async createCashAccount(args: EditCashAccount) {
     try {
       const newCashAccount = new CashAccount()
       newCashAccount.updated_at = dateNow()
@@ -186,7 +186,7 @@ export class CashAccountService {
       newCashAccount.account = args.account
       newCashAccount.updated_at = dateNow()
       newCashAccount.created_at = dateNow()
-      await this.cashAccountRepository.save(newCashAccount)
+      return await this.cashAccountRepository.save(newCashAccount)
     } catch (error: any) {
       throw new Error(`Error al crear la cuenta de efectivo: ${error}`)
     }
@@ -215,13 +215,13 @@ export class CashAccountService {
   }
   // cajas contabilizadas
 
-  async createTypeCashAccount(args: EditCashType): Promise<void> {
+  async createTypeCashAccount(args: EditCashType) {
     try {
       const newTypeCashAccount = new CashAccountType()
       newTypeCashAccount.name = args.name
       newTypeCashAccount.type_id = args.type_id
       newTypeCashAccount.status = args.status
-      await this.cashTypeAccountRepository.save(newTypeCashAccount)
+      return await this.cashTypeAccountRepository.save(newTypeCashAccount)
     } catch (error: any) {
       throw new Error(`Error al crear la cuenta de efectivo: ${error}`)
     }

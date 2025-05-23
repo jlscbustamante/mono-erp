@@ -33,10 +33,7 @@ export class CostCenterService {
     return this.costCenterRepository.filterNt(filters)
   }
 
-  async updateCostCenter(
-    existingCostCenter: CostCenter,
-    args: EditCostCenter,
-  ): Promise<void> {
+  async updateCostCenter(existingCostCenter: CostCenter, args: EditCostCenter) {
     try {
       existingCostCenter.updated_at = dateNow()
       existingCostCenter.origin = args.origin
@@ -45,13 +42,13 @@ export class CostCenterService {
       existingCostCenter.account_merca = args.account_merca
       existingCostCenter.is_cash = args.is_cash
       existingCostCenter.status = args.status
-      await this.costCenterRepository.save(existingCostCenter)
+      return await this.costCenterRepository.save(existingCostCenter)
     } catch (error: any) {
       throw new Error(`Error al actualizar CostCenter: ${error}`)
     }
   }
 
-  async createMenuReport(args: EditCostCenter): Promise<void> {
+  async createMenuReport(args: EditCostCenter) {
     const newCostCenter = new CostCenter()
     try {
       newCostCenter.updated_at = dateNow()
@@ -62,7 +59,7 @@ export class CostCenterService {
       newCostCenter.account_merca = args.account_merca
       newCostCenter.is_cash = args.is_cash
       newCostCenter.status = args.status
-      await this.costCenterRepository.save(newCostCenter)
+      return await this.costCenterRepository.save(newCostCenter)
     } catch (err: any) {
       throw new Error(`Error al crear CostCenter: ${err}`)
     }

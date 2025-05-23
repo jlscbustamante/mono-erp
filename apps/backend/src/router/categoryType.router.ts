@@ -5,6 +5,7 @@ import { CategoryTypeController } from '../controllers/categoryType.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
+import { iamLogger } from '../middleware/iamlog-middleware'
 
 const categoryTypeController = new CategoryTypeController()
 export const loadCategoryTypeEndpoints = (app: Application): void => {
@@ -18,6 +19,7 @@ export const loadCategoryTypeEndpoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     categoryTypeController.updateTypeCategory,
   )
   app.get(
@@ -30,6 +32,7 @@ export const loadCategoryTypeEndpoints = (app: Application): void => {
     '/api/category/create-categoryType',
     validateToken,
     validatePermission,
+    iamLogger,
     categoryTypeController.createTypeCategory,
   )
   app.get(

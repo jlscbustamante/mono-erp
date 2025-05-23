@@ -80,10 +80,16 @@ export class CostCenterController {
 
         return
       }
-      await costCenterService.updateCostCenter(existingCostCenter, args)
+      const UpdData = await costCenterService.updateCostCenter(
+        existingCostCenter,
+        args,
+      )
       res
         .status(200)
-        .json({ message: 'CostCenter se ha actualizado correctamente' })
+        .json({
+          dataTrace: UpdData,
+          message: 'CostCenter se ha actualizado correctamente',
+        })
     } catch (err) {
       next(err)
     }
@@ -103,8 +109,13 @@ export class CostCenterController {
         is_cash: 0 | 1
         status: CostCenterStatus
       }
-      await costCenterService.createMenuReport(args)
-      res.status(200).json({ message: 'CostCenter se ha creado correctamente' })
+      const CreateData = await costCenterService.createMenuReport(args)
+      res
+        .status(200)
+        .json({
+          dataTrace: CreateData,
+          message: 'CostCenter se ha creado correctamente',
+        })
     } catch (err) {
       next(err)
     }

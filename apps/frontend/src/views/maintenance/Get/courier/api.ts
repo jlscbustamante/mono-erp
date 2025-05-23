@@ -42,12 +42,16 @@ export const createCourier = async (ciaId: string, courier: ICreateCourier) => {
   if (data.success === false || response.status == 404) {
     throw new Error(data?.message ?? 'Hubo un problema al crear el motorizado')
   }
+
+  /*
+  Esto tiene una url no valido
   generate_log([
     'CREAR',
     courier.name,
     courier.phone,
     courier.doc_number ?? '_sin_doc',
   ])
+    */
 
   return data
 }
@@ -158,7 +162,8 @@ export const updateCourier = async (ciaId: string, body: IUpdateCourier) => {
     throw new Error(data?.message ?? 'Hubo un problema al editar el motorizado')
   }
 
-  generate_log(['EDITAR', body.name, body.phone])
+  //tiene un URL no valido
+  //generate_log(['EDITAR', body.name, body.phone])
 
   return data
 }
@@ -182,7 +187,8 @@ export const deleteCourier = async (id: number) => {
       data?.message ?? 'Hubo un problema al eliminar el motorizado',
     )
   }
-  generate_log(['ELIMINAR', id.toString()])
+  //tiene un URL no valido
+  //generate_log(['ELIMINAR', id.toString()])
 }
 
 export const generate_log = async (row: string[]) => {

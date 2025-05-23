@@ -14,10 +14,7 @@ type EditParameters = {
 export class ParametersService {
   constructor(private readonly parameterRepository: ParameterRepository) {}
 
-  async updateParameters(
-    existingParameter: Parameter,
-    args: EditParameters,
-  ): Promise<void> {
+  async updateParameters(existingParameter: Parameter, args: EditParameters) {
     try {
       existingParameter.type = args.type
       existingParameter.name = args.name
@@ -25,7 +22,7 @@ export class ParametersService {
       existingParameter.role = args.role
       existingParameter.status = args.status
       existingParameter.updated_at = dateNow()
-      await this.parameterRepository.save(existingParameter)
+      return await this.parameterRepository.save(existingParameter)
     } catch (error: any) {
       throw new Error(`Error al actualizar el Parameter: ${error}`)
     }
@@ -37,7 +34,7 @@ export class ParametersService {
     return this.parameterRepository.filterNt(filters)
   }
 
-  async createParameters(args: EditParameters): Promise<void> {
+  async createParameters(args: EditParameters) {
     try {
       const newParameter = new Parameter()
       newParameter.type = args.type
@@ -47,7 +44,7 @@ export class ParametersService {
       newParameter.status = args.status
       newParameter.updated_at = dateNow()
       newParameter.created_at = dateNow()
-      await this.parameterRepository.save(newParameter)
+      return await this.parameterRepository.save(newParameter)
     } catch (err: any) {
       throw new Error(`Error al crear el Parameter : ${err}`)
     }

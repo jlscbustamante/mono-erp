@@ -38,12 +38,12 @@ export class TerminalPostController {
         throw new Error('No se actualizo')
       }*/
 
-      const updTerm = await terminalPostService.updateTerminalPost(
+      const UpdData = await terminalPostService.updateTerminalPost(
         existingTerminalPost,
         args,
       )
       res.status(200).json({
-        dataTrace: updTerm,
+        dataTrace: UpdData,
         message: 'Terminal Post se ha actualizado correctamente',
       })
     } catch (err) {
@@ -104,12 +104,10 @@ export class TerminalPostController {
         */
 
       const CreaPos = await terminalPostService.createTerminalPost(args)
-      res
-        .status(200)
-        .json({
-          dataTrace: CreaPos,
-          message: 'El terminalPost se ha creado correctamente',
-        })
+      res.status(200).json({
+        dataTrace: CreaPos,
+        message: 'El terminalPost se ha creado correctamente',
+      })
     } catch (err) {
       next(err)
     }

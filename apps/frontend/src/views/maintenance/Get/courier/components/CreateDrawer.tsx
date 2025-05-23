@@ -13,6 +13,9 @@ import { createCourier } from '../api'
 import { CourierShift, CourierVehicle, DocType, ICreateCourier } from '../types'
 import { useCouriers } from '../useCouriers'
 import { useListStores } from '../useListStores'
+import { commonApi } from '@/lib/api/common'
+import { useSession } from '@/app/erp/use-session'
+import { ITEM } from '@/const/localStorageItems'
 
 const createDrawerAtom = atom({
   key: 'createDrawerAtom',
@@ -53,6 +56,10 @@ export const CreateDrawer = () => {
   const { data } = useParametersQuery()
   const { refetch } = useCouriers(data?.ciaIdMoturider ?? null)
 
+  const userName = useSession((st) => st.user.userName)
+  const userId = useSession((st) => st.user.userId)
+  const userMail = useSession((st) => st.user.mail)
+
   const mutation = useMutation({
     mutationFn: async (dataCreate: ICreateCourier) => {
       if (!data || !data?.ciaIdMoturider)
@@ -62,8 +69,28 @@ export const CreateDrawer = () => {
       //   createCourier(data.ciaIdMoturider, dataCreate),
       //   rhApi.saveMotorizer(dataCreate),
       // ])
-      await createCourier(data.ciaIdMoturider, dataCreate)
+      const dataTrace = await createCourier(data.ciaIdMoturider, dataCreate)
+
       await rhApi.saveMotorizer(dataCreate)
+      //crear el iamlog
+      //..obtener los datos del usuario
+      /*
+
+      let argsIamLog = {
+        user_id: userId,
+        user_name: userName,
+        user_email: userMail,
+        module_id: 4,
+        module_name: 'Mantenimiento',
+        action: 'CREATE',
+        tbl_name: '_tbl_externa_motorizado',
+        tbl_primary_id: obtener id de dataTrace 
+      }
+      
+      console.log('RegIamLog')
+      console.dir(argsIamLog)
+      commonApi.createIamLog(argsIamLog)
+      */
     },
 
     onError: (err) => {

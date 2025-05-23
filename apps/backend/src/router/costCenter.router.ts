@@ -5,6 +5,7 @@ import { CostCenterController } from '../controllers/costCenter.controller'
 import { validateToken } from '../middleware/jwt/validateToken'
 import { validatePermission } from '../middleware/validatePermission/validatePermission'
 import validateSchema from '../middleware/validators/validateSchema'
+import { iamLogger } from '../middleware/iamlog-middleware'
 
 const costCenterController = new CostCenterController()
 
@@ -41,11 +42,13 @@ export const loadCostCenterEndopoints = (app: Application): void => {
       }),
       'query',
     ),
+    iamLogger,
     costCenterController.updateCostCenter,
     app.post(
       '/api/cost-centers/create-cost-centers',
       validateToken,
       validatePermission,
+      iamLogger,
       costCenterController.createCostCenter,
     ),
     app.post(

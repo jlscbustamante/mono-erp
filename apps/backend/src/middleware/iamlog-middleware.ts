@@ -54,7 +54,7 @@ export const iamLogger = (
       console.log('user : ')
       console.dir(userReq)
 
-      let argsIamLog = {
+      const argsIamLog = {
         user_id: userReq.id,
         user_name: userReq.name,
         user_email: userReq.mail,
@@ -64,7 +64,6 @@ export const iamLogger = (
         //tbl_name: 'adm_terminalpos',
         //tbl_primary_id: 'id',
         //created_at: new Date(),
-        script: 'terminalPost',
       }
 
       let argsIamLog2 = {
@@ -76,7 +75,6 @@ export const iamLogger = (
         action: '',
         tbl_name: '',
         tbl_primary_id: 0,
-        script: '',
       }
 
       let table = ''
@@ -104,21 +102,42 @@ export const iamLogger = (
               //hay category/update-categoryType
               //y category/update-category
 
-              s_tbl_name = 'adm_category_expense'
+              switch (nombre_submenu2) {
+                case 'create-category':
+                  s_tbl_name = 'adm_category_expense'
+                  break
+
+                case 'create-categoryType':
+                  s_tbl_name = 'adm_type_category'
+                  break
+              }
               break
             case 'cash-account':
               //hay /api/cash-account/update-type-cash
               // y cash-account/update-cash-account
-              s_tbl_name = 'adm_cash_account'
-              break
-            case 'cash-account-type':
-              //combinar con cash account
-              s_tbl_name = 'adm_type_cash'
+
+              switch (nombre_submenu2) {
+                case 'create-cash-account':
+                  s_tbl_name = 'adm_cash_account'
+                  break
+                case 'create-typecash-account':
+                  s_tbl_name = 'adm_type_cash'
+                  break
+              }
               break
 
-            case 'category-type':
-              //combinar con category
-              s_tbl_name = 'adm_type_category'
+            // case 'cash-account-type':
+            //   //combinar con cash account
+            //   s_tbl_name = 'adm_type_cash'
+            //   break
+
+            // case 'category-type':
+            //   //combinar con category
+            //   s_tbl_name = 'adm_type_category'
+            //   break
+
+            case 'cost-centers':
+              s_tbl_name = 'cost_center'
               break
 
             case 'terminal-post':
@@ -152,24 +171,55 @@ export const iamLogger = (
             //case https://ridertrack.moturider.com/api/v1/getCouriersExtFullApi
             ///api/hex/parameters/public
             case 'category':
-              //hay category/update-categoryType
-              //y category/update-category
-
-              s_tbl_name = 'adm_category_expense'
+              //hay category/update-categoryType en router categoryType.router.ts
+              //y category/update-category en router category.router.ts
+              switch (nombre_submenu2) {
+                // case 'create-category':
+                //   s_tbl_name = 'adm_category_expense'
+                //   break
+                case 'update-category':
+                  s_tbl_name = 'adm_category_expense'
+                  break
+                // case 'create-categoryType':
+                //   s_tbl_name = 'adm_type_category'
+                //   break
+                case 'update-categoryType':
+                  s_tbl_name = 'adm_type_category'
+                  break
+              }
               break
+
             case 'cash-account':
               //hay /api/cash-account/update-type-cash
               // y cash-account/update-cash-account
-              s_tbl_name = 'adm_cash_account'
-              break
-            case 'cash-account-type':
-              //combinar con cash account
-              s_tbl_name = 'adm_type_cash'
-              break
 
-            case 'category-type':
-              //combinar con category
-              s_tbl_name = 'adm_type_category'
+              switch (nombre_submenu2) {
+                // case 'create-cash-account':
+                //   s_tbl_name = 'adm_cash_account'
+                //   break
+                case 'update-cash-account':
+                  s_tbl_name = 'adm_cash_account'
+                  break
+                // case 'create-typecash-account':
+                //   s_tbl_name = 'adm_type_cash'
+                //   break
+                case 'update-type-cash':
+                  s_tbl_name = 'adm_type_cash'
+                  break
+              }
+              break
+            // case 'cash-account-type':
+            //   //combinar con cash account
+            //   s_tbl_name = 'adm_type_cash'
+            //   break
+
+            // case 'category-type':
+            //   //combinar con category
+            //   s_tbl_name = 'adm_type_category'
+            //   break
+
+            case 'cost-centers':
+              s_tbl_name = 'cost_center'
               break
 
             case 'terminal-post':
@@ -195,19 +245,23 @@ export const iamLogger = (
           break
       }
 
-      argsIamLog2 = {
-        ...argsIamLog,
-        action: s_action,
-        tbl_name: s_tbl_name,
-        tbl_primary_id: body.dataTrace.id,
+      //el id del registro nuevo o existente
+      const idReg = body.dataTrace.id
+      if (typeof idReg !== 'undefined' && idReg > 0) {
+        argsIamLog2 = {
+          ...argsIamLog,
+          action: s_action,
+          tbl_name: s_tbl_name,
+          tbl_primary_id: idReg,
 
-        //casos de PAID, LOGIN (ver si es con POST) y APPROVED
+          //casos de PAID, LOGIN (ver si es con POST) y APPROVED
+        }
+
+        const iamLogService = new IamLogService(iamLogRepository)
+        console.log('body')
+        console.log(idReg)
+        iamLogService.createIamLog(argsIamLog2)
       }
-
-      const iamLogService = new IamLogService(iamLogRepository)
-      console.log('body')
-      console.log(body.dataTrace.id)
-      iamLogService.createIamLog(argsIamLog2)
     })
 
     // Llamamos a la función original para no interferir

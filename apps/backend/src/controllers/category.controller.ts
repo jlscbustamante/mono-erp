@@ -48,16 +48,14 @@ export class CategoryController {
 
         return
       }
-      const UpdCat = await categoryService.updateCategory(
+      const UpdData = await categoryService.updateCategory(
         existingCategory,
         args,
       )
-      res
-        .status(200)
-        .json({
-          dataTrace: UpdCat,
-          message: 'La category se ha actualizado correctamente',
-        })
+      res.status(200).json({
+        dataTrace: UpdData,
+        message: 'La category se ha actualizado correctamente',
+      })
     } catch (err) {
       next(err)
     }
@@ -92,13 +90,11 @@ export class CategoryController {
         cash_flow: string
         codEfis: number
       }
-      const PostCat = await categoryService.createCategory(args)
-      res
-        .status(200)
-        .json({
-          dataTrace: PostCat,
-          message: 'Category se ha creado correctamente',
-        })
+      const CreateData = await categoryService.createCategory(args)
+      res.status(200).json({
+        dataTrace: CreateData,
+        message: 'Category se ha creado correctamente',
+      })
     } catch (err) {
       next(err)
     }

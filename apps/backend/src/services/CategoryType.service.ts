@@ -23,24 +23,24 @@ export class CategoryTypeService {
   async updateCategory(
     existingCategoryType: CategoryType,
     args: EditCategoryType,
-  ): Promise<void> {
+  ) {
     try {
       existingCategoryType.name = args.name
       existingCategoryType.type_id = args.type_id
       existingCategoryType.status = args.status
-      await this.categoryTypeRepository.save(existingCategoryType)
+      return await this.categoryTypeRepository.save(existingCategoryType)
     } catch (error: any) {
       throw new Error(`Error al actualizar CategoryType: ${error}`)
     }
   }
 
-  async createCategoryType(args: EditCategoryType): Promise<void> {
+  async createCategoryType(args: EditCategoryType) {
     const newCategoryType = new CategoryType()
     try {
       newCategoryType.name = args.name
       newCategoryType.status = args.status
       newCategoryType.type_id = args.type_id
-      await this.categoryTypeRepository.save(newCategoryType)
+      return await this.categoryTypeRepository.save(newCategoryType)
     } catch (err: any) {
       throw new Error(`Error al crear CategoryType: ${err}`)
     }

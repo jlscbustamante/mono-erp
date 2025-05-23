@@ -13,6 +13,10 @@ import { CourierShift, CourierVehicle, DocType, IUpdateCourier } from '../types'
 import { useCouriers } from '../useCouriers'
 import { useListStores } from '../useListStores'
 
+import { commonApi } from '@/lib/api/common'
+import { useSession } from '@/app/erp/use-session'
+import { ITEM } from '@/const/localStorageItems'
+
 const editDrawerAtom = atom<{
   isOpen: boolean
   id: null | number
@@ -74,6 +78,9 @@ export const UpdateDrawer = () => {
     }
     return founded
   }, [data, id])
+  const userName = useSession((st) => st.user.userName)
+  const userId = useSession((st) => st.user.userId)
+  const userMail = useSession((st) => st.user.mail)
 
   const mutation = useMutation({
     // mutationFn: updateCourier,
@@ -82,8 +89,43 @@ export const UpdateDrawer = () => {
         throw new Error('No se encontro cia_id de la empresa en parametros.')
 
       const originalDoc = courier?.doc_number
-      await updateCourier(parameterData.ciaIdMoturider, dataUpdate)
-      await rhApi.saveMotorizer({ ...dataUpdate, original_doc: originalDoc })
+      const dataTrace = await updateCourier(
+        parameterData.ciaIdMoturider,
+        dataUpdate,
+      )
+      await rhApi.saveMotorizer({
+        ...dataUpdate,
+        original_doc: originalDoc,
+      })
+      console.log('dataUpdate')
+      console.dir(dataUpdate)
+      console.log('originalDoc')
+      console.dir(originalDoc)
+      console.log('dataTrace de motorizado')
+      console.dir(dataTrace)
+
+      //console.dir(dataTrace)
+      //crear el iamlog
+      //..obtener los datos del usuario
+
+      //usando localstorage para otener los datos de la sesion
+      //const userSession = localStorage.getItem(ITEM.USER_BASIC_INFO)
+      console.log('Dx Session')
+      console.log(userId)
+      const argsIamLog = {
+        user_id: userId,
+        user_name: userName,
+        user_email: userMail,
+        module_id: 4,
+        module_name: 'Mantenimiento',
+        action: 'EDIT',
+        tbl_name: '_tbl_externa_motorizado',
+        tbl_primary_id: dataUpdate.id,
+      }
+      console.log('RegIamLog')
+      console.dir(argsIamLog)
+
+      commonApi.createIamLog(argsIamLog)
     },
     onError: (err) => {
       toast.error(err.message)
