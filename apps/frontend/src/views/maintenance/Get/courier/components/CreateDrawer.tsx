@@ -15,7 +15,6 @@ import { useCouriers } from '../useCouriers'
 import { useListStores } from '../useListStores'
 import { commonApi } from '@/lib/api/common'
 import { useSession } from '@/app/erp/use-session'
-import { ITEM } from '@/const/localStorageItems'
 
 const createDrawerAtom = atom({
   key: 'createDrawerAtom',
@@ -71,29 +70,29 @@ export const CreateDrawer = () => {
       // ])
       const dataTrace = await createCourier(data.ciaIdMoturider, dataCreate)
 
-      console.log('Crea motoriz')
-      console.dir(dataTrace)
-
       await rhApi.saveMotorizer(dataCreate)
-      //crear el iamlog
-      //..obtener los datos del usuario
-      /*
 
-      let argsIamLog = {
-        user_id: userId,
-        user_name: userName,
-        user_email: userMail,
-        module_id: 4,
-        module_name: 'Mantenimiento',
-        action: 'CREATE',
-        tbl_name: '_tbl_externa_motorizado',
-        tbl_primary_id: obtener id de dataTrace 
+      const idReg = dataTrace.courrier_id
+
+      console.log('idReg')
+      console.log(idReg)
+      if (typeof idReg !== 'undefined' && idReg > 0) {
+        //crear el iamlog
+        //..obtener los datos del usuario
+
+        const argsIamLog = {
+          user_id: userId,
+          user_name: userName,
+          user_email: userMail,
+          module_id: 4,
+          module_name: 'Mantenimiento',
+          action: 'CREATE',
+          tbl_name: '_tbl_externa_motorizado',
+          tbl_primary_id: idReg,
+        }
+
+        commonApi.createIamLog(argsIamLog)
       }
-      
-      console.log('RegIamLog')
-      console.dir(argsIamLog)
-      commonApi.createIamLog(argsIamLog)
-      */
     },
 
     onError: (err) => {
