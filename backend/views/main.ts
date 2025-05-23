@@ -1,3 +1,4 @@
+import { redis } from "#app/config/redis.ts";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
