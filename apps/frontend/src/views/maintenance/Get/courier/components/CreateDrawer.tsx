@@ -74,8 +74,8 @@ export const CreateDrawer = () => {
 
       const idReg = dataTrace.courrier_id
 
-      console.log('idReg')
-      console.log(idReg)
+      //console.log('idReg')
+      //console.log(idReg)
       if (typeof idReg !== 'undefined' && idReg > 0) {
         //crear el iamlog
         //..obtener los datos del usuario

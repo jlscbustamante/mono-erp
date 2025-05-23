@@ -19,6 +19,9 @@ import { CourierControl } from './components/Filters'
 import { TableCourier } from './components/TableCourier'
 import { getDocTypeName, ICourier } from './types'
 import { useCouriers } from './useCouriers'
+// Para iam-log
+import { commonApi } from '@/lib/api/common'
+import { useSession } from '@/app/erp/use-session'
 
 export default function CourierPage() {
   const { data } = useParametersQuery()
@@ -26,10 +29,46 @@ export default function CourierPage() {
   const { open: openEditPassword } = useEditPasswordDrawer()
   const { open: openEdit } = useEditDrawer()
 
+  //Para iam-log
+  const userName = useSession((st) => st.user.userName)
+  const userId = useSession((st) => st.user.userId)
+  const userMail = useSession((st) => st.user.mail)
+
+  console.log('elim motoriz')
+  console.dir(data)
+
   const mutation = useMutation({
     mutationFn: deleteCourier,
-    onSuccess: () => {
+    onSuccess: (_, id) => {
       query.refetch()
+
+      console.log('elim motoriz onSuccess')
+      console.dir(data)
+      console.log('elim ID motoriz onSuccess')
+      console.dir(id)
+
+      //Para iam-log
+
+      console.log('idReg')
+      console.log(id)
+      if (typeof id !== 'undefined' && id > 0) {
+        //crear el iamlog
+        //..obtener los datos del usuario
+
+        const argsIamLog = {
+          user_id: userId,
+          user_name: userName,
+          user_email: userMail,
+          module_id: 4,
+          module_name: 'Mantenimiento',
+          action: 'DELETE',
+          tbl_name: '_tbl_externa_motorizado',
+          tbl_primary_id: id,
+        }
+
+        commonApi.createIamLog(argsIamLog)
+      }
+
       toast.success('Motorizado eliminado correctamente')
     },
     onError: (err) => {

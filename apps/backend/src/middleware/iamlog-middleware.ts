@@ -13,9 +13,9 @@ export const iamLogger = (
   res: Response,
   next: NextFunction,
 ): void => {
-  console.log('message: Log de mantenimiento ')
-  //console.dir(res.statusMessage)
-  console.dir(res.statusCode)
+  //console.log('message: Log de mantenimiento ')
+  ////console.dir(res.statusMessage)
+  //console.dir(res.statusCode)
 
   const originalJson = res.json
 
@@ -31,7 +31,7 @@ export const iamLogger = (
         response: body,
       })
 
-      console.dir(res.statusCode)
+      //console.dir(res.statusCode)
 
       // Aquí podrías guardar en una base de datos, enviar a un sistema externo, etc.
 
@@ -39,20 +39,20 @@ export const iamLogger = (
       //datos creados durante login con creacion de JWT
       const userReq: IToken = req.headers.token as any
 
-      console.log('ruta : ' + req.path)
+      //console.log('ruta : ' + req.path)
 
       switch (req.path) {
         case '/api/terminal-post/update-terminal-post':
-          console.log('update')
+          //console.log('update')
           break
 
         case '/api/terminal-post/create-terminal-post':
-          console.log('create')
+          //console.log('create')
           break
       }
 
-      console.log('user : ')
-      console.dir(userReq)
+      //console.log('user : ')
+      //console.dir(userReq)
 
       const argsIamLog = {
         user_id: userReq.id,
@@ -258,8 +258,8 @@ export const iamLogger = (
         }
 
         const iamLogService = new IamLogService(iamLogRepository)
-        console.log('body')
-        console.log(idReg)
+        //console.log('body')
+        //console.log(idReg)
         iamLogService.createIamLog(argsIamLog2)
       }
     })

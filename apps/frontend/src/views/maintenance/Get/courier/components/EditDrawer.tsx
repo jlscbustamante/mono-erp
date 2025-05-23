@@ -97,21 +97,19 @@ export const UpdateDrawer = () => {
         ...dataUpdate,
         original_doc: originalDoc,
       })
-      console.log('dataUpdate')
-      console.dir(dataUpdate)
-      console.log('originalDoc')
-      console.dir(originalDoc)
+      //console.log('dataUpdate')
+      //console.dir(dataUpdate)
+      //console.log('originalDoc')
+      //console.dir(originalDoc)
       console.log('dataTrace de motorizado')
       console.dir(dataTrace)
 
-      //console.dir(dataTrace)
+      ////console.dir(dataTrace)
       //crear el iamlog
       //..obtener los datos del usuario
 
-      //usando localstorage para otener los datos de la sesion
-      //const userSession = localStorage.getItem(ITEM.USER_BASIC_INFO)
-      console.log('Dx Session')
-      console.log(userId)
+      //console.log('Dx Session')
+      //console.log(userId)
       const argsIamLog = {
         user_id: userId,
         user_name: userName,
@@ -122,8 +120,8 @@ export const UpdateDrawer = () => {
         tbl_name: '_tbl_externa_motorizado',
         tbl_primary_id: dataUpdate.id,
       }
-      console.log('RegIamLog')
-      console.dir(argsIamLog)
+      //console.log('RegIamLog')
+      //console.dir(argsIamLog)
 
       commonApi.createIamLog(argsIamLog)
     },
