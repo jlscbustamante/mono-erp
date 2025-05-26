@@ -20,8 +20,8 @@ import { TableCourier } from './components/TableCourier'
 import { getDocTypeName, ICourier } from './types'
 import { useCouriers } from './useCouriers'
 // Para iam-log
-import { commonApi } from '@/lib/api/common'
 import { useSession } from '@/app/erp/use-session'
+import { commonApi } from '@/lib/api/common'
 
 export default function CourierPage() {
   const { data } = useParametersQuery()
@@ -34,23 +34,23 @@ export default function CourierPage() {
   const userId = useSession((st) => st.user.userId)
   const userMail = useSession((st) => st.user.mail)
 
-  console.log('elim motoriz')
-  console.dir(data)
+  //console.log('elim motoriz')
+  //console.dir(data)
 
   const mutation = useMutation({
     mutationFn: deleteCourier,
     onSuccess: (_, id) => {
       query.refetch()
 
-      console.log('elim motoriz onSuccess')
-      console.dir(data)
-      console.log('elim ID motoriz onSuccess')
-      console.dir(id)
+      // console.log('elim motoriz onSuccess')
+      // console.dir(data)
+      // console.log('elim ID motoriz onSuccess')
+      // console.dir(id)
 
-      //Para iam-log
+      // //Para iam-log
 
-      console.log('idReg')
-      console.log(id)
+      // console.log('idReg')
+      // console.log(id)
       if (typeof id !== 'undefined' && id > 0) {
         //crear el iamlog
         //..obtener los datos del usuario

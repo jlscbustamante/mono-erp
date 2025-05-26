@@ -1,10 +1,10 @@
 import { Request } from 'express'
 import { authToken } from '../../middleware/auth-token.middleware'
+import iamLogRepository from '../../repositories/iamLog.repository'
+import { IamLogService } from '../../services/IamLog.service'
 import { IToken } from '../../types'
 import { Get, Post, Put } from '../../utils/decorators/endpoint.middleware'
 import { AuthService } from './auth.service'
-import iamLogRepository from '../../repositories/iamLog.repository'
-import { IamLogService } from '../../services/IamLog.service'
 
 export class AuthController {
   constructor(readonly authService: AuthService) {}
@@ -74,8 +74,8 @@ export class AuthController {
       otp,
       token,
     })
-    console.log('Login actual')
-    console.dir(data)
+    //console.log('Login actual')
+    //console.dir(data)
     const argsIamLog = {
       user_id: data.session.userId,
       user_name: data.session.userName,
