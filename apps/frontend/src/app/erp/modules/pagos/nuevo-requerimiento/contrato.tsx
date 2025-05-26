@@ -10,13 +10,22 @@ import {
   FormInstance,
   Input,
   InputNumber,
+  message,
   Select,
   Switch,
 } from 'antd'
+import { MessageInstance } from 'antd/es/message/interface'
 import { Minus, Plus } from 'lucide-react'
+
+type R = keyof AdmReqContractSelect
+// This function is used to get the key of the AdmReqContractSelect type
+const gk = (key: R): string => {
+  return key
+}
 
 export function Contrato() {
   const [form_instance] = Form.useForm<AdmReqContractSelect>()
+  const [message_api, context_holder] = message.useMessage()
 
   const handle_submit = async (values: AdmReqContractSelect) => {
     console.log('submit : ', values)
@@ -24,7 +33,11 @@ export function Contrato() {
 
   return (
     <div className="grid gap-1 grid-cols-2">
-      <DatosPrincipales form_instance={form_instance} />
+      {context_holder}
+      <DatosPrincipales
+        form_instance={form_instance}
+        message_api={message_api}
+      />
       <FormaPago form_instance={form_instance} />
       <TerminosPago
         form_instance={form_instance}
@@ -36,8 +49,10 @@ export function Contrato() {
 
 const DatosPrincipales = ({
   form_instance,
+  message_api,
 }: {
   form_instance: FormInstance<AdmReqContractSelect>
+  message_api: MessageInstance
 }) => {
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
@@ -79,7 +94,7 @@ const DatosPrincipales = ({
       </h3>
       <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Empresa" className="mb-1">
+          <Form.Item label="Empresa" className="mb-1" name={gk('company_id')}>
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
@@ -94,6 +109,7 @@ const DatosPrincipales = ({
             label="Tipo de contrato"
             className="mb-1"
             rules={[{ required: true }]}
+            name={gk('contract_type')}
           >
             <Select>
               <Select.Option value="1">Contrato</Select.Option>
@@ -115,6 +131,7 @@ const DatosPrincipales = ({
               label="RUC proveedor"
               className="mb-1 flex-1"
               rules={[{ required: true }]}
+              name={gk('legal_number')}
             >
               <Input.Search
                 placeholder="RUC proveedor"
@@ -132,18 +149,19 @@ const DatosPrincipales = ({
               className="absolute top-0 right-0"
               suppliers={suppliers ?? []}
               onError={(message) => {
-                // messageInstance?.error(message)
+                message_api?.error(message)
               }}
               onCreate={(id, supplier, ruc) => {
-                // formInstance.setFieldValue('supplier_id' satisfies R, id)
-                // formInstance.setFieldValue('legal_name' satisfies R, supplier)
-                // formInstance.setFieldValue('legal_number' satisfies R, ruc)
+                form_instance.setFieldValue('supplier_id', id)
+                form_instance.setFieldValue('legal_name', supplier)
+                form_instance.setFieldValue('legal_number', ruc)
               }}
             />
           </div>
           <Form.Item
             className="mb-1"
             label="Proveedor"
+            name={gk('supplier_id')}
             rules={[{ required: true }]}
           >
             <Input placeholder="Proveedor" className="" />
@@ -155,6 +173,7 @@ const DatosPrincipales = ({
             className="col-span-2 mb-1"
             labelCol={{ span: 3 }}
             wrapperCol={{ span: 21 }}
+            name={gk('description')}
           >
             <Input.TextArea placeholder="..." rows={1} />
           </Form.Item>
@@ -183,10 +202,10 @@ const TerminosPago = ({
         onFinish={handle_submit}
       >
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Monto" className="mb-1">
+          <Form.Item label="Monto" className="mb-1" name={gk('amount')}>
             <InputNumber className="w-full" placeholder="0.00" />
           </Form.Item>
-          <Form.Item label="Moneda" className="mb-1">
+          <Form.Item label="Moneda" className="mb-1" name={gk('money')}>
             <Select placeholder="Moneda">
               <Select.Option value="PEN">S/.</Select.Option>
               <Select.Option value="USD">$</Select.Option>
@@ -195,6 +214,7 @@ const TerminosPago = ({
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
+            name={gk('pay_method')}
             label="Forma de pago"
             className="mb-1"
             rules={[{ required: true }]}
@@ -204,12 +224,16 @@ const TerminosPago = ({
               <Select.Option>OTRO</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item label="Frecuencia de pago" className="mb-1">
+          <Form.Item
+            label="Frecuencia de pago"
+            className="mb-1"
+            name={gk('pay_frequency')}
+          >
             <Input />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item className="mb-1" label="Vigencia">
+          <Form.Item className="mb-1" label="Vigencia" name={gk('validity')}>
             <Input />
           </Form.Item>
         </div>
@@ -218,6 +242,7 @@ const TerminosPago = ({
             label="Inicio"
             className="mb-1"
             rules={[{ required: true }]}
+            name={gk('effective_at')}
           >
             <DatePicker className="w-full" />
           </Form.Item>
@@ -225,6 +250,7 @@ const TerminosPago = ({
             label="Vencimiento"
             className="mb-1"
             rules={[{ required: true }]}
+            name={gk('expires_at')}
           >
             <DatePicker className="w-full" />
           </Form.Item>
