@@ -1,4 +1,4 @@
-import { REQUIERMENT_TYPE } from '@view'
+import { REQUIREMENT_TYPE } from '@view'
 import { useMemo } from 'react'
 import { SelectRequestType } from '../components/select-request-type'
 import { useApprovedStore } from './state'
@@ -11,10 +11,10 @@ export function NavRequest({ month }: { month?: number }) {
 
   const type = useMemo(() => {
     return filters.find((el) => el.field == 'request_type')
-      ?.value as REQUIERMENT_TYPE
+      ?.value as REQUIREMENT_TYPE
   }, [filters])
 
-  const changeType = (type: REQUIERMENT_TYPE) => {
+  const changeType = (type: REQUIREMENT_TYPE) => {
     setFilter(
       filters.map((el) => {
         if (el.field == 'request_type') {

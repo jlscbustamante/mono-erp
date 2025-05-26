@@ -1,6 +1,6 @@
 import { viewClient } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
+import { IRequirementPresentation, REQUIREMENT_TYPE } from '@view'
 import { useMemo } from 'react'
 import { Control } from './control'
 import { DataTable } from './data-table'
@@ -15,7 +15,7 @@ export function ViewTable() {
     const requestType = filters.find((el) => {
       return el.field == 'request_type'
     })
-    return requestType?.value as REQUIERMENT_TYPE
+    return requestType?.value as REQUIREMENT_TYPE
   }, [filters])
 
   const { data = [], refetch } = useQuery({

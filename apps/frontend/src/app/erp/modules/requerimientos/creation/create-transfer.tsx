@@ -7,7 +7,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   CreateRequirementDto,
   CreateRequirementTransferDto,
-  REQUIERMENT_TYPE,
+  REQUIREMENT_TYPE,
   REQUIREMENT_TYPE_DOCUMENT,
 } from '@view'
 import { Button, Divider, Form, Input, InputNumber, Select } from 'antd'
@@ -20,8 +20,8 @@ export function CreationTransferForm({
   changeType,
   type,
 }: {
-  type: REQUIERMENT_TYPE
-  changeType: (type: REQUIERMENT_TYPE) => void
+  type: REQUIREMENT_TYPE
+  changeType: (type: REQUIREMENT_TYPE) => void
 }) {
   const [form] = Form.useForm()
 
@@ -160,13 +160,13 @@ export function CreationTransferForm({
               rules={[{ required: true }]}
             >
               <Select placeholder="Tipo" value={type} onChange={changeType}>
-                <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
+                <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>
                   SIMPLE
                 </Select.Option>
-                <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                <Select.Option value={REQUIREMENT_TYPE.TRANSFER}>
                   TRANSFERENCIA
                 </Select.Option>
-                <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
+                <Select.Option value={REQUIREMENT_TYPE.LIQUIDATION}>
                   LIQUIDACION
                 </Select.Option>
               </Select>

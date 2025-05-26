@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   redis:
@@ -9,7 +9,20 @@ services:
     volumes:
       - redis_data:/data
 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_DATABASE: mydb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
 volumes:
   redis_data:
     driver: local
-
+  mysql_data:

@@ -1,6 +1,6 @@
 import { PATHS } from '@/const/paths'
 import { fNumber } from '@/utils/formatNumber'
-import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
+import { IRequirementPresentation, REQUIREMENT_TYPE } from '@view'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { useMemo } from 'react'
@@ -11,9 +11,9 @@ export function DataTable({
   type,
 }: {
   data: IRequirementPresentation[]
-  type?: REQUIERMENT_TYPE
+  type?: REQUIREMENT_TYPE
 }) {
-  const isTransfer = useMemo(() => type == REQUIERMENT_TYPE.TRANSFER, [type])
+  const isTransfer = useMemo(() => type == REQUIREMENT_TYPE.TRANSFER, [type])
 
   return (
     <div>

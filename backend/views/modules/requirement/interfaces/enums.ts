@@ -9,7 +9,7 @@ export enum REQUIREMENT_STATUS {
   CANCELLED = "R",
 }
 
-export enum REQUIERMENT_TYPE {
+export enum REQUIREMENT_TYPE {
   SIMPLE = "S",
   TRANSFER = "T",
   SUPPLIER = "U",

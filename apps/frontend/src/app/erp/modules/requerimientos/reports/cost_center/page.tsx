@@ -1,7 +1,7 @@
 import { viewClient } from '@/lib/rpc'
 import { cn, fCurrency } from '@/utils'
 import { useQuery } from '@tanstack/react-query'
-import { IRequirementPresentation, REQUIERMENT_TYPE } from '@view'
+import { IRequirementPresentation, REQUIREMENT_TYPE } from '@view'
 import { Button, Collapse, CollapseProps, DatePicker, Empty, Table } from 'antd'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
@@ -144,10 +144,10 @@ const CostCenterTable = ({ data }: { data: IRequirementPresentation[] }) => {
             title: 'Tipo',
             dataIndex: 'type',
             render: (val) => {
-              if (val == REQUIERMENT_TYPE.SUPPLIER) return 'Proveedores'
-              if (val == REQUIERMENT_TYPE.TRANSFER) return 'Transferencia'
-              if (val == REQUIERMENT_TYPE.LIQUIDATION) return 'Liquidación'
-              if (val == REQUIERMENT_TYPE.SIMPLE) return 'Simple'
+              if (val == REQUIREMENT_TYPE.SUPPLIER) return 'Proveedores'
+              if (val == REQUIREMENT_TYPE.TRANSFER) return 'Transferencia'
+              if (val == REQUIREMENT_TYPE.LIQUIDATION) return 'Liquidación'
+              if (val == REQUIREMENT_TYPE.SIMPLE) return 'Simple'
               return ''
             },
           },

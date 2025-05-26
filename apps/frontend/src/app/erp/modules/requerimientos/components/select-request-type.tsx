@@ -2,26 +2,26 @@ import { viewClient } from '@/lib/rpc'
 import { cn } from '@/utils'
 import { WhereOption } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
-import { REQUIERMENT_TYPE } from '@view'
+import { REQUIREMENT_TYPE } from '@view'
 import { Input } from 'antd'
 import { useMemo } from 'react'
 
-const options: { label: string; value: REQUIERMENT_TYPE }[] = [
+const options: { label: string; value: REQUIREMENT_TYPE }[] = [
   {
     label: 'Proveedores',
-    value: REQUIERMENT_TYPE.SUPPLIER,
+    value: REQUIREMENT_TYPE.SUPPLIER,
   },
   {
     label: 'Simple',
-    value: REQUIERMENT_TYPE.SIMPLE,
+    value: REQUIREMENT_TYPE.SIMPLE,
   },
   {
     label: 'Transferencia',
-    value: REQUIERMENT_TYPE.TRANSFER,
+    value: REQUIREMENT_TYPE.TRANSFER,
   },
   {
     label: 'Liquidación',
-    value: REQUIERMENT_TYPE.LIQUIDATION,
+    value: REQUIREMENT_TYPE.LIQUIDATION,
   },
 ]
 
@@ -34,8 +34,8 @@ export function SelectRequestType({
   month,
 }: {
   className?: string
-  value?: REQUIERMENT_TYPE
-  onChange?: (value: REQUIERMENT_TYPE) => void
+  value?: REQUIREMENT_TYPE
+  onChange?: (value: REQUIREMENT_TYPE) => void
   filters?: WhereOption<any>[]
   controlRefetch?: number
   month?: number
@@ -51,19 +51,19 @@ export function SelectRequestType({
         },
       })
       const body = await data.json()
-      return body.data as { type: REQUIERMENT_TYPE; count: number }[]
+      return body.data as { type: REQUIREMENT_TYPE; count: number }[]
     },
   })
-  const changeType = (type: REQUIERMENT_TYPE) => {
+  const changeType = (type: REQUIREMENT_TYPE) => {
     onChange?.(type)
   }
 
-  const countType: Record<REQUIERMENT_TYPE, number> = useMemo(() => {
+  const countType: Record<REQUIREMENT_TYPE, number> = useMemo(() => {
     return (
       query.data?.reduce(
         (acc, el) => ({ ...acc, [el.type]: el.count }),
-        {} as Record<REQUIERMENT_TYPE, number>,
-      ) ?? ({} as Record<REQUIERMENT_TYPE, number>)
+        {} as Record<REQUIREMENT_TYPE, number>,
+      ) ?? ({} as Record<REQUIREMENT_TYPE, number>)
     )
   }, [query.data])
 
@@ -95,13 +95,13 @@ export function InputRequestType({ value }: { value?: string }) {
     <Input
       readOnly
       value={
-        value == REQUIERMENT_TYPE.SIMPLE
+        value == REQUIREMENT_TYPE.SIMPLE
           ? 'Simple'
-          : value == REQUIERMENT_TYPE.LIQUIDATION
+          : value == REQUIREMENT_TYPE.LIQUIDATION
             ? 'Liquidación'
-            : value == REQUIERMENT_TYPE.SUPPLIER
+            : value == REQUIREMENT_TYPE.SUPPLIER
               ? 'Proveedores'
-              : value == REQUIERMENT_TYPE.TRANSFER
+              : value == REQUIREMENT_TYPE.TRANSFER
                 ? 'Transferencia'
                 : ''
       }

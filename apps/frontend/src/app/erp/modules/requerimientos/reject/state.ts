@@ -1,5 +1,5 @@
 import { RequirementSelect, WhereOption } from '@pizzadb'
-import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from '@view'
+import { REQUIREMENT_STATUS, REQUIREMENT_TYPE } from '@view'
 import { format } from 'date-fns'
 import dayjs from 'dayjs'
 import { create } from 'zustand'
@@ -34,7 +34,7 @@ export const useRejectedStore = create<Store>((set, get) => ({
       field: 'request_type',
       key: 'request_type',
       operator: 'equal',
-      value: REQUIERMENT_TYPE.SUPPLIER,
+      value: REQUIREMENT_TYPE.SUPPLIER,
     },
     {
       field: 'requested_at',

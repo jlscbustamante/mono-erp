@@ -1,7 +1,7 @@
 import { fCurrency } from '@/utils'
 import { fNumber } from '@/utils/formatNumber'
 import { RequirementRelationsSelect } from '@pizzadb'
-import { REQUIERMENT_TYPE } from '@view'
+import { REQUIREMENT_TYPE } from '@view'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { useMemo } from 'react'
@@ -61,17 +61,17 @@ export function DataTable({
               title: 'Tipo',
               dataIndex: 'request_type',
               render: (val) => {
-                if (val == REQUIERMENT_TYPE.SIMPLE) return 'Simple'
-                if (val == REQUIERMENT_TYPE.SUPPLIER) return 'Proveedor'
-                if (val == REQUIERMENT_TYPE.TRANSFER) return 'Transferencia'
-                if (val == REQUIERMENT_TYPE.LIQUIDATION) return 'Liquidación'
+                if (val == REQUIREMENT_TYPE.SIMPLE) return 'Simple'
+                if (val == REQUIREMENT_TYPE.SUPPLIER) return 'Proveedor'
+                if (val == REQUIREMENT_TYPE.TRANSFER) return 'Transferencia'
+                if (val == REQUIREMENT_TYPE.LIQUIDATION) return 'Liquidación'
                 return null
               },
             },
             {
               title: 'Categoria/Caja',
               render: (_, record) => {
-                if (record.request_type == REQUIERMENT_TYPE.TRANSFER) {
+                if (record.request_type == REQUIREMENT_TYPE.TRANSFER) {
                   const cashbankDiff = record.items?.find(
                     (el) => el.cashbank_id != cashId,
                   )
@@ -106,7 +106,7 @@ export function DataTable({
               align: 'right',
               render: (_, record) => {
                 if ((record as any).isTitle) return null
-                // if (record.request_type == REQUIERMENT_TYPE.TRANSFER) {
+                // if (record.request_type == REQUIREMENT_TYPE.TRANSFER) {
                 //   return fCurrency(record.amount ?? 0)
                 // }
                 const total = record.items?.reduce((acc, el) => {

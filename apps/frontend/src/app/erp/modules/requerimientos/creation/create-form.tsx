@@ -13,7 +13,7 @@ import {
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   CreateRequirementDto,
-  REQUIERMENT_TYPE,
+  REQUIREMENT_TYPE,
   REQUIREMENT_TYPE_DOCUMENT,
 } from '@view'
 import {
@@ -38,8 +38,8 @@ export function CreationForm({
   changeType,
   type,
 }: {
-  changeType: (type: REQUIERMENT_TYPE) => void
-  type: REQUIERMENT_TYPE
+  changeType: (type: REQUIREMENT_TYPE) => void
+  type: REQUIREMENT_TYPE
 }) {
   const [form] = Form.useForm()
 
@@ -308,13 +308,13 @@ export function CreationForm({
               </Form.Item>
               <Form.Item label="Tipo" className="mb-2 ml-1">
                 <Select placeholder="Tipo" value={type} onChange={changeType}>
-                  <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
+                  <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>
                     SIMPLE
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                  <Select.Option value={REQUIREMENT_TYPE.TRANSFER}>
                     TRANSFERENCIA
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
+                  <Select.Option value={REQUIREMENT_TYPE.LIQUIDATION}>
                     LIQUIDACION
                   </Select.Option>
                 </Select>

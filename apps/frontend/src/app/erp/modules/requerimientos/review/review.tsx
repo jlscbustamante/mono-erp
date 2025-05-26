@@ -14,7 +14,7 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
-import { REQUIERMENT_TYPE, REQUIREMENT_TYPE_DOCUMENT } from '@view'
+import { REQUIREMENT_TYPE, REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   Button,
   Divider,
@@ -136,16 +136,16 @@ export function Review({
               <Form.Item className="mb-2" label="Tipo" name={'request_type'}>
                 {/* <Input readOnly /> */}
                 <Select>
-                  <Select.Option value={REQUIERMENT_TYPE.SIMPLE}>
+                  <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>
                     Solicitado
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.TRANSFER}>
+                  <Select.Option value={REQUIREMENT_TYPE.TRANSFER}>
                     Transferencia
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.SUPPLIER}>
+                  <Select.Option value={REQUIREMENT_TYPE.SUPPLIER}>
                     Proveedor
                   </Select.Option>
-                  <Select.Option value={REQUIERMENT_TYPE.LIQUIDATION}>
+                  <Select.Option value={REQUIREMENT_TYPE.LIQUIDATION}>
                     Liquidacion
                   </Select.Option>
                 </Select>
