@@ -1,6 +1,7 @@
 import type { Insertable, Selectable, Updateable } from "kysely";
 import type {
   AdmPaymentOrder,
+  AdmReqContract,
   AdmReqNondocs,
   AdmRequirement,
   FinCashbank,
@@ -20,3 +21,5 @@ export type AdmReqNondocsInsert = Insertable<AdmReqNondocs>;
 export type AdmReqNondocsSelect = Selectable<AdmReqNondocs>;
 
 export type FinCashbankSelect = Selectable<FinCashbank>;
+
+export type AdmReqContractSelect = Selectable<AdmReqContract>;

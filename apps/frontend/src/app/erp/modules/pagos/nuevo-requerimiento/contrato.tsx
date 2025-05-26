@@ -2,10 +2,12 @@ import { viewClient } from '@/lib/rpc'
 import { CreateSupplier } from '@/views/products/components/productItem/CreateSupplier'
 import { CompanySelect, SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
+import { AdmReqContractSelect } from '@types'
 import {
   Button,
   DatePicker,
   Form,
+  FormInstance,
   Input,
   InputNumber,
   Select,
@@ -14,16 +16,29 @@ import {
 import { Minus, Plus } from 'lucide-react'
 
 export function Contrato() {
+  const [form_instance] = Form.useForm<AdmReqContractSelect>()
+
+  const handle_submit = async (values: AdmReqContractSelect) => {
+    console.log('submit : ', values)
+  }
+
   return (
     <div className="grid gap-1 grid-cols-2">
-      <DatosPrincipales />
-      <FormaPago />
-      <TerminosPago />
+      <DatosPrincipales form_instance={form_instance} />
+      <FormaPago form_instance={form_instance} />
+      <TerminosPago
+        form_instance={form_instance}
+        handle_submit={handle_submit}
+      />
     </div>
   )
 }
 
-const DatosPrincipales = () => {
+const DatosPrincipales = ({
+  form_instance,
+}: {
+  form_instance: FormInstance<AdmReqContractSelect>
+}) => {
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -149,13 +164,24 @@ const DatosPrincipales = () => {
   )
 }
 
-const TerminosPago = () => {
+const TerminosPago = ({
+  form_instance,
+  handle_submit,
+}: {
+  form_instance: FormInstance<AdmReqContractSelect>
+  handle_submit: (values: AdmReqContractSelect) => void
+}) => {
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Terminos de pago
       </h3>
-      <Form labelCol={{ span: 6 }} wrapperCol={{ span: 18 }}>
+      <Form
+        form={form_instance}
+        labelCol={{ span: 6 }}
+        wrapperCol={{ span: 18 }}
+        onFinish={handle_submit}
+      >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item label="Monto" className="mb-1">
             <InputNumber className="w-full" placeholder="0.00" />
@@ -204,14 +230,20 @@ const TerminosPago = () => {
           </Form.Item>
         </div>
         <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary">Guardar</Button>
+          <Button type="primary" htmlType="submit">
+            Guardar
+          </Button>
         </Form.Item>
       </Form>
     </div>
   )
 }
 
-const FormaPago = () => {
+const FormaPago = ({
+  form_instance,
+}: {
+  form_instance: FormInstance<AdmReqContractSelect>
+}) => {
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
