@@ -15,6 +15,39 @@ export const PATHS = {
         comprobarCajas: '/erp/modulos/tiendas/comprobar-cajas',
         generarAsientos: '/erp/modulos/tiendas/generar-asientos',
       },
+      pagos: {
+        main: '/erp/modulos/facturacionpagos',
+        nuevoRequerimiento: '/erp/modulos/facturacionpagos/nuevorequerimiento',
+        revisar: '/erp/modulos/facturacionpagos/revisar/:id',
+        revisarNonDoc: '/erp/modulos/facturacionpagos/revisarnondoc/:id',
+        listaEspera: '/erp/modulos/facturacionpagos/listaespera',
+        programarPagos: {
+          main: '/erp/modulos/facturacionpagos/programarpagos',
+          crearOrden: '/erp/modulos/facturacionpagos/aprobarpagos/crearorden',
+        },
+        aprobarPagos: {
+          main: '/erp/modulos/facturacionpagos/aprobarpagos',
+          revisarOrden:
+            '/erp/modulos/facturacionpagos/aprobarpagos/revisarorden/:id',
+        },
+        transferencia: '/erp/modulos/facturacionpagos/transferencia',
+        anticipoGastos: '/erp/modulos/facturacionpagos/anticipogastos',
+        consultaRequerimiento:
+          '/erp/modulos/facturacionpagos/consultarequerimiento',
+        reporteCaja: '/erp/modulos/facturacionpagos/reportecaja',
+        avanzado: {
+          main: '/erp/modulos/facturacionpagos/avanzado',
+          config: '/erp/modulos/facturacionpagos/avanzado/config',
+          seguridad: '/erp/modulos/facturacionpagos/avanzado/seguridad',
+        },
+        mantenimiento: {
+          main: '/erp/modulos/facturacionpagos/mantenimiento',
+          supplier: '/erp/modulos/facturacionpagos/mantenimiento/proveedor',
+          cashbank: '/erp/modulos/facturacionpagos/mantenimiento/cajabanco',
+          costCenter: '/erp/modulos/facturacionpagos/mantenimiento/centrocosto',
+          category: '/erp/modulos/facturacionpagos/mantenimiento/categoria',
+        },
+      },
       requerimientos: {
         main: '/erp/modulos/requerimientos',
         solicitados: '/erp/modulos/requerimientos/solicitados',
@@ -28,6 +61,7 @@ export const PATHS = {
           supplier: '/erp/modulos/requerimientos/mantenimiento/proveedor',
           cashbank: '/erp/modulos/requerimientos/mantenimiento/caja-banco',
           costCenter: '/erp/modulos/requerimientos/mantenimiento/centro-costo',
+          category: '/erp/modulos/requerimientos/mantenimiento/categoria',
           main: '/erp/modulos/requerimientos/mantenimiento',
         },
         reportes: {

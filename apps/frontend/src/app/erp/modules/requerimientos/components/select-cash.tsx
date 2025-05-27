@@ -4,7 +4,7 @@ import { CashBankSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Select } from 'antd'
 
-const useCashBank = () => {
+export const useCashBank = () => {
   const query = useQuery({
     queryKey: ['req:cash-bank'],
     queryFn: async () => {
@@ -19,11 +19,15 @@ const useCashBank = () => {
 export function CashBankForm({
   value,
   onChange,
+  filter,
 }: {
   value?: number
   onChange?: (id: number | undefined) => void
+  filter?: (el: CashBankSelect) => boolean
 }) {
   const { data: cashbanks } = useCashBank()
+
+  const filteredCashbanks = filter ? cashbanks?.filter(filter) : cashbanks
 
   return (
     <Select
@@ -37,7 +41,7 @@ export function CashBankForm({
       showSearch={true}
       allowClear
     >
-      {cashbanks?.map((s) => (
+      {filteredCashbanks?.map((s) => (
         <Select.Option key={s.id} value={s.id}>
           {s.cashbank}
         </Select.Option>

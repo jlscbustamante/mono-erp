@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import { NOTIFICATION } from '@/const/notification'
 import { IInvSupplier } from '@/data/products/types'
 import * as sdkRequest from '@/data/requests/sdk'
+import { cn } from '@/utils'
 import { SupplierSelect } from '@pizzadb'
 
 const { Search } = Input
@@ -14,7 +15,8 @@ export const CreateSupplier: React.FC<{
   suppliers?: SupplierSelect[]
   onCreate: (id: number, name?: string, ruc?: string) => void
   onError?: (message: string) => void
-}> = ({ onCreate, suppliers, onError }) => {
+  className?: string
+}> = ({ onCreate, suppliers, onError, className }) => {
   const [loadingRuc, setLoadingRuc] = useState(false)
   const [creating, setCreating] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -56,6 +58,7 @@ export const CreateSupplier: React.FC<{
   }
   return (
     <Popover
+      className={cn(className)}
       open={isOpen}
       onOpenChange={setIsOpen}
       placement="bottomRight"

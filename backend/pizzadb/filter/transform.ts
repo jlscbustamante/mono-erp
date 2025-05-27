@@ -71,7 +71,7 @@ export const transformWhere = <T>(
         );
       } else if (filter.operator == "range") {
         const [start, end] = filter.value as string[];
-        val = `BETWEEN '${start}' AND '${end}'`;
+        val = `${field} BETWEEN '${start}' AND '${end}'`;
       } else {
         val = operatorAndValue(field, filter.operator, filter.value);
       }

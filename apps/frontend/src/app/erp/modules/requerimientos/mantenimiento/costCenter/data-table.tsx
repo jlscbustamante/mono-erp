@@ -1,3 +1,4 @@
+import { EditIcon } from '@/components/icons/icons_app'
 import { CostCenterSelecet } from '@pizzadb'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
@@ -51,7 +52,8 @@ export function DataTable({ data }: { data: CostCenterSelecet[] }) {
           ...columns,
           {
             title: 'Acciones',
-            render: (_, record) => <a onClick={() => open(record)}>Editar</a>,
+            render: (_, record) => <EditIcon on_click={() => open(record)} />,
+            //  <a onClick={() => open(record)}>Editar</a>,
           },
         ]}
         bordered

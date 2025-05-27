@@ -1,14 +1,18 @@
 {
-  "name":"@scope/shared",
-  "imports":{
+  "name": "@scope/shared",
+  "imports": {
     "@std/dotenv": "jsr:@std/dotenv@^0.225.3",
     "hono": "npm:hono@^4.6.16",
-    "jose":"https://deno.land/x/jose@v5.9.6/index.ts"
+    "jose": "https://deno.land/x/jose@v5.9.6/index.ts",
+    "kysely": "npm:kysely@^0.27.6",
+    "kysely-codegen": "npm:kysely-codegen@^0.18.3"
   },
-  "exports":{
-    ".":"./types/index.ts",
-    "./env":"./load-env.ts",
-    "./services/jwt":"./services/jwt.service.ts"
-
+  "exports": {
+    ".": "./types/index.ts",
+    "./env": "./load-env.ts",
+    "./services/jwt": "./services/jwt.service.ts"
+  },
+  "tasks": {
+    "generate": "kysely-codegen --out-file ./db/generated.ts"
   }
 }

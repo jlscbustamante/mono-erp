@@ -7,25 +7,31 @@ import DispatchDivider from '@/app/erp/modules/mercaderia/dispatch-divider'
 import { KardexPage } from '@/app/erp/modules/mercaderia/kardex'
 import { MercaderiaLayout } from '@/app/erp/modules/mercaderia/layout'
 import { NotaCreditoPage } from '@/app/erp/modules/mercaderia/nota-credito'
-import { RecetasLayout } from '@/app/erp/modules/recetas/layout'
+import { AnticipoGastosPage } from '@/app/erp/modules/pagos/anticipo-gastos'
+import { AprobarPagosPage } from '@/app/erp/modules/pagos/aprobar-pagos'
+import { RevisarOrdenPage } from '@/app/erp/modules/pagos/aprobar-pagos/revisar-orden'
+import { ConfigPage } from '@/app/erp/modules/pagos/avanzado/config'
+import { AvanzadoSeguridad } from '@/app/erp/modules/pagos/avanzado/seguridad'
+import { ConsultaRequerimientoPage } from '@/app/erp/modules/pagos/consulta-requerimiento'
+import { PagosLayout } from '@/app/erp/modules/pagos/layout'
+import { ListaEsperaPage } from '@/app/erp/modules/pagos/lista-espera'
+import { NuevoRequerimientoPage } from '@/app/erp/modules/pagos/nuevo-requerimiento'
+import { ProgramarPagosPage } from '@/app/erp/modules/pagos/programar-pagos'
+import { CreateOrderPage } from '@/app/erp/modules/pagos/programar-pagos/create-order'
+import { ReporteCajaPage } from '@/app/erp/modules/pagos/reportes-caja'
+import { ReviewPage } from '@/app/erp/modules/pagos/review'
+import { ReviewNonDocPage } from '@/app/erp/modules/pagos/review_nondoc'
+import { TransferenciaPage } from '@/app/erp/modules/pagos/transferencia'
+import { NuevaRecetaTabs } from '@/app/erp/modules/recetas/nueva-receta'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
 import { RecursosHumanosLayout } from '@/app/erp/modules/recursosHumanos/layout'
-import { ApprovedPage } from '@/app/erp/modules/requerimientos/approved/page'
-import { RequirementeCreation } from '@/app/erp/modules/requerimientos/creation/page'
-import { RequerimientosLayout } from '@/app/erp/modules/requerimientos/layout'
 import CashBankPage from '@/app/erp/modules/requerimientos/mantenimiento/cashbank/page'
+import CategoryPage from '@/app/erp/modules/requerimientos/mantenimiento/category/page'
 import CostCenterPage from '@/app/erp/modules/requerimientos/mantenimiento/costCenter/page'
-import { PendingPage } from '@/app/erp/modules/requerimientos/pending/page'
-import { RejectPage } from '@/app/erp/modules/requerimientos/reject/page'
-import { ReportByDatePage } from '@/app/erp/modules/requerimientos/reports/byDate/page'
-import { ReportByCostCenterPage } from '@/app/erp/modules/requerimientos/reports/cost_center/page'
-import { CuentaCorrientePage } from '@/app/erp/modules/requerimientos/reports/cuentaCorriente/page'
-import RequirementDetailedPage from '@/app/erp/modules/requerimientos/reports/detailed/page'
-import RequirementSummaryPage from '@/app/erp/modules/requerimientos/reports/summary/page'
-import { RequirementReview } from '@/app/erp/modules/requerimientos/review/page'
 import { SeguridadLayout } from '@/app/erp/modules/seguridad/layout'
+import { TestPage } from '@/app/erp/modules/test_page'
 import { TiendasLayout } from '@/app/erp/modules/tiendas/layout'
 import { PATHS } from '@/const/paths'
 import { Login } from '@/views/auth/Login'
@@ -74,12 +80,15 @@ import PaymentMethods from '@/views/stores/PaymentMethods'
 import SignMovements from '@/views/stores/SignMovements'
 import StoresStates from '@/views/stores/States'
 import { createBrowserRouter } from 'react-router-dom'
-import { NuevaRecetaTabs } from '@/app/erp/modules/recetas/nueva-receta'
 
 export const routerv2 = createBrowserRouter([
   {
     path: '/',
     element: <ErpLayout />,
+  },
+  {
+    path: '/test',
+    element: <TestPage />,
   },
   {
     path: PATHS.erp.main,
@@ -119,83 +128,82 @@ export const routerv2 = createBrowserRouter([
             ],
           },
           {
-            path: PATHS.erp.modulos.requerimientos.main,
-            element: <RequerimientosLayout />,
+            path: PATHS.erp.modulos.pagos.main,
+            element: <PagosLayout />,
             children: [
               {
-                path: PATHS.erp.modulos.requerimientos.review,
-                element: <RequirementReview />,
+                path: PATHS.erp.modulos.pagos.revisar,
+                element: <ReviewPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.reviewApproved,
-                element: <RequirementReview />,
+                path: PATHS.erp.modulos.pagos.revisarNonDoc,
+                element: <ReviewNonDocPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.reviewRejected,
-                element: <RequirementReview />,
+                path: PATHS.erp.modulos.pagos.nuevoRequerimiento,
+                element: <NuevoRequerimientoPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.creation,
-                element: <RequirementeCreation />,
+                path: PATHS.erp.modulos.pagos.listaEspera,
+                element: <ListaEsperaPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.solicitados,
-                element: <PendingPage />,
+                path: PATHS.erp.modulos.pagos.programarPagos.main,
+                element: <ProgramarPagosPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.aprobados,
-                element: <ApprovedPage />,
+                path: PATHS.erp.modulos.pagos.aprobarPagos.main,
+                element: <AprobarPagosPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.rechazados,
-                element: <RejectPage />,
+                path: PATHS.erp.modulos.pagos.programarPagos.crearOrden,
+                element: <CreateOrderPage />,
               },
               {
-                path: PATHS.erp.modulos.requerimientos.reportes.main,
+                path: PATHS.erp.modulos.pagos.aprobarPagos.revisarOrden,
+                element: <RevisarOrdenPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.transferencia,
+                element: <TransferenciaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.anticipoGastos,
+                element: <AnticipoGastosPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.consultaRequerimiento,
+                element: <ConsultaRequerimientoPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.reporteCaja,
+                element: <ReporteCajaPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.avanzado.config,
+                element: <ConfigPage />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.avanzado.seguridad,
+                element: <AvanzadoSeguridad />,
+              },
+              {
+                path: PATHS.erp.modulos.pagos.mantenimiento.main,
                 children: [
                   {
-                    path: PATHS.erp.modulos.requerimientos.reportes
-                      .cuentaCorriente,
-                    element: <CuentaCorrientePage />,
-                  },
-                  {
-                    path: PATHS.erp.modulos.requerimientos.reportes.porFecha,
-                    element: <ReportByDatePage />,
-                  },
-                  {
-                    path: PATHS.erp.modulos.requerimientos.reportes.detallado,
-                    // element: <DetailedBalance />,
-                    element: <RequirementDetailedPage />,
-                  },
-                  {
-                    path: PATHS.erp.modulos.requerimientos.reportes.resumido,
-                    // element: <SummarizedBalance />,
-                    element: <RequirementSummaryPage />,
-                  },
-                  {
-                    path: PATHS.erp.modulos.requerimientos.reportes
-                      .porCentroCosto,
-                    // element: <CostCenterPage />,
-                    element: <ReportByCostCenterPage />,
-                  },
-                ],
-              },
-              {
-                path: PATHS.erp.modulos.requerimientos.mantenimiento.main,
-                children: [
-                  {
-                    path: PATHS.erp.modulos.requerimientos.mantenimiento
-                      .supplier,
+                    path: PATHS.erp.modulos.pagos.mantenimiento.supplier,
                     element: <Provider />,
                   },
                   {
-                    path: PATHS.erp.modulos.requerimientos.mantenimiento
-                      .costCenter,
+                    path: PATHS.erp.modulos.pagos.mantenimiento.costCenter,
                     element: <CostCenterPage />,
                   },
                   {
-                    path: PATHS.erp.modulos.requerimientos.mantenimiento
-                      .cashbank,
+                    path: PATHS.erp.modulos.pagos.mantenimiento.category,
+                    element: <CategoryPage />,
+                  },
+                  {
+                    path: PATHS.erp.modulos.pagos.mantenimiento.cashbank,
                     element: <CashBankPage />,
                   },
                 ],

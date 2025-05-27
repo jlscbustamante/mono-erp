@@ -3,13 +3,14 @@ import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { session } from "./middleware/session.middleware.ts";
+import { admNondocRouter } from "./modules/adm_nondoc/index.ts";
 import { authRouter } from "./modules/auth/index.ts";
 import { cashBankRouter } from "./modules/cashbank/index.ts";
 import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
+import { paymentRouter } from "./modules/payment/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
-import { recipeRouter } from "#app/modules/recipe/create-recipe/index.ts";
-import { catalogRouter } from "#app/modules/recipe/catalog-sales/index.ts";
+import { supplier_router } from "./modules/supplier/index.ts";
 
 const app = new Hono();
 
@@ -24,11 +25,13 @@ export const apiRouter = app
   .route("requirement", requirementRouter)
   .route("costcenter", costCenterRouter)
   .route("cashbank", cashBankRouter)
-  .route("recipe", recipeRouter)
-  .route("recipe/catalog-sales", catalogRouter);
+  .route("payment", paymentRouter)
+  .route("nondoc", admNondocRouter)
+  .route("supplier", supplier_router);
 
 apiRouter.onError((err, c) => {
   console.log(err);
+  console.log(`ERROR : ${err.message}`);
   if (err instanceof HTTPException) {
     return c.json({ message: err.message }, err.status);
   }

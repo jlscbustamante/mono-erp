@@ -49,9 +49,9 @@ export const cashBanks = mysqlTable("fin_cashbank", {
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
 
-export const finMoveCash = mysqlTable("fin_movecash", {
+export const finMoveCash = mysqlTable("fin_movetype", {
   id: int().autoincrement().notNull().primaryKey(),
-  movecash: varchar({ length: 150 }).notNull(),
+  movetype: varchar({ length: 150 }).notNull(),
   account_id: varchar({ length: 15 }).notNull(),
   used_to: smallint().notNull().default(1),
   origin_from: char({ length: 1 }).notNull().default("G"),

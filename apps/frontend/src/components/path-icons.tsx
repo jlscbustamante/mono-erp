@@ -32,12 +32,7 @@ import {
   FaUserTie,
 } from 'react-icons/fa6'
 import { FiBox } from 'react-icons/fi'
-import {
-  GiConfirmed,
-  GiFullMotorcycleHelmet,
-  GiFullPizza,
-  GiTomato,
-} from 'react-icons/gi'
+import { GiConfirmed, GiFullMotorcycleHelmet, GiTomato } from 'react-icons/gi'
 import { IoIosCheckbox } from 'react-icons/io'
 import {
   IoCalendarNumberOutline,
@@ -57,7 +52,6 @@ import {
   MdDeliveryDining,
   MdOutlineCategory,
   MdOutlinePayment,
-  MdOutlineSell,
 } from 'react-icons/md'
 import { RiCoinLine } from 'react-icons/ri'
 import {
@@ -118,6 +112,7 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.requerimientos.mantenimiento.cashbank]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.costCenter]: null,
   [PATHS.erp.modulos.requerimientos.mantenimiento.supplier]: null,
+  [PATHS.erp.modulos.requerimientos.mantenimiento.category]: null,
 
   [PATHS.erp.modulos.digitalizacion.documentos]: GiConfirmed,
   [PATHS.erp.modulos.digitalizacion.escaneo]: FaFileUpload,

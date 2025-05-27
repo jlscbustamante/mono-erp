@@ -13,3 +13,5 @@ files/*
 .env
 
 ignoreme
+
+sftp_data
