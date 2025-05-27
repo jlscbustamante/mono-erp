@@ -73,6 +73,7 @@ const AnticipoForm = () => {
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={form}
+        onFinish={handle_save}
         name="rq:create_anticipo"
       >
         <div className="grid grid-cols-2 gap-2">
@@ -160,8 +161,8 @@ const AnticipoForm = () => {
           <Button
             type="primary"
             loading={create_mt.isPending}
-            onClick={handle_save}
-            htmlType="button"
+            // onClick={handle_save}
+            htmlType="submit"
           >
             Guardar
           </Button>

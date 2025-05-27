@@ -27,6 +27,7 @@ import {
 } from "@scope/shared";
 import { Hono } from "hono";
 import { z } from "zod";
+import { contract_router } from "./contract/index.ts";
 
 export const paymentRouter = new Hono()
   .post("create_requirement", zValidator("json", z.any()), async (c) => {
@@ -267,4 +268,5 @@ export const paymentRouter = new Hono()
       message: "na",
       data: result,
     });
-  });
+  })
+  .route("contract", contract_router);

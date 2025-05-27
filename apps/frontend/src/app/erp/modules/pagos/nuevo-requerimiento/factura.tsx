@@ -26,8 +26,9 @@ import { MessageInstance } from 'antd/es/message/interface'
 type R = keyof AdmRequirementInsert
 
 export function CrearFactura() {
-  const [formPrincipal] = Form.useForm()
-  const [formCategoria] = Form.useForm()
+  // const [formPrincipal] = Form.useForm()
+  // const [formCategoria] = Form.useForm()
+  const [form_instance] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
 
   const createRequirementMt = useMutation({
@@ -46,18 +47,15 @@ export function CrearFactura() {
     },
     onSuccess: () => {
       messageApi.success('Requerimiento creado correctamente')
-      formPrincipal.resetFields()
-      formCategoria.resetFields()
+      form_instance.resetFields()
     },
   })
 
   const onSave = async () => {
-    const pricipales = formPrincipal.getFieldsValue()
-    const categoria = formCategoria.getFieldsValue()
+    const pricipales = form_instance.getFieldsValue()
 
     const value: AdmRequirementInsert = {
       ...pricipales,
-      ...categoria,
     }
     await createRequirementMt.mutateAsync(value)
   }
@@ -66,13 +64,13 @@ export function CrearFactura() {
     <div className="grid gap-1 grid-cols-2">
       {contextHolder}
       <DatosPrincipales
-        formInstance={formPrincipal}
+        formInstance={form_instance}
         messageInstance={messageApi}
       />
-      <DatosProveedor formInstance={formPrincipal} />
+      <DatosProveedor formInstance={form_instance} />
       <CategoriaGasto
         onSave={onSave}
-        formInstance={formCategoria}
+        formInstance={form_instance}
         loading={createRequirementMt.isPending}
       />
     </div>
@@ -294,9 +292,15 @@ const CategoriaGasto = ({
         wrapperCol={{ span: 18 }}
         form={formInstance}
         name="formCategoria"
+        onFinish={onSave}
       >
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Monto" className="mb-1" name={'amount' satisfies R}>
+          <Form.Item
+            label="Monto"
+            className="mb-1"
+            name={'amount' satisfies R}
+            rules={[{ required: true }]}
+          >
             <InputNumber className="w-full" placeholder="0.00" />
           </Form.Item>
           <Form.Item label="Moneda" className="mb-1" name={'money' satisfies R}>
@@ -361,7 +365,7 @@ const CategoriaGasto = ({
           </Form.Item>
         </div>
         <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary" onClick={onSave} loading={loading}>
+          <Button type="primary" htmlType="submit" loading={loading}>
             Guardar
           </Button>
         </Form.Item>

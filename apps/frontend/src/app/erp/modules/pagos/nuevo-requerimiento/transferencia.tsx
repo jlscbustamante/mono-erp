@@ -71,6 +71,7 @@ const TransferenciaForm = () => {
         Datos principales
       </h3>
       <Form
+        onFinish={handle_save}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={form}
@@ -161,8 +162,9 @@ const TransferenciaForm = () => {
           <Button
             type="primary"
             loading={create_mt.isPending}
-            onClick={handle_save}
-            htmlType="button"
+            // onClick={handle_save}
+
+            htmlType="submit"
           >
             Guardar
           </Button>
