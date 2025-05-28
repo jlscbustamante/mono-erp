@@ -5,6 +5,8 @@ import { CompanySelect, SupplierSelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import { AdmReqContractInsert } from '@types'
 import {
+  AutoComplete,
+  AutoCompleteProps,
   Button,
   DatePicker,
   Form,
@@ -32,7 +34,6 @@ export function Contrato() {
 
   const create_contract_mt = useMutation({
     mutationFn: async (values: AdmReqContractInsert) => {
-      console.log('insert this : ', values)
       const req = await viewClient.api.view.payment.contract.create.$post({
         json: values,
       })
@@ -88,6 +89,9 @@ const DatosPrincipales = ({
   form_instance: FormInstance<AdmReqContractInsert>
   message_api: MessageInstance
 }) => {
+  const [options_suppliers, set_options_suppliers] = useState<
+    AutoCompleteProps['options']
+  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -181,13 +185,55 @@ const DatosPrincipales = ({
               rules={[{ required: true }]}
               name={gk('legal_number')}
             >
-              <Input.Search
-                placeholder="RUC proveedor"
-                className="w-[calc(100%_-_2rem)]"
-                onSearch={(ruc) => {
-                  searchSupplier(ruc)
+              <AutoComplete
+                showSearch
+                options={options_suppliers}
+                onSearch={(text) => {
+                  if (!text) {
+                    set_options_suppliers([])
+                    return
+                  }
+                  const hast_letters = /[a-zA-Z]/.test(text)
+                  if (hast_letters) {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_name
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  } else {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_number
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  }
                 }}
-              />
+                onSelect={() => {
+                  set_options_suppliers([])
+                }}
+              >
+                <Input.Search
+                  placeholder="RUC proveedor"
+                  className="!w-[calc(100%_-_2rem)]"
+                  onSearch={(ruc) => {
+                    searchSupplier(ruc)
+                  }}
+                />
+              </AutoComplete>
             </Form.Item>
             <CreateSupplier
               className="absolute top-0 right-0"
@@ -292,19 +338,13 @@ const TerminosPago = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item
-            label="Inicio"
-            className="mb-1"
-            rules={[{ required: true }]}
-            name={gk('effective_at')}
-          >
+          <Form.Item label="Inicio" className="mb-1" name={gk('effective_at')}>
             {/* <DatePicker className="w-full" /> */}
             <CustomDatePicker className="w-full" />
           </Form.Item>
           <Form.Item
             label="Vencimiento"
             className="mb-1"
-            rules={[{ required: true }]}
             name={gk('expires_at')}
           >
             {/* <DatePicker className="w-full" /> */}

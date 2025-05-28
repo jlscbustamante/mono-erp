@@ -2,6 +2,8 @@ import { viewClient } from '@/lib/rpc'
 import { CompanySelect, SupplierSelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import {
+  AutoComplete,
+  AutoCompleteProps,
   Button,
   DatePicker,
   Form,
@@ -11,6 +13,7 @@ import {
   Switch,
 } from 'antd'
 import { Minus, Plus } from 'lucide-react'
+import { useState } from 'react'
 
 export function Contrato() {
   return (
@@ -23,6 +26,9 @@ export function Contrato() {
 }
 
 const DatosPrincipales = () => {
+  const [options_suppliers, set_options_suppliers] = useState<
+    AutoCompleteProps['options']
+  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -99,16 +105,55 @@ const DatosPrincipales = () => {
             className="mb-1"
             rules={[{ required: true }]}
           >
-            <Input.Search
-              placeholder="RUC proveedor"
-              // loading={getInfoRuc.isPending}
-              onSearch={(ruc) => {
-                searchSupplier(ruc)
+            <AutoComplete
+              showSearch
+              options={options_suppliers}
+              onSearch={(text) => {
+                if (!text) {
+                  set_options_suppliers([])
+                  return
+                }
+                const hast_letters = /[a-zA-Z]/.test(text)
+                if (hast_letters) {
+                  const filtered = suppliers?.filter((el) => {
+                    return (
+                      el.legal_name
+                        ?.toLowerCase()
+                        .includes(text.toLowerCase()) ?? false
+                    )
+                  })
+                  set_options_suppliers(
+                    filtered?.map((el) => ({
+                      value: el.legal_number,
+                    })) ?? [],
+                  )
+                } else {
+                  const filtered = suppliers?.filter((el) => {
+                    return (
+                      el.legal_number
+                        ?.toLowerCase()
+                        .includes(text.toLowerCase()) ?? false
+                    )
+                  })
+                  set_options_suppliers(
+                    filtered?.map((el) => ({
+                      value: el.legal_number,
+                    })) ?? [],
+                  )
+                }
               }}
-              // onSearch={(ruc) => {
-              //   getInfoRuc.mutate(ruc.trim())
-              // }}
-            />
+              onSelect={() => {
+                set_options_suppliers([])
+              }}
+            >
+              <Input.Search
+                placeholder="RUC proveedor"
+                className="!w-[calc(100%_-_2rem)]"
+                onSearch={(ruc) => {
+                  searchSupplier(ruc)
+                }}
+              />
+            </AutoComplete>
           </Form.Item>
           <Form.Item
             className="mb-1"

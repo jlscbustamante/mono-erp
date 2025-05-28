@@ -1,6 +1,5 @@
 import { PATHS } from '@/const/paths'
-import { Button, Table } from 'antd'
-import { Eye } from 'lucide-react'
+import { Table } from 'antd'
 import { useNavigate } from 'react-router'
 import { PaymentStatusBadge } from '../components/status-bage'
 import { useProgramarPagosQuery } from './state'
@@ -19,7 +18,24 @@ export function DataView() {
         columns={[
           {
             title: 'Id',
-            dataIndex: 'id',
+            dataIndex: 'code',
+            render: (val, record) => {
+              return (
+                <span
+                  className="text-blue-500 hover:underline cursor-pointer"
+                  onClick={() => {
+                    navigate(
+                      PATHS.erp.modulos.pagos.revisar.replace(
+                        ':id',
+                        record.id.toString(),
+                      ),
+                    )
+                  }}
+                >
+                  {val}
+                </span>
+              )
+            },
           },
           {
             title: 'Proveedor',
@@ -64,29 +80,6 @@ export function DataView() {
             title: 'Estado',
             dataIndex: 'status',
             render: (val) => <PaymentStatusBadge status={val} />,
-          },
-          {
-            render: (_, record) => {
-              return (
-                <div className="flex items-center justify-center">
-                  <Button
-                    variant="filled"
-                    type="text"
-                    size="small"
-                    onClick={() => {
-                      navigate(
-                        PATHS.erp.modulos.pagos.revisar.replace(
-                          ':id',
-                          record.id.toString(),
-                        ),
-                      )
-                    }}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              )
-            },
           },
         ]}
       />

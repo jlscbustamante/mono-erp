@@ -13,6 +13,8 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import type { AdmRequirementInsert, InvSupplierSelect } from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
+  AutoComplete,
+  AutoCompleteProps,
   Button,
   Form,
   FormInstance,
@@ -22,6 +24,7 @@ import {
   Select,
 } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
+import { useState } from 'react'
 
 type R = keyof AdmRequirementInsert
 
@@ -84,6 +87,9 @@ const DatosPrincipales = ({
   formInstance: FormInstance<any>
   messageInstance?: MessageInstance
 }) => {
+  const [options_suppliers, set_options_suppliers] = useState<
+    AutoCompleteProps['options']
+  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -155,14 +161,55 @@ const DatosPrincipales = ({
               rules={[{ required: true }]}
               name={'legal_number' satisfies R}
             >
-              <Input.Search
-                placeholder="RUC proveedor"
-                className="w-[calc(100%_-_2rem)]"
-                // loading={getInfoRuc.isPending}
-                onSearch={(ruc) => {
-                  searchSupplier(ruc)
+              <AutoComplete
+                showSearch
+                options={options_suppliers}
+                onSearch={(text) => {
+                  if (!text) {
+                    set_options_suppliers([])
+                    return
+                  }
+                  const hast_letters = /[a-zA-Z]/.test(text)
+                  if (hast_letters) {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_name
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  } else {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_number
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  }
                 }}
-              />
+                onSelect={() => {
+                  set_options_suppliers([])
+                }}
+              >
+                <Input.Search
+                  placeholder="RUC proveedor"
+                  className="!w-[calc(100%_-_2rem)]"
+                  onSearch={(ruc) => {
+                    searchSupplier(ruc)
+                  }}
+                />
+              </AutoComplete>
             </Form.Item>
             <CreateSupplier
               className="absolute top-0 right-0"

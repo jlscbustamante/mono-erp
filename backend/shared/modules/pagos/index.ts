@@ -85,3 +85,28 @@ export interface ITest {
   name: string;
   age: number;
 }
+
+export enum CONTRACT_STATUS {
+  INGRESADO = "I",
+  VIGENTE = "V",
+  EXPIRADO = "E",
+  PAGADO = "P",
+  ANULADO = "X",
+}
+
+export const get_contract_status_name = (status: CONTRACT_STATUS) => {
+  switch (status) {
+    case CONTRACT_STATUS.INGRESADO:
+      return "Ingresado";
+    case CONTRACT_STATUS.VIGENTE:
+      return "Vigente";
+    case CONTRACT_STATUS.EXPIRADO:
+      return "Expirado";
+    case CONTRACT_STATUS.PAGADO:
+      return "Pagado";
+    case CONTRACT_STATUS.ANULADO:
+      return "Anulado";
+    default:
+      return "Desconocido";
+  }
+};
