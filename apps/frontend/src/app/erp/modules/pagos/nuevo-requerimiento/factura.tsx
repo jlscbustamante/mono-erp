@@ -55,10 +55,10 @@ export function CrearFactura() {
   })
 
   const onSave = async () => {
-    const pricipales = form_instance.getFieldsValue()
+    const data_form = form_instance.getFieldsValue()
 
     const value: AdmRequirementInsert = {
-      ...pricipales,
+      ...data_form,
     }
     await createRequirementMt.mutateAsync(value)
   }
@@ -129,7 +129,9 @@ const DatosPrincipales = ({
 
   const validate_contract_identifier = async (_: any, value: string) => {
     if (!value) {
-      return Promise.reject(new Error('El ID del contrato es obligatorio'))
+      // return Promise.reject(new Error('El ID del contrato es obligatorio'))
+      // es opcional :
+      return Promise.resolve()
     }
     const response = await viewClient.api.view.payment.contract.exists.$get({
       query: { contract_code: value },
@@ -317,7 +319,7 @@ const DatosPrincipales = ({
             label="Contrato"
             validateDebounce={500}
             rules={[{ validator: validate_contract_identifier }]}
-            name={'contract_code'}
+            name={'num_contract' satisfies R}
           >
             <Input />
           </Form.Item>

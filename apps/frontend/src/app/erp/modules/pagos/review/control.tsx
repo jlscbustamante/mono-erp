@@ -1,6 +1,7 @@
 import { AdmRequirementSelect } from '@types'
 import { Tabs, TabsProps } from 'antd'
 import { ArrowLeft } from 'lucide-react'
+import { useMemo } from 'react'
 import { Contrato } from './contrato'
 import { CrearFactura } from './factura'
 
@@ -9,20 +10,27 @@ export const Control = ({
 }: {
   requirement: AdmRequirementSelect
 }) => {
-  const items: TabsProps['items'] = [
-    {
+  const items: TabsProps['items'] = useMemo(() => {
+    const item_props_invoice = {
       key: '1',
       label: <p className="px-3">Factura</p>,
       className: 'px-3',
       children: <CrearFactura requirement={requirement} />,
-    },
-    {
-      key: '4',
-      label: <p className="px-3">Contrato</p>,
-      className: 'px-3',
-      children: <Contrato />,
-    },
-  ]
+    }
+    if (!requirement.contract_id) {
+      return [item_props_invoice]
+    } else {
+      return [
+        item_props_invoice,
+        {
+          key: '4',
+          label: <p className="px-3">Contrato</p>,
+          className: 'px-3',
+          children: <Contrato contract_id={requirement.contract_id} />,
+        },
+      ]
+    }
+  }, [requirement])
 
   return (
     <div>

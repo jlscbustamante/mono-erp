@@ -42,6 +42,8 @@ export function CrearFactura({
   const [formCategoria] = Form.useForm()
   const [messageApi, contextHolder] = message.useMessage()
 
+  const supplier_id = Form.useWatch('supplier_id', formPrincipal)
+
   const createRequirementMt = useMutation({
     mutationFn: async (data: AdmRequirementInsert) => {
       const updated_requirement: AdmRequirementSelect = {
@@ -149,7 +151,7 @@ export function CrearFactura({
         formInstance={formPrincipal}
         messageInstance={messageApi}
       />
-      <DatosProveedor supplier_id={requirement.supplier_id ?? undefined} />
+      <DatosProveedor supplier_id={supplier_id ?? undefined} />
       <CategoriaGasto
         approve={approve}
         onSave={onSave}
@@ -323,6 +325,9 @@ const DatosPrincipales = ({
                 />
               </AutoComplete>
             </Form.Item>
+            <Form.Item name="supplier_id" hidden>
+              <Input />
+            </Form.Item>
             <CreateSupplier
               className="absolute top-0 right-0"
               suppliers={suppliers ?? []}
@@ -399,7 +404,7 @@ const DatosPrincipales = ({
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Contrato"
-            name={'contract_code'}
+            name={'num_contract' satisfies R}
             validateDebounce={500}
             rules={[{ validator: validate_contract_identifier }]}
           >
@@ -484,9 +489,6 @@ const CategoriaGasto = ({
             <CustomDatePicker />
           </Form.Item>
         </div>
-        <Form.Item hidden name="supplier_id">
-          <Input />
-        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Tiene retencion"

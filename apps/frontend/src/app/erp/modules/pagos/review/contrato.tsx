@@ -1,25 +1,19 @@
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { viewClient } from '@/lib/rpc'
-import { CreateSupplier } from '@/views/products/components/productItem/CreateSupplier'
-import { CompanySelect, SupplierSelect } from '@pizzadb'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { CompanySelect } from '@pizzadb'
+import { useQuery } from '@tanstack/react-query'
 import { AdmReqContractSelect } from '@types'
 import {
-  AutoComplete,
-  AutoCompleteProps,
   Button,
   DatePicker,
   Form,
   FormInstance,
   Input,
   InputNumber,
-  message,
   Select,
 } from 'antd'
-import { MessageInstance } from 'antd/es/message/interface'
 import { Minus, Plus } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { toast } from 'react-toastify'
 
 type R = keyof AdmReqContractSelect
 // This function is used to get the key of the AdmReqContractSelect type
@@ -27,71 +21,57 @@ const gk = (key: R): string => {
   return key
 }
 
-export function Contrato() {
-  const [form_instance] = Form.useForm<AdmReqContractSelect>()
-  const [message_api, context_holder] = message.useMessage()
-  const [quotas, set_quotas] = useState(1)
-
-  const create_contract_mt = useMutation({
-    mutationFn: async (values: AdmReqContractSelect) => {
-      const req = await viewClient.api.view.payment.contract.create.$post({
-        json: values,
+export function Contrato({ contract_id }: { contract_id: number }) {
+  const query = useQuery({
+    queryKey: ['rq:contract_get_one', contract_id],
+    queryFn: async () => {
+      const data = await viewClient.api.view.payment.contract.list[
+        ':contract_id'
+      ].$get({
+        param: {
+          contract_id: contract_id.toString(),
+        },
       })
-
-      if (!req.ok) {
-        const error = await req.json()
-        throw new Error(error.message)
+      const result = await data.json()
+      if (!data.ok) {
+        throw new Error(result.message)
       }
-    },
-    onSuccess: () => {
-      form_instance.resetFields()
-      message_api.success('Contrato creado correctamente')
-    },
-    onError: (error: Error) => {
-      toast.error(error.message, {
-        autoClose: false,
-      })
+      return result.data as AdmReqContractSelect
     },
   })
+  const [form_instance] = Form.useForm<AdmReqContractSelect>()
+  const [quotas, set_quotas] = useState(1)
 
-  const handle_submit = (values: AdmReqContractSelect) => {
-    const new_contract: AdmReqContractSelect = {
-      ...values,
-      quotas: quotas,
+  useEffect(() => {
+    if (query.data) {
+      form_instance.setFieldsValue({
+        ...query.data,
+      })
+      set_quotas(query.data.quotas ?? 1)
+    } else {
+      form_instance.resetFields()
+      set_quotas(1)
     }
-    create_contract_mt.mutate(new_contract)
-  }
+  }, [query.data])
 
   return (
     <div className="grid gap-1 grid-cols-2">
-      {context_holder}
-      <DatosPrincipales
-        form_instance={form_instance}
-        message_api={message_api}
-      />
+      <DatosPrincipales form_instance={form_instance} />
       <FormaPago
         form_instance={form_instance}
         quotas={quotas}
         set_quotas={set_quotas}
       />
-      <TerminosPago
-        form_instance={form_instance}
-        handle_submit={handle_submit}
-      />
+      <TerminosPago form_instance={form_instance} />
     </div>
   )
 }
 
 const DatosPrincipales = ({
   form_instance,
-  message_api,
 }: {
   form_instance: FormInstance<AdmReqContractSelect>
-  message_api: MessageInstance
 }) => {
-  const [options_suppliers, set_options_suppliers] = useState<
-    AutoCompleteProps['options']
-  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -102,28 +82,6 @@ const DatosPrincipales = ({
     },
   })
 
-  const { data: suppliers, refetch: _refetchSupplier } = useQuery({
-    queryKey: ['rq:suppliers'],
-    queryFn: async () => {
-      const request =
-        await viewClient.api.view.requirement.resource.suppliers.$get()
-      const result = await request.json()
-      return result.data as SupplierSelect[]
-    },
-  })
-
-  const searchSupplier = (ruc: string) => {
-    const supplier = suppliers?.find((el) => el.legal_number === ruc)
-    if (supplier) {
-      form_instance.setFieldValue('legal_name', supplier.legal_name)
-      form_instance.setFieldValue('supplier_id', supplier.id)
-    } else {
-      form_instance.setFieldValue('legal_name', undefined)
-      form_instance.setFieldValue('supplier_id', undefined)
-      message_api.error('Proveedor no encontrado')
-    }
-  }
-
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
@@ -133,9 +91,7 @@ const DatosPrincipales = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={form_instance}
-        onFinish={(values) => {
-          console.log(values)
-        }}
+        disabled={true}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item label="Empresa" className="mb-1" name={gk('company_id')}>
@@ -185,68 +141,8 @@ const DatosPrincipales = ({
               rules={[{ required: true }]}
               name={gk('legal_number')}
             >
-              <AutoComplete
-                showSearch
-                options={options_suppliers}
-                onSearch={(text) => {
-                  if (!text) {
-                    set_options_suppliers([])
-                    return
-                  }
-                  const hast_letters = /[a-zA-Z]/.test(text)
-                  if (hast_letters) {
-                    const filtered = suppliers?.filter((el) => {
-                      return (
-                        el.legal_name
-                          ?.toLowerCase()
-                          .includes(text.toLowerCase()) ?? false
-                      )
-                    })
-                    set_options_suppliers(
-                      filtered?.map((el) => ({
-                        value: el.legal_number,
-                      })) ?? [],
-                    )
-                  } else {
-                    const filtered = suppliers?.filter((el) => {
-                      return (
-                        el.legal_number
-                          ?.toLowerCase()
-                          .includes(text.toLowerCase()) ?? false
-                      )
-                    })
-                    set_options_suppliers(
-                      filtered?.map((el) => ({
-                        value: el.legal_number,
-                      })) ?? [],
-                    )
-                  }
-                }}
-                onSelect={() => {
-                  set_options_suppliers([])
-                }}
-              >
-                <Input.Search
-                  placeholder="RUC proveedor"
-                  className="!w-[calc(100%_-_2rem)]"
-                  onSearch={(ruc) => {
-                    searchSupplier(ruc)
-                  }}
-                />
-              </AutoComplete>
+              <Input placeholder="RUC proveedor" />
             </Form.Item>
-            <CreateSupplier
-              className="absolute top-0 right-0"
-              suppliers={suppliers ?? []}
-              onError={(message) => {
-                message_api?.error(message)
-              }}
-              onCreate={(id, supplier, ruc) => {
-                form_instance.setFieldValue('supplier_id', id)
-                form_instance.setFieldValue('legal_name', supplier)
-                form_instance.setFieldValue('legal_number', ruc)
-              }}
-            />
           </div>
           <Form.Item
             className="mb-1"
@@ -275,10 +171,8 @@ const DatosPrincipales = ({
 
 const TerminosPago = ({
   form_instance,
-  handle_submit,
 }: {
   form_instance: FormInstance<AdmReqContractSelect>
-  handle_submit: (values: AdmReqContractSelect) => void
 }) => {
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
@@ -286,10 +180,10 @@ const TerminosPago = ({
         Terminos de pago
       </h3>
       <Form
+        disabled={true}
         form={form_instance}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
-        onFinish={handle_submit}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -351,11 +245,6 @@ const TerminosPago = ({
             <CustomDatePicker className="w-full" />
           </Form.Item>
         </div>
-        <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary" htmlType="submit">
-            Guardar
-          </Button>
-        </Form.Item>
       </Form>
     </div>
   )
@@ -442,6 +331,7 @@ const FormaPago = ({
               <div className="flex gap-1" key={index + 1}>
                 <Input className="w-20" value={index + 1} />
                 <InputNumber
+                  readOnly
                   className="w-28"
                   value={data.amount}
                   precision={2}
