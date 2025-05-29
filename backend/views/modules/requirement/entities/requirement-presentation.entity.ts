@@ -4,7 +4,7 @@ import {
   RequirementSelect,
   SupplierSelect,
 } from "@scope/pizzadb/types";
-import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from "../interfaces/enums.ts";
+import { REQUIREMENT_STATUS, REQUIREMENT_TYPE } from "../interfaces/enums.ts";
 
 export class RequirementPresentation implements IRequirementPresentation {
   readonly id: number;
@@ -16,7 +16,7 @@ export class RequirementPresentation implements IRequirementPresentation {
   readonly createdBy: string;
   readonly paymentMethod: string;
   readonly numQuota: number;
-  readonly type: REQUIERMENT_TYPE;
+  readonly type: REQUIREMENT_TYPE;
   readonly amount: number;
   readonly category: string;
   readonly originName?: string | undefined;
@@ -34,7 +34,7 @@ export class RequirementPresentation implements IRequirementPresentation {
     this.supplier = props.inv_supplier?.supplier ?? "";
     this.requestedAt = props.reqitem.requested_at?.split(" ")[0] ?? "";
     this.category = props.reqitem.movecash_name ?? "";
-    this.type = props.reqitem.request_type as REQUIERMENT_TYPE;
+    this.type = props.reqitem.request_type as REQUIREMENT_TYPE;
     this.numDoc = props.reqitem.num_document ?? "";
     this.description = props.reqitem.description ?? "";
     this.costCenter = props.reqitem.costcenter_name ?? "";
@@ -47,7 +47,7 @@ export class RequirementPresentation implements IRequirementPresentation {
     this.amount = props.reqitem.amount ?? 0;
     this.status = props.reqitem.status as REQUIREMENT_STATUS;
 
-    if (this.type == REQUIERMENT_TYPE.TRANSFER) {
+    if (this.type == REQUIREMENT_TYPE.TRANSFER) {
       this.originName =
         props.items.find((el) => el.amount > 0)?.cashbank_name ?? "";
       this.destinyName =

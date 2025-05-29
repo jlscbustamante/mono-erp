@@ -9,8 +9,8 @@ import { RequirementRepository } from "#app/modules/requirement/repository/requi
 import {
   CreateRequirementDto,
   CreateRequirementTransferDto,
-  REQUIERMENT_TYPE,
   REQUIREMENT_STATUS,
+  REQUIREMENT_TYPE,
   UpdateRequirementDto,
 } from "#app/modules/types/index.ts";
 import { requirementItems, requirements } from "@scope/pizzadb";
@@ -197,7 +197,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
       pay_method: data.payment_method,
       type_document: data.document_type,
       num_document: data.document_number,
-      request_type: REQUIERMENT_TYPE.TRANSFER,
+      request_type: REQUIREMENT_TYPE.TRANSFER,
     };
 
     const newRequirementItemOrigin: RequirementItemInsert = {
@@ -331,7 +331,7 @@ WHERE ari.status IN (${statusQuery}) AND MONTH(ari.${fieldName})=${month} ${
 
     const record: Record<string, SummaryItem> = {};
     for (const req of listRequirements) {
-      if (req.request_type == REQUIERMENT_TYPE.TRANSFER) {
+      if (req.request_type == REQUIREMENT_TYPE.TRANSFER) {
         const otherCash = req.items.find((el) => el.cashbank_id != cashId);
         if (!otherCash || !otherCash.cashbank_name)
           throw new HTTPException(400, {
