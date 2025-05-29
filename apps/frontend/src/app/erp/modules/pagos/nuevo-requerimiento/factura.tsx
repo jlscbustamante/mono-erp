@@ -31,7 +31,7 @@ type R = keyof AdmRequirementInsert
 export function CrearFactura() {
   // const [formPrincipal] = Form.useForm()
   // const [formCategoria] = Form.useForm()
-  const [form_instance] = Form.useForm()
+  const [form_instance] = Form.useForm<AdmRequirementInsert>()
   const [messageApi, contextHolder] = message.useMessage()
 
   const createRequirementMt = useMutation({
@@ -84,7 +84,7 @@ const DatosPrincipales = ({
   formInstance,
   messageInstance,
 }: {
-  formInstance: FormInstance<any>
+  formInstance: FormInstance<AdmRequirementInsert>
   messageInstance?: MessageInstance
 }) => {
   const [options_suppliers, set_options_suppliers] = useState<
@@ -124,6 +124,30 @@ const DatosPrincipales = ({
       formInstance.setFieldValue('legal_number' satisfies R, undefined)
       formInstance.setFieldValue('supplier_id' satisfies R, undefined)
       messageInstance?.warning('Proveedor no encontrado')
+    }
+  }
+
+  const validate_contract_identifier = async (_: any, value: string) => {
+    if (!value) {
+      return Promise.reject(new Error('El ID del contrato es obligatorio'))
+    }
+    const response = await viewClient.api.view.payment.contract.exists.$get({
+      query: { contract_code: value },
+    })
+    const result = await response.json()
+    if (!response.ok) {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error(result.message))
+    }
+    if (result.data.exists) {
+      formInstance.setFieldValue(
+        'contract_id' satisfies R,
+        result.data.contract_id,
+      )
+      return Promise.resolve()
+    } else {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error('El contrato no existe'))
     }
   }
 
@@ -289,7 +313,15 @@ const DatosPrincipales = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Contrato">
+          <Form.Item
+            label="Contrato"
+            validateDebounce={500}
+            rules={[{ validator: validate_contract_identifier }]}
+            name={'contract_code'}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item name={'contract_id' satisfies R} hidden>
             <Input />
           </Form.Item>
         </div>

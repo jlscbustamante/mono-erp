@@ -2,6 +2,7 @@ import { CustomCheckbox } from '@/components/ant-form/custom-checkbox'
 import { CustomDatePicker } from '@/components/ant-form/custom-datepicker'
 import { viewClient } from '@/lib/rpc'
 import { cn, filterSelectForm } from '@/utils'
+import { CreateSupplier } from '@/views/products/components/productItem/CreateSupplier'
 import {
   CompanySelect,
   CostCenterSelecet,
@@ -10,12 +11,15 @@ import {
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
+  InvSupplierSelect,
   PAYMENT_STATUS,
   type AdmRequirementInsert,
   type AdmRequirementSelect,
 } from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
+  AutoComplete,
+  AutoCompleteProps,
   Button,
   Form,
   FormInstance,
@@ -25,7 +29,7 @@ import {
   Select,
 } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
-import { Plus } from 'lucide-react'
+import { useState } from 'react'
 
 type R = keyof AdmRequirementInsert
 
@@ -145,7 +149,7 @@ export function CrearFactura({
         formInstance={formPrincipal}
         messageInstance={messageApi}
       />
-      <DatosProveedor />
+      <DatosProveedor supplier_id={requirement.supplier_id ?? undefined} />
       <CategoriaGasto
         approve={approve}
         onSave={onSave}
@@ -166,6 +170,9 @@ const DatosPrincipales = ({
   messageInstance?: MessageInstance
   requirement: AdmRequirementSelect
 }) => {
+  const [options_suppliers, set_options_suppliers] = useState<
+    AutoCompleteProps['options']
+  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -194,10 +201,36 @@ const DatosPrincipales = ({
         'legal_number' satisfies R,
         supplier.legal_number,
       )
+      formInstance.setFieldValue('supplier_id' satisfies R, supplier.id)
     } else {
       formInstance.setFieldValue('legal_name' satisfies R, undefined)
       formInstance.setFieldValue('legal_number' satisfies R, undefined)
+      formInstance.setFieldValue('supplier_id' satisfies R, undefined)
       messageInstance?.warning('Proveedor no encontrado')
+    }
+  }
+
+  const validate_contract_identifier = async (_: any, value: string) => {
+    if (!value) {
+      return Promise.reject(new Error('El ID del contrato es obligatorio'))
+    }
+    const response = await viewClient.api.view.payment.contract.exists.$get({
+      query: { contract_code: value },
+    })
+    const result = await response.json()
+    if (!response.ok) {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error(result.message))
+    }
+    if (result.data.exists) {
+      formInstance.setFieldValue(
+        'contract_id' satisfies R,
+        result.data.contract_id,
+      )
+      return Promise.resolve()
+    } else {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error('El contrato no existe'))
     }
   }
 
@@ -228,28 +261,81 @@ const DatosPrincipales = ({
               ))}
             </Select>
           </Form.Item>
-          <Form.Item label="ID" className="mb-1">
-            <Input value={requirement.id} readOnly />
+          <Form.Item label="Codigo" className="mb-1">
+            <Input value={requirement.request_code} readOnly />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item
-            label="RUC proveedor"
-            className="mb-1"
-            rules={[{ required: true }]}
-            name={'legal_number' satisfies R}
-          >
-            <Input.Search
-              placeholder="RUC proveedor"
-              // loading={getInfoRuc.isPending}
-              onSearch={(ruc) => {
-                searchSupplier(ruc)
+          <div className="relative">
+            <Form.Item
+              label="RUC proveedor"
+              className="mb-1"
+              rules={[{ required: true }]}
+              name={'legal_number' satisfies R}
+            >
+              <AutoComplete
+                showSearch
+                options={options_suppliers}
+                onSearch={(text) => {
+                  if (!text) {
+                    set_options_suppliers([])
+                    return
+                  }
+                  const hast_letters = /[a-zA-Z]/.test(text)
+                  if (hast_letters) {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_name
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  } else {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_number
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  }
+                }}
+                onSelect={() => {
+                  set_options_suppliers([])
+                }}
+              >
+                <Input.Search
+                  placeholder="RUC proveedor"
+                  className="!w-[calc(100%_-_2rem)]"
+                  onSearch={(ruc) => {
+                    searchSupplier(ruc)
+                  }}
+                />
+              </AutoComplete>
+            </Form.Item>
+            <CreateSupplier
+              className="absolute top-0 right-0"
+              suppliers={suppliers ?? []}
+              onError={(message) => {
+                messageInstance?.error(message)
               }}
-              // onSearch={(ruc) => {
-              //   getInfoRuc.mutate(ruc.trim())
-              // }}
+              onCreate={(id, supplier, ruc) => {
+                formInstance.setFieldValue('supplier_id' satisfies R, id)
+                formInstance.setFieldValue('legal_name' satisfies R, supplier)
+                formInstance.setFieldValue('legal_number' satisfies R, ruc)
+              }}
             />
-          </Form.Item>
+          </div>
           <Form.Item
             className="mb-1"
             label="Proveedor"
@@ -311,7 +397,15 @@ const DatosPrincipales = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Contrato">
+          <Form.Item
+            label="Contrato"
+            name={'contract_code'}
+            validateDebounce={500}
+            rules={[{ validator: validate_contract_identifier }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item name={'contract_id' satisfies R} hidden>
             <Input />
           </Form.Item>
         </div>
@@ -457,31 +551,51 @@ const CategoriaGasto = ({
   )
 }
 
-const DatosProveedor = () => {
+const DatosProveedor = ({ supplier_id }: { supplier_id?: number }) => {
+  const { data: supplier, error } = useQuery({
+    queryKey: ['rq:supplier_one', supplier_id],
+    enabled: !!supplier_id,
+    gcTime: 0,
+    queryFn: async () => {
+      const data = await viewClient.api.view.supplier.get_one[':id'].$get({
+        param: { id: supplier_id!.toString() },
+      })
+      const result = await data.json()
+      if (!data.ok) {
+        throw new Error(result.message)
+      }
+      return result.data as InvSupplierSelect
+    },
+  })
+
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos del proveedor
       </h3>
+      {error && (
+        <div>
+          <p className="text-red-500">
+            Error al cargar el proveedor: {error.message}
+          </p>
+        </div>
+      )}
       <div className="ml-10 flex flex-col gap-2">
         <div className="grid grid-cols-2">
-          <p>Proveedor: Tienda Rosita SAC</p>
-          <p>RUC: 87654321</p>
+          <p>Proveedor: {supplier?.legal_name}</p>
+          <p>RUC: {supplier?.legal_number}</p>
         </div>
         <div className="flex items-center gap-2">
-          <span>Cuenta: 12345678</span>{' '}
-          <Button size="small" type="primary">
-            <Plus />
-          </Button>
+          <span>Cuenta: {supplier?.bank_account_num}</span>
         </div>
         <div>
-          <p>CCI: 121344444444</p>
+          <p>CCI: {supplier?.bank_account_cci}</p>
         </div>
         <div>
           <p>Tipo: Cuenta corriente</p>
         </div>
         <div>
-          <p>Banco : BCP</p>
+          <p>Banco : {supplier?.bank_code}</p>
         </div>
       </div>
     </div>

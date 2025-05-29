@@ -101,6 +101,13 @@ const DatosPrincipales = ({
               ))}
             </Select>
           </Form.Item>
+          <Form.Item
+            name={'request_code' satisfies T}
+            label="Codigo"
+            className="mb-1"
+          >
+            <Input readOnly />
+          </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
