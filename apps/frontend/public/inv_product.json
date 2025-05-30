@@ -1,0 +1,138 @@
+[
+	{
+		"id" : 185,
+		"product" : "ASADO DE TIRA",
+		"category" : "STEAKHOUSE",
+		"category_id" : 22,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 197,
+		"product" : "FILETE DE PIERNA",
+		"category" : "STEAKHOUSE",
+		"category_id" : 22,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 203,
+		"product" : "POLLO AMARILLO",
+		"category" : "STEAKHOUSE",
+		"category_id" : 22,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 31,
+		"product" : "CEBOLLA BLANCA",
+		"category" : "VERDURAS",
+		"category_id" : 8,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 32,
+		"product" : "PIMIENTO",
+		"category" : "VERDURAS",
+		"category_id" : 8,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 262,
+		"product" : "AJI AMARILLO",
+		"category" : "VERDURAS",
+		"category_id" : 8,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 14,
+		"product" : "CHAMPIÑON",
+		"category" : "ENLATADOS",
+		"category_id" : 3,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 15,
+		"product" : "CHOCLITO",
+		"category" : "ENLATADOS",
+		"category_id" : 3,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 16,
+		"product" : "PIÑA ALMIBAR",
+		"category" : "ENLATADOS",
+		"category_id" : 3,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 33,
+		"product" : "MOZZARELLA",
+		"category" : "QUESOS",
+		"category_id" : 9,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 318,
+		"product" : "QUESO PROVOLETA PORC 320GR",
+		"category" : "QUESOS",
+		"category_id" : 9,
+		"measure_id" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 85,
+		"product" : "GASEOSA",
+		"category" : "GASEOSAS",
+		"category_id" : 14,
+		"measure_id" : 2,
+		"status" : 1
+	},
+	{
+		"id" : 86,
+		"product" : "AGUA GASEOSA",
+		"category" : "GASEOSAS",
+		"category_id" : 14,
+		"measure_id" : 2,
+		"status" : 1
+	},
+	{
+		"id" : 87,
+		"product" : "AGUA SIN GAS",
+		"category" : "GASEOSAS",
+		"category_id" : 14,
+		"measure_id" : 2,
+		"status" : 1
+	},
+	{
+		"id" : 35,
+		"product" : "CAJA DE PIZZA FAMILIAR",
+		"category" : "CAJAS",
+		"category_id" : 11,
+		"measure_id" : 2,
+		"status" : 1
+	},
+	{
+		"id" : 36,
+		"product" : "CAJA DE PIZZA GIGANTE",
+		"category" : "CAJAS",
+		"category_id" : 11,
+		"measure_id" : 2,
+		"status" : 1
+	},
+	{
+		"id" : 37,
+		"product" : "CAJA DE PIZZA GRANDE",
+		"category" : "CAJAS",
+		"category_id" : 11,
+		"measure_id" : 2,
+		"status" : 1
+	}
+]
