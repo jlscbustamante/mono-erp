@@ -1,7 +1,11 @@
 import { db } from "#app/config/database.ts";
 import { check_authorized_user } from "#app/modules/payment/case/security/check_user.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
-import { AdmPaymentOrderUpdate, ORDER_PAYMENT_STATUS } from "@scope/shared";
+import {
+  AdmPaymentOrderUpdate,
+  ORDER_PAYMENT_STATUS,
+  PAYMENT_STATUS,
+} from "@scope/shared";
 import { HTTPException } from "hono/http-exception";
 import { get_authorized_user } from "../queries/get_authorized_users.ts";
 
@@ -74,5 +78,13 @@ export const authorize_order = async (props: {
     .updateTable("adm_payment_order")
     .set(update_payment_order)
     .where("id", "=", props.order_id)
+    .execute();
+
+  await db
+    .updateTable("adm_requirement")
+    .set({
+      status: PAYMENT_STATUS.APPROVED,
+    })
+    .where("payment_order_id", "=", props.order_id)
     .execute();
 };

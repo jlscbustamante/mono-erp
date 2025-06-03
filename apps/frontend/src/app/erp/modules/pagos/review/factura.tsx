@@ -424,7 +424,7 @@ const CategoriaGasto = ({
   formInstance,
   loading,
   requirement,
-  approve,
+  // approve,
 }: {
   requirement: AdmRequirementSelect
   loading: boolean
@@ -540,9 +540,9 @@ const CategoriaGasto = ({
           wrapperCol={{ span: 24 }}
         >
           <div className="flex gap-2">
-            <Button type="primary" onClick={approve}>
+            {/* <Button type="primary" onClick={approve}>
               Aprobar pago
-            </Button>
+            </Button> */}
             <Button type="primary" onClick={onSave} loading={loading}>
               Guardar
             </Button>

@@ -135,6 +135,9 @@ export default function Control() {
         <Select.Option value={ORDER_PAYMENT_STATUS.REGISTERED}>
           Registrados
         </Select.Option>
+        <Select.Option value={ORDER_PAYMENT_STATUS.APPROVED}>
+          Aprobados
+        </Select.Option>
         <Select.Option value={ORDER_PAYMENT_STATUS.SENT_TO_BANK}>
           Enviados al banco
         </Select.Option>
