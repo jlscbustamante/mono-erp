@@ -1,70 +1,23 @@
 import { CompanySelectForm } from '@/app/erp/modules/requerimientos/components/company-select'
 import type { TabsProps } from 'antd'
-import {
-  Button,
-  Card,
-  DatePicker,
-  Form,
-  Input,
-  Table,
-  Tabs,
-  Typography,
-} from 'antd'
-import { ColumnsType } from 'antd/es/table'
-import { useState } from 'react'
+import { Card, DatePicker, Form, Input, Tabs, Typography } from 'antd'
+import { useEffect, useState } from 'react'
+import { FiltrosInsumos } from './FiltrosInsumos'
+import { ListaIngredientes } from './ListaIngredientes'
 import { ListaInsumos } from './ListaInsumos'
 import { gridStyle } from './styles'
 import { IngredienteProd } from './types'
+
 const { Text } = Typography
 
 export const NuevaRecetaTabs = () => {
-  const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
   const onChange = (key: string) => {
     console.log('change :' + key)
   }
 
-  //columnas de la tabla de ingredientes de receta
-  const columnsIngredientesR: ColumnsType = [
-    {
-      title: 'Nro',
-      className: '!p-1',
-      render: (_, __, index) => index + 1,
-    },
-    {
-      title: 'Ingrediente',
-      dataIndex: 'product',
-      className: '!p-1',
-    },
-    {
-      title: 'Colección',
-      dataIndex: 'coleccion',
-      className: '!p-1',
-    },
-    {
-      title: 'Cantidad',
-      dataIndex: 'quantity',
-      className: '!p-1',
-    },
-    {
-      title: 'UM',
-      dataIndex: 'measure_id',
-      className: '!p-1',
-      render: (_, record) =>
-        umeds.find((item) => item.id === record.measure_id)?.abr,
-    },
-    {
-      className: '!p-1',
-      render: (_, record) => (
-        <Button onClick={() => handleQuitarIngrediente(record.id)}>-</Button>
-      ),
-    },
-  ]
-
-  const handleQuitarIngrediente = (code: number) => {
-    setIngredientesR(ingredientesR.filter((item) => item.id != code))
-  }
-
   const PanelIzq = () => {
+    const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
+
     return (
       <>
         <Card hoverable style={gridStyle}>
@@ -113,27 +66,101 @@ export const NuevaRecetaTabs = () => {
               </div>
             </div>
           </Form>
-          <Table
-            className="w-104 relative z-10"
-            rowKey={(el) => el.code}
-            size="small"
-            bordered={true}
-            pagination={false}
-            columns={columnsIngredientesR}
-            dataSource={ingredientesR}
-          ></Table>
+          <ListaIngredientes />
         </Card>
       </>
     )
   }
+
+  const PanelDer = ({ listaInsumos, childToParent }) => {
+    const data = 'This is data from Child Component to the Parent Component.'
+    return (
+      <>
+        <div>
+          <h2>titulo</h2>
+          <FiltrosInsumos childToParent={childToParent} />
+        </div>
+        <span>Cantidad de insumos : {listaInsumos.length}</span>
+        <ListaInsumos ingredientesMFiltrados={listaInsumos} />
+      </>
+    )
+  }
+
   const RecetaProdFinal = () => {
+    const [catSelected, setCatSelected] = useState(0)
+    const [needle, setNeedle] = useState('')
+    const [datax, setDatax] = useState('')
+    /*const childToParent = (childdata) => {
+      //setDatax(childdata)
+      setNeedle(childdata)
+      setCatSelected(3)
+      
+    }*/
+    const [ingredienteM, setIngredienteM] = useState<IngredienteProd[]>([])
+    //ingredientes filtrados por la busqueda
+    const [ingredienteMFiltrado, setIngredienteMFiltrado] = useState<
+      IngredienteProd[]
+    >([])
+
+    const ingredienteMSelected = function leeData(catSelected, needle) {
+      console.log('dato renovado')
+      setNeedle(needle)
+      setCatSelected(catSelected)
+
+      const query: IngredienteProd[] = ingredienteM
+
+      const dataFiltered: IngredienteProd[] =
+        query?.filter((el: IngredienteProd) => {
+          console.log('el.category_id : ' + el.category_id)
+          console.log('el.product : ' + el.product)
+          let out: IngredienteProd
+          if (!catSelected) {
+            if (el.product.toLowerCase().includes(needle.toLowerCase()))
+              out = el
+          } else {
+            if (
+              el.category_id === catSelected &&
+              el.product.toLowerCase().includes(needle.toLowerCase())
+            ) {
+              out = el
+            }
+          }
+          return out
+        }) ?? []
+
+      console.table(dataFiltered)
+
+      setIngredienteMFiltrado(dataFiltered)
+
+      return dataFiltered
+    }
+    useEffect(() => {
+      console.log('componente renderizado')
+      const fetchData = async () => {
+        try {
+          const response = await fetch('/inv_product.json')
+          const jsonData = await response.json()
+          setIngredienteM(jsonData) // Almacenamos los datos en el estado
+          //setLoading(false) // Desactivamos el estado de carga
+        } catch (err) {
+          //setError('Error al cargar datos') // Capturamos cualquier error
+          //setLoading(false) // Desactivamos el estado de carga en caso de error
+        }
+      }
+
+      fetchData()
+    }, [])
     return (
       <div className="flex">
+        {datax}
         <div className="flex-1 w-64 ...">
           <PanelIzq />
         </div>
         <div className="flex-1 w-64 ...">
-          <ListaInsumos />
+          <PanelDer
+            listaInsumos={ingredienteMFiltrado}
+            childToParent={ingredienteMSelected}
+          />
         </div>
       </div>
     )
@@ -163,11 +190,16 @@ export const NuevaRecetaTabs = () => {
   ]
 
   return (
-    <Tabs
-      defaultActiveKey="1"
-      type="card"
-      items={itemsTab}
-      onChange={onChange}
-    />
+    <>
+      <div>
+        <span>Qué receta desea crear hoy?</span>
+      </div>
+      <Tabs
+        defaultActiveKey="1"
+        type="card"
+        items={itemsTab}
+        onChange={onChange}
+      />
+    </>
   )
 }

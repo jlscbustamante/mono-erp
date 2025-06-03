@@ -25,7 +25,7 @@ export class Parameters {
 
   async loadParameters() {
     const data: IParameter[] = await AppDataSource.query(
-      'SELECT * FROM parameters',
+      'SELECT * FROM sys_parameters',
     )
     for (const parameter of data) {
       if (!this.parameters[parameter.type]) {
