@@ -139,12 +139,12 @@ const listIcon: Record<string, IconType | LucideIcon | null> = {
   [PATHS.erp.modulos.recursosHumanos.motorizados]: MdDeliveryDining,
 
   [PATHS.erp.modulos.recetas.main]: FaListCheck,
-  [PATHS.erp.modulos.recetas.nuevaReceta.main]: IoCreateSharp,
-  [PATHS.erp.modulos.recetas.nuevaReceta.productoFinal]: VscSettings,
-  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.main]: BiSolidPizza,
-  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto]: GiTomato,
-  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores]: LuCupSoda,
-  [PATHS.erp.modulos.recetas.presentacionTamanio.main]: TbRulerMeasure,
+  [PATHS.erp.modulos.recetas.nuevaReceta]: IoCreateSharp,
+  [PATHS.erp.modulos.recetas.productoFinal]: VscSettings,
+  [PATHS.erp.modulos.recetas.nuevaRecetaColecciones]: BiSolidPizza,
+  [PATHS.erp.modulos.recetas.producto]: GiTomato,
+  [PATHS.erp.modulos.recetas.sabores]: LuCupSoda,
+  [PATHS.erp.modulos.recetas.presentacionTamanio]: TbRulerMeasure,
 }
 
 export const PATH_ICONS = new Proxy(listIcon, {

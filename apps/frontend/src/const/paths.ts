@@ -153,19 +153,12 @@ export const PATHS = {
       },
       recetas: {
         main: '/erp/modulos/recetas',
-        consultarReceta: '/erp/modulos/recetas/consultar-receta',
-        nuevaReceta: {
-          main: '/erp/modulos/recetas/nueva-receta',
-          productoFinal: '/erp/modulos/recetas/nueva-receta/producto-final',
-        },
-        nuevaRecetaColecciones: {
-          main: '/erp/modulos/recetas/nueva-receta-colecciones',
-          producto: '/erp/modulos/recetas/nueva-receta-colecciones/producto',
-          sabores: '/erp/modulos/recetas/nueva-receta-colecciones/sabores',
-        },
-        presentacionTamanio: {
-          main: '/erp/modulos/recetas/presentacion-tamanio',
-        },
+        nuevaReceta: '/erp/modulos/recetas/nueva-receta',
+        productoFinal: '/erp/modulos/recetas/producto-final',
+        nuevaRecetaColecciones: '/erp/modulos/recetas/nueva-receta-colecciones',
+        producto: '/erp/modulos/recetas/producto',
+        sabores: '/erp/modulos/recetas/sabores',
+        presentacionTamanio: '/erp/modulos/recetas/presentacion-tamanio',
       },
     },
   },

@@ -80,6 +80,7 @@ import GetIamUser from '@/views/security/Get/GetIamUser'
 import PaymentMethods from '@/views/stores/PaymentMethods'
 import SignMovements from '@/views/stores/SignMovements'
 import StoresStates from '@/views/stores/States'
+import { Empty } from 'antd'
 import { createBrowserRouter } from 'react-router-dom'
 
 export const routerv2 = createBrowserRouter([
@@ -460,23 +461,29 @@ export const routerv2 = createBrowserRouter([
             element: <RecetasLayout />,
             children: [
               {
-                path: PATHS.erp.modulos.recetas.nuevaReceta.productoFinal,
+                path: PATHS.erp.modulos.recetas.nuevaReceta,
                 element: <NuevaRecetaTabs />,
               },
               {
-                path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto,
-                element: <NotFound />,
+                path: PATHS.erp.modulos.recetas.productoFinal,
+                element: <Empty />,
               },
               {
-                path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores,
-                element: <NotFound />,
+                path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones,
+                element: <Empty />,
               },
-              /*
-              aun no tiene subcomponente
               {
-                path: PATHS.erp.modulos.recetas.presentacionTamanio.main,
-                element: <NotFound />,
-              },*/
+                path: PATHS.erp.modulos.recetas.producto,
+                element: <Empty />,
+              },
+              {
+                path: PATHS.erp.modulos.recetas.sabores,
+                element: <Empty />,
+              },
+              {
+                path: PATHS.erp.modulos.recetas.presentacionTamanio,
+                element: <Empty />,
+              },
             ],
           },
         ],

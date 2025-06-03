@@ -1,37 +1,30 @@
-import { MenuOption, MenuSeparator, separator } from '@/components/layout'
-import Layout, { gm } from '@/components/layout'
+import { EmptyModule } from '@/components/empty-module'
+import Layout, {
+  gm,
+  MenuOption,
+  MenuSeparator,
+  separator,
+} from '@/components/layout'
+import { appConfig } from '@/const/config'
 import { PATHS } from '@/const/paths'
+import { useMemo } from 'react'
 import { useOutlet } from 'react-router'
 import { useSession } from '../../use-session'
-import { useMemo } from 'react'
-import { EmptyModule } from '@/components/empty-module'
-import { appConfig } from '@/const/config'
 
 const menu: (MenuOption | MenuSeparator)[] = [
-  gm('Nueva receta', PATHS.erp.modulos.recetas.main, [
-    gm(
-      'Recetas de producto final',
-      PATHS.erp.modulos.recetas.nuevaReceta.productoFinal,
-    ),
-  ]),
+  gm('Nueva receta', PATHS.erp.modulos.recetas.nuevaReceta),
+  separator(),
+  gm('Recetas de producto final', PATHS.erp.modulos.recetas.productoFinal),
   separator(),
   gm(
     'Recetas de colecciones',
-    PATHS.erp.modulos.recetas.nuevaRecetaColecciones.main,
-    [
-      gm(
-        'Catálogo de producto',
-        PATHS.erp.modulos.recetas.nuevaRecetaColecciones.producto,
-      ),
-      gm('Sabores', PATHS.erp.modulos.recetas.nuevaRecetaColecciones.sabores),
-    ],
+    PATHS.erp.modulos.recetas.nuevaRecetaColecciones,
   ),
+  gm('Catálogo de producto', PATHS.erp.modulos.recetas.producto),
   separator(),
-  gm(
-    'Presentación o tamaño',
-    PATHS.erp.modulos.recetas.presentacionTamanio.main,
-    [],
-  ),
+  gm('Sabores', PATHS.erp.modulos.recetas.sabores),
+  separator(),
+  gm('Presentación o tamaño', PATHS.erp.modulos.recetas.presentacionTamanio),
   separator(),
 ]
 
