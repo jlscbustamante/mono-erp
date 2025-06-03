@@ -67,9 +67,11 @@ export const authorize_order = async (props: {
     approved2_by: order_authorizations[1],
   };
 
+  let payment_generated = false;
   if (order_authorizations.length == authorized_users.slice(0, 2).length) {
     update_payment_order.status = ORDER_PAYMENT_STATUS.SENT_TO_BANK;
     await generate_payment(props.order_id);
+    payment_generated = true;
   } else {
     update_payment_order.status = ORDER_PAYMENT_STATUS.APPROVED;
   }
@@ -83,7 +85,9 @@ export const authorize_order = async (props: {
   await db
     .updateTable("adm_requirement")
     .set({
-      status: PAYMENT_STATUS.APPROVED,
+      status: payment_generated
+        ? PAYMENT_STATUS.SENT_TO_BANK
+        : PAYMENT_STATUS.APPROVED,
     })
     .where("payment_order_id", "=", props.order_id)
     .execute();
