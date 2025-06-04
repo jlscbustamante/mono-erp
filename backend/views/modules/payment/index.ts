@@ -14,6 +14,7 @@ import { check_authorized_user } from "#app/modules/payment/case/security/check_
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
 import { funka } from "#app/modules/payment/funka.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
+import { initial_balance_cash } from "#app/modules/payment/queries/balance_cash.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_authorized_users } from "#app/modules/payment/queries/get_authorized_users.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
@@ -259,6 +260,25 @@ export const paymentRouter = new Hono()
       return c.json({
         message: "ok",
         data: is_valid,
+      });
+    }
+  )
+  .get(
+    "/cashbank/balance",
+    zValidator(
+      "query",
+      z.object({
+        cash_id: z.string().transform((val) => parseInt(val)),
+        date: z.string(),
+      })
+    ),
+    async (c) => {
+      const { cash_id, date } = c.req.valid("query");
+      const initial_balance = await initial_balance_cash(cash_id, date);
+
+      return c.json({
+        message: "ok",
+        data: initial_balance,
       });
     }
   )

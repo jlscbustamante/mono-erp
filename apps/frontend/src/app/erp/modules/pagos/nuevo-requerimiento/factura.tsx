@@ -55,12 +55,19 @@ export function CrearFactura() {
   })
 
   const onSave = async () => {
-    const data_form = form_instance.getFieldsValue()
-
-    const value: AdmRequirementInsert = {
-      ...data_form,
+    try {
+      // await form_instance.validateFields()
+      // await form_instance.validateFields()
+      const data_form = form_instance.getFieldsValue()
+      console.log('No data : ', data_form)
+    } catch (err) {
+      console.log('Error al validar formulario', err)
     }
-    await createRequirementMt.mutateAsync(value)
+
+    // const value: AdmRequirementInsert = {
+    //   ...data_form,
+    // }
+    // await createRequirementMt.mutateAsync(value)
   }
 
   return (
@@ -162,7 +169,7 @@ const DatosPrincipales = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={formInstance}
-        name="formPrincipal"
+        name="factura:formPrincipal"
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -323,7 +330,7 @@ const DatosPrincipales = ({
           >
             <Input />
           </Form.Item>
-          <Form.Item name={'contract_id' satisfies R} hidden>
+          <Form.Item hidden name={'contract_id' satisfies R}>
             <Input />
           </Form.Item>
         </div>
@@ -372,8 +379,8 @@ const CategoriaGasto = ({
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={formInstance}
-        name="formCategoria"
-        onFinish={onSave}
+        name="factura:formCategoria"
+        // onFinish={onSave}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -395,7 +402,6 @@ const CategoriaGasto = ({
           <Form.Item
             label="Vencimiento"
             className="mb-1"
-            rules={[{ required: true }]}
             name={'expires_at' satisfies R}
           >
             <CustomDatePicker />
@@ -446,7 +452,13 @@ const CategoriaGasto = ({
           </Form.Item>
         </div>
         <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="button"
+            // htmlType="submit"
+            loading={loading}
+            onClick={() => onSave()}
+          >
             Guardar
           </Button>
         </Form.Item>
