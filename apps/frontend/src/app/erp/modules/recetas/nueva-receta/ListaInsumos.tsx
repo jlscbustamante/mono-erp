@@ -1,9 +1,11 @@
 import { Button, Card, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { gridStyle } from './styles'
-import { IngredienteProd } from './types'
 
-export const ListaInsumos = ({ ingredientesMFiltrados }) => {
+export const ListaInsumos = ({
+  ingredientesMFiltrados,
+  transferIngredienteM,
+}) => {
   //ingredientes filtrados por la busqueda
   /*const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
     IngredienteProd[]
@@ -35,7 +37,7 @@ export const ListaInsumos = ({ ingredientesMFiltrados }) => {
       render: (_, record) => (
         <Button
           onClick={() =>
-            handleTransferIngredienteM({
+            transferIngredienteM({
               id: record.id,
               product: record.product,
               category_id: record.category_id,
@@ -68,21 +70,6 @@ export const ListaInsumos = ({ ingredientesMFiltrados }) => {
       hidden: true,
     },
   ]
-
-  const handleTransferIngredienteM = (record: IngredienteProd) => {
-    console.log('Código :')
-    console.table(record)
-    /*
-    //validar que no este presente el ingrediente en la lista
-    const estaIngrediente = ingredientesR.find((i) => i.id == record.id)
-
-    if (estaIngrediente)
-      console.log(
-        'Ya esta presente en la receta el ingrediente ' + record.product,
-      )
-    else setIngredientesR([...ingredientesR, record])
-    */
-  }
 
   return (
     <>

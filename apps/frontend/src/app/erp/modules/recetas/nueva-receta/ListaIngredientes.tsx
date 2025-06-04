@@ -1,14 +1,8 @@
 import { Button, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { useState } from 'react'
-import { IngredienteProd } from './types'
+import { umeds } from './constants'
 
-export const ListaIngredientes = () => {
-  const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
-  const onChange = (key: string) => {
-    console.log('change :' + key)
-  }
-
+export const ListaIngredientes = ({ ingredientesR, quitarIngrediente }) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
     {
@@ -41,14 +35,11 @@ export const ListaIngredientes = () => {
     {
       className: '!p-1',
       render: (_, record) => (
-        <Button onClick={() => handleQuitarIngrediente(record.id)}>-</Button>
+        <Button onClick={() => quitarIngrediente(record.id)}>-</Button>
       ),
     },
   ]
 
-  const handleQuitarIngrediente = (code: number) => {
-    setIngredientesR(ingredientesR.filter((item) => item.id != code))
-  }
   return (
     <Table
       className="w-104 relative z-10"

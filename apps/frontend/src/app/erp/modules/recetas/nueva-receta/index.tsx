@@ -15,9 +15,7 @@ export const NuevaRecetaTabs = () => {
     console.log('change :' + key)
   }
 
-  const PanelIzq = () => {
-    const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
-
+  const PanelIzq = ({ ingredientesR, quitarIngrediente }) => {
     return (
       <>
         <Card hoverable style={gridStyle}>
@@ -66,14 +64,16 @@ export const NuevaRecetaTabs = () => {
               </div>
             </div>
           </Form>
-          <ListaIngredientes />
+          <ListaIngredientes
+            ingredientesR={ingredientesR}
+            quitarIngrediente={quitarIngrediente}
+          />
         </Card>
       </>
     )
   }
 
-  const PanelDer = ({ listaInsumos, childToParent }) => {
-    const data = 'This is data from Child Component to the Parent Component.'
+  const PanelDer = ({ listaInsumos, childToParent, childToParent2 }) => {
     return (
       <>
         <div>
@@ -81,7 +81,10 @@ export const NuevaRecetaTabs = () => {
           <FiltrosInsumos childToParent={childToParent} />
         </div>
         <span>Cantidad de insumos : {listaInsumos.length}</span>
-        <ListaInsumos ingredientesMFiltrados={listaInsumos} />
+        <ListaInsumos
+          ingredientesMFiltrados={listaInsumos}
+          transferIngredienteM={childToParent2}
+        />
       </>
     )
   }
@@ -90,6 +93,8 @@ export const NuevaRecetaTabs = () => {
     const [catSelected, setCatSelected] = useState(0)
     const [needle, setNeedle] = useState('')
     const [datax, setDatax] = useState('')
+    const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
+
     /*const childToParent = (childdata) => {
       //setDatax(childdata)
       setNeedle(childdata)
@@ -133,7 +138,26 @@ export const NuevaRecetaTabs = () => {
       setIngredienteMFiltrado(dataFiltered)
 
       return dataFiltered
+    } //ingredienteMSelected
+
+    const handleTransferIngredienteM = (record: IngredienteProd) => {
+      console.log('Código :')
+      console.table(record)
+
+      //validar que no este presente el ingrediente en la lista
+      const estaIngrediente = ingredientesR.find((i) => i.id == record.id)
+
+      if (estaIngrediente)
+        console.log(
+          'Ya esta presente en la receta el ingrediente ' + record.product,
+        )
+      else setIngredientesR([...ingredientesR, record])
     }
+
+    const handleQuitarIngrediente = (code: number) => {
+      setIngredientesR(ingredientesR.filter((item) => item.id != code))
+    }
+
     useEffect(() => {
       console.log('componente renderizado')
       const fetchData = async () => {
@@ -154,12 +178,16 @@ export const NuevaRecetaTabs = () => {
       <div className="flex">
         {datax}
         <div className="flex-1 w-64 ...">
-          <PanelIzq />
+          <PanelIzq
+            ingredientesR={ingredientesR}
+            quitarIngrediente={handleQuitarIngrediente}
+          />
         </div>
         <div className="flex-1 w-64 ...">
           <PanelDer
             listaInsumos={ingredienteMFiltrado}
             childToParent={ingredienteMSelected}
+            childToParent2={handleTransferIngredienteM}
           />
         </div>
       </div>
