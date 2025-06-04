@@ -27,6 +27,16 @@ export interface IngredienteProd {
   status: number
 }
 
+export interface InsumoItem {
+  id: number
+  company_id: number
+  product: string
+  product_id: number
+  flavor_id: number
+  size_id: number
+  status: number
+}
+
 //para ser usado en la tabla de ingredientes de receta
 export interface IItem {
   code: number

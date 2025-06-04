@@ -2,11 +2,12 @@ import { CompanySelectForm } from '@/app/erp/modules/requerimientos/components/c
 import type { TabsProps } from 'antd'
 import { Card, DatePicker, Form, Input, Tabs, Typography } from 'antd'
 import { useEffect, useState } from 'react'
+import { DetalleInsumo } from './DetalleInsumo'
 import { FiltrosInsumos } from './FiltrosInsumos'
 import { ListaIngredientes } from './ListaIngredientes'
 import { ListaInsumos } from './ListaInsumos'
 import { gridStyle } from './styles'
-import { IngredienteProd } from './types'
+import { IngredienteProd, InsumoItem } from './types'
 
 const { Text } = Typography
 
@@ -73,26 +74,39 @@ export const NuevaRecetaTabs = () => {
     )
   }
 
-  const PanelDer = ({ listaInsumos, childToParent, childToParent2 }) => {
+  const PanelDer = ({
+    listaInsumos,
+    childToParent,
+    childToParent2,
+    childToParent3,
+    ingredienteM,
+    drawerOpen,
+    drawerClose,
+  }) => {
     return (
       <>
         <div>
-          <h2>titulo</h2>
           <FiltrosInsumos childToParent={childToParent} />
         </div>
-        <span>Cantidad de insumos : {listaInsumos.length}</span>
+
         <ListaInsumos
           ingredientesMFiltrados={listaInsumos}
           transferIngredienteM={childToParent2}
+          ingredienteMMostrado={childToParent3}
+        />
+        <DetalleInsumo
+          data={ingredienteM}
+          drawerOpen={drawerOpen}
+          drawerClose={drawerClose}
         />
       </>
     )
   }
 
   const RecetaProdFinal = () => {
-    const [catSelected, setCatSelected] = useState(0)
-    const [needle, setNeedle] = useState('')
-    const [datax, setDatax] = useState('')
+    //const [catSelected, setCatSelected] = useState(0)
+    //const [needle, setNeedle] = useState('')
+    //const [datax, setDatax] = useState('')
     const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
 
     /*const childToParent = (childdata) => {
@@ -101,21 +115,33 @@ export const NuevaRecetaTabs = () => {
       setCatSelected(3)
       
     }*/
-    const [ingredienteM, setIngredienteM] = useState<IngredienteProd[]>([])
+    const [ingredientesM, setIngredientesM] = useState<IngredienteProd[]>([])
     //ingredientes filtrados por la busqueda
-    const [ingredienteMFiltrado, setIngredienteMFiltrado] = useState<
+    const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
       IngredienteProd[]
     >([])
 
-    const ingredienteMSelected = function leeData(catSelected, needle) {
-      console.log('dato renovado')
-      setNeedle(needle)
-      setCatSelected(catSelected)
+    const [ingredienteMMostrado, setIngredienteMMostrado] = useState<
+      InsumoItem[]
+    >([])
 
-      const query: IngredienteProd[] = ingredienteM
+    //los items que forman parte de un ingredienteM con receta o coleccion
+    const [ingredientesMItems, setIngredientesMItems] = useState<InsumoItem[]>(
+      [],
+    )
+
+    const [drawerOpen, setDrawerOpen] = useState(false)
+
+    const ingredientesMSelected = function leeData(catSelected, needle) {
+      console.log('dato renovado')
+      //setNeedle(needle)
+      //setCatSelected(catSelected)
+
+      const query: IngredienteProd[] = ingredientesM
 
       const dataFiltered: IngredienteProd[] =
         query?.filter((el: IngredienteProd) => {
+          console.log('el.id : ' + el.id)
           console.log('el.category_id : ' + el.category_id)
           console.log('el.product : ' + el.product)
           let out: IngredienteProd
@@ -135,17 +161,19 @@ export const NuevaRecetaTabs = () => {
 
       console.table(dataFiltered)
 
-      setIngredienteMFiltrado(dataFiltered)
+      setIngredientesMFiltrados(dataFiltered)
 
       return dataFiltered
-    } //ingredienteMSelected
+    } //ingredientesMSelected
 
-    const handleTransferIngredienteM = (record: IngredienteProd) => {
+    const handleTransferIngredientesM = (record: IngredienteProd) => {
       console.log('Código :')
       console.table(record)
 
       //validar que no este presente el ingrediente en la lista
-      const estaIngrediente = ingredientesR.find((i) => i.id == record.id)
+      const estaIngrediente = ingredientesR.find(
+        (i: IngredienteProd) => i.id == record.id,
+      )
 
       if (estaIngrediente)
         console.log(
@@ -154,8 +182,29 @@ export const NuevaRecetaTabs = () => {
       else setIngredientesR([...ingredientesR, record])
     }
 
+    const handleShowItems = (id: number) => {
+      console.log('Id mostrado :' + id)
+      //console.table(ingredientesMItems)
+      const estaIngredienteM = ingredientesMItems.filter(
+        (i: InsumoItem) => i.product_id == id,
+      )
+      console.log('Items encontrados :' + id)
+      console.table(estaIngredienteM)
+      if (estaIngredienteM.length >= 1) {
+        setIngredienteMMostrado(estaIngredienteM)
+        setDrawerOpen(true)
+      }
+    }
+
+    const handleDrawerClose = () => {
+      setIngredienteMMostrado([])
+      setDrawerOpen(false)
+    }
+
     const handleQuitarIngrediente = (code: number) => {
-      setIngredientesR(ingredientesR.filter((item) => item.id != code))
+      setIngredientesR(
+        ingredientesR.filter((item: IngredienteProd) => item.id != code),
+      )
     }
 
     useEffect(() => {
@@ -164,7 +213,19 @@ export const NuevaRecetaTabs = () => {
         try {
           const response = await fetch('/inv_product.json')
           const jsonData = await response.json()
-          setIngredienteM(jsonData) // Almacenamos los datos en el estado
+          setIngredientesM(jsonData) // Almacenamos los datos en el estado
+          //setLoading(false) // Desactivamos el estado de carga
+        } catch (err) {
+          //setError('Error al cargar datos') // Capturamos cualquier error
+          //setLoading(false) // Desactivamos el estado de carga en caso de error
+        }
+      }
+
+      const fetchDataItems = async () => {
+        try {
+          const response = await fetch('/inv_menu_items.json')
+          const jsonData = await response.json()
+          setIngredientesMItems(jsonData) // Almacenamos los datos en el estado
           //setLoading(false) // Desactivamos el estado de carga
         } catch (err) {
           //setError('Error al cargar datos') // Capturamos cualquier error
@@ -173,10 +234,10 @@ export const NuevaRecetaTabs = () => {
       }
 
       fetchData()
+      fetchDataItems()
     }, [])
     return (
       <div className="flex">
-        {datax}
         <div className="flex-1 w-64 ...">
           <PanelIzq
             ingredientesR={ingredientesR}
@@ -185,9 +246,13 @@ export const NuevaRecetaTabs = () => {
         </div>
         <div className="flex-1 w-64 ...">
           <PanelDer
-            listaInsumos={ingredienteMFiltrado}
-            childToParent={ingredienteMSelected}
-            childToParent2={handleTransferIngredienteM}
+            listaInsumos={ingredientesMFiltrados}
+            childToParent={ingredientesMSelected}
+            childToParent2={handleTransferIngredientesM}
+            childToParent3={handleShowItems}
+            ingredienteM={ingredienteMMostrado}
+            drawerOpen={drawerOpen}
+            drawerClose={handleDrawerClose}
           />
         </div>
       </div>
@@ -221,6 +286,7 @@ export const NuevaRecetaTabs = () => {
     <>
       <div>
         <span>Qué receta desea crear hoy?</span>
+        <span>&nbsp;</span>
       </div>
       <Tabs
         defaultActiveKey="1"

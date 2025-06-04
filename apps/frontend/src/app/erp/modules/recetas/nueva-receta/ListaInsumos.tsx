@@ -5,6 +5,7 @@ import { gridStyle } from './styles'
 export const ListaInsumos = ({
   ingredientesMFiltrados,
   transferIngredienteM,
+  ingredienteMMostrado,
 }) => {
   //ingredientes filtrados por la busqueda
   /*const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
@@ -73,11 +74,20 @@ export const ListaInsumos = ({
 
   return (
     <>
-      <span>Cantidad de insumos 2 : {ingredientesMFiltrados.length}</span>
       <Card style={gridStyle}>
         <Table
+          onRow={(record, rowIndex) => {
+            return {
+              onClick: (event) => {
+                console.log('Index : ' + rowIndex)
+                console.log('Record:')
+                console.table(record)
+                ingredienteMMostrado(record.id)
+              }, // click row
+            }
+          }}
           className="w-97 relative z-10"
-          rowKey={(el) => el.codigo}
+          rowKey={(el) => el.id}
           size="small"
           bordered={true}
           pagination={false}

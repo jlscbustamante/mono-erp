@@ -6,6 +6,12 @@ export const ListaIngredientes = ({ ingredientesR, quitarIngrediente }) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
     {
+      title: 'Id',
+      dataIndex: 'id',
+      className: '!p-1',
+      hidden: true,
+    },
+    {
       title: 'Nro',
       className: '!p-1',
       render: (_, __, index) => index + 1,
@@ -43,7 +49,7 @@ export const ListaIngredientes = ({ ingredientesR, quitarIngrediente }) => {
   return (
     <Table
       className="w-104 relative z-10"
-      rowKey={(el) => el.code}
+      rowKey={(el) => el.id}
       size="small"
       bordered={true}
       pagination={false}
