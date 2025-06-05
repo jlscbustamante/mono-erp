@@ -29,6 +29,24 @@ const menu: (MenuOption | MenuSeparator)[] = [
   ),
   gm('Reportes de caja', PATHS.erp.modulos.pagos.reporteCaja),
   separator(),
+  gm('Consulta de movimientos', PATHS.erp.modulos.pagos.reportes.main, [
+    gm(
+      'Cuenta corriente por proveedor',
+      PATHS.erp.modulos.pagos.reportes.cuentaCorriente,
+    ),
+    gm(
+      'Estado de cuenta caja y bancos',
+      PATHS.erp.modulos.pagos.reportes.resumido,
+    ),
+    gm(
+      'Movimientos por centro de costo',
+      PATHS.erp.modulos.pagos.reportes.porCentroCosto,
+    ),
+    gm(
+      'Resumen movimientos por fecha',
+      PATHS.erp.modulos.pagos.reportes.porFecha,
+    ),
+  ]),
   gm('Mantenimiento', PATHS.erp.modulos.pagos.mantenimiento.main, [
     gm('Proveedores', PATHS.erp.modulos.pagos.mantenimiento.supplier),
     gm('Cajabanco', PATHS.erp.modulos.pagos.mantenimiento.cashbank),
