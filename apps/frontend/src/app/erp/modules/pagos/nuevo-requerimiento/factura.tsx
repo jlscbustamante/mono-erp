@@ -56,12 +56,11 @@ export function CrearFactura() {
 
   const onSave = async () => {
     try {
-      // await form_instance.validateFields()
-      // await form_instance.validateFields()
+      await form_instance.validateFields()
       const data_form = form_instance.getFieldsValue()
-      console.log('No data : ', data_form)
+      createRequirementMt.mutate(data_form)
     } catch (err) {
-      console.log('Error al validar formulario', err)
+      console.log('Error al validar formulario completa los datos : ', err)
     }
 
     // const value: AdmRequirementInsert = {
