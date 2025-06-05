@@ -12,11 +12,17 @@ import { IngredienteProd, InsumoItem } from './types'
 const { Text } = Typography
 
 export const NuevaRecetaTabs = () => {
-  const onChange = (key: string) => {
-    console.log('change :' + key)
+  const onChange = () => {
+    //console.log('change :' + key)
   }
 
-  const PanelIzq = ({ ingredientesR, quitarIngrediente }) => {
+  const PanelIzq = ({
+    ingredientesR,
+    quitarIngrediente,
+  }: {
+    ingredientesR: IngredienteProd[]
+    quitarIngrediente: (code: number) => void
+  }) => {
     return (
       <>
         <Card hoverable style={gridStyle}>
@@ -82,6 +88,14 @@ export const NuevaRecetaTabs = () => {
     ingredienteM,
     drawerOpen,
     drawerClose,
+  }: {
+    listaInsumos: IngredienteProd[]
+    childToParent: (pCatSelected: number, pNeedle: string) => IngredienteProd[]
+    childToParent2: (record: IngredienteProd) => void
+    childToParent3: (id: number) => void
+    ingredienteM: InsumoItem[]
+    drawerOpen: boolean
+    drawerClose: () => void
   }) => {
     return (
       <>
@@ -132,8 +146,8 @@ export const NuevaRecetaTabs = () => {
 
     const [drawerOpen, setDrawerOpen] = useState(false)
 
-    const ingredientesMSelected = function leeData(catSelected, needle) {
-      console.log('dato renovado')
+    const ingredientesMSelected = (catSelected: number, needle: string) => {
+      //console.log('dato renovado')
       //setNeedle(needle)
       //setCatSelected(catSelected)
 
@@ -141,10 +155,10 @@ export const NuevaRecetaTabs = () => {
 
       const dataFiltered: IngredienteProd[] =
         query?.filter((el: IngredienteProd) => {
-          console.log('el.id : ' + el.id)
-          console.log('el.category_id : ' + el.category_id)
-          console.log('el.product : ' + el.product)
-          let out: IngredienteProd
+          // console.log('el.id : ' + el.id)
+          // console.log('el.category_id : ' + el.category_id)
+          // console.log('el.product : ' + el.product)
+          let out: IngredienteProd | undefined
           if (!catSelected) {
             if (el.product.toLowerCase().includes(needle.toLowerCase()))
               out = el
@@ -156,10 +170,13 @@ export const NuevaRecetaTabs = () => {
               out = el
             }
           }
-          return out
+          if (out) {
+            return true
+          }
+          return false
         }) ?? []
 
-      console.table(dataFiltered)
+      //console.table(dataFiltered)
 
       setIngredientesMFiltrados(dataFiltered)
 
@@ -167,29 +184,29 @@ export const NuevaRecetaTabs = () => {
     } //ingredientesMSelected
 
     const handleTransferIngredientesM = (record: IngredienteProd) => {
-      console.log('Código :')
-      console.table(record)
+      //console.log('Código :')
+      //console.table(record)
 
       //validar que no este presente el ingrediente en la lista
       const estaIngrediente = ingredientesR.find(
         (i: IngredienteProd) => i.id == record.id,
       )
 
-      if (estaIngrediente)
-        console.log(
-          'Ya esta presente en la receta el ingrediente ' + record.product,
-        )
-      else setIngredientesR([...ingredientesR, record])
+      if (estaIngrediente) {
+        //console.log('Ya esta presente en la receta el ingrediente ' + record.product )
+        let msg: boolean = true
+        msg ||= false
+      } else setIngredientesR([...ingredientesR, record])
     }
 
     const handleShowItems = (id: number) => {
-      console.log('Id mostrado :' + id)
+      //console.log('Id mostrado :' + id)
       //console.table(ingredientesMItems)
       const estaIngredienteM = ingredientesMItems.filter(
         (i: InsumoItem) => i.product_id == id,
       )
-      console.log('Items encontrados :' + id)
-      console.table(estaIngredienteM)
+      //console.log('Items encontrados :' + id)
+      //console.table(estaIngredienteM)
       if (estaIngredienteM.length >= 1) {
         setIngredienteMMostrado(estaIngredienteM)
         setDrawerOpen(true)

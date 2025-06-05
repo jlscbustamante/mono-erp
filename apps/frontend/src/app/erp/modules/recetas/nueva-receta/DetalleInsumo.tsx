@@ -1,6 +1,15 @@
 import { Drawer, List } from 'antd'
+import { InsumoItem } from './types'
 
-export const DetalleInsumo = ({ data, drawerOpen, drawerClose }) => {
+export const DetalleInsumo = ({
+  data,
+  drawerOpen,
+  drawerClose,
+}: {
+  data: InsumoItem[]
+  drawerOpen: boolean
+  drawerClose: () => void
+}) => {
   return (
     <Drawer open={drawerOpen} onClose={drawerClose}>
       <List

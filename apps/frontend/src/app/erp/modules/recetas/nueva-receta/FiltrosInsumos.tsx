@@ -1,8 +1,13 @@
 import { cn } from '@/utils/cn'
 import { Button, Input } from 'antd'
 import { ChangeEvent, useState } from 'react'
+import { IngredienteProd } from './types'
 
-export const FiltrosInsumos = ({ childToParent }) => {
+export const FiltrosInsumos = ({
+  childToParent,
+}: {
+  childToParent: (pCatSelected: number, pNeedle: string) => IngredienteProd[]
+}) => {
   const [catSelected, setCatSelected] = useState(0)
   const [needle, setNeedle] = useState('')
 

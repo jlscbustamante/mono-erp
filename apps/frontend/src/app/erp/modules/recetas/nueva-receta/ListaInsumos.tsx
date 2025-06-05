@@ -1,11 +1,16 @@
 import { Button, Card, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { gridStyle } from './styles'
+import { IngredienteProd } from './types'
 
 export const ListaInsumos = ({
   ingredientesMFiltrados,
   transferIngredienteM,
   ingredienteMMostrado,
+}: {
+  ingredientesMFiltrados: IngredienteProd[]
+  transferIngredienteM: (record: IngredienteProd) => void
+  ingredienteMMostrado: (id: number) => void
 }) => {
   //ingredientes filtrados por la busqueda
   /*const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
@@ -76,12 +81,12 @@ export const ListaInsumos = ({
     <>
       <Card style={gridStyle}>
         <Table
-          onRow={(record, rowIndex) => {
+          onRow={(record) => {
             return {
-              onClick: (event) => {
-                console.log('Index : ' + rowIndex)
-                console.log('Record:')
-                console.table(record)
+              onClick: () => {
+                //console.log('Index : ' + rowIndex)
+                //console.log('Record:')
+                //console.table(record)
                 ingredienteMMostrado(record.id)
               }, // click row
             }

@@ -1,8 +1,15 @@
 import { Button, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { umeds } from './constants'
+import { IngredienteProd } from './types'
 
-export const ListaIngredientes = ({ ingredientesR, quitarIngrediente }) => {
+export const ListaIngredientes = ({
+  ingredientesR,
+  quitarIngrediente,
+}: {
+  ingredientesR: IngredienteProd[]
+  quitarIngrediente: (code: number) => void
+}) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
     {
