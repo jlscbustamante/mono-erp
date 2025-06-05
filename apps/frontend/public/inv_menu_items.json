@@ -2,23 +2,44 @@
     {"id":15,
     "company_id":8,
     "product":"detalle1",
-    "product_id":14,
+    "product_id":185,
     "flavor_id":3,
     "size_id":2    
 },
 {"id":12,
     "company_id":8,
     "product":"detalle2",
-    "product_id":14,
+    "product_id":185,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":13,
+    "company_id":8,
+    "product":"detalle3",
+    "product_id":185,
     "flavor_id":3,
     "size_id":2    
 }
 ,
 {"id":14,
     "company_id":33,
-    "product":"detalle3",
+    "product":"detalle4",
     "product_id":36,
     "flavor_id":3,
+    "size_id":2    
+},
+{"id":16,
+    "company_id":8,
+    "product":"detalle5",
+    "product_id":197,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":17,
+    "company_id":8,
+    "product":"detalle2",
+    "product_id":197,
+    "flavor_id":1,
     "size_id":2    
 }
 ]

@@ -188,15 +188,58 @@ export const NuevaRecetaTabs = () => {
       //console.table(record)
 
       //validar que no este presente el ingrediente en la lista
-      const estaIngrediente = ingredientesR.find(
+      /*const estaIngrediente = ingredientesR.find(
         (i: IngredienteProd) => i.id == record.id,
+      )*/
+      let estaIngrediente: boolean = false
+
+      //validar si el item encontrado tiene receta
+      //TODO : esto se reducira a la validacion de un solo campo
+      const tempItems: InsumoItem[] = ingredientesMItems.filter(
+        (i) => i.product_id == record.id,
       )
 
-      if (estaIngrediente) {
-        //console.log('Ya esta presente en la receta el ingrediente ' + record.product )
-        let msg: boolean = true
-        msg ||= false
-      } else setIngredientesR([...ingredientesR, record])
+      const tempItems2: IngredienteProd[] = tempItems.map((i) => {
+        const j: IngredienteProd = {
+          category_id: record.category_id,
+          product: i.product,
+          id: i.id,
+          measure_id: record.measure_id,
+          unit_price: record.unit_price,
+          status: i.status,
+        }
+
+        return j
+      })
+
+      //Fin TODO
+      //validar el flag que indica que el item tiene receta
+      if (tempItems2.length >= 1) {
+        //agregar varios items
+
+        for (let i = 0; i < ingredientesR.length; i++) {
+          estaIngrediente = tempItems2.some(
+            (i2: IngredienteProd) => i2.id === ingredientesR[i].id,
+          )
+          if (estaIngrediente) break
+        }
+
+        //Si en la lista de ingredientes (derecha) no esta ningun
+        //item del item(con receta) por agregar
+        //entonces se agrega a esa lista
+        if (!estaIngrediente) {
+          setIngredientesR([...ingredientesR, ...tempItems2])
+        }
+      } else {
+        //validar que no este presente el ingrediente en la lista
+        estaIngrediente = ingredientesR.some(
+          (i: IngredienteProd) => i.id == record.id,
+        )
+
+        if (!estaIngrediente) {
+          setIngredientesR([...ingredientesR, record])
+        }
+      }
     }
 
     const handleShowItems = (id: number) => {

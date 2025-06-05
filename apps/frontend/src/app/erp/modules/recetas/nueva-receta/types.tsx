@@ -30,29 +30,88 @@ export interface invRecollectionMix {
   measure_id: number
 }
 
-/**
- * 
- * INSERT INTO `db_erpraul_v1`.`inv_recipe`
-(`id`,
-`company_id`,
-`recipe`,
-`menu_item_id`,
-`save_tag`,
-`status`,
-`created_at`,
-`updated_at`)
-VALUES
-(<{id: }>,
-<{company_id: }>,
-<{recipe: }>,
-<{menu_item_id: }>,
-<{save_tag: }>,
-<{status: 1}>,
-<{created_at: CURRENT_TIMESTAMP}>,
-<{updated_at: CURRENT_TIMESTAMP}>);
+export interface InvRecipe {
+  id: number
+  company_id: number
+  recipe: string
+  menu_item_id: number
+  save_tag: string
+  status: number
+}
 
- */
+//tabla inv_recollection
+export interface InvRecollection {
+  id: number
+  company_id: number
+  collection: string
+  based_on: string
+  is_base: number
+  factor: number
+  status: number
+}
 
+//tabla inv_menu_items
+export interface InvMenuItems {
+  id: number
+  company_id: number
+  product: string
+  product_id: number
+  size_id: number
+  flavor_id: number
+  status: number
+}
+
+//tabla inv_productitem
+export interface inv_productitem {
+  id: number
+  product_id: number
+  item_id: number
+}
+
+//tabla inv_menu_product
+export interface InvMenuProduct {
+  id: number
+  company_id: number
+  product: string
+  recipe_req: number
+  status: number
+}
+//tabla inv_menu_size
+export interface InvMenuSize {
+  id: number
+  company_id: number
+  size: number
+  status: number
+}
+
+//tabla inv_menu_flavor
+export interface InvMenuFlavor {
+  id: number
+  company_id: number
+  flavor: string
+  status: number
+}
+
+//tabla inv_item
+export interface InvItem {
+  id: number
+  item_code: string
+  item_type: string
+  item_name: string
+  category_id: number
+  subcategory_id: number
+  supplier_id: number
+  brand_id: number
+  presentation_id: number
+  item_used_to: string
+  measure_id: number
+  unit_cost: number
+  unit_price: number
+  status: number
+  old_product_id: number
+}
+
+//fin de tablas de BD
 export interface IngredienteProd {
   id: number
   product: string
