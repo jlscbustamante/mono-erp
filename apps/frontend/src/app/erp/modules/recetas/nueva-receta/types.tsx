@@ -1,3 +1,5 @@
+//campos existentes en la BD
+
 export interface MockIngrediente {
   name: string
   codigo: string
@@ -17,6 +19,39 @@ export interface IngredienteDev {
   menuprod_id: number
   status: number
 }
+
+//inv_recollection_mix
+export interface invRecollectionMix {
+  id: number
+  recollection_id: number
+  item_id: number
+  quantity: number
+  presentation_id: number
+  measure_id: number
+}
+
+/**
+ * 
+ * INSERT INTO `db_erpraul_v1`.`inv_recipe`
+(`id`,
+`company_id`,
+`recipe`,
+`menu_item_id`,
+`save_tag`,
+`status`,
+`created_at`,
+`updated_at`)
+VALUES
+(<{id: }>,
+<{company_id: }>,
+<{recipe: }>,
+<{menu_item_id: }>,
+<{save_tag: }>,
+<{status: 1}>,
+<{created_at: CURRENT_TIMESTAMP}>,
+<{updated_at: CURRENT_TIMESTAMP}>);
+
+ */
 
 export interface IngredienteProd {
   id: number

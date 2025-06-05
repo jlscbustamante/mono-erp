@@ -1,3 +1,5 @@
+import { UMed } from './types'
+
 //datos de unidad de medida
 export const umeds: UMed[] = [
   {
