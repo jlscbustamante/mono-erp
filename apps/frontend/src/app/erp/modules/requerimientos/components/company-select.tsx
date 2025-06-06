@@ -1,5 +1,5 @@
 import { viewClient } from '@/lib/rpc'
-import { cn, filterSelectForm } from '@/utils'
+import { filterSelectForm } from '@/utils'
 import { CompanySelect } from '@pizzadb'
 import { useQuery } from '@tanstack/react-query'
 import { Select } from 'antd'
@@ -32,7 +32,6 @@ export function CompanySelectForm({
 
   return (
     <Select
-      className={cn('w-64', className)}
       value={value}
       onChange={(val) => {
         onChange?.(val ?? undefined)

@@ -28,47 +28,36 @@ export const NuevaRecetaTabs = () => {
         <Card hoverable style={gridStyle}>
           <Form
             labelCol={{ span: 6 }}
+            labelAlign="left"
+            labelWrap
             wrapperCol={{ span: 14 }}
             layout="horizontal"
             style={{ maxWidth: 600 }}
           >
-            <div className="flex">
-              <div className="flex-1 w-48 ...">
-                <Form.Item label="Compañía">
-                  <CompanySelectForm />
-                </Form.Item>
-              </div>
-              <div className="flex-1 w-48 ...">
-                <Form.Item label="Fecha">
-                  <DatePicker />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="flex-1 w-48 ...">
-                <Form.Item label="Nombre de receta">
-                  <Input />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="flex-1 w-48 ...">
-                <Form.Item label="Producto de venta">
-                  <Input />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="flex-1 w-48 ...">
-                <Form.Item label="Etiquetar como">
-                  <Input />
-                </Form.Item>
-              </div>
-            </div>
-            <div className="flex">
-              <div className="flex-1 w-48 ...">
-                <Text>Ingredientes</Text>
-              </div>
+            <div className="grid grid-cols-12 gap-2 items-start">
+              <Form.Item className="col-span-8 mb-1" label="Compañía">
+                <CompanySelectForm />
+              </Form.Item>
+
+              <Form.Item className="col-span-4 mb-1" label="Fecha">
+                <DatePicker />
+              </Form.Item>
+
+              <Form.Item className="col-span-12 mb-1" label="Nombre de receta">
+                <Input />
+              </Form.Item>
+
+              <Form.Item className="col-span-12 mb-1" label="Producto de venta">
+                <Input />
+              </Form.Item>
+
+              <Form.Item className="col-span-12 mb-1" label="Etiquetar como">
+                <Input />
+              </Form.Item>
+              <Form.Item
+                className="col-span-12 mb-1"
+                label="Ingredientes"
+              ></Form.Item>
             </div>
           </Form>
           <ListaIngredientes
@@ -112,6 +101,7 @@ export const NuevaRecetaTabs = () => {
           data={ingredienteM}
           drawerOpen={drawerOpen}
           drawerClose={drawerClose}
+          oper={1}
         />
       </>
     )
@@ -344,8 +334,8 @@ export const NuevaRecetaTabs = () => {
 
   return (
     <>
-      <div>
-        <span>Qué receta desea crear hoy?</span>
+      <div className="flex">
+        <span className="p-5">Qué receta desea crear hoy?</span>
         <span>&nbsp;</span>
       </div>
       <Tabs
