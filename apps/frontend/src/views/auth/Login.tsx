@@ -4,14 +4,13 @@ import { Button, Form, Input } from 'antd'
 import { useState } from 'react'
 import { AiOutlineUser } from 'react-icons/ai'
 import { RiLockPasswordLine } from 'react-icons/ri'
-import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 import { ReactComponent as Logo } from '@/assets/logo.svg'
 // import Logo from '@/assets/logo.png'
+import { useSession } from '@/app/erp/use-session'
 import { ITEM } from '@/const/localStorageItems'
 import { NOTIFICATION } from '@/const/notification'
-import { PATHS } from '@/const/paths'
 import { authApi } from '@/lib/api/auth'
 import { useMutation } from '@tanstack/react-query'
 
@@ -35,13 +34,16 @@ const FormLogin = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   localStorage.removeItem(ITEM.tkp)
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
+  const setSession = useSession((st) => st.setSession)
 
   const loginMt = useMutation({
     mutationFn: (variables: { email: string; password: string }) =>
-      authApi.login(variables),
-    onSuccess: (token) => {
-      navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}&email=${email}`)
+      authApi.loginSimple(variables),
+    onSuccess: (data) => {
+      localStorage.setItem('tk_admin', data.token)
+      setSession(data.session)
+      // navigate(`${PATHS.erp.auth.otpLogin}?tkp=${token}&email=${email}`)
     },
     onError: (err) => {
       toast.dismiss()
