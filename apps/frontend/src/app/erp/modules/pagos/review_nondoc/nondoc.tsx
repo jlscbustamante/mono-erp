@@ -81,8 +81,8 @@ const DatosPrincipales = ({
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={form}
         name="rq:update_non_doc"
         initialValues={requirement}
@@ -96,7 +96,7 @@ const DatosPrincipales = ({
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>
@@ -157,11 +157,11 @@ const DatosPrincipales = ({
           <Form.Item
             label="Detalle"
             className="col-span-2 mb-1"
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
+            labelCol={{ offset: 2 }}
+            wrapperCol={{ span: 22 }}
             name={'description' satisfies T}
           >
-            <Input.TextArea placeholder="..." rows={1} />
+            <Input.TextArea placeholder="..." rows={1} className="-ml-1" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">

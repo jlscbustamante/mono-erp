@@ -130,8 +130,8 @@ const DatosPrincipales = ({
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={form_instance}
         onFinish={(values) => {
           console.log(values)
@@ -142,7 +142,7 @@ const DatosPrincipales = ({
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>
@@ -254,18 +254,21 @@ const DatosPrincipales = ({
             name={gk('legal_name')}
             rules={[{ required: true }]}
           >
-            <Input placeholder="Proveedor" className="" />
+            <Input placeholder="Proveedor" className="" readOnly />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Detalle"
             className="col-span-2 mb-1"
-            labelCol={{ span: 3 }}
+            labelCol={{
+              offset: 2,
+              // span: 3,
+            }}
             wrapperCol={{ span: 21 }}
             name={gk('description')}
           >
-            <Input.TextArea placeholder="..." rows={1} />
+            <Input.TextArea placeholder="..." rows={1} className="-ml-1" />
           </Form.Item>
         </div>
       </Form>
@@ -287,8 +290,8 @@ const TerminosPago = ({
       </h3>
       <Form
         form={form_instance}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 8 }}
+        wrapperCol={{ span: 16 }}
         onFinish={handle_submit}
       >
         <div className="grid grid-cols-2 gap-2">
@@ -302,8 +305,8 @@ const TerminosPago = ({
           </Form.Item>
           <Form.Item label="Moneda" className="mb-1" name={gk('money')}>
             <Select placeholder="Moneda">
-              <Select.Option value="PEN">S/.</Select.Option>
-              <Select.Option value="USD">$</Select.Option>
+              <Select.Option value="PEN">PEN</Select.Option>
+              <Select.Option value="USD">USD</Select.Option>
             </Select>
           </Form.Item>
         </div>

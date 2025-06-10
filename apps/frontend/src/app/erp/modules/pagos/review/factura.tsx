@@ -242,8 +242,8 @@ const DatosPrincipales = ({
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={formInstance}
         name="review:formPrincipal"
         initialValues={requirement}
@@ -258,7 +258,7 @@ const DatosPrincipales = ({
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>
@@ -347,18 +347,21 @@ const DatosPrincipales = ({
             name={'legal_name' satisfies R}
             rules={[{ required: true }]}
           >
-            <Input placeholder="Proveedor" className="" />
+            <Input placeholder="Proveedor" className="" readOnly />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Detalle"
             className="col-span-2 mb-1"
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
+            labelCol={{
+              // span: 3
+              offset: 2,
+            }}
+            wrapperCol={{ span: 20 }}
             name={'description' satisfies R}
           >
-            <Input.TextArea placeholder="..." rows={1} />
+            <Input.TextArea placeholder="..." rows={1} className="-ml-1" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -402,6 +405,14 @@ const DatosPrincipales = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
+          <Form.Item
+            label="Vencimiento"
+            className="mb-1"
+            rules={[{ required: true }]}
+            name={'expires_at' satisfies R}
+          >
+            <CustomDatePicker />
+          </Form.Item>
           <Form.Item
             label="Contrato"
             name={'num_contract' satisfies R}
@@ -462,8 +473,8 @@ const CategoriaGasto = ({
       </h3>
       <Form
         disabled={requirement.status != PAYMENT_STATUS.REGISTERED}
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={formInstance}
         name="formCategoria"
         initialValues={requirement}
@@ -474,19 +485,9 @@ const CategoriaGasto = ({
           </Form.Item>
           <Form.Item label="Moneda" className="mb-1" name={'money' satisfies R}>
             <Select placeholder="Moneda">
-              <Select.Option value="PEN">S/.</Select.Option>
-              <Select.Option value="USD">$</Select.Option>
+              <Select.Option value="PEN">PEN</Select.Option>
+              <Select.Option value="USD">USD</Select.Option>
             </Select>
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <Form.Item
-            label="Vencimiento"
-            className="mb-1"
-            rules={[{ required: true }]}
-            name={'expires_at' satisfies R}
-          >
-            <CustomDatePicker />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">

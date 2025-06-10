@@ -180,8 +180,8 @@ export const CreateOrderForm = ({
             rules={[{ required: true }]}
           >
             <Select placeholder="Moneda">
-              <Select.Option value="PEN">S/.</Select.Option>
-              <Select.Option value="USD">$</Select.Option>
+              <Select.Option value="PEN">PEN</Select.Option>
+              <Select.Option value="USD">USD</Select.Option>
             </Select>
           </Form.Item>
           <Form.Item

@@ -70,8 +70,8 @@ const AnticipoForm = () => {
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={form}
         onFinish={handle_save}
         name="rq:create_anticipo"
@@ -85,7 +85,7 @@ const AnticipoForm = () => {
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>

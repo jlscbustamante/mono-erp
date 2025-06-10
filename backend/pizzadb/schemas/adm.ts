@@ -17,6 +17,7 @@ export const companies = mysqlTable("adm_company", {
   id: varchar({ length: 10 }).notNull().primaryKey(),
   title: varchar({ length: 150 }).notNull(),
   company_ruc: varchar("nro_ruc", { length: 15 }),
+  razon_social: varchar({ length: 250 }),
   /**
    * @description C: comercial
    */

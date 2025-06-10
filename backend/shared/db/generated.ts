@@ -11,27 +11,16 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
   ? ColumnType<S, I | undefined, U>
   : ColumnType<T, T | undefined, T>;
 
-export type Json = ColumnType<JsonValue, string, string>;
-
-export type JsonArray = JsonValue[];
-
-export type JsonObject = {
-  [x: string]: JsonValue | undefined;
-};
-
-export type JsonPrimitive = boolean | number | string | null;
-
-export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
-
 export interface AdmCompany {
-  company_ruc: string | null;
   created_at: Generated<Date>;
   has_accounting: Generated<number>;
   id: string;
+  nro_ruc: string | null;
+  razon_social: string | null;
   status: Generated<number>;
   title: string;
   /**
-   * C: Comercial 
+   * C: Comercial, L: Logistica, O: Otros
    */
   type_company: Generated<string>;
   updated_at: Generated<Date>;
@@ -51,6 +40,7 @@ export interface AdmPaymentOrder {
   money: Generated<string | null>;
   operation: string;
   payment_at: Date | null;
+  payment_code: string | null;
   required_at: Date | null;
   required_by: string;
   /**
@@ -206,9 +196,11 @@ export interface AdmRequirement {
 export interface AdmSucursal {
   cfd_igv: Decimal | null;
   cfd_seql_bo: number | null;
+  cfd_seql_de: number | null;
   cfd_seql_fa: number | null;
   cfd_seql_gr: number | null;
   cfd_serie_bo: string | null;
+  cfd_serie_de: string | null;
   cfd_serie_fa: string | null;
   cfd_serie_gr: string | null;
   company_id: string | null;
@@ -271,26 +263,6 @@ export interface AdmTerminalpos {
   supplier: string | null;
   terminal: string;
   updated_at: Generated<Date>;
-}
-
-export interface BnkReconciliation {
-  bnk_agencia: string | null;
-  bnk_fecha: Date | null;
-  bnk_monto: Decimal | null;
-  bnk_name: string | null;
-  bnk_operacion_num: string | null;
-  bnk_operacion_text: string | null;
-  bnk_referencia: string | null;
-  bnk_saldo: Decimal | null;
-  bnk_usuario: string | null;
-  bnk_utc: string | null;
-  created_at: Generated<Date>;
-  req_description: string | null;
-  req_id: number | null;
-  req_monto: Decimal | null;
-  transactionkey: string;
-  updated_at: Generated<Date>;
-  updated_by: string | null;
 }
 
 export interface ExtPagosCulqi {
@@ -431,7 +403,6 @@ export interface FinAutoentry {
 
 export interface FinAutoentryItem {
   account_id: string;
-  company_id: string;
   created_at: Generated<Date>;
   entry_id: number;
   entry_number: Generated<number>;
@@ -576,6 +547,7 @@ export interface FinMovetype {
   cash_flow: Generated<string>;
   created_at: Generated<Date>;
   id: Generated<number>;
+  movegroup: string | null;
   movetype: string;
   /**
    * G: Gasto; V: Venta
@@ -584,7 +556,7 @@ export interface FinMovetype {
   status: Generated<number>;
   updated_at: Generated<Date>;
   /**
-   * 1: Para las tiendas; 4: Para requerimientos; 7: Para multiple
+   * 1: Solo para tiendas; 2: Solo para requerimientos; 9: Para todo
    */
   used_to: Generated<number>;
 }
@@ -602,12 +574,19 @@ export interface IamFunction {
 }
 
 export interface IamLog {
+  /**
+   * LOGIN, CREATE, EDIT, DELETE, APPROVED, PAID
+   */
   action: string | null;
   created_at: Generated<Date>;
   id: Generated<number>;
   module_id: number | null;
-  script: string | null;
+  module_name: string | null;
+  tbl_name: string | null;
+  tbl_primary_id: string | null;
+  user_email: string | null;
   user_id: number | null;
+  user_name: string | null;
 }
 
 export interface IamModule {
@@ -848,7 +827,6 @@ export interface InvItem {
   brand_id: number;
   category_id: number | null;
   created_at: Generated<Date>;
-  has_detraction: Generated<number>;
   id: Generated<number>;
   item_code: Generated<string>;
   item_name: string;
@@ -932,35 +910,53 @@ export interface InvMeasure {
   updated_at: Generated<Date>;
 }
 
-export interface InvPresentation {
+export interface InvMenuFlavor {
+  company_id: string;
   created_at: Generated<Date>;
-  id: Generated<number>;
-  presentation: string;
+  flavor: string;
+  id: number;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
-export interface InvProduct {
+export interface InvMenuItems {
   company_id: string;
   created_at: Generated<Date>;
   flavor_id: number | null;
   id: Generated<number>;
+  product: string;
   /**
    * concatenar el id
    */
-  menuprod_id: string;
-  product: string;
+  product_id: number | null;
   size_id: number | null;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
-export interface InvProductFlavor {
+export interface InvMenuProduct {
   company_id: string;
   created_at: Generated<Date>;
-  flavor: string;
+  id: number;
+  product: string;
+  recipe_req: Generated<number>;
+  status: Generated<number>;
+  updated_at: Generated<Date>;
+}
+
+export interface InvMenuSize {
+  company_id: string;
+  created_at: Generated<Date>;
+  id: number;
+  size: string;
+  status: Generated<number>;
+  updated_at: Generated<Date>;
+}
+
+export interface InvPresentation {
+  created_at: Generated<Date>;
   id: Generated<number>;
-  menuflav_id: number;
+  presentation: string;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
@@ -1001,25 +997,11 @@ export interface InvProductionItem {
   updated_at: Generated<Date>;
 }
 
-export interface InvProducts {
-  company_id: string;
+export interface InvProductitem {
   created_at: Generated<Date>;
   id: Generated<number>;
-  menuprod_id: number;
-  product: string;
-  status: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface InvProductSize {
-  company_id: string;
-  created_at: Generated<Date>;
-  factor: Decimal | null;
-  id: Generated<number>;
-  is_ref: Generated<number | null>;
-  menusize_id: number;
-  size: string;
-  status: Generated<number>;
+  item_id: number;
+  product_id: number;
   updated_at: Generated<Date>;
 }
 
@@ -1071,34 +1053,14 @@ export interface InvRecipe {
   company_id: string;
   created_at: Generated<Date>;
   id: Generated<number>;
-  product_id: number;
+  menu_item_id: number;
   recipe: string;
+  save_tag: string | null;
   status: Generated<number>;
   updated_at: Generated<Date>;
 }
 
-export interface InvRecipeBase {
-  company_id: string;
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  product_size_id: number | null;
-  status: Generated<number>;
-  title: string;
-  updated_at: Generated<Date>;
-}
-
-export interface InvRecipemixBase {
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  item_id: number;
-  measure_id: number | null;
-  presentation_id: number | null;
-  quantity: Generated<Decimal>;
-  recipe_base_id: number;
-  updated_at: Generated<Date>;
-}
-
-export interface InvRecipemixDetail {
+export interface InvRecipeMix {
   created_at: Generated<Date>;
   id: Generated<number>;
   item_id: number | null;
@@ -1113,14 +1075,29 @@ export interface InvRecipemixDetail {
   updated_at: Generated<Date>;
 }
 
-export interface InvRecipemixFlavor {
+export interface InvRecollection {
+  /**
+   * FLV: sabor; SZE: tamaño; NNN: ninguno
+   */
+  based_on: Generated<string>;
+  collection: string;
+  company_id: string;
   created_at: Generated<Date>;
-  flavor_id: number;
+  factor: Generated<Decimal | null>;
+  id: Generated<number>;
+  is_base: Generated<number | null>;
+  status: Generated<number>;
+  updated_at: Generated<Date>;
+}
+
+export interface InvRecollectionMix {
+  created_at: Generated<Date>;
   id: Generated<number>;
   item_id: number;
   measure_id: number | null;
   presentation_id: number | null;
   quantity: Generated<Decimal>;
+  recollection_id: number;
   updated_at: Generated<Date>;
 }
 
@@ -1174,6 +1151,7 @@ export interface InvStock {
 export interface InvSubcategory {
   category_id: number | null;
   created_at: Generated<Date>;
+  has_detraction: Generated<number>;
   id: Generated<number>;
   measure_id: number | null;
   /**
@@ -1209,7 +1187,7 @@ export interface InvSupplier {
 }
 
 export interface InvTmpltDispatch {
-  created_at: Generated<Date | null>;
+  created_at: Generated<Date>;
   id: Generated<number>;
   status: Generated<number>;
   /**
@@ -1234,17 +1212,6 @@ export interface InvTmpltDispatchItem {
   quantity: Generated<Decimal>;
   total_value: Generated<Decimal>;
   unit_value: Generated<Decimal>;
-}
-
-export interface Parameters {
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  name: string;
-  role: Generated<string>;
-  status: Generated<number>;
-  type: string;
-  updated_at: Generated<Date>;
-  value: string;
 }
 
 export interface RhAssistance {
@@ -1278,11 +1245,12 @@ export interface RhContract {
 
 export interface RhEmployee {
   birthday_at: Date | null;
+  company_id: string | null;
   created_at: Generated<Date>;
   doc_number: string;
-  doc_type: string | null;
+  doc_type: string;
   email: string | null;
-  first_name: string | null;
+  first_name: string;
   /**
    * M: Masculino; F: Femenino
    */
@@ -1312,15 +1280,6 @@ export interface RhJobtitle {
   status: Generated<number>;
   title: string;
   updated_at: Generated<Date>;
-}
-
-export interface RptVentadelivery {
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  priority: number | null;
-  title: string;
-  value: Decimal;
-  venta_at: Date | null;
 }
 
 export interface SlsSucursalSales {
@@ -1390,288 +1349,6 @@ export interface SysUploadLog {
   upload_by: string | null;
 }
 
-export interface ZoldAccount {
-  account: string;
-  created_at: Generated<Date>;
-  created_by: Generated<string>;
-  father: string;
-  id: string;
-  is_father: Generated<number>;
-  level: Generated<number>;
-  status: Generated<number>;
-  type: string;
-  updated_at: Generated<Date>;
-  visible: Generated<number>;
-}
-
-export interface ZoldAccountingItem {
-  account_id: string;
-  account_name: string | null;
-  /**
-   * Credito es Abono
-   */
-  amount_credit: Decimal | null;
-  /**
-   * Debito es Cargo
-   */
-  amount_debit: Decimal | null;
-  cash_account_move_id: number | null;
-  cash_lote_id: string | null;
-  created_at: Generated<Date>;
-  eerr_period: string | null;
-  id: Generated<number>;
-  move_id: number;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldAccountingMove {
-  copiedto_dw: Generated<number>;
-  cost_center_id: number;
-  created_at: Generated<Date>;
-  created_by: Generated<string>;
-  gloss: string;
-  id: Generated<number>;
-  move_at: Date;
-  move_id: number | null;
-  /**
-   * C (Compra) 
-   */
-  move_type: string | null;
-  num_doc: string | null;
-  status: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldAdmCashAccount {
-  account_id: string | null;
-  codefis: string | null;
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  name: string;
-  roles_id: number | null;
-  status: string | null;
-  sucursal_id: string | null;
-  type_cash_id: number;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldAdmCashAccountMove {
-  account_flow: string | null;
-  amount: Decimal | null;
-  approved_at: Date | null;
-  approved_by: string | null;
-  cash_account_id: string | null;
-  cash_account_id2: string | null;
-  cash_flow: string | null;
-  cash_id: number | null;
-  category_account_id: string | null;
-  category_expense_id: number | null;
-  copiedto_dw: Generated<number>;
-  created_at: Generated<Date>;
-  created_by: string | null;
-  days_id: Generated<number | null>;
-  description: string | null;
-  id: Generated<number>;
-  rejected_at: Date | null;
-  rejected_by: string | null;
-  requested_at: Date | null;
-  status: string;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldAdmCashBalance {
-  balance: Decimal | null;
-  balance_at: Date | null;
-  cash_account_id: number;
-  cash_id: number | null;
-  created_at: Generated<Date>;
-  created_by: string | null;
-  days_id: Generated<number | null>;
-  id: Generated<number>;
-  status_request: string | null;
-}
-
-export interface ZoldAdmCategoryExpense {
-  account_flow: string | null;
-  account_id: string | null;
-  cash_flow: Generated<string | null>;
-  codEfis: number | null;
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  m_order: number | null;
-  name: string;
-  roles_id: number | null;
-  status: Generated<string>;
-  type_category_id: number;
-  /**
-   * Ingreso Salida
-   */
-  type_mov: string | null;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldAdmRequest {
-  account_flow: string | null;
-  amount: Decimal | null;
-  amount_net: Decimal | null;
-  amount_ret: Decimal | null;
-  approved_at: Date | null;
-  approved_by: string | null;
-  cash_account_id: string | null;
-  cash_id: number | null;
-  cash_move: string | null;
-  cash_ref_id: number | null;
-  category_account_id: string | null;
-  category_flow: string | null;
-  category_id: number | null;
-  category_move: string | null;
-  copiedto_dw: Generated<number>;
-  cost_center_id: number | null;
-  created_at: Generated<Date>;
-  created_by: string | null;
-  days_id: Generated<number | null>;
-  description: string | null;
-  doc_url: string | null;
-  id: Generated<number>;
-  legal_name: string | null;
-  legal_number: string | null;
-  note: string | null;
-  num_document: string | null;
-  /**
-   * CONTADO / CREDITO
-   */
-  pay_method: string | null;
-  purchase_id: number | null;
-  rejected_at: Date | null;
-  rejected_by: string | null;
-  request_main_id: number | null;
-  request_type: string | null;
-  requested_at: Date | null;
-  retention: Generated<string | null>;
-  status: Generated<string>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldBalance {
-  account_id: string;
-  balance_at: Date;
-  balance_code: string | null;
-  balance_credit: Generated<Decimal>;
-  balance_debit: Generated<Decimal>;
-  balance_last: Generated<Decimal>;
-  balance_total: Generated<Decimal>;
-  copiedto_dw: Generated<number>;
-  created_at: Generated<Date>;
-  created_by: Generated<string>;
-  eerr_period: string | null;
-  id: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldBusUnit {
-  business: string;
-  /**
-   * clase negocio
-   */
-  class: string;
-  created_at: Generated<Date>;
-  external_code: string | null;
-  id: Generated<number>;
-  /**
-   * correlativo
-   */
-  position: number;
-  status: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldCostCenter {
-  account_ajuste: string | null;
-  account_caja: string | null;
-  account_merca: string | null;
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  is_cash: Generated<number>;
-  origin: string;
-  status: Generated<number>;
-  sucursal_id: string | null;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldInvDispatchbase {
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  status: Generated<number>;
-  /**
-   * PIZZA,STEAK,PIZTEK
-   */
-  sucursal_type: string;
-  updated_at: Generated<Date>;
-  /**
-   * D: Plantilla pedido de tienda, I: Plantilla inventario de tienda, W: Plantilla para almacen
-   */
-  used_to: string;
-}
-
-export interface ZoldInvDispatchbaseItem {
-  dispatch_id: number;
-  id: Generated<number>;
-  item_move_id: number;
-  item_move_name: string;
-  item_stock_id: number;
-  item_stock_name: string;
-  measure_id: number | null;
-  presentation_id: number;
-  presentation_name: string;
-  quantity: Generated<Decimal>;
-  total_value: Generated<Decimal>;
-  unit_value: Generated<Decimal>;
-}
-
-export interface ZoldSeatAccount {
-  account_id: string;
-  cod_ref: number | null;
-  created_at: Generated<Date>;
-  flow: string;
-  id: Generated<number>;
-  is_multiple: Generated<string>;
-  seat_id: number;
-  seat_number: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldSeatAuto {
-  created_at: Generated<Date>;
-  created_by: Generated<string>;
-  id: Generated<number>;
-  /**
-   * 0: simple, 1: simple multiple, 2: multiple full
-   */
-  is_multiple: Generated<number>;
-  seat: string;
-  status: Generated<number>;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldTypeCash {
-  campox: Json | null;
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  name: string;
-  status: string | null;
-  type_id: string | null;
-  updated_at: Generated<Date>;
-}
-
-export interface ZoldTypeCategory {
-  created_at: Generated<Date>;
-  id: Generated<number>;
-  name: string;
-  status: string | null;
-  type_id: string | null;
-  updated_at: Generated<Date>;
-}
-
 export interface DB {
   adm_company: AdmCompany;
   adm_payment_order: AdmPaymentOrder;
@@ -1683,7 +1360,6 @@ export interface DB {
   adm_sucursal: AdmSucursal;
   adm_sucursal_move: AdmSucursalMove;
   adm_terminalpos: AdmTerminalpos;
-  bnk_reconciliation: BnkReconciliation;
   ext_pagos_culqi: ExtPagosCulqi;
   ext_pagos_izipay: ExtPagosIzipay;
   fin_account: FinAccount;
@@ -1714,52 +1390,33 @@ export interface DB {
   inv_item: InvItem;
   inv_kardex: InvKardex;
   inv_measure: InvMeasure;
+  inv_menu_flavor: InvMenuFlavor;
+  inv_menu_items: InvMenuItems;
+  inv_menu_product: InvMenuProduct;
+  inv_menu_size: InvMenuSize;
   inv_presentation: InvPresentation;
-  inv_product: InvProduct;
-  inv_product_flavor: InvProductFlavor;
-  inv_product_size: InvProductSize;
   inv_production: InvProduction;
   inv_production_item: InvProductionItem;
-  inv_products: InvProducts;
+  inv_productitem: InvProductitem;
   inv_purchase: InvPurchase;
   inv_purchase_item: InvPurchaseItem;
   inv_recipe: InvRecipe;
-  inv_recipe_base: InvRecipeBase;
-  inv_recipemix_base: InvRecipemixBase;
-  inv_recipemix_detail: InvRecipemixDetail;
-  inv_recipemix_flavor: InvRecipemixFlavor;
+  inv_recipe_mix: InvRecipeMix;
+  inv_recollection: InvRecollection;
+  inv_recollection_mix: InvRecollectionMix;
   inv_stock: InvStock;
   inv_subcategory: InvSubcategory;
   inv_supplier: InvSupplier;
   inv_tmplt_dispatch: InvTmpltDispatch;
   inv_tmplt_dispatch_item: InvTmpltDispatchItem;
-  parameters: Parameters;
   rh_assistance: RhAssistance;
   rh_contract: RhContract;
   rh_employee: RhEmployee;
   rh_jobtitle: RhJobtitle;
-  rpt_ventadelivery: RptVentadelivery;
   sls_sucursal_sales: SlsSucursalSales;
   sys_menu_report: SysMenuReport;
   sys_parameters: SysParameters;
   sys_report_config: SysReportConfig;
   sys_report_eerr: SysReportEerr;
   sys_upload_log: SysUploadLog;
-  zold_account: ZoldAccount;
-  zold_accounting_item: ZoldAccountingItem;
-  zold_accounting_move: ZoldAccountingMove;
-  zold_adm_cash_account: ZoldAdmCashAccount;
-  zold_adm_cash_account_move: ZoldAdmCashAccountMove;
-  zold_adm_cash_balance: ZoldAdmCashBalance;
-  zold_adm_category_expense: ZoldAdmCategoryExpense;
-  zold_adm_request: ZoldAdmRequest;
-  zold_balance: ZoldBalance;
-  zold_bus_unit: ZoldBusUnit;
-  zold_cost_center: ZoldCostCenter;
-  zold_inv_dispatchbase: ZoldInvDispatchbase;
-  zold_inv_dispatchbase_item: ZoldInvDispatchbaseItem;
-  zold_seat_account: ZoldSeatAccount;
-  zold_seat_auto: ZoldSeatAuto;
-  zold_type_cash: ZoldTypeCash;
-  zold_type_category: ZoldTypeCategory;
 }
