@@ -114,15 +114,6 @@ export default function Control() {
       />
       <Select
         className="w-48"
-        placeholder="Tipo"
-        allowClear={true}
-        defaultValue={'T'}
-      >
-        <Select.Option value="S">Simple</Select.Option>
-        <Select.Option value="T">Transferencia</Select.Option>
-      </Select>
-      <Select
-        className="w-48"
         placeholder="Estado"
         allowClear={false}
         value={status}

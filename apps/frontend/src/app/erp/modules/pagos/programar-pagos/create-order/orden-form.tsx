@@ -109,8 +109,8 @@ export const CreateOrderForm = ({
         <Form
           name="req:create-order"
           form={form}
-          wrapperCol={{ span: 18 }}
-          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 16 }}
+          labelCol={{ span: 8 }}
           className="grid grid-cols-[400px_400px_1fr] gap-x-3"
         >
           <Form.Item

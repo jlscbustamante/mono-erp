@@ -49,6 +49,9 @@ export function DataView() {
           {
             title: 'Detalle',
             dataIndex: 'description',
+            render: (val) => {
+              return val?.length > 20 ? `${val?.substring(0, 20)}...` : val
+            },
           },
           {
             title: 'Contrato',

@@ -1,9 +1,6 @@
-import { viewClient } from '@/lib/rpc'
-import { AdmRequirementSelect } from '@types'
 import { Button, Table } from 'antd'
 import { format } from 'date-fns'
-import { Plus } from 'lucide-react'
-import { useEffect } from 'react'
+import { Plus, Trash2 } from 'lucide-react'
 import { requirement_type_doc_text } from '../../components/requirement_type_text'
 import {
   AgregarRequerimiento,
@@ -11,31 +8,15 @@ import {
 } from './agregar-requirement'
 import { useCreateOrderStore } from './state'
 
-export const DataView = ({ initial_ids }: { initial_ids: number[] }) => {
+export const DataView = () => {
   const { open } = useAgregarRequerimiento()
 
   const requirements = useCreateOrderStore((st) => st.requirements)
   const set_requirements = useCreateOrderStore((st) => st.set_requirements)
 
-  const load_initial_requirements = async () => {
-    console.log('calling apis : ids . ', initial_ids)
-    const req = await viewClient.api.view.payment.get_requirements_by_ids.$get({
-      query: { ids: initial_ids.join(',') },
-    })
-    const data = await req.json()
-    if (!req.ok) {
-      throw new Error(data.message)
-    } else {
-      const requirements_founded = data.data as AdmRequirementSelect[]
-      set_requirements(requirements_founded)
-    }
+  const remove_requirement = (id: number) => {
+    set_requirements(requirements.filter((req) => req.id !== id))
   }
-
-  useEffect(() => {
-    if (initial_ids.length > 0) {
-      load_initial_requirements()
-    }
-  }, [initial_ids])
 
   return (
     <div>
@@ -67,12 +48,15 @@ export const DataView = ({ initial_ids }: { initial_ids: number[] }) => {
           },
           {
             title: 'Tipo cuenta',
+            dataIndex: 'bank_account_type',
           },
           {
             title: 'Banco',
+            dataIndex: 'bank_name',
           },
           {
             title: 'Nro cuenta',
+            dataIndex: 'bank_account_num',
           },
           {
             title: 'Detalle de pago',
@@ -81,6 +65,10 @@ export const DataView = ({ initial_ids }: { initial_ids: number[] }) => {
           {
             title: 'Importe',
             dataIndex: 'amount',
+          },
+          {
+            title: 'Moneda',
+            dataIndex: 'money',
           },
           {
             title: 'Tipo doc',
@@ -98,6 +86,23 @@ export const DataView = ({ initial_ids }: { initial_ids: number[] }) => {
           },
           {
             title: 'Correo proveedor',
+          },
+          {
+            key: 'actions',
+            render: (_, record) => {
+              return (
+                <div>
+                  <Button
+                    ghost
+                    size="small"
+                    type="text"
+                    onClick={() => remove_requirement(record.id)}
+                  >
+                    <Trash2 className="w-5 h-auto text-slate-600" />
+                  </Button>
+                </div>
+              )
+            },
           },
         ]}
       />

@@ -1,7 +1,7 @@
 import { viewClient } from '@/lib/rpc'
 import { CashBankSelect, CompanySelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AdmReqNondocsInsert } from '@types'
+import { AdmReqNondocsInsert, REQUIREMENT_TYPE } from '@types'
 import { Button, Form, Input, InputNumber, Select } from 'antd'
 import { toast } from 'react-toastify'
 export function Anticipo() {
@@ -76,7 +76,15 @@ const AnticipoForm = () => {
         form={form}
         onFinish={handle_save}
         name="rq:create_anticipo"
+        initialValues={
+          {
+            request_type: REQUIREMENT_TYPE.LIQUIDATION,
+          } satisfies Partial<AdmReqNondocsInsert>
+        }
       >
+        <Form.Item name={'request_type' satisfies T} hidden>
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Empresa"

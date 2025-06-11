@@ -13,7 +13,7 @@ export function ProgramarPagosPage() {
   }
 
   return (
-    <div className="min-h-screen bg-blue-50">
+    <div className="min-h-screen bg-blue-50 text-sm">
       <div className="bg-white p-3 font-semibold text-slate-800 mb-3 flex justify-between items-center">
         <h4 className="font-semibold text-slate-800">Pagos programados</h4>
         <Button type="primary" size="small" onClick={handle_navigation}>

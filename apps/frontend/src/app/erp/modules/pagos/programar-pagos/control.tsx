@@ -143,9 +143,11 @@ export default function Control() {
         allowClear={true}
         defaultValue={REQUIREMENT_TYPE.SUPPLIER}
       >
-        <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>Simple</Select.Option>
+        <Select.Option value={REQUIREMENT_TYPE.SIMPLE}>
+          Otras facturas
+        </Select.Option>
         <Select.Option value={REQUIREMENT_TYPE.SUPPLIER}>
-          Proveedores
+          Facturas planta
         </Select.Option>
       </Select>
       <Select

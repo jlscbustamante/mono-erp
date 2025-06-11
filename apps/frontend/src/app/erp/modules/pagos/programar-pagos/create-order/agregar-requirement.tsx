@@ -1,6 +1,6 @@
 import { viewClient } from '@/lib/rpc'
 import { SearchOutlined } from '@ant-design/icons'
-import { AdmRequirementSelect } from '@types'
+import { IAdmRequirementWithSupplierBank } from '@types'
 import {
   AutoComplete,
   AutoCompleteProps,
@@ -39,10 +39,9 @@ export const AgregarRequerimiento = () => {
   const [ruc, setRuc] = useState('')
   const [razonSocial, setRazonSocial] = useState('')
   const [documentNumber, setDocumentNumber] = useState('')
-  const [requirement, set_requirement] = useState<null | AdmRequirementSelect>(
-    null,
-  )
-  const [options, set_options] = useState<AdmRequirementSelect[]>([])
+  const [requirement, set_requirement] =
+    useState<null | IAdmRequirementWithSupplierBank>(null)
+  const [options, set_options] = useState<IAdmRequirementWithSupplierBank[]>([])
 
   const options_autocomplete: AutoCompleteProps['options'] = useMemo(() => {
     return options.map((opt) => {
@@ -72,7 +71,7 @@ export const AgregarRequerimiento = () => {
       toast.error(content.message)
     }
     const selected_requirement = content.data as {
-      related: AdmRequirementSelect[]
+      related: IAdmRequirementWithSupplierBank[]
       supplier: ISuplier | null
     }
     if (selected_requirement.related.length == 0) {
@@ -97,9 +96,18 @@ export const AgregarRequerimiento = () => {
       const exists = requirements.find((req) => req.id == requirement.id)
       if (exists) {
         toast.error('El requerimiento ya fue agregado')
+      } else if (
+        !requirement.bank_code ||
+        !requirement.bank_account_num ||
+        !requirement.bank_name
+      ) {
+        toast.error(
+          'El requerimiento no tiene información bancaria, por favor verifique la información del proveedor.',
+        )
       } else {
         set_requirements([...requirements, requirement])
         set_requirement(null)
+        setDocumentNumber('')
       }
     }
   }
@@ -214,15 +222,15 @@ export const AgregarRequerimiento = () => {
         </div>
         <div className="flex items-center gap-2">
           <p className="w-24 shrink-0">Tipo cuenta:</p>
-          <Input />
+          <Input value={requirement?.bank_account_type ?? undefined} />
         </div>
         <div className="flex items-center gap-2">
           <p className="w-24 shrink-0">N° cuenta:</p>
-          <Input />
+          <Input value={requirement?.bank_account_num ?? undefined} />
         </div>
         <div className="flex items-center gap-2">
           <p className="w-24 shrink-0">CCI:</p>
-          <Input />
+          <Input value={requirement?.bank_account_cci ?? undefined} />
         </div>
         <div className="flex justify-end">
           <Button

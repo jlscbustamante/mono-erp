@@ -68,6 +68,7 @@ export const RevisarOrdenPage = () => {
   const [show_dialog_authorization, set_show_dialog_authorization] =
     useState(false)
   const [show_otp_input, set_show_otp_input] = useState(false)
+  const [show_dev_credentials, set_show_dev_credentials] = useState(false)
 
   const cancel_order_mt = useMutation({
     mutationFn: async (props: { id: number; delete_related: boolean }) => {
@@ -245,6 +246,29 @@ export const RevisarOrdenPage = () => {
           }
         }}
       >
+        <p
+          className="text-blue-600 hover:text-blue-500 cursor-pointer"
+          onClick={() => {
+            set_show_dev_credentials(!show_dev_credentials)
+          }}
+        >
+          {!show_dev_credentials
+            ? 'Mostrar credenciales de desarrollo'
+            : 'Ocultar credenciales de desarrollo'}
+        </p>
+        <div
+          className={cn('bg-slate-100 rounded-md p-2 text-sm mb-1', {
+            hidden: !show_dev_credentials,
+          })}
+        >
+          <p className="font-semibold">Usuarios(desarrollo) : </p>
+          <p>Gerson berrocal</p>
+          <p>Usuario 2</p>
+          <p className="font-semibold">Contraseña: </p>
+          <p>123456</p>
+          <p className="font-semibold">otp</p>
+          <p>123456</p>
+        </div>
         <div
           className={cn('mb-3', {
             hidden: !show_otp_input,

@@ -16,6 +16,7 @@ export enum AdmTypeIdentifier {
   CONTRACT = "C",
   TRANSFER = "T",
   PREPAYMENT = "A",
+  ORDER = "O",
 }
 
 export const generate_adm_identifier = async (adm_type: AdmTypeIdentifier) => {

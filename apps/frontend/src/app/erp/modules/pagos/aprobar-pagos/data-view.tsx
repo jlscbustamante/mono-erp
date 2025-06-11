@@ -17,8 +17,8 @@ export function DataView() {
         rowKey={'id'}
         columns={[
           {
-            title: 'Nro',
-            dataIndex: 'id',
+            title: 'Id',
+            dataIndex: 'payment_code',
             render: (val, record) => {
               return (
                 <span

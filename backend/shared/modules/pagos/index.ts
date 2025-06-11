@@ -111,3 +111,11 @@ export const get_contract_status_name = (status: CONTRACT_STATUS) => {
       return "Desconocido";
   }
 };
+
+export interface IAdmRequirementWithSupplierBank extends AdmRequirementSelect {
+  bank_name: string | null;
+  bank_code: string | null;
+  bank_account_num: string | null;
+  bank_account_cci: string | null;
+  bank_account_type: string | null;
+}
