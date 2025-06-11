@@ -1,7 +1,7 @@
 import { Button, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { umeds } from './constants'
-import { IngredienteProd } from './types'
+import { umeds } from '../constants/constants'
+import { IngredienteProd } from '../shared-types'
 
 export const ListaIngredientes = ({
   ingredientesR,

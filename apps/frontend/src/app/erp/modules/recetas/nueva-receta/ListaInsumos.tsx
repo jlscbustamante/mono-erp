@@ -1,7 +1,7 @@
 import { Button, Card, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
+import { IngredienteProd } from '../shared-types'
 import { gridStyle } from './styles'
-import { IngredienteProd } from './types'
 
 export const ListaInsumos = ({
   ingredientesMFiltrados,

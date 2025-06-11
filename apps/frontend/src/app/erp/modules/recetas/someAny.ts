@@ -1,0 +1,1 @@
+export type safeAny = any

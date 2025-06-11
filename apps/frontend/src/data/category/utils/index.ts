@@ -27,6 +27,8 @@ export const transformFilterToValidCategory = (
   filters: Filters<ICategory>,
 ): Filters<ICategory> => {
   const validFilters: Filters<ICategory> = {}
+  console.log('filtro : ')
+  console.table(filters)
   for (const [key, value] of Object.entries(filters)) {
     const tkey = key as keyof ICategory
     const valuenotundefined: [OpFilter, ...safeAny[]] = value.filter(

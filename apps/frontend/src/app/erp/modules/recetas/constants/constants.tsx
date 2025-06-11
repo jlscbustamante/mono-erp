@@ -1,4 +1,4 @@
-import { UMed } from './types'
+import { UMed } from '../shared-types'
 
 //datos de unidad de medida
 export const umeds: UMed[] = [

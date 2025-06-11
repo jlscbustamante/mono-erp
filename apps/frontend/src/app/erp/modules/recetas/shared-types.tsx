@@ -39,6 +39,25 @@ export interface InvRecipe {
   status: number
 }
 
+export interface InvRecipeFilter {
+  id: number
+  company_id: number
+  recipe?: string
+  menu_item_id: number
+  save_tag: string
+  status?: number
+}
+export interface InvRecipeMix {
+  id: number
+  recipe_id: number
+  recipe_group: string
+  recipe_base: number
+  item_id: number
+  quantity: number
+  presentation_id: number
+  measure_idstatus: number
+}
+
 //tabla inv_recollection
 export interface InvRecollection {
   id: number
@@ -51,6 +70,10 @@ export interface InvRecollection {
 }
 
 //tabla inv_menu_items
+//es la variante del catalog de productos de venta : inv_menu_product
+//es decir tambien son productos de venta
+//Items es lo que esta en el inventario : almacen
+//pero en esta tabla no esta asociado con la tabla inv_items
 export interface InvMenuItems {
   id: number
   company_id: number

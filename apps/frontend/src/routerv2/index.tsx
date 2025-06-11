@@ -24,6 +24,7 @@ import { ReviewNonDocPage } from '@/app/erp/modules/pagos/review_nondoc'
 import { TransferenciaPage } from '@/app/erp/modules/pagos/transferencia'
 import { RecetasLayout } from '@/app/erp/modules/recetas/layout'
 import { NuevaRecetaTabs } from '@/app/erp/modules/recetas/nueva-receta'
+import { ProductoFinal } from '@/app/erp/modules/recetas/producto-final'
 import { AsistenciaPage } from '@/app/erp/modules/recursosHumanos/asistencia'
 import { EmpleadoPage } from '@/app/erp/modules/recursosHumanos/empleado'
 import { JobsTitlePage } from '@/app/erp/modules/recursosHumanos/jobs-title'
@@ -466,7 +467,7 @@ export const routerv2 = createBrowserRouter([
               },
               {
                 path: PATHS.erp.modulos.recetas.productoFinal,
-                element: <Empty />,
+                element: <ProductoFinal />,
               },
               {
                 path: PATHS.erp.modulos.recetas.nuevaRecetaColecciones,

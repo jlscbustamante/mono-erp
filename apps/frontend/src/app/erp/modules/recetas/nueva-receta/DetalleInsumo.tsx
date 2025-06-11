@@ -1,6 +1,6 @@
 import { Button, Checkbox, Drawer, Form, Input, List, Space } from 'antd'
 import { useState } from 'react'
-import { InsumoItem } from './types'
+import { InsumoItem } from '../shared-types'
 
 export const DetalleInsumo = ({
   data,
@@ -13,7 +13,7 @@ export const DetalleInsumo = ({
   drawerClose: () => void
   oper: number
 }) => {
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(oper != 2)
+  const [componentDisabled, setComponentDisabled] = useState<boolean>(true)
   let textoBotonOper: string = 'Cerrar'
   let modoEdicion: boolean = false
 
@@ -38,18 +38,12 @@ export const DetalleInsumo = ({
           <List
             size="small"
             header={<div>Receta de : </div>}
-            footer={<div>Footer</div>}
+            footer={<div></div>}
             bordered
             dataSource={data}
             renderItem={(item) => <List.Item>{item.product}</List.Item>}
           ></List>
         </div>
-      ) : null}
-
-      {componentDisabled && oper == 2 ? (
-        <Form.Item label="Button">
-          <Button onClick={handleChangeCDisabled}>Editar</Button>
-        </Form.Item>
       ) : null}
 
       {!componentDisabled && oper == 2 ? (
@@ -74,7 +68,6 @@ export const DetalleInsumo = ({
                 </Form.Item>
               </div>
             ))}
-
             <Space>
               <Button onClick={guardarItemsProducto}>Guardar</Button>
 
@@ -82,6 +75,12 @@ export const DetalleInsumo = ({
             </Space>
           </Form>
         </div>
+      ) : null}
+
+      {componentDisabled && oper == 2 ? (
+        <Form.Item label="Button">
+          <Button onClick={handleChangeCDisabled}>Editar</Button>
+        </Form.Item>
       ) : null}
     </Drawer>
   )

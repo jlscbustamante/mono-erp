@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn'
 import { Button, Input } from 'antd'
 import { ChangeEvent, useState } from 'react'
-import { IngredienteProd } from './types'
+import { IngredienteProd } from '../shared-types'
 
 export const FiltrosInsumos = ({
   childToParent,
@@ -21,7 +21,7 @@ export const FiltrosInsumos = ({
     setNeedle(needle)
   }
 
-  const handleCustomFilters = (customFilter: number) => {
+  const handlePredefinedFilters = (customFilter: number) => {
     console.log('Clic en :' + customFilter)
     setCatSelected(customFilter)
   }
@@ -44,28 +44,28 @@ export const FiltrosInsumos = ({
             'bg-blue-500 hover:bg-blue-500 text-white': 22 === catSelected,
           },
         )}
-        onClick={() => handleCustomFilters(22)}
+        onClick={() => handlePredefinedFilters(22)}
       >
         Colección
       </Button>
       <Button
         color="default"
         variant="solid"
-        onClick={() => handleCustomFilters(9)}
+        onClick={() => handlePredefinedFilters(9)}
       >
         Quesos
       </Button>
       <Button
         color="default"
         variant="solid"
-        onClick={() => handleCustomFilters(3)}
+        onClick={() => handlePredefinedFilters(3)}
       >
         Latas
       </Button>
       <Button
         color="default"
         variant="solid"
-        onClick={() => handleCustomFilters(8)}
+        onClick={() => handlePredefinedFilters(8)}
       >
         Verduras
       </Button>
