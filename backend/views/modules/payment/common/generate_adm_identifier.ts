@@ -12,21 +12,21 @@ import { redis } from "#app/config/redis.ts";
 import { format } from "date-fns";
 
 export enum AdmTypeIdentifier {
-  INVOICE = "F",
+  INVOICE = "R",
   CONTRACT = "C",
   TRANSFER = "T",
   PREPAYMENT = "A",
 }
 
 export const generate_adm_identifier = async (adm_type: AdmTypeIdentifier) => {
-  const date_format = format(new Date(), "yy-MM");
+  const date_format = format(new Date(), "yyMM");
   const correlative_stored = (await redis.get(
     `erp:adm_correlative:${adm_type}`
   )) as string;
   const correlative = correlative_stored ? +correlative_stored + 1 : 1;
-  const correlative_str = correlative.toString().padStart(3, "0");
+  const correlative_str = correlative.toString().padStart(4, "0");
 
   await redis.set(`erp:adm_correlative:${adm_type}`, correlative.toString());
 
-  return `${adm_type}${date_format}-${correlative_str}`;
+  return `${adm_type}${date_format}/${correlative_str}`;
 };

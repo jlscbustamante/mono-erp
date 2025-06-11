@@ -13,6 +13,7 @@ export enum REQUIREMENT_TYPE {
   SUPPLIER = "U",
   SIMPLE = "S",
   LIQUIDATION = "L",
+  TRANSFER = "T",
 }
 
 // I: Ingresado; D: Programado; A: Aprobado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado (S: Solicitado; A: Aprobado;  P: Pagado; R: Rechazado;

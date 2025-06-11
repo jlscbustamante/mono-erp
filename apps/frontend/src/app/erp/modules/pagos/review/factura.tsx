@@ -358,7 +358,7 @@ const DatosPrincipales = ({
               // span: 3
               offset: 2,
             }}
-            wrapperCol={{ span: 20 }}
+            wrapperCol={{ span: 24 }}
             name={'description' satisfies R}
           >
             <Input.TextArea placeholder="..." rows={1} className="-ml-1" />

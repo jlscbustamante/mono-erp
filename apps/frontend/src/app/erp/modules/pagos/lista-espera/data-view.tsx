@@ -1,5 +1,6 @@
 import { PATHS } from '@/const/paths'
 import { Table } from 'antd'
+import { compareAsc, format } from 'date-fns'
 import { useNavigate } from 'react-router'
 import { PaymentStatusBadge } from '../components/status-bage'
 import { useRequirementsQuery } from './state'
@@ -12,6 +13,7 @@ export function DataView() {
     <div>
       <Table
         size="small"
+        showSorterTooltip={false}
         pagination={false}
         dataSource={data}
         rowKey={'id'}
@@ -71,6 +73,15 @@ export function DataView() {
           {
             title: 'Solicitado',
             dataIndex: 'requested_at',
+            render: (val) => {
+              return format(new Date(val), ' yyyy-MM-dd HH:mm:ss')
+            },
+            sorter: (a, b) => {
+              return compareAsc(
+                new Date(a.requested_at),
+                new Date(b.requested_at),
+              )
+            },
           },
           {
             title: 'Vencimiento',

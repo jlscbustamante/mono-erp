@@ -45,7 +45,8 @@ export function Contrato() {
     },
     onSuccess: () => {
       form_instance.resetFields()
-      message_api.success('Contrato creado correctamente')
+      // message_api.success('Contrato creado correctamente')
+      toast.success('Contrato creado correctamente')
     },
     onError: (error: Error) => {
       toast.error(error.message, {

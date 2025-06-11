@@ -10,7 +10,11 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { AdmRequirementInsert, InvSupplierSelect } from '@types'
+import {
+  REQUIREMENT_TYPE,
+  type AdmRequirementInsert,
+  type InvSupplierSelect,
+} from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
   AutoComplete,
@@ -25,6 +29,7 @@ import {
 } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 type R = keyof AdmRequirementInsert
 
@@ -49,8 +54,13 @@ export function CrearFactura() {
       messageApi.error(error.message)
     },
     onSuccess: () => {
-      messageApi.success('Requerimiento creado correctamente')
+      // messageApi.success('Requerimiento creado correctamente')
+      toast.success('Requerimiento creado correctamente')
       form_instance.resetFields()
+      form_instance.setFieldValue(
+        'request_type' satisfies R,
+        REQUIREMENT_TYPE.SIMPLE,
+      )
     },
   })
 
@@ -169,7 +179,15 @@ const DatosPrincipales = ({
         wrapperCol={{ span: 17 }}
         form={formInstance}
         name="factura:formPrincipal"
+        initialValues={
+          {
+            request_type: REQUIREMENT_TYPE.SIMPLE,
+          } satisfies Partial<AdmRequirementInsert>
+        }
       >
+        <Form.Item name={'request_type' satisfies R} label="Tipo de req" hidden>
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Empresa"
@@ -275,7 +293,7 @@ const DatosPrincipales = ({
               offset: 2,
               // span: 2,
             }}
-            wrapperCol={{ span: 20 }}
+            wrapperCol={{ span: 24 }}
             name={'description' satisfies R}
           >
             <Input.TextArea placeholder="..." rows={1} className="-ml-1" />

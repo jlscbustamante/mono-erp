@@ -1,5 +1,6 @@
 import { PATHS } from '@/const/paths'
 import { Table } from 'antd'
+import { format } from 'date-fns'
 import { useNavigate } from 'react-router'
 import { PaymentStatusBadge } from '../components/status-bage'
 import { useProgramarPagosQuery } from './state'
@@ -71,6 +72,9 @@ export function DataView() {
           {
             title: 'Solicitado',
             dataIndex: 'requested_at',
+            render: (val) => {
+              return format(new Date(val), 'yyyy-MM-dd HH:mm:ss')
+            },
           },
           {
             title: 'Vencimiento',
