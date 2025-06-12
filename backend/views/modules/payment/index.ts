@@ -19,6 +19,7 @@ import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_authorized_users } from "#app/modules/payment/queries/get_authorized_users.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
+import { search_all } from "#app/modules/payment/queries/search_all.ts";
 import { search_requirement } from "#app/modules/payment/queries/search_requirement.ts";
 import { zValidator } from "@hono/zod-validator";
 import {
@@ -289,4 +290,21 @@ export const paymentRouter = new Hono()
       data: result,
     });
   })
+  .get(
+    "/search_all",
+    zValidator(
+      "query",
+      z.object({
+        text: z.string().min(1, "Search text is required"),
+      })
+    ),
+    async (c) => {
+      const { text } = c.req.valid("query");
+      const data = await search_all(text);
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  )
   .route("contract", contract_router);

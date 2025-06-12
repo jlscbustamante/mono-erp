@@ -4,6 +4,7 @@ import type {
   AdmRequirementSelect,
   InvSupplierSelect,
 } from "../../db/mods.ts";
+import { AdmPaymentOrderSelect } from "../../types/index.ts";
 
 export interface ICreateRequirementDto {
   company_id: string;
@@ -118,4 +119,11 @@ export interface IAdmRequirementWithSupplierBank extends AdmRequirementSelect {
   bank_account_num: string | null;
   bank_account_cci: string | null;
   bank_account_type: string | null;
+}
+
+export interface IAdmSearchAll {
+  requirements: AdmRequirementSelect[];
+  payment_orders: AdmPaymentOrderSelect[];
+  req_nondocs: AdmReqNondocsSelect[];
+  total_count: number;
 }
