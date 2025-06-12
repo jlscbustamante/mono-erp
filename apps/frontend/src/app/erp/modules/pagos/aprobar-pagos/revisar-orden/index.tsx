@@ -3,7 +3,7 @@ import { cn } from '@/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   AdmPaymentOrderSelect,
-  AdmRequirementSelect,
+  IAdmRequirementWithSupplierBank,
   ISelectMockAuthorizedUserDto,
   ORDER_PAYMENT_STATUS,
 } from '@types'
@@ -45,7 +45,7 @@ export const RevisarOrdenPage = () => {
       }
       return content.data as {
         order: AdmPaymentOrderSelect
-        requirements: AdmRequirementSelect[]
+        requirements: IAdmRequirementWithSupplierBank[]
       }
     },
   })
@@ -307,7 +307,7 @@ export const RevisarOrdenPage = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <div className="bg-blue-50 min-h-screen">
+      <div className="bg-blue-50 min-h-screen text-sm">
         <div className="bg-white flex items-center">
           <div
             className="flex items-center gap-2 cursor-pointer font-semibold text-gray-700 hover:text-blue-500 border-0 border-r border-solid border-gray-300 mr-4 pl-2 pr-4 text-sm"
@@ -346,11 +346,7 @@ export const RevisarOrdenPage = () => {
                 >
                   Anular orden pago
                 </Button>
-                <Button
-                  type="primary"
-                  // onClick={() => set_show_dialog_authorization(true)}
-                  onClick={handle_authorization_dialogs}
-                >
+                <Button type="primary" onClick={handle_authorization_dialogs}>
                   Autorizar orden
                 </Button>
               </div>

@@ -36,7 +36,7 @@ export const DataView = () => {
         columns={[
           {
             title: 'N°',
-            dataIndex: 'id',
+            dataIndex: 'request_code',
           },
           {
             title: 'Ruc',
