@@ -1,30 +1,36 @@
+import { FilterAddButton, UserFilters } from '@/components'
 import { NOTIFICATION } from '@/const/notification'
-import { Drawer } from 'antd'
+import { Button } from 'antd'
 import { useEffect, useState } from 'react'
+import { FiSearch } from 'react-icons/fi'
+import { MdOutlineCleaningServices } from 'react-icons/md'
 import { toast } from 'react-toastify'
-import { useRecoilState, useSetRecoilState } from 'recoil'
+import { useSetRecoilState } from 'recoil'
+import {
+  mapKeyFilterInvRecipe,
+  validInvRecipe,
+} from '../constants/mapKeyFiltertype'
 import { Filters } from '../Filters'
 import { InvRecipe, InvRecipeFilter } from '../shared-types'
-import { filterIFilterInvRecipe, filterInvRecipeSt } from '../state/recipe'
+import { filterIFilterInvRecipe } from '../state/recipe'
 import { transformFilterToValidRecipe } from '../utils'
-import { RequestsFilters } from './FilterControl'
 import { ListaProductoFinal } from './ListaProductoFinal'
-import { UpdateForm } from './UpdateForm'
 export const ProductoFinal = () => {
   //invRecipe es lo que se mostrara en la tabla de esta pagina Recetas de producto final
   //const [invRecipe, setInvRecipe] = useState<InvRecipe[]>([])
-  //const [userFilters, setUserFilters] = useState<Filters<InvRecipe>>({})
+  //1
+  const [aUserFilters, aSetUserFilters] = useState<Filters<InvRecipe>>({})
   const setApprovedRequests = useSetRecoilState(filterIFilterInvRecipe)
-  const [userFilters, setUserFilters] = useRecoilState(filterInvRecipeSt)
+  //2const [userFilters, setUserFilters] = useRecoilState(filterInvRecipeSt)
   //datos para el drawer y el form para editar
-  const [selectedRequest, setSelectedRequest] = useState<null | InvRecipe>(null)
-  const [isDrawerVisible, setIsDrawerVisible] = useState(false)
-  const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
+  //const [selectedRequest, setSelectedRequest] = useState<null | InvRecipe>(null)
+  //const [isDrawerVisible, setIsDrawerVisible] = useState(false)
+  //const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
 
   const applyFilters = async () => {
     try {
       const filters: Filters<InvRecipe> = {}
-      const validFilterUsers = transformFilterToValidRecipe(userFilters)
+      const validFilterUsers = transformFilterToValidRecipe(aUserFilters)
       console.log('validFilters')
       console.log(validFilterUsers)
       console.log('category_id')
@@ -41,7 +47,7 @@ export const ProductoFinal = () => {
       const respFiltrada = jsonData.filter(
         (i: InvRecipeFilter) =>
           //i.category_id = validFilterUsers['category_id']?.[0]
-          i.category_id == validFilterUsers.category_id[1],
+          i.category_id == validFilterUsers?.category_id[1],
       )
       setApprovedRequests(respFiltrada)
       //setInvRecipe(respFiltrada)
@@ -57,7 +63,7 @@ export const ProductoFinal = () => {
 
       //filters.status = [OpFilter.In, CategoryStatus.Active]
 
-      setUserFilters({})
+      aSetUserFilters({})
       //const data = await sdk.filterCategory({ ...filters })
       const response = await fetch('/inv_recipe.json')
       const data = await response.json()
@@ -109,12 +115,63 @@ export const ProductoFinal = () => {
       <div className="flex">
         <span className="p-5">Recetas de producto final</span>
         <span>&nbsp;</span>
-        <RequestsFilters
-          applyFilters={applyFilters}
-          cleanFilters={cleanFilters}
-        />
+        <div className="flex items-center gap-1.5 justify-end my-6">
+          <div className="flex flex-1 gap-1">
+            <FilterAddButton
+              userFilters={aUserFilters}
+              setUserFilters={aSetUserFilters}
+              items={validInvRecipe()}
+              getFilterTypesForKey={mapKeyFilterInvRecipe}
+            />
+            <UserFilters
+              userFilters={aUserFilters}
+              setFilters={aSetUserFilters}
+              items={validInvRecipe()}
+              getFilterTypesForKey={mapKeyFilterInvRecipe}
+              selections={{
+                status: [
+                  { label: 'Activo', value: 'A' },
+                  { label: 'Inactivo', value: 'E' },
+                ],
+                company_id: [
+                  {
+                    label: 'Pizza Raúl',
+                    value: 'P',
+                  },
+                  {
+                    label: 'Steak house',
+                    value: 'S',
+                  },
+                ],
+                type_mov: [
+                  {
+                    label: 'Venta',
+                    value: 'V',
+                  },
+                  { label: 'Gasto', value: 'G' },
+                ],
+              }}
+            />
+          </div>
+          <Button
+            type="primary"
+            shape="circle"
+            icon={<FiSearch />}
+            onClick={applyFilters}
+            className="flex items-center justify-center"
+          />
+          <Button
+            type="primary"
+            color="danger"
+            shape="circle"
+            icon={<MdOutlineCleaningServices />}
+            onClick={cleanFilters}
+            danger
+          />
+        </div>
       </div>
       <ListaProductoFinal pHandleEditClick={handleEditClick} />
+      {/*
       <Drawer
         title={`Editar categoria`}
         open={isUpdateFormVisible}
@@ -130,6 +187,7 @@ export const ProductoFinal = () => {
           />
         )}
       </Drawer>
+       comentario */}
     </>
   )
 }

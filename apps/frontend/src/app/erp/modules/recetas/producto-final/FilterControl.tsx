@@ -2,35 +2,38 @@ import { Button } from 'antd'
 import { FiSearch } from 'react-icons/fi'
 import { MdOutlineCleaningServices } from 'react-icons/md'
 //import { useRecoilState } from 'recoil'
+import { Dispatch, SetStateAction } from 'react'
 
 import { FilterAddButton, UserFilters } from '@/components'
-import { filterInvRecipeSt } from '../state/recipe'
 
-import { useRecoilState } from 'recoil'
 import {
   mapKeyFilterInvRecipe,
   validInvRecipe,
 } from '../constants/mapKeyFiltertype'
+import { Filters } from '../Filters'
+import { InvRecipe } from '../shared-types'
 
 export const RequestsFilters: React.FC<{
   applyFilters: () => void
   cleanFilters: () => void
-}> = ({ applyFilters, cleanFilters }) => {
-  const [userFilters, setUserFilters] = useRecoilState(filterInvRecipeSt)
+  aUserFilters: Filters<InvRecipe>
+  aSetUserFilters: Dispatch<SetStateAction<Filters<InvRecipe>>>
+}> = ({ applyFilters, cleanFilters, aUserFilters, aSetUserFilters }) => {
+  //const [userFilters, setUserFilters] = useRecoilState(filterInvRecipeSt)
   //const [filterInvRecipeSt, setFilterInvRecipeSt] = useState<Filters<InvRecipeFilter>>({})
 
   return (
     <div className="flex items-center gap-1.5 justify-end my-6">
       <div className="flex flex-1 gap-1">
         <FilterAddButton
-          userFilters={userFilters}
-          setUserFilters={setUserFilters}
+          userFilters={aUserFilters}
+          setUserFilters={aSetUserFilters}
           items={validInvRecipe()}
           getFilterTypesForKey={mapKeyFilterInvRecipe}
         />
         <UserFilters
-          userFilters={userFilters}
-          setFilters={setUserFilters}
+          userFilters={aUserFilters}
+          setFilters={aSetUserFilters}
           items={validInvRecipe()}
           getFilterTypesForKey={mapKeyFilterInvRecipe}
           selections={{
