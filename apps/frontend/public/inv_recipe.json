@@ -1,0 +1,63 @@
+[{
+"id":1,
+"company_id":3,
+"recipe":"Receta 1",
+"category_id":7,
+"menu_item_id":5,
+"save_tag":"recetas_verano",
+"status":"A"
+},
+{
+"id":2,
+"company_id":3,
+"recipe":"Receta 2",
+"category_id":11,
+"menu_item_id":5,
+"save_tag":"recetas_verano",
+"status":1
+},
+{
+"id":3,
+"company_id":3,
+"recipe":"Receta 3",
+"category_id":17,
+"menu_item_id":5,
+"save_tag":"recetas_verano",
+"status":1
+},
+{
+"id":4,
+"company_id":3,
+"recipe":"Receta 4",
+"category_id":27,
+"menu_item_id":5,
+"save_tag":"recetas_verano",
+"status":1
+},
+{
+"id":5,
+"company_id":3,
+"recipe":"Receta 5",
+"category_id":5,
+"menu_item_id":5,
+"save_tag":"recetas_verano",
+"status":1
+},
+{
+"id":6,
+"company_id":1,
+"recipe":"Receta 6",
+"category_id":8,
+"menu_item_id":3,
+"save_tag":"recetas_verano",
+"status":1
+},
+{
+"id":7,
+"company_id":1,
+"recipe":"Receta 7",
+"category_id":11,
+"menu_item_id":6,
+"save_tag":"recetas_verano",
+"status":1
+}]

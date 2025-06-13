@@ -12,6 +12,8 @@ interface IComponentProps<T> {
 
 export const FilterAddButton = <T,>(props: IComponentProps<T>) => {
   const addFilter = (key: keyof T) => {
+    //console.log('tipo')
+    //console.log(key)
     if (!props.userFilters[key]) {
       const optionsFilter = props.getFilterTypesForKey(key)
       props.setUserFilters({
@@ -19,6 +21,8 @@ export const FilterAddButton = <T,>(props: IComponentProps<T>) => {
         [key]: [optionsFilter[0]],
       })
     }
+    //console.log('props')
+    //console.log(props)
   }
   return (
     <Dropdown

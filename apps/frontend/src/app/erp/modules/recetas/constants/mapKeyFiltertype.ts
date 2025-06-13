@@ -1,8 +1,10 @@
 import { OpFilter } from '../Filters'
 
-import { InvRecipe } from '../shared-types'
+import { InvRecipeFilter } from '../shared-types'
 
-export const mapKeyFilterInvRecipe = (key: keyof InvRecipe): OpFilter[] => {
+export const mapKeyFilterInvRecipe = (
+  key: keyof InvRecipeFilter,
+): OpFilter[] => {
   switch (key) {
     case 'id':
       return [OpFilter.Equal, OpFilter.NotEqual]
@@ -10,6 +12,8 @@ export const mapKeyFilterInvRecipe = (key: keyof InvRecipe): OpFilter[] => {
       return [OpFilter.Equal, OpFilter.NotEqual]
     case 'recipe':
       return [OpFilter.Contain, OpFilter.Equal]
+    case 'category_id':
+      return [OpFilter.Equal, OpFilter.NotEqual]
     case 'menu_item_id':
       return [OpFilter.Equal, OpFilter.NotEqual]
     case 'save_tag':
@@ -33,6 +37,10 @@ export const validInvRecipe = () => {
     {
       key: 'recipe',
       label: 'Receta',
+    },
+    {
+      key: 'category_id',
+      label: 'Categoría',
     },
     {
       key: 'menu_item_id',

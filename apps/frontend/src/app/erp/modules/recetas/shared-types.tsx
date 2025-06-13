@@ -40,12 +40,13 @@ export interface InvRecipe {
 }
 
 export interface InvRecipeFilter {
-  id: number
-  company_id: number
-  recipe?: string
-  menu_item_id: number
-  save_tag: string
-  status?: number
+  id?: number
+  company_id?: number
+  recipe: string
+  category_id?: number
+  menu_item_id?: number
+  save_tag?: string
+  status: number
 }
 export interface InvRecipeMix {
   id: number
