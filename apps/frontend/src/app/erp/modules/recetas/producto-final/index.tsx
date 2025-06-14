@@ -11,6 +11,7 @@ import {
   validInvRecipe,
 } from '../constants/mapKeyFiltertype'
 import { Filters } from '../Filters'
+import { DetalleInsumo } from '../nueva-receta/DetalleInsumo'
 import { InvRecipe, InvRecipeFilter } from '../shared-types'
 import { filterIFilterInvRecipe } from '../state/recipe'
 import { transformFilterToValidRecipe } from '../utils'
@@ -26,6 +27,7 @@ export const ProductoFinal = () => {
   //const [selectedRequest, setSelectedRequest] = useState<null | InvRecipe>(null)
   //const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   //const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
   const applyFilters = async () => {
     try {
@@ -85,8 +87,9 @@ export const ProductoFinal = () => {
     setIsDrawerVisible(false)
   }
   const handleDrawerCloseUpdate = () => {
-    setSelectedRequest(null)
-    setIsUpdateFormVisible(false)
+    //setSelectedRequest(null)
+    setDrawerOpen(false)
+    //setIsUpdateFormVisible(false)
   }
   const handleEditClick = (record: InvRecipe) => {
     setSelectedRequest(record)
@@ -171,6 +174,12 @@ export const ProductoFinal = () => {
         </div>
       </div>
       <ListaProductoFinal pHandleEditClick={handleEditClick} />
+      <DetalleInsumo
+        data={ingredienteM}
+        drawerOpen={drawerOpen}
+        drawerClose={handleDrawerCloseUpdate}
+        oper={1}
+      />
       {/*
       <Drawer
         title={`Editar categoria`}
