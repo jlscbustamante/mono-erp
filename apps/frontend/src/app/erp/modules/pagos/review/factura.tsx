@@ -408,10 +408,9 @@ const DatosPrincipales = ({
           <Form.Item
             label="Vencimiento"
             className="mb-1"
-            rules={[{ required: true }]}
             name={'expires_at' satisfies R}
           >
-            <CustomDatePicker />
+            <CustomDatePicker className="w-full" />
           </Form.Item>
           <Form.Item
             label="Contrato"

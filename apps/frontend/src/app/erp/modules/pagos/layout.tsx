@@ -10,6 +10,7 @@ import { PATHS } from '@/const/paths'
 import { useMemo } from 'react'
 import { useOutlet } from 'react-router'
 import { useSession } from '../../use-session'
+import './style.css'
 
 // import * as sdk from '@/data/resources/sdk'
 

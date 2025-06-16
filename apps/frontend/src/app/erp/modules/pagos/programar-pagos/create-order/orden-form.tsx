@@ -10,7 +10,7 @@ import {
 } from '@types'
 import { Button, Form, Input, InputNumber, Select } from 'antd'
 import dayjs from 'dayjs'
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'react-toastify'
 import { CompanySelectForm } from '../../../requerimientos/components/company-select'
@@ -77,6 +77,30 @@ export const CreateOrderForm = ({
       })
     }
   }
+
+  const available_cashbank_selected: {
+    available: boolean
+    reason?: string
+  } = useMemo(() => {
+    const cashbank = query_cash_bank.data?.find((el) => el.id == cashbank_id)
+    if (!cashbank)
+      return {
+        available: false,
+      }
+    if (requirements.length == 0)
+      return {
+        available: false,
+      }
+    const same_bank = requirements.every(
+      (req) => req.bank_code == cashbank.bank_code,
+    )
+    return {
+      available: same_bank,
+      reason: same_bank
+        ? ''
+        : 'Los requerimientos seleccionados no pertenecen al mismo banco',
+    }
+  }, [cashbank_id, query_cash_bank.data, requirements])
 
   useEffect(() => {
     const cashbank = query_cash_bank.data?.find((el) => el.id == cashbank_id)
@@ -210,11 +234,19 @@ export const CreateOrderForm = ({
         </Form>
       </div>
       {children}
-      <div className="text-right">
+      <div className="flex justify-end gap-2 items-center">
+        <p
+          className={
+            available_cashbank_selected.reason ? 'text-red-500' : 'hidden'
+          }
+        >
+          {available_cashbank_selected.reason}
+        </p>
         <Button
           type="primary"
           onClick={handle_save}
           loading={create_payment_order_mt.isPending}
+          disabled={!available_cashbank_selected.available}
         >
           Programar orden pago
         </Button>

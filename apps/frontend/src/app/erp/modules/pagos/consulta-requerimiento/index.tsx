@@ -106,7 +106,7 @@ export function ConsultaRequerimientoPage() {
   }
 
   return (
-    <div className="p-3">
+    <div className="p-3 bg-blue-50 min-h-screen">
       <Card className="mb-4">
         <Title level={4}>Búsqueda Global</Title>
         <div style={{ display: 'flex', marginBottom: '16px' }}>

@@ -1,3 +1,4 @@
+import { PATHS } from '@/const/paths'
 import { Button, Table } from 'antd'
 import { format } from 'date-fns'
 import { Plus, Trash2 } from 'lucide-react'
@@ -35,8 +36,26 @@ export const DataView = () => {
         dataSource={requirements}
         columns={[
           {
-            title: 'N°',
+            title: 'Id',
             dataIndex: 'request_code',
+            render: (val, record) => {
+              return (
+                <span
+                  className="text-blue-600 hover:underline cursor-pointer"
+                  onClick={() => {
+                    window.open(
+                      PATHS.erp.modulos.pagos.revisar.replace(
+                        ':id',
+                        record.id.toString(),
+                      ),
+                      '_blank',
+                    )
+                  }}
+                >
+                  {val}
+                </span>
+              )
+            },
           },
           {
             title: 'Ruc',
