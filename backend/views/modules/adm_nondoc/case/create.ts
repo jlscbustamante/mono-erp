@@ -3,7 +3,7 @@ import {
   AdmTypeIdentifier,
   generate_adm_identifier,
 } from "#app/modules/payment/common/generate_adm_identifier.ts";
-import { AdmReqNondocsInsert } from "@scope/shared";
+import { AdmReqNondocsInsert, PAYMENT_STATUS } from "@scope/shared";
 
 export const create_nondoc = async (
   data: AdmReqNondocsInsert,
@@ -18,6 +18,7 @@ export const create_nondoc = async (
     .insertInto("adm_req_nondocs")
     .values({
       ...data,
+      status: PAYMENT_STATUS.APPROVED,
       request_type: type,
       requested_at: new Date(),
       request_code: identifier,

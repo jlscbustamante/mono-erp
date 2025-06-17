@@ -2,6 +2,7 @@ import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import { add_authorized_user } from "#app/modules/payment/case/add_authorized_user.ts";
 import { approve_requirement } from "#app/modules/payment/case/approve.ts";
 import { authorize_order } from "#app/modules/payment/case/authorize_order.ts";
+import { cancel_payment } from "#app/modules/payment/case/cancel_payment.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
 import { delete_authorized_user } from "#app/modules/payment/case/delete_authorized_user.ts";
 import {
@@ -12,7 +13,6 @@ import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { check_authorized_user } from "#app/modules/payment/case/security/check_user.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
-import { funka } from "#app/modules/payment/funka.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
 import { initial_balance_cash } from "#app/modules/payment/queries/balance_cash.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
@@ -283,13 +283,6 @@ export const paymentRouter = new Hono()
       });
     }
   )
-  .get("/nothing", (c) => {
-    const result = funka();
-    return c.json({
-      message: "na",
-      data: result,
-    });
-  })
   .get(
     "/search_all",
     zValidator(
@@ -304,6 +297,22 @@ export const paymentRouter = new Hono()
       return c.json({
         message: "ok",
         data,
+      });
+    }
+  )
+  .delete(
+    "cancel_nondoc",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number().min(1, "ID is required"),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid("json");
+      await cancel_payment(id);
+      return c.json({
+        message: "ok",
       });
     }
   )

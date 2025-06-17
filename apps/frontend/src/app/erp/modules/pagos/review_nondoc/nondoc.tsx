@@ -1,9 +1,16 @@
 import { viewClient } from '@/lib/rpc'
+import { queryClient } from '@/main'
+import { cn } from '@/utils'
 import { CashBankSelect, CompanySelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AdmReqNondocsInsert, AdmReqNondocsViewDto } from '@types'
-import { Button, Form, Input, InputNumber, message, Select } from 'antd'
+import {
+  AdmReqNondocsInsert,
+  AdmReqNondocsViewDto,
+  PAYMENT_STATUS,
+} from '@types'
+import { Button, Form, Input, InputNumber, message, Modal, Select } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
+import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
 type T = keyof AdmReqNondocsInsert
@@ -50,30 +57,32 @@ const DatosPrincipales = ({
     },
   })
 
-  const update_mt = useMutation({
-    mutationFn: async (data: AdmReqNondocsInsert) => {
-      const request =
-        await viewClient.api.view.nondoc.requirement.transfer.$post({
-          json: data,
-        })
-      const result = await request.json()
-      if (!request.json) {
-        throw new Error(result.message ?? 'Error al crear el requerimiento')
+  const cancel_invoice_mt = useMutation({
+    mutationFn: async (id: number) => {
+      const request = await viewClient.api.view.payment.cancel_nondoc.$delete({
+        json: {
+          id: id,
+        },
+      })
+      if (!request.ok) {
+        const data = await request.json()
+        throw new Error(data.message ?? 'Error al anular el requerimiento')
       }
     },
-    onError: (err) => {
-      toast.error(err.message ?? 'Error al crear el requerimiento')
-    },
     onSuccess: () => {
-      messageInstance?.success('Requerimiento creado correctamente')
+      messageInstance?.success('Requerimiento anulado correctamente')
+      queryClient.refetchQueries({
+        queryKey: ['rq:non_doc:get_one', requirement.id.toString()],
+      })
+    },
+    onError: (err) => {
+      toast.error(err.message ?? 'Error al anular el requerimiento')
     },
   })
 
-  const handle_save = async () => {
-    const values = form.getFieldsValue() as AdmReqNondocsInsert
-    await update_mt.mutateAsync(values)
-    form.resetFields()
-  }
+  useEffect(() => {
+    form.setFieldsValue(requirement)
+  }, [requirement])
 
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
@@ -86,6 +95,7 @@ const DatosPrincipales = ({
         form={form}
         name="rq:update_non_doc"
         initialValues={requirement}
+        disabled={true}
       >
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
@@ -175,17 +185,33 @@ const DatosPrincipales = ({
             </Select>
           </Form.Item>
         </div>
-        <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button
-            type="primary"
-            loading={update_mt.isPending}
-            onClick={handle_save}
-            htmlType="button"
-          >
-            Guardar
-          </Button>
-        </Form.Item>
+        {/* <Form.Item className="text-right" wrapperCol={{ span: 24 }}> */}
+        {/* </Form.Item> */}
       </Form>
+      <div
+        className={cn('text-right', {
+          hidden: requirement.status != PAYMENT_STATUS.APPROVED,
+        })}
+      >
+        <Button
+          type="primary"
+          danger
+          loading={cancel_invoice_mt.isPending}
+          // onClick={() => cancel_invoice_mt.mutate(requirement.id)}
+          onClick={() =>
+            Modal.confirm({
+              title: 'Anular requerimiento',
+              content: '¿Estás seguro de que deseas anular este movimiento?',
+              onOk: () => cancel_invoice_mt.mutate(requirement.id),
+              okText: 'Anular',
+              cancelText: 'Cancelar',
+            })
+          }
+          htmlType="button"
+        >
+          Anular
+        </Button>
+      </div>
     </div>
   )
 }

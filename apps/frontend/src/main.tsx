@@ -4,6 +4,7 @@ import 'dayjs/locale/es'
 import './App.css'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ConfigProvider } from 'antd'
 import es_ES from 'antd/lib/locale/es_ES'
 import dayjs from 'dayjs'
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <RecoilRoot>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={routerv2} />
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </RecoilRoot>
     </ConfigProvider>
