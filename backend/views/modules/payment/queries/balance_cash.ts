@@ -33,6 +33,39 @@ export const initial_balance_cash = async (cash_id: number, date: string) => {
   return balance;
 };
 
+export const balance_cash = async (
+  cash_id: number,
+  date: string
+): Promise<number> => {
+  const last_balance = await db
+    .selectFrom("fin_cashbank_balance")
+    .selectAll()
+    .where("cashbank_id", "=", cash_id)
+    .where(sql`DATE(balance_at)`, "<=", date)
+    .orderBy("balance_at", "desc")
+    .executeTakeFirst();
+  let balance = 0;
+  if (last_balance && last_balance.balance_at) {
+    const balance_at = format(new Date(last_balance.balance_at), "yyyy-MM-dd");
+    if (balance_at == date) {
+      balance = last_balance.balance ? +last_balance.balance : 0;
+    } else {
+      balance = await calculate_balance_since({
+        cash_id: cash_id,
+        start_date: balance_at,
+        end_date: date,
+        initial_balance: last_balance.balance ? +last_balance.balance : 0,
+      });
+    }
+  } else {
+    balance = await calculate_balance({
+      cash_id: cash_id,
+      date: date,
+    });
+  }
+  return balance;
+};
+
 const calculate_balance = async ({
   cash_id,
   date,
@@ -49,7 +82,7 @@ const calculate_balance = async ({
       PAYMENT_STATUS.APPROVED,
       PAYMENT_STATUS.PAID,
     ])
-    .where(sql`DATE(requested_at)`, "<", date)
+    .where(sql`DATE(requested_at)`, "<=", date)
     .execute();
   const total_amount = payments.reduce(
     (acc, el) => acc + (el.amount ? +el.amount : 0),
@@ -67,7 +100,7 @@ const calculate_balance = async ({
       ])
     )
     .where("status", "in", [PAYMENT_STATUS.REGISTERED])
-    .where(sql`DATE(requested_at)`, "<", date)
+    .where(sql`DATE(requested_at)`, "<=", date)
     .execute();
   const total_amount_non_docs = non_docs.reduce(
     (acc, el) => acc + (el.amount ? +el.amount : 0),
@@ -98,7 +131,7 @@ const calculate_balance_since = async ({
       PAYMENT_STATUS.APPROVED,
       PAYMENT_STATUS.PAID,
     ])
-    .where(sql`DATE(requested_at)`, "<", end_date)
+    .where(sql`DATE(requested_at)`, "<=", end_date)
     .where(sql`DATE(requested_at)`, ">=", start_date)
     .execute();
   const total_amount = payments.reduce(
@@ -117,7 +150,7 @@ const calculate_balance_since = async ({
       ])
     )
     .where("status", "in", [PAYMENT_STATUS.REGISTERED])
-    .where(sql`DATE(requested_at)`, "<", end_date)
+    .where(sql`DATE(requested_at)`, "<=", end_date)
     .where(sql`DATE(requested_at)`, ">=", start_date)
     .execute();
   const total_amount_non_docs = non_docs.reduce(
