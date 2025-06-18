@@ -87,7 +87,7 @@ export const operatorAndValue = (
   return ''
 }
 
-export const findOptions = <T>(filters: Fillime<T>): FindManyOptions => {
+export const findOptions = <T>(filters: Fillime<T>): FindManyOptions<T> => {
   return {
     ...filters,
     where: filters.where ? transformWhere(filters.where) : undefined,
