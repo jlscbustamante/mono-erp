@@ -228,9 +228,10 @@ export const RevisarOrdenPage = () => {
           set_show_otp_input(false)
           form.resetFields()
         }}
-        onClose={() => {
-          form.resetFields()
-        }}
+        // TODO: revisar onClose
+        // onClose={() => {
+        //   form.resetFields()
+        // }}
         okButtonProps={{
           loading: approve_payment_mt.isPending,
         }}
