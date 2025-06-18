@@ -41,5 +41,20 @@
     "product_id":197,
     "flavor_id":1,
     "size_id":2    
+},
+{"id":18,
+    "company_id":8,
+    "product":"detalle11",
+    "product_id":3,
+    "flavor_id":1,
+    "size_id":2    
+},
+{"id":19,
+    "company_id":8,
+    "product":"detalle12",
+    "product_id":3,
+    "flavor_id":1,
+    "size_id":2    
 }
+
 ]

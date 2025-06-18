@@ -1,13 +1,12 @@
 import { Table } from 'antd'
 import { MdEdit } from 'react-icons/md'
 import { useRecoilValue } from 'recoil'
-import { InvRecipe } from '../shared-types'
 import { filterIFilterInvRecipe } from '../state/recipe'
 
 export const ListaProductoFinal = ({
   pHandleEditClick,
 }: {
-  pHandleEditClick: (record: InvRecipe) => void
+  pHandleEditClick: (id: number) => void
 }) => {
   const data = useRecoilValue(filterIFilterInvRecipe)
   const columns = [
@@ -58,7 +57,7 @@ export const ListaProductoFinal = ({
       width: 15,
       render: (_text: any, record: any) => (
         <MdEdit
-          onClick={() => pHandleEditClick(record)}
+          onClick={() => pHandleEditClick(record.id)}
           style={{
             fontSize: '20px',
             marginRight: '10px',

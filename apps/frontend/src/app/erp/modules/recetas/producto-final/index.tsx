@@ -12,7 +12,7 @@ import {
 } from '../constants/mapKeyFiltertype'
 import { Filters } from '../Filters'
 import { DetalleInsumo } from '../nueva-receta/DetalleInsumo'
-import { InvRecipe, InvRecipeFilter } from '../shared-types'
+import { InsumoItem, InvRecipe, InvRecipeFilter } from '../shared-types'
 import { filterIFilterInvRecipe } from '../state/recipe'
 import { transformFilterToValidRecipe } from '../utils'
 import { ListaProductoFinal } from './ListaProductoFinal'
@@ -28,6 +28,12 @@ export const ProductoFinal = () => {
   //const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   //const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+
+  const [ingredienteMMostrado, setIngredienteMMostrado] = useState<
+    InsumoItem[]
+  >([])
+  //los items que forman parte de un ingredienteM con receta o coleccion
+  const [ingredientesMItems, setIngredientesMItems] = useState<InsumoItem[]>([])
 
   const applyFilters = async () => {
     try {
@@ -91,9 +97,23 @@ export const ProductoFinal = () => {
     setDrawerOpen(false)
     //setIsUpdateFormVisible(false)
   }
-  const handleEditClick = (record: InvRecipe) => {
-    setSelectedRequest(record)
-    setIsUpdateFormVisible(true)
+  //const handleEditClick = (record: InvRecipe) => {
+  const handleEditClick = (id: number) => {
+    console.log('insumo id')
+    console.log(id)
+    //setIngredienteMMostrado(record)
+    //setDrawerOpen(true)
+
+    const estaIngredienteM = ingredientesMItems.filter(
+      (i: InsumoItem) => i.product_id == id,
+    )
+    console.log('ID item encontrado :' + id)
+    //console.table(estaIngredienteM)
+    console.log('drawerOpen:' + drawerOpen)
+    if (estaIngredienteM.length >= 1) {
+      setIngredienteMMostrado(estaIngredienteM)
+      setDrawerOpen(true)
+    }
   }
 
   useEffect(() => {
@@ -110,7 +130,20 @@ export const ProductoFinal = () => {
       }
     }
 
+    const fetchDataItems = async () => {
+      try {
+        const response = await fetch('/inv_menu_items.json')
+        const jsonData = await response.json()
+        setIngredientesMItems(jsonData) // Almacenamos los datos en el estado
+        //setLoading(false) // Desactivamos el estado de carga
+      } catch (err) {
+        //setError('Error al cargar datos') // Capturamos cualquier error
+        //setLoading(false) // Desactivamos el estado de carga en caso de error
+      }
+    }
+
     fetchData()
+    fetchDataItems()
   }, [])
 
   return (
@@ -175,10 +208,10 @@ export const ProductoFinal = () => {
       </div>
       <ListaProductoFinal pHandleEditClick={handleEditClick} />
       <DetalleInsumo
-        data={ingredienteM}
+        data={ingredienteMMostrado}
         drawerOpen={drawerOpen}
         drawerClose={handleDrawerCloseUpdate}
-        oper={1}
+        oper={3}
       />
       {/*
       <Drawer

@@ -238,8 +238,9 @@ export const NuevaRecetaTabs = () => {
       const estaIngredienteM = ingredientesMItems.filter(
         (i: InsumoItem) => i.product_id == id,
       )
-      //console.log('Items encontrados :' + id)
+      console.log('Items encontrados :' + id)
       //console.table(estaIngredienteM)
+      console.log('drawerOpen:' + drawerOpen)
       if (estaIngredienteM.length >= 1) {
         setIngredienteMMostrado(estaIngredienteM)
         setDrawerOpen(true)
