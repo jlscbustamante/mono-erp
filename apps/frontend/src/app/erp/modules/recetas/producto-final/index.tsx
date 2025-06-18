@@ -95,6 +95,7 @@ export const ProductoFinal = () => {
   const handleDrawerCloseUpdate = () => {
     //setSelectedRequest(null)
     setDrawerOpen(false)
+    setIngredienteMMostrado([])
     //setIsUpdateFormVisible(false)
   }
   //const handleEditClick = (record: InvRecipe) => {

@@ -42,6 +42,8 @@ export const DetalleInsumo = ({
     //setComponentDisabled(!componentDisabled)
     console.log('set drawer int : ' + drawerOpenInterno)
     //setDrawerOpenInterno(false)
+    //Usamos oper , porque es un valor que no cambia
+    drawerClose()
     if (oper == 2) setOperInterno(2)
     if (oper == 4) setOperInterno(4)
   }

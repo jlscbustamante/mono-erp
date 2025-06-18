@@ -101,7 +101,7 @@ export const NuevaRecetaTabs = () => {
           data={ingredienteM}
           drawerOpen={drawerOpen}
           drawerClose={drawerClose}
-          oper={1}
+          oper={4}
         />
       </>
     )

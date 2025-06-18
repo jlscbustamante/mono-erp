@@ -44,17 +44,65 @@
 },
 {"id":18,
     "company_id":8,
-    "product":"detalle11",
+    "product":"R3 ingrediente 1",
     "product_id":3,
     "flavor_id":1,
     "size_id":2    
 },
 {"id":19,
     "company_id":8,
-    "product":"detalle12",
+    "product":"R3 ingrediente 2",
     "product_id":3,
     "flavor_id":1,
     "size_id":2    
+},
+{"id":20,
+    "company_id":8,
+    "product":"R1 ingrediente 1",
+    "product_id":1,
+    "flavor_id":1,
+    "size_id":2    
+},
+{"id":21,
+    "company_id":8,
+    "product":"R1 ingrediente 2",
+    "product_id":1,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":22,
+    "company_id":8,
+    "product":"R1 ingrediente 3",
+    "product_id":1,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":23,
+    "company_id":8,
+    "product":"R6 ingrediente 1",
+    "product_id":6,
+    "flavor_id":1,
+    "size_id":2    
+},
+{"id":24,
+    "company_id":8,
+    "product":"R6 ingrediente 2",
+    "product_id":6,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":25,
+    "company_id":8,
+    "product":"R6 ingrediente 3",
+    "product_id":6,
+    "flavor_id":3,
+    "size_id":2    
+},
+{"id":26,
+    "company_id":8,
+    "product":"R6 ingrediente 4",
+    "product_id":6,
+    "flavor_id":3,
+    "size_id":2    
 }
-
 ]
