@@ -9,6 +9,7 @@ export function ReviewPage() {
 
   const requirement_query = useQuery({
     queryKey: ['rq:get_one', id],
+    gcTime: 0,
     queryFn: async () => {
       const request = await viewClient.api.view.payment.get_one.$get({
         query: {

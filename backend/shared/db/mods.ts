@@ -23,3 +23,4 @@ export type AdmReqNondocsSelect = Selectable<AdmReqNondocs>;
 export type FinCashbankSelect = Selectable<FinCashbank>;
 
 export type AdmReqContractSelect = Selectable<AdmReqContract>;
+export type AdmReqContractInsert = Insertable<AdmReqContract>;

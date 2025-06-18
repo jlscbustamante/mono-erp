@@ -1,8 +1,6 @@
 import { OpFilter } from '@/data/types/Filters'
 
-import { ITypeCategory } from '../types'
-
-export const mapKeyFilterType = (key: keyof ITypeCategory): OpFilter[] => {
+export const mapKeyFilterType = (key: keyof any): OpFilter[] => {
   switch (key) {
     case 'id':
       return [OpFilter.Equal, OpFilter.NotEqual]

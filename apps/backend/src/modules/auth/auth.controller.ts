@@ -58,4 +58,14 @@ export class AuthController {
     })
     return data
   }
+
+  @Post('/auth/login-simple')
+  async login_simple(req: Request) {
+    const { email, password } = req.body
+    const data = await this.authService.loginSimple({
+      email,
+      password,
+    })
+    return data
+  }
 }

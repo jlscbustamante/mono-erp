@@ -1,5 +1,5 @@
 // import { REQUIERMENT_TYPE } from "#app/modules/requirement/interfaces/enums.ts";
-import { REQUIERMENT_TYPE } from "./enums.ts";
+import { REQUIREMENT_TYPE } from "./enums.ts";
 
 export interface UpdateRequirementItemDto {
   id: number;
@@ -14,7 +14,7 @@ export interface UpdateRequirementItemDto {
 
 export interface UpdateRequirementDto {
   id: number;
-  request_type: REQUIERMENT_TYPE;
+  request_type: REQUIREMENT_TYPE;
   companyId: string;
   supplierId: number;
   supplierName: string;
@@ -33,7 +33,7 @@ export interface UpdateRequirementDto {
 }
 
 export interface UpdateTransferRequirementDto {
-  request_type: REQUIERMENT_TYPE;
+  request_type: REQUIREMENT_TYPE;
   id: number;
   companyId: string;
   description: string;

@@ -16,6 +16,7 @@ import { suppliers } from "./inv.ts";
 export const companies = mysqlTable("adm_company", {
   id: varchar({ length: 10 }).notNull().primaryKey(),
   title: varchar({ length: 150 }).notNull(),
+  razon_social: varchar({ length: 250 }),
   nro_ruc: varchar({ length: 15 }),
   /**
    * @description C: comercial

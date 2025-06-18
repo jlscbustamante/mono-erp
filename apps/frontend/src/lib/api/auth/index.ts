@@ -47,6 +47,14 @@ export class AuthApi {
   }
 
   @axiosCatch
+  async loginSimple(data: { email: string; password: string }) {
+    const result = await this.client.post<{
+      data: { session: Session; token: string }
+    }>('auth/login-simple', data)
+    return result.data.data
+  }
+
+  @axiosCatch
   async resendOtp(data: { token: string }) {
     const result = await this.client.post('auth/resend-otp', data)
     return result.data

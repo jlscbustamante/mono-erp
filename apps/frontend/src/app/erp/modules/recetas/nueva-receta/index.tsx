@@ -1,6 +1,6 @@
 import { CompanySelectForm } from '@/app/erp/modules/requerimientos/components/company-select'
 import type { TabsProps } from 'antd'
-import { Card, DatePicker, Form, Input, Tabs, Typography } from 'antd'
+import { Card, DatePicker, Form, Input, Tabs } from 'antd'
 import { useEffect, useState } from 'react'
 import { IngredienteProd, InsumoItem } from '../shared-types'
 import { DetalleInsumo } from './DetalleInsumo'
@@ -8,8 +8,6 @@ import { FiltrosInsumos } from './FiltrosInsumos'
 import { ListaIngredientes } from './ListaIngredientes'
 import { ListaInsumos } from './ListaInsumos'
 import { gridStyle } from './styles'
-
-const { Text } = Typography
 
 export const NuevaRecetaTabs = () => {
   const onChange = () => {

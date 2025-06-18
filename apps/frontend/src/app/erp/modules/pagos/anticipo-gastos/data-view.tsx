@@ -1,7 +1,6 @@
 import { PATHS } from '@/const/paths'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
 import { format } from 'date-fns'
-import { Eye } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { PaymentStatusBadge } from '../components/status-bage'
 import { useAnticipoQuery } from './state'
@@ -19,7 +18,24 @@ export function DataView() {
         columns={[
           {
             title: 'Nro',
-            dataIndex: 'id',
+            dataIndex: 'request_code',
+            render: (val, record) => {
+              return (
+                <span
+                  className="text-blue-600 hover:cursor-pointer hover:underline"
+                  onClick={() => {
+                    navigate(
+                      PATHS.erp.modulos.pagos.revisarNonDoc.replace(
+                        ':id',
+                        record.id.toString(),
+                      ),
+                    )
+                  }}
+                >
+                  {val}
+                </span>
+              )
+            },
           },
           {
             title: 'Caja origen',
@@ -50,29 +66,6 @@ export function DataView() {
             title: 'Estado',
             dataIndex: 'status',
             render: (val) => <PaymentStatusBadge status={val} />,
-          },
-          {
-            render: (_, record) => {
-              return (
-                <div className="flex items-center justify-center">
-                  <Button
-                    variant="filled"
-                    type="text"
-                    size="small"
-                    onClick={() => {
-                      navigate(
-                        PATHS.erp.modulos.pagos.revisarNonDoc.replace(
-                          ':id',
-                          record.id.toString(),
-                        ),
-                      )
-                    }}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              )
-            },
           },
         ]}
       />

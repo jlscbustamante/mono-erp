@@ -1,8 +1,8 @@
 import { viewClient } from '@/lib/rpc'
 import { CashBankSelect, CompanySelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AdmReqNondocsInsert } from '@types'
-import { Button, Form, Input, InputNumber, message, Select } from 'antd'
+import { AdmReqNondocsInsert, REQUIREMENT_TYPE } from '@types'
+import { Button, Form, Input, InputNumber, Select } from 'antd'
 import { toast } from 'react-toastify'
 
 export function Transferencia() {
@@ -16,7 +16,7 @@ export function Transferencia() {
 type T = keyof AdmReqNondocsInsert
 
 const TransferenciaForm = () => {
-  const [messageApi, contextHolder] = message.useMessage()
+  // const [messageApi, contextHolder] = message.useMessage()
   const [form] = Form.useForm()
 
   const create_mt = useMutation({
@@ -34,7 +34,8 @@ const TransferenciaForm = () => {
       toast.error(err.message ?? 'Error al crear el requerimiento')
     },
     onSuccess: () => {
-      messageApi.success('Requerimiento creado correctamente')
+      // messageApi.success('Requerimiento creado correctamente')
+      toast.success('Requerimiento creado correctamente')
     },
   })
 
@@ -66,16 +67,25 @@ const TransferenciaForm = () => {
 
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
-      {contextHolder}
+      {/* {contextHolder} */}
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos principales
       </h3>
       <Form
+        onFinish={handle_save}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
         form={form}
         name="rq:create_transferencia"
+        initialValues={
+          {
+            request_type: REQUIREMENT_TYPE.TRANSFER,
+          } satisfies Partial<AdmReqNondocsInsert>
+        }
       >
+        <Form.Item name={'request_type' satisfies T} hidden>
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Empresa"
@@ -85,7 +95,7 @@ const TransferenciaForm = () => {
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>
@@ -161,8 +171,9 @@ const TransferenciaForm = () => {
           <Button
             type="primary"
             loading={create_mt.isPending}
-            onClick={handle_save}
-            htmlType="button"
+            // onClick={handle_save}
+
+            htmlType="submit"
           >
             Guardar
           </Button>

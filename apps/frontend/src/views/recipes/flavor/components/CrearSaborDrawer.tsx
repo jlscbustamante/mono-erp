@@ -1,8 +1,8 @@
-import { Drawer, Input, Button, List, message } from 'antd'
-import { useState } from 'react'
-import { useItemsQuery } from '@/views/recipes/final/hooks/useItemsQuery'
-import { medidas, IItem } from '@/views/recipes/shared/types'
 import { useCreateFlavorWithIngredients } from '@/views/recipes/final/hooks/useCreateFlavorWithIngredients'
+import { useItemsQuery } from '@/views/recipes/final/hooks/useItemsQuery'
+import { IItem, medidas } from '@/views/recipes/shared/types'
+import { Button, Drawer, Input, List, message } from 'antd'
+import { useState } from 'react'
 import { CreateFlavorWithIngredientsDto } from '../../shared/dtos/CreateRecipe.dto'
 
 interface Props {
@@ -18,17 +18,19 @@ export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
   const { mutate: guardarSabor, isPending } = useCreateFlavorWithIngredients()
 
   const handleAgregar = (item: IItem) => {
-    if (ingredientes.some(i => i.id === item.id)) return
+    if (ingredientes.some((i) => i.id === item.id)) return
     setIngredientes([...ingredientes, item])
   }
 
   const handleRemover = (id: number) => {
-    setIngredientes(ingredientes.filter(i => i.id !== id))
+    setIngredientes(ingredientes.filter((i) => i.id !== id))
   }
 
   const handleGuardar = () => {
     if (!flavorName.trim() || ingredientes.length === 0) {
-      return message.warning('Debe ingresar un nombre y seleccionar ingredientes')
+      return message.warning(
+        'Debe ingresar un nombre y seleccionar ingredientes',
+      )
     }
 
     const payload: CreateFlavorWithIngredientsDto = {
@@ -37,12 +39,12 @@ export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
         menuflav_id: 1001, // dummy por ahora
         company_id: companyId,
       },
-      ingredients: ingredientes.map(i => ({
+      ingredients: ingredientes.map((i) => ({
         item_id: i.id,
         quantity: i.quantity,
         measure_id: i.measure_id,
         presentation_id: i.presentation_id,
-      }))
+      })),
     }
 
     guardarSabor(payload, {
@@ -50,7 +52,7 @@ export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
         setFlavorName('')
         setIngredientes([])
         onClose()
-      }
+      },
     })
   }
 
@@ -77,14 +79,19 @@ export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                ingredientes.some(i => i.id === item.id) ? (
-                  <Button danger onClick={() => handleRemover(item.id)}>Quitar</Button>
+                ingredientes.some((i) => i.id === item.id) ? (
+                  <Button danger onClick={() => handleRemover(item.id)}>
+                    Quitar
+                  </Button>
                 ) : (
-                  <Button type="primary" onClick={() => handleAgregar(item)}>Agregar</Button>
-                )
+                  <Button type="primary" onClick={() => handleAgregar(item)}>
+                    Agregar
+                  </Button>
+                ),
               ]}
             >
-              {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas] ?? ''}
+              {item.name} — {item.quantity}{' '}
+              {medidas[item.measure_id as keyof typeof medidas] ?? ''}
             </List.Item>
           )}
         />
@@ -96,10 +103,17 @@ export const CrearSaborDrawer = ({ open, onClose, companyId }: Props) => {
           renderItem={(item) => (
             <List.Item
               actions={[
-                <Button danger onClick={() => handleRemover(item.id)}>Quitar</Button>
+                <Button
+                  key={item.id}
+                  danger
+                  onClick={() => handleRemover(item.id)}
+                >
+                  Quitar
+                </Button>,
               ]}
             >
-              {item.name} — {item.quantity} {medidas[item.measure_id as keyof typeof medidas] ?? ''}
+              {item.name} — {item.quantity}{' '}
+              {medidas[item.measure_id as keyof typeof medidas] ?? ''}
             </List.Item>
           )}
         />

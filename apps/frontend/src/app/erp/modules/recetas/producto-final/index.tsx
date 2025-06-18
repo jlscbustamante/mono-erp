@@ -37,13 +37,10 @@ export const ProductoFinal = () => {
 
   const applyFilters = async () => {
     try {
-      const filters: Filters<InvRecipe> = {}
       const validFilterUsers = transformFilterToValidRecipe(aUserFilters)
       console.log('validFilters')
       console.log(validFilterUsers)
       console.log('category_id')
-      console.log(validFilterUsers.category_id[1])
-      console.log(validFilterUsers['category_id'][1])
 
       /*const data = await sdk.filterCategory({
         ...filters,
@@ -55,7 +52,7 @@ export const ProductoFinal = () => {
       const respFiltrada = jsonData.filter(
         (i: InvRecipeFilter) =>
           //i.category_id = validFilterUsers['category_id']?.[0]
-          i.category_id == validFilterUsers?.category_id[1],
+          i.category_id == validFilterUsers?.category_id?.[1],
       )
       setApprovedRequests(respFiltrada)
       //setInvRecipe(respFiltrada)
@@ -67,8 +64,6 @@ export const ProductoFinal = () => {
   //const cleanFilters = () => {}
   const cleanFilters = async () => {
     try {
-      const filters: Filters<InvRecipe> = {}
-
       //filters.status = [OpFilter.In, CategoryStatus.Active]
 
       aSetUserFilters({})
@@ -84,14 +79,6 @@ export const ProductoFinal = () => {
 
   //const handleEditClick = (record: InvRecipe) => {}
 
-  const handleAddClick = () => {
-    setIsDrawerVisible(true)
-  }
-
-  const handleDrawerClose = () => {
-    setSelectedRequest(null)
-    setIsDrawerVisible(false)
-  }
   const handleDrawerCloseUpdate = () => {
     //setSelectedRequest(null)
     setDrawerOpen(false)

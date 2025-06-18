@@ -13,10 +13,13 @@ export const filter_orders = async (
   if (filters.length > 0) {
     const data = await sql`SELECT * FROM adm_payment_order WHERE ${sql.raw(
       query
-    )}`.execute(db);
+    )} ORDER BY required_at DESC`.execute(db);
     result = data.rows as AdmPaymentOrderSelect[];
   } else {
-    const data = await sql`SELECT * FROM adm_payment_order`.execute(db);
+    const data =
+      await sql`SELECT * FROM adm_payment_order ORDER BY required_at DESC`.execute(
+        db
+      );
     result = data.rows as AdmPaymentOrderSelect[];
   }
 

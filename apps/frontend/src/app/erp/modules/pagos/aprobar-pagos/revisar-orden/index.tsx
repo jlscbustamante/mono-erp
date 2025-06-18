@@ -3,11 +3,12 @@ import { cn } from '@/utils'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   AdmPaymentOrderSelect,
-  AdmRequirementSelect,
+  IAdmRequirementWithSupplierBank,
   ISelectMockAuthorizedUserDto,
   ORDER_PAYMENT_STATUS,
 } from '@types'
 import { Button, Checkbox, Form, Input, Modal } from 'antd'
+import { ArrowLeft } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { useParams } from 'react-router'
 import { toast } from 'react-toastify'
@@ -44,7 +45,7 @@ export const RevisarOrdenPage = () => {
       }
       return content.data as {
         order: AdmPaymentOrderSelect
-        requirements: AdmRequirementSelect[]
+        requirements: IAdmRequirementWithSupplierBank[]
       }
     },
   })
@@ -67,6 +68,7 @@ export const RevisarOrdenPage = () => {
   const [show_dialog_authorization, set_show_dialog_authorization] =
     useState(false)
   const [show_otp_input, set_show_otp_input] = useState(false)
+  const [show_dev_credentials, set_show_dev_credentials] = useState(false)
 
   const cancel_order_mt = useMutation({
     mutationFn: async (props: { id: number; delete_related: boolean }) => {
@@ -226,9 +228,10 @@ export const RevisarOrdenPage = () => {
           set_show_otp_input(false)
           form.resetFields()
         }}
-        onClose={() => {
-          form.resetFields()
-        }}
+        // TODO: revisar onClose
+        // onClose={() => {
+        //   form.resetFields()
+        // }}
         okButtonProps={{
           loading: approve_payment_mt.isPending,
         }}
@@ -244,6 +247,29 @@ export const RevisarOrdenPage = () => {
           }
         }}
       >
+        <p
+          className="text-blue-600 hover:text-blue-500 cursor-pointer"
+          onClick={() => {
+            set_show_dev_credentials(!show_dev_credentials)
+          }}
+        >
+          {!show_dev_credentials
+            ? 'Mostrar credenciales de desarrollo'
+            : 'Ocultar credenciales de desarrollo'}
+        </p>
+        <div
+          className={cn('bg-slate-100 rounded-md p-2 text-sm mb-1', {
+            hidden: !show_dev_credentials,
+          })}
+        >
+          <p className="font-semibold">Usuarios(desarrollo) : </p>
+          <p>Gerson berrocal</p>
+          <p>Usuario 2</p>
+          <p className="font-semibold">Contraseña: </p>
+          <p>123456</p>
+          <p className="font-semibold">otp</p>
+          <p>123456</p>
+        </div>
         <div
           className={cn('mb-3', {
             hidden: !show_otp_input,
@@ -282,10 +308,18 @@ export const RevisarOrdenPage = () => {
           </Form.Item>
         </Form>
       </Modal>
-      <div className="bg-blue-50 min-h-screen">
-        <h4 className="bg-white p-3 font-semibold text-slate-800 mb-3">
-          Programar orden de pago
-        </h4>
+      <div className="bg-blue-50 min-h-screen text-sm">
+        <div className="bg-white flex items-center">
+          <div
+            className="flex items-center gap-2 cursor-pointer font-semibold text-gray-700 hover:text-blue-500 border-0 border-r border-solid border-gray-300 mr-4 pl-2 pr-4 text-sm"
+            onClick={() => window.history.back()}
+          >
+            <ArrowLeft className="w-4 h-auto" /> Volver
+          </div>
+          <h4 className="p-3 font-semibold text-slate-800 flex-1">
+            Programar orden de pago
+          </h4>
+        </div>
         {query.data && (
           <div className="p-3 space-y-3">
             <CreateOrderForm order={query.data.order} />
@@ -313,11 +347,7 @@ export const RevisarOrdenPage = () => {
                 >
                   Anular orden pago
                 </Button>
-                <Button
-                  type="primary"
-                  // onClick={() => set_show_dialog_authorization(true)}
-                  onClick={handle_authorization_dialogs}
-                >
+                <Button type="primary" onClick={handle_authorization_dialogs}>
                   Autorizar orden
                 </Button>
               </div>

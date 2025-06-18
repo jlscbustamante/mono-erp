@@ -1,4 +1,4 @@
-import { REQUIERMENT_TYPE, REQUIREMENT_STATUS } from "./enums.ts";
+import { REQUIREMENT_STATUS, REQUIREMENT_TYPE } from "./enums.ts";
 
 export interface IRequirementDetailItem {
   id: number;
@@ -32,5 +32,5 @@ export interface IRequirementDetail {
   status: REQUIREMENT_STATUS;
   createdBy: string;
   items: IRequirementDetailItem[];
-  type: REQUIERMENT_TYPE;
+  type: REQUIREMENT_TYPE;
 }

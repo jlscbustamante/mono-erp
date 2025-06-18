@@ -14,20 +14,14 @@ export const DetalleInsumo = ({
   drawerClose: () => void
   oper: number
 }) => {
-  const [componentDisabled, setComponentDisabled] = useState<boolean>(true)
-  const [drawerOpenInterno, setDrawerOpenInterno] =
-    useState<boolean>(drawerOpen)
+  const [drawerOpenInterno] = useState<boolean>(drawerOpen)
   const [operInterno, setOperInterno] = useState<number>(oper)
-  let textoBotonOper: string = 'Cerrar'
-  let modoEdicion: boolean = false
 
   if (oper == 1) {
     console.log('Oper 1')
   }
   if (oper == 3) {
     console.log('Oper 3')
-    textoBotonOper = 'Editar'
-    modoEdicion = true
     //setComponentDisabled(false)
   }
 

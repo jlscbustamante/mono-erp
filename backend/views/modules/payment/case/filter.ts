@@ -29,7 +29,7 @@ export const filter = async (
   FROM adm_requirement rq
   LEFT JOIN fin_costcenter fc ON rq.costcenter_id = fc.id
   LEFT JOIN fin_movetype fm ON rq.movetype_id = fm.id
-  WHERE ${sql.raw(query)}`.execute(db);
+  WHERE ${sql.raw(query)} ORDER BY rq.requested_at DESC`.execute(db);
 
   const result = data.rows.map((row: any) => {
     return {
@@ -45,7 +45,8 @@ export const filter = async (
       movetype: row.movetype,
       amount: row.amount,
       created_by: row.created_by,
-      requested_at: format(new Date(row.requested_at), "yyyy-MM-dd"),
+      // requested_at: format(new Date(row.requested_at), "yyyy-MM-dd"),
+      requested_at: row.requested_at,
       expires_at: row.expires_at
         ? format(new Date(row.expires_at), "yyyy-MM-dd")
         : null,
