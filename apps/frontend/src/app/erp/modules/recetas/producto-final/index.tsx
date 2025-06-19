@@ -28,6 +28,7 @@ export const ProductoFinal = () => {
   //const [isDrawerVisible, setIsDrawerVisible] = useState(false)
   //const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false)
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [drawerOpen2, setDrawerOpen2] = useState(false)
 
   const [ingredienteMMostrado, setIngredienteMMostrado] = useState<
     InsumoItem[]
@@ -96,6 +97,14 @@ export const ProductoFinal = () => {
     //setSelectedRequest(null)
     setDrawerOpen(false)
     setIngredienteMMostrado([])
+    //setIsUpdateFormVisible(false)
+  }
+
+  const handleDrawerCloseUpdate2 = () => {
+    console.log('Crear')
+    //setSelectedRequest(null)
+    setDrawerOpen2(false)
+    //setIngredienteMMostrado([])
     //setIsUpdateFormVisible(false)
   }
   //const handleEditClick = (record: InvRecipe) => {
@@ -205,7 +214,26 @@ export const ProductoFinal = () => {
             onClick={cleanFilters}
             danger
           />
+          <div className="flex w-128 flex-2 ..."></div>
+          <div className="flex w-32 flex-1 ...">
+            <Button
+              // color="default"
+              // variant="solid"
+              onClick={() => {
+                console.log('crear')
+                setDrawerOpen2(true)
+              }}
+            >
+              +
+            </Button>
+          </div>
         </div>
+      </div>
+
+      <div className="flex items-center my-6">
+        <div className="w-14 flex-none ...">01</div>
+        <div className="w-64 flex-1 ...">02</div>
+        <div className="w-32 flex-1 ...">03</div>
       </div>
       <ListaProductoFinal pHandleEditClick={handleEditClick} />
       <DetalleInsumo
@@ -213,6 +241,12 @@ export const ProductoFinal = () => {
         drawerOpen={drawerOpen}
         drawerClose={handleDrawerCloseUpdate}
         oper={3}
+      />
+      <DetalleInsumo
+        data={ingredienteMMostrado}
+        drawerOpen={drawerOpen2}
+        drawerClose={handleDrawerCloseUpdate2}
+        oper={1}
       />
       {/*
       <Drawer
