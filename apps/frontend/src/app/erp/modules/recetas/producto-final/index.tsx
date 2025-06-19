@@ -232,7 +232,7 @@ export const ProductoFinal = () => {
 
       <div className="flex items-center my-6">
         <div className="w-14 flex-none ...">01</div>
-        <div className="w-64 flex-1 ...">02</div>
+        <div className="w-164 flex-1 ...">02</div>
         <div className="w-32 flex-1 ...">03</div>
       </div>
       <ListaProductoFinal pHandleEditClick={handleEditClick} />

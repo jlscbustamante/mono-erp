@@ -1,124 +1,26 @@
 import { CompanySelectForm } from '@/app/erp/modules/requerimientos/components/company-select'
+import { cn } from '@/utils/cn'
 import type { TabsProps } from 'antd'
-import { Card, DatePicker, Form, Input, Tabs, Typography } from 'antd'
-import { useEffect, useState } from 'react'
+import { Button, Card, DatePicker, Form, Input, Space, Tabs } from 'antd'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { IngredienteProd, InsumoItem } from '../shared-types'
 import { DetalleInsumo } from './DetalleInsumo'
-import { FiltrosInsumos } from './FiltrosInsumos'
 import { ListaIngredientes } from './ListaIngredientes'
-import { ListaInsumos } from './ListaInsumos'
 import { gridStyle } from './styles'
-
-const { Text } = Typography
+//import lista de insumos
+import { Table } from 'antd'
+import { ColumnsType } from 'antd/es/table'
+//fin de import de lista de insumos
 
 export const NuevaRecetaTabs = () => {
   const onChange = () => {
     //console.log('change :' + key)
   }
 
-  const PanelIzq = ({
-    ingredientesR,
-    quitarIngrediente,
-  }: {
-    ingredientesR: IngredienteProd[]
-    quitarIngrediente: (code: number) => void
-  }) => {
-    return (
-      <>
-        <Card hoverable style={gridStyle}>
-          <Form
-            labelCol={{ span: 6 }}
-            labelAlign="left"
-            labelWrap
-            wrapperCol={{ span: 14 }}
-            layout="horizontal"
-            style={{ maxWidth: 600 }}
-          >
-            <div className="grid grid-cols-12 gap-2 items-start">
-              <Form.Item className="col-span-8 mb-1" label="Compañía">
-                <CompanySelectForm />
-              </Form.Item>
-
-              <Form.Item className="col-span-4 mb-1" label="Fecha">
-                <DatePicker />
-              </Form.Item>
-
-              <Form.Item className="col-span-12 mb-1" label="Nombre de receta">
-                <Input />
-              </Form.Item>
-
-              <Form.Item className="col-span-12 mb-1" label="Producto de venta">
-                <Input />
-              </Form.Item>
-
-              <Form.Item className="col-span-12 mb-1" label="Etiquetar como">
-                <Input />
-              </Form.Item>
-              <Form.Item
-                className="col-span-12 mb-1"
-                label="Ingredientes"
-              ></Form.Item>
-            </div>
-          </Form>
-          <ListaIngredientes
-            ingredientesR={ingredientesR}
-            quitarIngrediente={quitarIngrediente}
-          />
-        </Card>
-      </>
-    )
-  }
-
-  const PanelDer = ({
-    listaInsumos,
-    childToParent,
-    childToParent2,
-    childToParent3,
-    ingredienteM,
-    drawerOpen,
-    drawerClose,
-  }: {
-    listaInsumos: IngredienteProd[]
-    childToParent: (pCatSelected: number, pNeedle: string) => IngredienteProd[]
-    childToParent2: (record: IngredienteProd) => void
-    childToParent3: (id: number) => void
-    ingredienteM: InsumoItem[]
-    drawerOpen: boolean
-    drawerClose: () => void
-  }) => {
-    return (
-      <>
-        <div>
-          <FiltrosInsumos childToParent={childToParent} />
-        </div>
-
-        <ListaInsumos
-          ingredientesMFiltrados={listaInsumos}
-          transferIngredienteM={childToParent2}
-          ingredienteMMostrado={childToParent3}
-        />
-        <DetalleInsumo
-          data={ingredienteM}
-          drawerOpen={drawerOpen}
-          drawerClose={drawerClose}
-          oper={4}
-        />
-      </>
-    )
-  }
-
   const RecetaProdFinal = () => {
-    //const [catSelected, setCatSelected] = useState(0)
-    //const [needle, setNeedle] = useState('')
-    //const [datax, setDatax] = useState('')
+    //Para lista de ingredientes de receta
     const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
 
-    /*const childToParent = (childdata) => {
-      //setDatax(childdata)
-      setNeedle(childdata)
-      setCatSelected(3)
-      
-    }*/
     const [ingredientesM, setIngredientesM] = useState<IngredienteProd[]>([])
     //ingredientes filtrados por la busqueda
     const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
@@ -133,9 +35,9 @@ export const NuevaRecetaTabs = () => {
     const [ingredientesMItems, setIngredientesMItems] = useState<InsumoItem[]>(
       [],
     )
-
     const [drawerOpen, setDrawerOpen] = useState(false)
 
+    //Inicio de manejadores de Lista de insumos
     const ingredientesMSelected = (catSelected: number, needle: string) => {
       //console.log('dato renovado')
       //setNeedle(needle)
@@ -246,17 +148,106 @@ export const NuevaRecetaTabs = () => {
         setDrawerOpen(true)
       }
     }
+    //Fin de manejadores de Lista de insumos
 
+    //Manejadores de DetalleInsumo
     const handleDrawerClose = () => {
       setIngredienteMMostrado([])
       setDrawerOpen(false)
     }
+    //Fin de manejadores de DetalleInsumo
 
+    //Manejadores de lista de receta
+    //boton quitar elemento de lista de receta
     const handleQuitarIngrediente = (code: number) => {
       setIngredientesR(
         ingredientesR.filter((item: IngredienteProd) => item.id != code),
       )
     }
+    //boton quitar elemento de lista de receta
+    //Fin de manejadores de lista de receta
+
+    //Inicio de Filtros insumos
+    const [catSelected, setCatSelected] = useState(0)
+    const [needle, setNeedle] = useState('')
+
+    //.. childToParent es una funcion que es enviada porel padre para
+    //.. que desde el hijo se envien datos
+
+    //.. manejador de eventos de la caja de busqueda
+    const handleNeedle = (event: ChangeEvent<HTMLInputElement>) => {
+      const needle = event.target.value.trim()
+      console.log('texto buscado' + needle)
+      setNeedle(needle)
+    }
+
+    const handlePredefinedFilters = (customFilter: number) => {
+      console.log('Clic en :' + customFilter)
+      setCatSelected(customFilter)
+    }
+    //Fin de Filtros insumos
+
+    //Inicio de lista de insumos
+    //columnas de la tabla de ingredientes disponibles
+    const columnsIngredientesM: ColumnsType = [
+      {
+        title: 'Id',
+        dataIndex: 'id',
+        className: '!p-1',
+        hidden: true,
+      },
+      {
+        title: 'Categoria',
+        dataIndex: 'category',
+        className: '!p-1',
+      },
+      {
+        title: 'Nombre',
+        dataIndex: 'product',
+        className: '!p-1',
+      },
+      {
+        title: 'Add',
+        align: 'center',
+        className: '!p-1',
+        render: (_, record) => (
+          <Button
+            onClick={() =>
+              handleTransferIngredientesM({
+                id: record.id,
+                product: record.product,
+                category_id: record.category_id,
+                unit_price: 1.0,
+                measure_id: record.measure_id,
+                status: 1,
+              })
+            }
+          >
+            +
+          </Button>
+        ),
+      },
+      {
+        title: 'Measure Id',
+        dataIndex: 'measure_id',
+        className: '!p-1',
+        hidden: true,
+      },
+      {
+        title: 'Measure Name',
+        dataIndex: 'measure_name',
+        className: '!p-1',
+        hidden: true,
+      },
+      {
+        title: 'Category Id',
+        dataIndex: 'category_id',
+        className: '!p-1',
+        hidden: true,
+      },
+    ]
+
+    //Fin de lista de insumos
 
     useEffect(() => {
       console.log('componente renderizado')
@@ -290,20 +281,122 @@ export const NuevaRecetaTabs = () => {
     return (
       <div className="flex">
         <div className="flex-1 w-64 ...">
-          <PanelIzq
-            ingredientesR={ingredientesR}
-            quitarIngrediente={handleQuitarIngrediente}
-          />
+          {/* Inicio de lista de ingredientes de receta */}
+          <Card hoverable style={gridStyle}>
+            <Form
+              labelCol={{ span: 6 }}
+              labelAlign="left"
+              labelWrap
+              wrapperCol={{ span: 14 }}
+              layout="horizontal"
+              style={{ maxWidth: 600 }}
+            >
+              <div className="grid grid-cols-12 gap-2 items-start">
+                <Form.Item className="col-span-8 mb-1" label="Compañía">
+                  <CompanySelectForm />
+                </Form.Item>
+
+                <Form.Item className="col-span-4 mb-1" label="Fecha">
+                  <DatePicker />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Nombre de receta"
+                >
+                  <Input />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Producto de venta"
+                >
+                  <Input />
+                </Form.Item>
+
+                <Form.Item className="col-span-12 mb-1" label="Etiquetar como">
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Ingredientes"
+                ></Form.Item>
+              </div>
+            </Form>
+            <ListaIngredientes
+              ingredientesR={ingredientesR}
+              quitarIngrediente={handleQuitarIngrediente}
+            />
+          </Card>
+
+          {/* Fin de lista de ingredientes de receta  */}
         </div>
         <div className="flex-1 w-64 ...">
-          <PanelDer
-            listaInsumos={ingredientesMFiltrados}
-            childToParent={ingredientesMSelected}
-            childToParent2={handleTransferIngredientesM}
-            childToParent3={handleShowItems}
-            ingredienteM={ingredienteMMostrado}
+          {/*Inicio de filtros de insumos*/}
+          {/* Caja de busqueda */}
+          <Input.Search
+            size="large"
+            value={needle}
+            allowClear
+            onSearch={() => ingredientesMSelected(catSelected, needle)}
+            placeholder="buscar colección, ingredientes"
+            onChange={handleNeedle}
+          />
+          <Space>
+            <Button
+              className={cn(
+                'bg-slate-200 px-2 py-0.5 text-sm text-slate-600 cursor-pointer select-none hover:bg-blue-300 hover:text-white w-20 text-center',
+                {
+                  'bg-blue-500 hover:bg-blue-500 text-white':
+                    22 === catSelected,
+                },
+              )}
+              onClick={() => handlePredefinedFilters(22)}
+            >
+              Colección
+            </Button>
+            <Button
+              // color="default"
+              // variant="solid"
+              onClick={() => handlePredefinedFilters(9)}
+            >
+              Quesos
+            </Button>
+            <Button onClick={() => handlePredefinedFilters(3)}>Latas</Button>
+            <Button onClick={() => handlePredefinedFilters(8)}>Verduras</Button>
+          </Space>
+          {/*Fin de filtros de insumos*/}
+
+          {/* Lista de insumos */}
+          <Card style={gridStyle}>
+            <Table
+              onRow={(record) => {
+                return {
+                  onClick: () => {
+                    //console.log('Index : ' + rowIndex)
+                    //console.log('Record:')
+                    //console.table(record)
+                    handleShowItems(record.id)
+                  }, // click row
+                }
+              }}
+              className="w-97 relative z-10"
+              rowKey={(el) => el.id}
+              size="small"
+              bordered={true}
+              pagination={false}
+              columns={columnsIngredientesM}
+              dataSource={ingredientesMFiltrados}
+            />
+          </Card>
+          {/* Fin de lista de insumos */}
+
+          {/* Drawer con detalle de insumo con receta */}
+          <DetalleInsumo
+            data={ingredienteMMostrado}
             drawerOpen={drawerOpen}
             drawerClose={handleDrawerClose}
+            oper={4}
           />
         </div>
       </div>
