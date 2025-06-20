@@ -1,0 +1,121 @@
+[
+	{
+		"id" : 185,
+		"company_id":"PIZZARAUL",
+		"product" : "ASADO DE TIRA",				
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 197,
+		"company_id":"PIZZARAUL",
+		"product" : "ASADO DE TIRA",				
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 203,
+		"company_id":"PIZZARAUL",
+		"product" : "POLLO AMARILLO",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 31,
+		"company_id":"PIZZARAUL",
+		"product" : "CEBOLLA BLANCA",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 32,
+		"company_id":"PIZZARAUL",
+		"product" : "PIMIENTO",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 262,
+		"company_id":"PIZZARAUL",
+		"product" : "AJI AMARILLO",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 14,
+		"company_id":"PIZZARAUL",
+		"product" : "CHAMPIÑON",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 15,
+		"company_id":"PIZZARAUL",
+		"product" : "CHOCLITO",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 16,
+		"company_id":"PIZZARAUL",
+		"product" : "PIÑA ALMIBAR",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 33,
+		"company_id":"PIZZARAUL",
+		"product" : "MOZZARELLA",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 318,
+		"company_id":"PIZZARAUL",
+		"product" : "QUESO PROVOLETA PORC 320GR",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 85,
+		"company_id":"PIZZARAUL",
+		"product" : "GASEOSA",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 86,
+		"company_id":"PIZZARAUL",		
+		"product" : "AGUA GASEOSA",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 87,
+		"company_id":"PIZZAM",		
+		"product" : "AGUA SIN GAS",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 35,
+		"company_id":"PIZZARAUL",
+		"product" : "CAJA DE PIZZA FAMILIAR",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 36,
+		"company_id":"PIZZARAUL",		
+		"product" : "CAJA DE PIZZA GIGANTE",
+		"recipe_req" : 1,
+		"status" : 1
+	},
+	{
+		"id" : 37,
+		"company_id":"PIZZARAUL",				
+		"product" : "CAJA DE PIZZA GRANDE",
+		"recipe_req" : 1,
+		"status" : 1
+	}
+]

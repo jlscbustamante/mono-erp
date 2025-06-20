@@ -95,7 +95,7 @@ export interface inv_productitem {
 //tabla inv_menu_product
 export interface InvMenuProduct {
   id: number
-  company_id: number
+  company_id: string
   product: string
   recipe_req: number
   status: number
