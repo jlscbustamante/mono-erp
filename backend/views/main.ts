@@ -9,6 +9,7 @@ import { cashBankRouter } from "./modules/cashbank/index.ts";
 import { costCenterRouter } from "./modules/costcenter/index.ts";
 import { inventoryRouter } from "./modules/inventory/index.ts";
 import { paymentRouter } from "./modules/payment/index.ts";
+import { recipeRouter } from "./modules/recipe2/index.ts";
 import { requirementRouter } from "./modules/requirement/index.ts";
 import { supplier_router } from "./modules/supplier/index.ts";
 
@@ -27,7 +28,8 @@ export const apiRouter = app
   .route("cashbank", cashBankRouter)
   .route("payment", paymentRouter)
   .route("nondoc", admNondocRouter)
-  .route("supplier", supplier_router);
+  .route("supplier", supplier_router)
+  .route("recipe", recipeRouter);
 
 apiRouter.onError((err, c) => {
   console.log(err);

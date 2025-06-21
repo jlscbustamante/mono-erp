@@ -1,5 +1,4 @@
 import { NextFunction, Request, Response } from 'express'
-
 /*import { Account } from '../entities/Account'
 import { Category } from '../entities/Category'
 import { CategoryType } from '../entities/CategoryType'

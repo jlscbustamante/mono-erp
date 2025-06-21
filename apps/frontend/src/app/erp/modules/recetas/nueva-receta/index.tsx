@@ -8,8 +8,12 @@ import { DetalleInsumo } from './DetalleInsumo'
 import { ListaIngredientes } from './ListaIngredientes'
 import { gridStyle } from './styles'
 //import lista de insumos
+import { viewClient } from '@/lib/rpc'
+import { useQuery } from '@tanstack/react-query'
+import { IListaInsumo } from '@types'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
+
 //fin de import de lista de insumos
 
 export const NuevaRecetaTabs = () => {
@@ -21,10 +25,10 @@ export const NuevaRecetaTabs = () => {
     //Para lista de ingredientes de receta
     const [ingredientesR, setIngredientesR] = useState<IngredienteProd[]>([])
 
-    const [ingredientesM, setIngredientesM] = useState<IngredienteProd[]>([])
+    const [ingredientesM, setIngredientesM] = useState<IListaInsumo[]>([])
     //ingredientes filtrados por la busqueda
     const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
-      IngredienteProd[]
+      IListaInsumo[]
     >([])
 
     const [ingredienteMMostrado, setIngredienteMMostrado] = useState<
@@ -39,25 +43,26 @@ export const NuevaRecetaTabs = () => {
 
     //Inicio de manejadores de Lista de insumos
     const ingredientesMSelected = (catSelected: number, needle: string) => {
-      //console.log('dato renovado')
+      console.log('dato renovado')
       //setNeedle(needle)
       //setCatSelected(catSelected)
 
-      const query: IngredienteProd[] = ingredientesM
-
-      const dataFiltered: IngredienteProd[] =
-        query?.filter((el: IngredienteProd) => {
-          // console.log('el.id : ' + el.id)
+      const query: IListaInsumo[] = ingredientesM
+      console.log('lucanas')
+      console.table(query)
+      const dataFiltered: IListaInsumo[] =
+        query?.filter((el: IListaInsumo) => {
+          //console.log('el.id : ' + el.id)
           // console.log('el.category_id : ' + el.category_id)
-          // console.log('el.product : ' + el.product)
-          let out: IngredienteProd | undefined
+          console.log('el.item_name : ' + el.item_name)
+          let out: IListaInsumo | undefined
           if (!catSelected) {
-            if (el.product.toLowerCase().includes(needle.toLowerCase()))
+            if (el.item_name.toLowerCase().includes(needle.toLowerCase()))
               out = el
           } else {
             if (
               el.category_id === catSelected &&
-              el.product.toLowerCase().includes(needle.toLowerCase())
+              el.item_name.toLowerCase().includes(needle.toLowerCase())
             ) {
               out = el
             }
@@ -249,6 +254,21 @@ export const NuevaRecetaTabs = () => {
 
     //Fin de lista de insumos
 
+    const respuesta = useQuery({
+      queryKey: ['req:rs:recipe-list-insumos'],
+      queryFn: async () => {
+        const req = await viewClient.api.view.recipe.filter.insumos.$get()
+        const body = await req.json()
+        // {
+        // message : 'ok',
+        // dotr : [] true, {}
+        //}
+        return body.data as IListaInsumo[]
+      },
+    })
+
+    setIngredientesM(respuesta.data[0])
+
     useEffect(() => {
       console.log('componente renderizado')
       const fetchData = async () => {
@@ -275,7 +295,12 @@ export const NuevaRecetaTabs = () => {
         }
       }
 
-      fetchData()
+      //const IListaInsumos[] = useQuery({
+      /*
+      
+
+      */
+      //fetchData()
       fetchDataItems()
     }, [])
     return (
@@ -334,6 +359,7 @@ export const NuevaRecetaTabs = () => {
         <div className="flex-1 w-64 ...">
           {/*Inicio de filtros de insumos*/}
           {/* Caja de busqueda */}
+          <h1>{respuesta.data?.[0].fecha}</h1>
           <Input.Search
             size="large"
             value={needle}
