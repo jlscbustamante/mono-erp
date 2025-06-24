@@ -2,6 +2,7 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
 import { IItem } from '@types'
 import { Button, Drawer, Form, Input, List, Space } from 'antd'
 import { useState } from 'react'
+import { InsumoItem } from '../shared-types'
 
 export const DetalleInsumo = ({
   data,
@@ -9,7 +10,7 @@ export const DetalleInsumo = ({
   drawerClose,
   oper,
 }: {
-  data: IItem[]
+  data: IItem[] | InsumoItem[]
   drawerOpen: boolean
   drawerClose: () => void
   oper: number
@@ -114,38 +115,13 @@ export const DetalleInsumo = ({
             header={<div>Receta de : </div>}
             footer={<div></div>}
             bordered
-            dataSource={data}
-            renderItem={(item) => <List.Item>{item.item_name}</List.Item>}
+            dataSource={data as any}
+            renderItem={(item: any) => <List.Item>{item.item_name}</List.Item>}
           ></List>
         </div>
       ) : null}
 
-      {operInterno == 3 ? (
-        <div>
-          <Form
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
-            layout="horizontal"
-            style={{ maxWidth: 600 }}
-          >
-            {data.map((item2) => (
-              <div key={item2.id}>
-                <Form.Item label="Nombre">
-                  <Input defaultValue={item2.product} />
-                </Form.Item>
-                <Form.Item label="Sabor">
-                  <Input defaultValue={item2.flavor_id} />
-                </Form.Item>
-              </div>
-            ))}
-            <Space>
-              <Button onClick={guardarItemsProducto}>Guardar</Button>
-
-              <Button onClick={handleCancelar}>Cancelar</Button>
-            </Space>
-          </Form>
-        </div>
-      ) : null}
+      {operInterno == 3 ? <div></div> : null}
 
       {operInterno == 2 ? (
         <div>

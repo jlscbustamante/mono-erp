@@ -23,7 +23,6 @@ export const NuevaRecetaTabs = () => {
     //Para lista de ingredientes de receta
     const [ingredientesR, setIngredientesR] = useState<IItem[]>([])
 
-    const [ingredientesM, setIngredientesM] = useState<IListaInsumo[]>([])
     //ingredientes filtrados por la busqueda
     const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
       IListaInsumo[] | undefined
@@ -34,7 +33,7 @@ export const NuevaRecetaTabs = () => {
     )
 
     //los items que forman parte de un ingredienteM con receta o coleccion
-    const [ingredientesMItems, setIngredientesMItems] = useState<IItem[]>([])
+    const [, setIngredientesMItems] = useState<IItem[]>([])
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     //Inicio de manejadores de Lista de insumos
@@ -107,9 +106,6 @@ export const NuevaRecetaTabs = () => {
 
       //validar si el item encontrado tiene receta
       //TODO : esto se reducira a la validacion de un solo campo
-      const tempItems: IItem[] = ingredientesMItems.filter(
-        (i) => i.id == record.id,
-      )
 
       //aqui va el fetch duplicado por mientras
       const response = await fetch(
@@ -125,7 +121,7 @@ export const NuevaRecetaTabs = () => {
       const respuesta = await response.json()
       //Lista de insumo de producto con receta
       const listaInsumos = respuesta.data
-      const tempItems2: IItem[] = listaInsumos.map((i) => {
+      const tempItems2: IItem[] = listaInsumos.map((i: any) => {
         const j: IItem = {
           id: i.id,
           item_name: record.item_name,
@@ -167,7 +163,7 @@ export const NuevaRecetaTabs = () => {
             ...ingredientesR,
             {
               id: record.id,
-              item_name: record.product,
+              item_name: (record as any).product,
               status: record.status,
             },
           ])
@@ -227,7 +223,7 @@ export const NuevaRecetaTabs = () => {
     //..boton quitar elemento de lista de receta
 
     const onInputChange = (key: string, index: number) => {
-      console.log('cambio de cantidad')
+      console.log('cambio de cantidad' + key + index)
     }
 
     //Fin de manejadores de lista de receta
@@ -280,12 +276,12 @@ export const NuevaRecetaTabs = () => {
             onClick={() =>
               handleTransferIngredientesM({
                 id: record.item_id,
-                product: record.item_name,
+                product: (record as any).item_name,
                 category_id: record.category_id,
                 unit_price: 1.0,
                 measure_id: record.measure_id,
                 status: 1,
-              })
+              } as any)
             }
           >
             +
@@ -361,6 +357,7 @@ export const NuevaRecetaTabs = () => {
     }
     useEffect(() => {
       //console.log('componente renderizado')
+      /*
       const fetchData = async () => {
         try {
           const response = await fetch('/inv_product.json')
@@ -372,6 +369,7 @@ export const NuevaRecetaTabs = () => {
           //setLoading(false) // Desactivamos el estado de carga en caso de error
         }
       }
+      */
 
       const fetchDataItems = async () => {
         try {

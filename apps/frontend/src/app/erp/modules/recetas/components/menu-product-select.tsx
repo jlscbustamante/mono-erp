@@ -21,7 +21,6 @@ const useProducts = () => {
 export function ProductSelectForm({
   value,
   onChange,
-  className,
 }: {
   value?: string
   onChange?: (id: string | undefined) => void
