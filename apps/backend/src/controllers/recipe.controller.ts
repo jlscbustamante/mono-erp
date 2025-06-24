@@ -14,8 +14,7 @@ export class CategoryController {
     next: NextFunction,
   ): Promise<void> {
     try {
-      const queries = req.body //as Filters3<Category>
-
+      //const queries = req.body //as Filters3<Category>
       // const requests = await categoryService.getFilteredTypeNt(queries)
       /*
       const { data: requests } = await categoryRepository.filter3({
@@ -35,12 +34,6 @@ export class CategoryController {
       })
 
       */
-      const result = await db.entityManager.query(
-        'select id, email, name from users where id=?',
-        [id],
-      )
-
-      response.json(requests)
     } catch (err) {
       next(err)
     }

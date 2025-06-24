@@ -3,16 +3,16 @@ import { Repository } from 'typeorm'
 import { AppDataSource } from '../config/database'
 import { Recipe } from '../entities/Recipe'
 //import { CategoryStatus, CategoryTypeId } from '../types/Recipe'
-import { Filter3Method, IUserFilter3 } from '../types/filter'
-import { filters3Adapter } from '../utils/filtersAdapter'
 
 export interface RecipeRepository extends Repository<Recipe> {
   //filterNt(filters: EnvFilters<Recipe>): Promise<Recipe[]>
-  filter3: Filter3Method<Recipe>
+  //filter3: Filter3Method<Recipe>
   //forStore(): Promise<Recipe[]>
 }
 
 const recipeRepository = AppDataSource.getRepository(Recipe).extend({
+  /*
+  
   filter3: async function (_filters: IUserFilter3<Recipe>) {
     const { select, filters, order, relations } = _filters
 
@@ -28,7 +28,7 @@ const recipeRepository = AppDataSource.getRepository(Recipe).extend({
       }
       finalWhere.push(secondOr)
     }
-    console.log(finalWhere ? finalWhere : whereBuilded)
+    //console.log(finalWhere ? finalWhere : whereBuilded)
 
     const [products] = await this.findAndCount({
       select,
@@ -39,6 +39,7 @@ const recipeRepository = AppDataSource.getRepository(Recipe).extend({
 
     return { data: products }
   },
+  */
 })
 
 export default recipeRepository as unknown as RecipeRepository
