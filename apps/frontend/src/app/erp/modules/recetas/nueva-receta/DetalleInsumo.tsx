@@ -1,7 +1,7 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons'
+import { IItem } from '@types'
 import { Button, Drawer, Form, Input, List, Space } from 'antd'
 import { useState } from 'react'
-import { InsumoItem } from '../shared-types'
 
 export const DetalleInsumo = ({
   data,
@@ -9,7 +9,7 @@ export const DetalleInsumo = ({
   drawerClose,
   oper,
 }: {
-  data: InsumoItem[]
+  data: IItem[]
   drawerOpen: boolean
   drawerClose: () => void
   oper: number
@@ -121,7 +121,7 @@ export const DetalleInsumo = ({
             footer={<div></div>}
             bordered
             dataSource={data}
-            renderItem={(item) => <List.Item>{item.product}</List.Item>}
+            renderItem={(item) => <List.Item>{item.item_name}</List.Item>}
           ></List>
         </div>
       ) : null}

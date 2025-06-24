@@ -1,14 +1,16 @@
-import { Button, Table } from 'antd'
+import { IItem } from '@types'
+import { Button, Input, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { umeds } from '../constants/constants'
-import { IngredienteProd } from '../shared-types'
 
 export const ListaIngredientes = ({
   ingredientesR,
   quitarIngrediente,
+  pOnInputChange,
 }: {
-  ingredientesR: IngredienteProd[]
+  ingredientesR: IItem[]
   quitarIngrediente: (code: number) => void
+  pOnInputChange: (key: string, index: number) => void
 }) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
@@ -25,7 +27,7 @@ export const ListaIngredientes = ({
     },
     {
       title: 'Ingrediente',
-      dataIndex: 'product',
+      dataIndex: 'item_name',
       className: '!p-1',
     },
     {
@@ -35,8 +37,11 @@ export const ListaIngredientes = ({
     },
     {
       title: 'Cantidad',
-      dataIndex: 'quantity',
+      dataIndex: 'cantidad',
       className: '!p-1',
+      render: (text, record, index) => (
+        <Input value={text} onChange={pOnInputChange('cantidad', index)} />
+      ),
     },
     {
       title: 'UM',

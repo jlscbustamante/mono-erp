@@ -2,6 +2,7 @@ import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
 import { finMoveCash } from "../index.ts";
 import type {
   companies,
+  products,
   requirementItems,
   requirements,
   storeTable,
@@ -43,3 +44,5 @@ export type DispatchItemInsert = InferInsertModel<typeof dispatchesItems>;
 
 export type StockSelect = InferSelectModel<typeof stocks>;
 export type StockInsert = InferInsertModel<typeof stocks>;
+
+export type ProductSelect = InferSelectModel<typeof products>;

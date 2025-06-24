@@ -144,3 +144,17 @@ export const storeTable = mysqlTable("adm_sucursal", {
    */
   type_sede: char({ length: 1 }).notNull(),
 });
+
+export const products = mysqlTable("inv_menu_product", {
+  id: varchar({ length: 10 }).notNull().primaryKey(),
+  company_id: varchar({ length: 10 }),
+  product: varchar({ length: 150 }).notNull(),
+  recipe_req: smallint().notNull().default(0),
+  status: smallint().notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});

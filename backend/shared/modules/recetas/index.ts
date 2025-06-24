@@ -9,3 +9,9 @@ export interface IListaInsumo {
   recollect_id: number;
   collection_name: string;
 }
+
+export interface IItem {
+  id: number;
+  item_name: string;
+  status: number;
+}
