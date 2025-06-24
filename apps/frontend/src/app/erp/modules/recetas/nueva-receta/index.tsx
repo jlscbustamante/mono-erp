@@ -7,11 +7,11 @@ import { DetalleInsumo } from './DetalleInsumo'
 import { ListaIngredientes } from './ListaIngredientes'
 import { gridStyle } from './styles'
 //import lista de insumos
+import config from '@/config'
 import { IItem, IListaInsumo } from '@types'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { ProductSelectForm } from '../components/menu-product-select'
-
 //fin de import de lista de insumos
 
 export const NuevaRecetaTabs = () => {
@@ -46,7 +46,8 @@ export const NuevaRecetaTabs = () => {
       //setCatSelected(catSelected)
 
       const response = await fetch(
-        'http://localhost:8001/api/view/recipe/filter/insumos?cat_selected=' +
+        config.apiV2 +
+          '/api/view/recipe/filter/insumos?cat_selected=' +
           pCatSelected +
           '&needle=' +
           pNeedle,
@@ -109,7 +110,7 @@ export const NuevaRecetaTabs = () => {
 
       //aqui va el fetch duplicado por mientras
       const response = await fetch(
-        'http://localhost:8001/api/view/recipe/items?item_id=' + record.id,
+        config.apiV2 + '/api/view/recipe/items?item_id=' + record.id,
         {
           method: 'GET',
           headers: {
@@ -187,7 +188,7 @@ export const NuevaRecetaTabs = () => {
 
       if (oper == 1) {
         const response = await fetch(
-          'http://localhost:8001/api/view/recipe/items?item_id=' + id,
+          config.apiV2 + '/api/view/recipe/items?item_id=' + id,
           {
             method: 'GET',
             headers: {
@@ -353,7 +354,45 @@ export const NuevaRecetaTabs = () => {
 
     const handleGrabarReceta = () => {
       const fecha = form.getFieldValue('fecha')
+      const company_id = form.getFieldValue('company_id')
+      const product_id = form.getFieldValue('product_id')
+      const recipe_name = form.getFieldValue('recipe_name')
+      const save_tag = form.getFieldValue('save_tag')
+
+      //company_id recipe_name product_id save_tag
+
       console.log('Guardando receta ...' + fecha)
+      console.log('Guardando receta ...' + company_id)
+      console.log('Guardando receta ...' + product_id)
+
+      const nuevaReceta = {
+        company_id: company_id,
+        product_id: product_id,
+        recipe_name: recipe_name,
+        save_tag: save_tag,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevaReceta),
+      }
+
+      fetch(config.apiV2 + '/api/view/recipe/nueva', options)
+        .then((data) => {
+          if (!data) {
+            throw Error(data)
+          }
+          return data.json()
+        })
+        .then((nuevaReceta) => {
+          console.log(nuevaReceta)
+        })
+        .catch((e) => {
+          console.log(e)
+        })
     }
     useEffect(() => {
       //console.log('componente renderizado')

@@ -72,4 +72,15 @@ where imi.product_id=${param1};`;
     const result = queryExecuted[0] as unknown as IItem[];
     console.log("res : ", result);
     return c.json({ data: result, message: "ok" });
+  })
+  .post("/nueva", async (c) => {
+    const param1 = c.req.query("item_id");
+    const queryUnion = `select ii.id, ii.item_name from inv_menu_items imi
+inner join inv_recipe irc
+on imi.id = irc.menu_item_id
+inner join inv_recipe_mix irm
+on irc.id = irm.recipe_id
+inner join inv_item ii
+on irm.item_id=ii.id
+where imi.product_id=${param1};`;
   });
