@@ -1,5 +1,8 @@
 import { db } from "#app/config/database.ts";
-import { generate_identifier } from "#app/modules/payment/case/generate_indentifier.ts";
+import {
+  AdmTypeIdentifier,
+  generate_adm_identifier,
+} from "#app/modules/payment/common/generate_adm_identifier.ts";
 import { AdmRequirementInsert, PAYMENT_STATUS } from "@scope/shared";
 
 export const create_requirement = async (
@@ -9,7 +12,7 @@ export const create_requirement = async (
   if (!data.supplier_id && data.legal_number) {
     throw new Error("Supplier ID es requerido cuando se proporciona ruc");
   }
-  const identifier = generate_identifier();
+  const identifier = await generate_adm_identifier(AdmTypeIdentifier.INVOICE);
   const new_requirement: AdmRequirementInsert = {
     ...data,
     requested_at: new Date(),

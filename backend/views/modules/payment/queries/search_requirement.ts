@@ -1,5 +1,5 @@
 import { db } from "#app/config/database.ts";
-import { AdmRequirementSelect, PAYMENT_STATUS } from "@scope/shared";
+import { IAdmRequirementWithSupplierBank, PAYMENT_STATUS } from "@scope/shared";
 import { InvSupplierSelect } from "../../../../shared/db/mods.ts";
 
 export const search_requirement = async ({
@@ -12,7 +12,7 @@ export const search_requirement = async ({
   invoice_number?: string;
 }): Promise<{
   supplier: InvSupplierSelect | null;
-  related: AdmRequirementSelect[];
+  related: IAdmRequirementWithSupplierBank[];
 }> => {
   let query_supplier = db.selectFrom("inv_supplier").selectAll();
 
@@ -39,27 +39,36 @@ export const search_requirement = async ({
     supplier = result;
   }
 
-  let query_requirements = db.selectFrom("adm_requirement").selectAll();
+  let query_requirements = db.selectFrom("adm_requirement");
 
   if (supplier) {
     query_requirements = query_requirements.where(
-      "supplier_id",
+      "adm_requirement.supplier_id",
       "=",
       supplier.id
     );
   }
   if (num_doc) {
     query_requirements = query_requirements.where(
-      "num_document",
+      "adm_requirement.num_document",
       "like",
       `%${num_doc}%`
     );
   }
 
   const requirements = await query_requirements
-    .where("status", "=", PAYMENT_STATUS.REGISTERED)
+    .where("adm_requirement.status", "=", PAYMENT_STATUS.REGISTERED)
+    .leftJoin("inv_supplier", "adm_requirement.supplier_id", "inv_supplier.id")
+    .selectAll("adm_requirement")
+    .select([
+      "inv_supplier.bank_name",
+      "inv_supplier.bank_code",
+      "inv_supplier.bank_account_num",
+      "inv_supplier.bank_account_cci",
+      "inv_supplier.bank_account_type",
+    ])
     .limit(20)
-    .orderBy("id", "desc")
+    .orderBy("adm_requirement.id", "desc")
     .execute();
 
   return {

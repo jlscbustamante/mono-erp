@@ -1,5 +1,9 @@
 import { db } from "#app/config/database.ts";
 import {
+  AdmTypeIdentifier,
+  generate_adm_identifier,
+} from "#app/modules/payment/common/generate_adm_identifier.ts";
+import {
   CreateOrderDto,
   ORDER_PAYMENT_STATUS,
   PAYMENT_STATUS,
@@ -7,6 +11,7 @@ import {
 
 export const create_order = async (data: CreateOrderDto, username: string) => {
   const { requirement_ids, ...payment_order } = data;
+  const code = await generate_adm_identifier(AdmTypeIdentifier.ORDER);
   await db.transaction().execute(async (trx) => {
     const result = await trx
       .insertInto("adm_payment_order")
@@ -15,6 +20,7 @@ export const create_order = async (data: CreateOrderDto, username: string) => {
         status: ORDER_PAYMENT_STATUS.REGISTERED,
         required_at: new Date(),
         required_by: username,
+        payment_code: code,
       })
       .execute();
     const insertId = result[0].insertId;

@@ -1,9 +1,9 @@
-import { AdmRequirementSelect } from '@types'
+import { IAdmRequirementWithSupplierBank } from '@types'
 import { create } from 'zustand'
 
 interface IStore {
-  requirements: AdmRequirementSelect[]
-  set_requirements: (requirements: AdmRequirementSelect[]) => void
+  requirements: IAdmRequirementWithSupplierBank[]
+  set_requirements: (requirements: IAdmRequirementWithSupplierBank[]) => void
 }
 
 export const useCreateOrderStore = create<IStore>((set) => {

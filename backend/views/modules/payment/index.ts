@@ -2,6 +2,7 @@ import { filtersMiddlaware } from "#app/middleware/session.middleware.ts";
 import { add_authorized_user } from "#app/modules/payment/case/add_authorized_user.ts";
 import { approve_requirement } from "#app/modules/payment/case/approve.ts";
 import { authorize_order } from "#app/modules/payment/case/authorize_order.ts";
+import { cancel_payment } from "#app/modules/payment/case/cancel_payment.ts";
 import { create_requirement } from "#app/modules/payment/case/create_requirement.ts";
 import { delete_authorized_user } from "#app/modules/payment/case/delete_authorized_user.ts";
 import {
@@ -12,12 +13,13 @@ import { create_order } from "#app/modules/payment/case/order/create_order.ts";
 import { delete_order } from "#app/modules/payment/case/order/delete_order.ts";
 import { check_authorized_user } from "#app/modules/payment/case/security/check_user.ts";
 import { update_requirement } from "#app/modules/payment/case/update_requirement.ts";
-import { funka } from "#app/modules/payment/funka.ts";
 import { generate_payment } from "#app/modules/payment/host_to_host/generate_payment.ts";
+import { balance_cash } from "#app/modules/payment/queries/balance_cash.ts";
 import { filter_orders } from "#app/modules/payment/queries/filter_orders.ts";
 import { get_authorized_users } from "#app/modules/payment/queries/get_authorized_users.ts";
 import { get_one } from "#app/modules/payment/queries/get_one.ts";
 import { get_order } from "#app/modules/payment/queries/get_order.ts";
+import { search_all } from "#app/modules/payment/queries/search_all.ts";
 import { search_requirement } from "#app/modules/payment/queries/search_requirement.ts";
 import { zValidator } from "@hono/zod-validator";
 import {
@@ -27,6 +29,7 @@ import {
 } from "@scope/shared";
 import { Hono } from "hono";
 import { z } from "zod";
+import { contract_router } from "./contract/index.ts";
 
 export const paymentRouter = new Hono()
   .post("create_requirement", zValidator("json", z.any()), async (c) => {
@@ -261,10 +264,56 @@ export const paymentRouter = new Hono()
       });
     }
   )
-  .get("/nothing", (c) => {
-    const result = funka();
-    return c.json({
-      message: "na",
-      data: result,
-    });
-  });
+  .get(
+    "/cashbank/balance",
+    zValidator(
+      "query",
+      z.object({
+        cash_id: z.string().transform((val) => parseInt(val)),
+        date: z.string(),
+      })
+    ),
+    async (c) => {
+      const { cash_id, date } = c.req.valid("query");
+      const initial_balance = await balance_cash(cash_id, date);
+
+      return c.json({
+        message: "ok",
+        data: initial_balance,
+      });
+    }
+  )
+  .get(
+    "/search_all",
+    zValidator(
+      "query",
+      z.object({
+        text: z.string().min(1, "Search text is required"),
+      })
+    ),
+    async (c) => {
+      const { text } = c.req.valid("query");
+      const data = await search_all(text);
+      return c.json({
+        message: "ok",
+        data,
+      });
+    }
+  )
+  .delete(
+    "cancel_nondoc",
+    zValidator(
+      "json",
+      z.object({
+        id: z.number().min(1, "ID is required"),
+      })
+    ),
+    async (c) => {
+      const { id } = c.req.valid("json");
+      await cancel_payment(id);
+      return c.json({
+        message: "ok",
+      });
+    }
+  )
+  .route("contract", contract_router);

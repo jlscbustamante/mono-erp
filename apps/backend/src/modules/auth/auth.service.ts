@@ -200,4 +200,46 @@ export class AuthService {
       throw badRequest(err.message)
     }
   }
+
+  async loginSimple({ email, password }: { email: string; password: string }) {
+    try {
+      const user = await this.iamUserRepository.findOne({
+        where: {
+          email,
+        },
+        relations: {
+          role: true,
+        },
+      })
+      if (!user) throw badRequest('El usuario no existe')
+
+      if (user.status == 0) throw badRequest('El usuario no esta activo')
+
+      const match = await bcrypt.compare(password, user.password)
+      if (!match) throw badRequest('La contraseña es incorrecta')
+      const data: IToken = {
+        id: user.id,
+        name: user.name,
+        granted: 1,
+        mail: user.email,
+        rol_id: user.rol_id,
+        status: 'A',
+      }
+      const tokenLogin = jwt.sign(
+        data,
+        this.configService.get('auth.jwtSecret'),
+      )
+
+      const session: Session = await this.userValidate(user.id)
+
+      return {
+        token: tokenLogin,
+        session,
+      }
+    } catch (err: any) {
+      if (err.message == 'jwt expired')
+        throw badRequest('Tiempo de inicio de sesión agotado')
+      throw badRequest(err.message)
+    }
+  }
 }

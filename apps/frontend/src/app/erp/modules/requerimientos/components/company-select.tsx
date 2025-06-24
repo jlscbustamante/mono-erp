@@ -22,7 +22,6 @@ const useCompanies = () => {
 export function CompanySelectForm({
   value,
   onChange,
-  className,
 }: {
   value?: string
   onChange?: (id: string | undefined) => void

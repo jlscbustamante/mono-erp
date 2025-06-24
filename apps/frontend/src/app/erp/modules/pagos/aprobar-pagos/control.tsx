@@ -114,15 +114,6 @@ export default function Control() {
       />
       <Select
         className="w-48"
-        placeholder="Tipo"
-        allowClear={true}
-        defaultValue={'T'}
-      >
-        <Select.Option value="S">Simple</Select.Option>
-        <Select.Option value="T">Transferencia</Select.Option>
-      </Select>
-      <Select
-        className="w-48"
         placeholder="Estado"
         allowClear={false}
         value={status}
@@ -134,6 +125,9 @@ export default function Control() {
       >
         <Select.Option value={ORDER_PAYMENT_STATUS.REGISTERED}>
           Registrados
+        </Select.Option>
+        <Select.Option value={ORDER_PAYMENT_STATUS.APPROVED}>
+          Aprobados
         </Select.Option>
         <Select.Option value={ORDER_PAYMENT_STATUS.SENT_TO_BANK}>
           Enviados al banco

@@ -1,8 +1,8 @@
 import { viewClient } from '@/lib/rpc'
 import { CashBankSelect, CompanySelect } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { AdmReqNondocsInsert } from '@types'
-import { Button, Form, Input, InputNumber, message, Select } from 'antd'
+import { AdmReqNondocsInsert, REQUIREMENT_TYPE } from '@types'
+import { Button, Form, Input, InputNumber, Select } from 'antd'
 import { toast } from 'react-toastify'
 export function Anticipo() {
   return (
@@ -15,7 +15,7 @@ export function Anticipo() {
 type T = keyof AdmReqNondocsInsert
 
 const AnticipoForm = () => {
-  const [messageApi, contextHolder] = message.useMessage()
+  // const [messageApi, contextHolder] = message.useMessage()
   const [form] = Form.useForm()
 
   const create_mt = useMutation({
@@ -33,7 +33,8 @@ const AnticipoForm = () => {
       toast.error(err.message ?? 'Error al crear el requerimiento')
     },
     onSuccess: () => {
-      messageApi.success('Requerimiento creado correctamente')
+      // messageApi.success('Requerimiento creado correctamente')
+      toast.success('Requerimiento creado correctamente')
     },
   })
 
@@ -65,16 +66,25 @@ const AnticipoForm = () => {
 
   return (
     <div className="bg-white rounded-md p-3 max-w-[900px]">
-      {contextHolder}
+      {/* {contextHolder} */}
       <h3 className="font-sans font-normal text-lg mb-3 ml-10">
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={form}
+        onFinish={handle_save}
         name="rq:create_anticipo"
+        initialValues={
+          {
+            request_type: REQUIREMENT_TYPE.LIQUIDATION,
+          } satisfies Partial<AdmReqNondocsInsert>
+        }
       >
+        <Form.Item name={'request_type' satisfies T} hidden>
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Empresa"
@@ -84,7 +94,7 @@ const AnticipoForm = () => {
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social}
                 </Select.Option>
               ))}
             </Select>
@@ -138,11 +148,13 @@ const AnticipoForm = () => {
           <Form.Item
             label="Detalle"
             className="col-span-2 mb-1"
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
+            labelCol={{
+              offset: 2,
+            }}
+            wrapperCol={{ span: 24 }}
             name={'description' satisfies T}
           >
-            <Input.TextArea placeholder="..." rows={1} />
+            <Input.TextArea placeholder="..." rows={1} className="" />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -160,8 +172,8 @@ const AnticipoForm = () => {
           <Button
             type="primary"
             loading={create_mt.isPending}
-            onClick={handle_save}
-            htmlType="button"
+            // onClick={handle_save}
+            htmlType="submit"
           >
             Guardar
           </Button>

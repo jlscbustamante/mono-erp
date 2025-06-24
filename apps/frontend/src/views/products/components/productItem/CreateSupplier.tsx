@@ -107,6 +107,7 @@ export const CreateSupplier: React.FC<{
               onChange={(e) =>
                 setNewSupplier({ ...newSupplier, legalName: e.target.value })
               }
+              readOnly={true}
             />
           </Form.Item>
           <Form.Item label="Nombre">

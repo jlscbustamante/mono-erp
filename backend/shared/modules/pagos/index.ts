@@ -4,6 +4,7 @@ import type {
   AdmRequirementSelect,
   InvSupplierSelect,
 } from "../../db/mods.ts";
+import { AdmPaymentOrderSelect } from "../../types/index.ts";
 
 export interface ICreateRequirementDto {
   company_id: string;
@@ -13,6 +14,7 @@ export enum REQUIREMENT_TYPE {
   SUPPLIER = "U",
   SIMPLE = "S",
   LIQUIDATION = "L",
+  TRANSFER = "T",
 }
 
 // I: Ingresado; D: Programado; A: Aprobado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado (S: Solicitado; A: Aprobado;  P: Pagado; R: Rechazado;
@@ -84,4 +86,44 @@ export interface IAdmRequirementWithSupplier extends AdmRequirementSelect {
 export interface ITest {
   name: string;
   age: number;
+}
+
+export enum CONTRACT_STATUS {
+  INGRESADO = "I",
+  VIGENTE = "V",
+  EXPIRADO = "E",
+  PAGADO = "P",
+  ANULADO = "X",
+}
+
+export const get_contract_status_name = (status: CONTRACT_STATUS) => {
+  switch (status) {
+    case CONTRACT_STATUS.INGRESADO:
+      return "Ingresado";
+    case CONTRACT_STATUS.VIGENTE:
+      return "Vigente";
+    case CONTRACT_STATUS.EXPIRADO:
+      return "Expirado";
+    case CONTRACT_STATUS.PAGADO:
+      return "Pagado";
+    case CONTRACT_STATUS.ANULADO:
+      return "Anulado";
+    default:
+      return "Desconocido";
+  }
+};
+
+export interface IAdmRequirementWithSupplierBank extends AdmRequirementSelect {
+  bank_name: string | null;
+  bank_code: string | null;
+  bank_account_num: string | null;
+  bank_account_cci: string | null;
+  bank_account_type: string | null;
+}
+
+export interface IAdmSearchAll {
+  requirements: AdmRequirementSelect[];
+  payment_orders: AdmPaymentOrderSelect[];
+  req_nondocs: AdmReqNondocsSelect[];
+  total_count: number;
 }

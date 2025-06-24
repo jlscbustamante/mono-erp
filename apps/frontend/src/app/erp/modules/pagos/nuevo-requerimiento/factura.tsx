@@ -10,9 +10,15 @@ import {
   SupplierSelect,
 } from '@pizzadb'
 import { useMutation, useQuery } from '@tanstack/react-query'
-import type { AdmRequirementInsert, InvSupplierSelect } from '@types'
+import {
+  REQUIREMENT_TYPE,
+  type AdmRequirementInsert,
+  type InvSupplierSelect,
+} from '@types'
 import { REQUIREMENT_TYPE_DOCUMENT } from '@view'
 import {
+  AutoComplete,
+  AutoCompleteProps,
   Button,
   Form,
   FormInstance,
@@ -22,12 +28,15 @@ import {
   Select,
 } from 'antd'
 import { MessageInstance } from 'antd/es/message/interface'
+import { useState } from 'react'
+import { toast } from 'react-toastify'
 
 type R = keyof AdmRequirementInsert
 
 export function CrearFactura() {
-  const [formPrincipal] = Form.useForm()
-  const [formCategoria] = Form.useForm()
+  // const [formPrincipal] = Form.useForm()
+  // const [formCategoria] = Form.useForm()
+  const [form_instance] = Form.useForm<AdmRequirementInsert>()
   const [messageApi, contextHolder] = message.useMessage()
 
   const createRequirementMt = useMutation({
@@ -45,34 +54,42 @@ export function CrearFactura() {
       messageApi.error(error.message)
     },
     onSuccess: () => {
-      messageApi.success('Requerimiento creado correctamente')
-      formPrincipal.resetFields()
-      formCategoria.resetFields()
+      // messageApi.success('Requerimiento creado correctamente')
+      toast.success('Requerimiento creado correctamente')
+      form_instance.resetFields()
+      form_instance.setFieldValue(
+        'request_type' satisfies R,
+        REQUIREMENT_TYPE.SIMPLE,
+      )
     },
   })
 
   const onSave = async () => {
-    const pricipales = formPrincipal.getFieldsValue()
-    const categoria = formCategoria.getFieldsValue()
-
-    const value: AdmRequirementInsert = {
-      ...pricipales,
-      ...categoria,
+    try {
+      await form_instance.validateFields()
+      const data_form = form_instance.getFieldsValue()
+      createRequirementMt.mutate(data_form)
+    } catch (err) {
+      console.log('Error al validar formulario completa los datos : ', err)
     }
-    await createRequirementMt.mutateAsync(value)
+
+    // const value: AdmRequirementInsert = {
+    //   ...data_form,
+    // }
+    // await createRequirementMt.mutateAsync(value)
   }
 
   return (
     <div className="grid gap-1 grid-cols-2">
       {contextHolder}
       <DatosPrincipales
-        formInstance={formPrincipal}
+        formInstance={form_instance}
         messageInstance={messageApi}
       />
-      <DatosProveedor formInstance={formPrincipal} />
+      <DatosProveedor formInstance={form_instance} />
       <CategoriaGasto
         onSave={onSave}
-        formInstance={formCategoria}
+        formInstance={form_instance}
         loading={createRequirementMt.isPending}
       />
     </div>
@@ -83,9 +100,12 @@ const DatosPrincipales = ({
   formInstance,
   messageInstance,
 }: {
-  formInstance: FormInstance<any>
+  formInstance: FormInstance<AdmRequirementInsert>
   messageInstance?: MessageInstance
 }) => {
+  const [options_suppliers, set_options_suppliers] = useState<
+    AutoCompleteProps['options']
+  >([])
   const { data: companies } = useQuery({
     queryKey: ['rq:companies'],
     queryFn: async () => {
@@ -119,7 +139,33 @@ const DatosPrincipales = ({
       formInstance.setFieldValue('legal_name' satisfies R, undefined)
       formInstance.setFieldValue('legal_number' satisfies R, undefined)
       formInstance.setFieldValue('supplier_id' satisfies R, undefined)
-      messageInstance?.warning('Proveedor no encontrado')
+      messageInstance?.warning('Proveedor no existe')
+    }
+  }
+
+  const validate_contract_identifier = async (_: any, value: string) => {
+    if (!value) {
+      // return Promise.reject(new Error('El ID del contrato es obligatorio'))
+      // es opcional :
+      return Promise.resolve()
+    }
+    const response = await viewClient.api.view.payment.contract.exists.$get({
+      query: { contract_code: value },
+    })
+    const result = await response.json()
+    if (!response.ok) {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error(result.message))
+    }
+    if (result.data.exists) {
+      formInstance.setFieldValue(
+        'contract_id' satisfies R,
+        result.data.contract_id,
+      )
+      return Promise.resolve()
+    } else {
+      formInstance.setFieldValue('contract_id' satisfies R, undefined)
+      return Promise.reject(new Error('El contrato no existe'))
     }
   }
 
@@ -129,11 +175,19 @@ const DatosPrincipales = ({
         Datos principales
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={formInstance}
-        name="formPrincipal"
+        name="factura:formPrincipal"
+        initialValues={
+          {
+            request_type: REQUIREMENT_TYPE.SIMPLE,
+          } satisfies Partial<AdmRequirementInsert>
+        }
       >
+        <Form.Item name={'request_type' satisfies R} label="Tipo de req" hidden>
+          <Input />
+        </Form.Item>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Empresa"
@@ -143,7 +197,7 @@ const DatosPrincipales = ({
             <Select placeholder="Empresa">
               {companies?.map((company) => (
                 <Select.Option key={company.id} value={company.id}>
-                  {company.title}
+                  {company.razon_social || company.title}
                 </Select.Option>
               ))}
             </Select>
@@ -157,14 +211,55 @@ const DatosPrincipales = ({
               rules={[{ required: true }]}
               name={'legal_number' satisfies R}
             >
-              <Input.Search
-                placeholder="RUC proveedor"
-                className="w-[calc(100%_-_2rem)]"
-                // loading={getInfoRuc.isPending}
-                onSearch={(ruc) => {
-                  searchSupplier(ruc)
+              <AutoComplete
+                showSearch
+                options={options_suppliers}
+                onSearch={(text) => {
+                  if (!text) {
+                    set_options_suppliers([])
+                    return
+                  }
+                  const hast_letters = /[a-zA-Z]/.test(text)
+                  if (hast_letters) {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_name
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  } else {
+                    const filtered = suppliers?.filter((el) => {
+                      return (
+                        el.legal_number
+                          ?.toLowerCase()
+                          .includes(text.toLowerCase()) ?? false
+                      )
+                    })
+                    set_options_suppliers(
+                      filtered?.map((el) => ({
+                        value: el.legal_number,
+                      })) ?? [],
+                    )
+                  }
                 }}
-              />
+                onSelect={() => {
+                  set_options_suppliers([])
+                }}
+              >
+                <Input.Search
+                  placeholder="RUC proveedor"
+                  className="!w-[calc(100%_-_2rem)]"
+                  onSearch={(ruc) => {
+                    searchSupplier(ruc)
+                  }}
+                />
+              </AutoComplete>
             </Form.Item>
             <CreateSupplier
               className="absolute top-0 right-0"
@@ -186,18 +281,22 @@ const DatosPrincipales = ({
             name={'legal_name' satisfies R}
             rules={[{ required: true }]}
           >
-            <Input placeholder="Proveedor" className="" />
+            <Input placeholder="Proveedor" className="" readOnly />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
           <Form.Item
             label="Detalle"
             className="col-span-2 mb-1"
-            labelCol={{ span: 3 }}
-            wrapperCol={{ span: 21 }}
+            // labelCol={{ span:  }}
+            labelCol={{
+              offset: 2,
+              // span: 2,
+            }}
+            wrapperCol={{ span: 24 }}
             name={'description' satisfies R}
           >
-            <Input.TextArea placeholder="..." rows={1} />
+            <Input.TextArea placeholder="..." rows={1} className="-ml-1" />
           </Form.Item>
         </div>
         <Form.Item hidden name="supplier_id">
@@ -244,7 +343,22 @@ const DatosPrincipales = ({
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Contrato">
+          <Form.Item
+            label="Vencimiento"
+            className="mb-1"
+            name={'expires_at' satisfies R}
+          >
+            <CustomDatePicker className="w-full" />
+          </Form.Item>
+          <Form.Item
+            label="Contrato"
+            validateDebounce={500}
+            rules={[{ validator: validate_contract_identifier }]}
+            name={'num_contract' satisfies R}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item hidden name={'contract_id' satisfies R}>
             <Input />
           </Form.Item>
         </div>
@@ -290,30 +404,26 @@ const CategoriaGasto = ({
         Categoría de gasto
       </h3>
       <Form
-        labelCol={{ span: 6 }}
-        wrapperCol={{ span: 18 }}
+        labelCol={{ span: 7 }}
+        wrapperCol={{ span: 17 }}
         form={formInstance}
-        name="formCategoria"
+        name="factura:formCategoria"
+        // onFinish={onSave}
       >
         <div className="grid grid-cols-2 gap-2">
-          <Form.Item label="Monto" className="mb-1" name={'amount' satisfies R}>
+          <Form.Item
+            label="Monto"
+            className="mb-1"
+            name={'amount' satisfies R}
+            rules={[{ required: true }]}
+          >
             <InputNumber className="w-full" placeholder="0.00" />
           </Form.Item>
           <Form.Item label="Moneda" className="mb-1" name={'money' satisfies R}>
             <Select placeholder="Moneda">
-              <Select.Option value="PEN">S/.</Select.Option>
-              <Select.Option value="USD">$</Select.Option>
+              <Select.Option value="PEN">PEN</Select.Option>
+              <Select.Option value="USD">USD</Select.Option>
             </Select>
-          </Form.Item>
-        </div>
-        <div className="grid grid-cols-2 gap-2">
-          <Form.Item
-            label="Vencimiento"
-            className="mb-1"
-            rules={[{ required: true }]}
-            name={'expires_at' satisfies R}
-          >
-            <CustomDatePicker />
           </Form.Item>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -361,7 +471,13 @@ const CategoriaGasto = ({
           </Form.Item>
         </div>
         <Form.Item className="text-right" wrapperCol={{ span: 24 }}>
-          <Button type="primary" onClick={onSave} loading={loading}>
+          <Button
+            type="primary"
+            htmlType="button"
+            // htmlType="submit"
+            loading={loading}
+            onClick={() => onSave()}
+          >
             Guardar
           </Button>
         </Form.Item>

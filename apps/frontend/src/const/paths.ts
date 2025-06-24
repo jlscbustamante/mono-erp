@@ -30,6 +30,16 @@ export const PATHS = {
           revisarOrden:
             '/erp/modulos/facturacionpagos/aprobarpagos/revisarorden/:id',
         },
+        reportes: {
+          main: '/erp/modulos/facturacionpagos/reportes',
+          cuentaCorriente:
+            '/erp/modulos/facturacionpagos/reportes/cuenta-corriente',
+          detallado: '/erp/modulos/facturacionpagos/reportes/detallado',
+          resumido: '/erp/modulos/facturacionpagos/reportes/resumido',
+          porCentroCosto:
+            '/erp/modulos/facturacionpagos/reportes/por-centro-costo',
+          porFecha: '/erp/modulos/facturacionpagos/reportes/por-fecha',
+        },
         transferencia: '/erp/modulos/facturacionpagos/transferencia',
         anticipoGastos: '/erp/modulos/facturacionpagos/anticipogastos',
         consultaRequerimiento:

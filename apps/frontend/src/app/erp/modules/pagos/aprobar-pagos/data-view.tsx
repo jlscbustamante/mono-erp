@@ -1,7 +1,6 @@
 import { PATHS } from '@/const/paths'
-import { Button, Table } from 'antd'
+import { Table } from 'antd'
 import { format } from 'date-fns'
-import { Eye } from 'lucide-react'
 import { useNavigate } from 'react-router'
 import { PaymentOrderStatusBadge } from '../components/order_status_badge'
 import { useAprobarPagosQuery } from './state'
@@ -18,8 +17,25 @@ export function DataView() {
         rowKey={'id'}
         columns={[
           {
-            title: 'Nro',
-            dataIndex: 'id',
+            title: 'Id',
+            dataIndex: 'payment_code',
+            render: (val, record) => {
+              return (
+                <span
+                  className="text-blue-600 hover:underline cursor-pointer"
+                  onClick={() => {
+                    navigate(
+                      PATHS.erp.modulos.pagos.aprobarPagos.revisarOrden.replace(
+                        ':id',
+                        record.id.toString(),
+                      ),
+                    )
+                  }}
+                >
+                  {val}
+                </span>
+              )
+            },
           },
           {
             title: 'Fecha emision',
@@ -64,29 +80,6 @@ export function DataView() {
             title: 'Estado',
             dataIndex: 'status',
             render: (val) => <PaymentOrderStatusBadge status={val} />,
-          },
-          {
-            render: (_, record) => {
-              return (
-                <div className="flex items-center justify-center">
-                  <Button
-                    variant="filled"
-                    type="text"
-                    size="small"
-                    onClick={() => {
-                      navigate(
-                        PATHS.erp.modulos.pagos.aprobarPagos.revisarOrden.replace(
-                          ':id',
-                          record.id.toString(),
-                        ),
-                      )
-                    }}
-                  >
-                    <Eye />
-                  </Button>
-                </div>
-              )
-            },
           },
         ]}
       />

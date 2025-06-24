@@ -8,6 +8,7 @@ export const supplier_router = new Hono().get("/get_one/:id", async (c) => {
     .selectAll()
     .where("id", "=", +id)
     .executeTakeFirstOrThrow();
+
   return c.json({
     message: "ok",
     data: supplier,
