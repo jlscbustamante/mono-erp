@@ -18,7 +18,8 @@ export const recipeRouter = new Hono().get("/filter/insumos", async (c) => {
   //resultado con data, cero es la fila con datos
   //const result = queryExecuted[0] as unknown as IListaInsumo[];
 
-  const param1 = "queso"; //c.get("param1")
+  const param1 = c.req.query("needle");
+  const param2 = c.req.query("cat_selected");
   const queryUnion = `select ii.id as item_id, ii.item_name as item_name
 , null as "category_id", null as "category_name" 
 , imp.id as product_id, imp.product as product_name, imp.recipe_req

@@ -8,8 +8,6 @@ import { DetalleInsumo } from './DetalleInsumo'
 import { ListaIngredientes } from './ListaIngredientes'
 import { gridStyle } from './styles'
 //import lista de insumos
-import { viewClient } from '@/lib/rpc'
-import { useQuery } from '@tanstack/react-query'
 import { IListaInsumo } from '@types'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
@@ -28,7 +26,7 @@ export const NuevaRecetaTabs = () => {
     const [ingredientesM, setIngredientesM] = useState<IListaInsumo[]>([])
     //ingredientes filtrados por la busqueda
     const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
-      IListaInsumo[]
+      IListaInsumo[] | undefined
     >([])
 
     const [ingredienteMMostrado, setIngredienteMMostrado] = useState<
@@ -42,11 +40,29 @@ export const NuevaRecetaTabs = () => {
     const [drawerOpen, setDrawerOpen] = useState(false)
 
     //Inicio de manejadores de Lista de insumos
-    const ingredientesMSelected = (catSelected: number, needle: string) => {
+    const IngredientesMSelected = async (
+      pCatSelected: number,
+      pNeedle: string,
+    ) => {
       console.log('dato renovado')
       //setNeedle(needle)
       //setCatSelected(catSelected)
 
+      const response = await fetch(
+        'http://localhost:8001/api/view/recipe/filter/insumos?cat_selected=' +
+          pCatSelected +
+          '&needle=' +
+          pNeedle,
+        {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+          },
+        },
+      )
+      const respuesta = await response.json()
+      /*
       const query: IListaInsumo[] = ingredientesM
       console.log('lucanas')
       console.table(query)
@@ -56,8 +72,8 @@ export const NuevaRecetaTabs = () => {
           // console.log('el.category_id : ' + el.category_id)
           console.log('el.item_name : ' + el.item_name)
           let out: IListaInsumo | undefined
-          if (!catSelected) {
-            if (el.item_name.toLowerCase().includes(needle.toLowerCase()))
+          if (!pCatSelected) {
+            if (el.item_name.toLowerCase().includes(pNeedle.toLowerCase()))
               out = el
           } else {
             if (
@@ -72,13 +88,14 @@ export const NuevaRecetaTabs = () => {
           }
           return false
         }) ?? []
-
+*/
       //console.table(dataFiltered)
 
-      setIngredientesMFiltrados(dataFiltered)
+      //return dataFiltered
 
-      return dataFiltered
-    } //ingredientesMSelected
+      setIngredientesMFiltrados(respuesta.data)
+      //return respuesta.data
+    } //IngredientesMSelected
 
     const handleTransferIngredientesM = (record: IngredienteProd) => {
       //console.log('Código :')
@@ -208,7 +225,7 @@ export const NuevaRecetaTabs = () => {
       },
       {
         title: 'Nombre',
-        dataIndex: 'product',
+        dataIndex: 'item_name',
         className: '!p-1',
       },
       {
@@ -219,8 +236,8 @@ export const NuevaRecetaTabs = () => {
           <Button
             onClick={() =>
               handleTransferIngredientesM({
-                id: record.id,
-                product: record.product,
+                id: record.item_id,
+                product: record.item_name,
                 category_id: record.category_id,
                 unit_price: 1.0,
                 measure_id: record.measure_id,
@@ -253,7 +270,7 @@ export const NuevaRecetaTabs = () => {
     ]
 
     //Fin de lista de insumos
-
+    /*
     const respuesta = useQuery({
       queryKey: ['req:rs:recipe-list-insumos'],
       queryFn: async () => {
@@ -266,9 +283,7 @@ export const NuevaRecetaTabs = () => {
         return body.data as IListaInsumo[]
       },
     })
-
-    setIngredientesM(respuesta.data[0])
-
+*/
     useEffect(() => {
       console.log('componente renderizado')
       const fetchData = async () => {
@@ -359,12 +374,12 @@ export const NuevaRecetaTabs = () => {
         <div className="flex-1 w-64 ...">
           {/*Inicio de filtros de insumos*/}
           {/* Caja de busqueda */}
-          <h1>{respuesta.data?.[0].fecha}</h1>
+          <h1>Test</h1>
           <Input.Search
             size="large"
             value={needle}
             allowClear
-            onSearch={() => ingredientesMSelected(catSelected, needle)}
+            onSearch={() => IngredientesMSelected(catSelected, needle)}
             placeholder="buscar colección, ingredientes"
             onChange={handleNeedle}
           />
