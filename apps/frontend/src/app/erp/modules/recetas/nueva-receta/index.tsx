@@ -1,7 +1,16 @@
 import { CompanySelectForm } from '@/app/erp/modules/requerimientos/components/company-select'
 import { cn } from '@/utils/cn'
 import type { TabsProps } from 'antd'
-import { Button, Card, DatePicker, Form, Input, Space, Tabs } from 'antd'
+import {
+  Button,
+  Card,
+  DatePicker,
+  Form,
+  Input,
+  Select,
+  Space,
+  Tabs,
+} from 'antd'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { DetalleInsumo } from './DetalleInsumo'
 import { ListaIngredientes } from './ListaIngredientes'
@@ -256,7 +265,7 @@ export const NuevaRecetaTabs = () => {
       (key: string, index: number) =>
       (e: React.ChangeEvent<HTMLInputElement>) => {
         const newData = [...ingredientesR]
-        newData[index][key] = Number(e.target.value)
+        ;(newData[index] as any)[key] = Number(e.target.value)
 
         console.log('cambio de cantidad key: ' + key + ' index : ' + index)
         console.table(ingredientesR)
@@ -660,7 +669,282 @@ export const NuevaRecetaTabs = () => {
   }
 
   const ColeccionIngredientes = () => {
-    return <></>
+    //constantes para el formulario de Coleccion
+    const [form2] = Form.useForm()
+
+    //manejador de BasedOn
+    const handleChangeBasedOn = (value: string) => {
+      console.log('based on' + value)
+    }
+
+    //Para lista de ingredientes de receta
+    const [ingredientesR, setIngredientesR] = useState<InvRecipeMix[]>([])
+
+    //Manejadores de lista de receta
+    //..boton quitar elemento de lista de receta
+    const handleQuitarIngrediente2 = (code: number) => {
+      setIngredientesR(
+        ingredientesR.filter((item: InvRecipeMix) => item.id != code),
+      )
+    }
+    //..boton quitar elemento de lista de receta de coleccion
+
+    const onInputChange2 =
+      (key: string, index: number) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newData = [...ingredientesR]
+        ;(newData[index] as any)[key] = Number(e.target.value)
+
+        console.log('cambio de cantidad key: ' + key + ' index : ' + index)
+        console.table(ingredientesR)
+      }
+
+    //Fin de manejadores de lista de receta de coleccion
+
+    //grabar coleccion
+    const handleGrabarReceta2 = () => {
+      const fecha = form2.getFieldValue('fecha')
+      const company_id = form2.getFieldValue('company_id')
+      const menu_item_id = form2.getFieldValue('product_id')
+      const recipe = form2.getFieldValue('recipe_name')
+      const save_tag = form2.getFieldValue('save_tag')
+
+      //company_id recipe_name product_id save_tag
+
+      console.log('Guardando receta ...' + fecha)
+      console.log('Guardando receta ...' + company_id)
+      console.log('Guardando receta ...' + menu_item_id)
+      console.log('ingredientesR')
+      console.table(ingredientesR)
+      const nuevaReceta = {
+        company_id: company_id,
+        menu_item_id: menu_item_id,
+        recipe: recipe,
+        save_tag: save_tag,
+      }
+
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+        },
+        body: JSON.stringify(nuevaReceta),
+      }
+
+      /*
+      fetch(config.apiV2 + '/api/view/recipe/nueva', options)
+        .then((data) => {
+          if (!data) {
+            throw Error(data)
+          }
+          return data.json()
+        })
+        .then((nuevaReceta) => {
+          console.log('creacion cabecera')
+          console.log(nuevaReceta)
+          //guardando detalle
+          console.log('guardando detalle de receta')
+          //detalle de receta con items con id de receta recien creada
+          console.log('recipe_id : ' + nuevaReceta.data[0].id)
+
+          const data2 = ingredientesR.map((ingrediente) => {
+            return {
+              id: undefined,
+              item_name: ingrediente.item_name,
+              recipe_id: nuevaReceta.data[0].id,
+              recipe_group: undefined,
+              recipe_base: undefined,
+              item_id: ingrediente.item_id,
+              quantity: ingrediente.quantity,
+              presentation_id: undefined,
+              measure_id: undefined,
+              status: 1,
+            }
+          })
+
+          const options_det = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+            },
+            body: JSON.stringify(data2),
+          }
+
+          fetch(
+            config.apiV2 + '/api/view/recipe/nueva_detalle',
+            options_det,
+          ).then((data2) => {
+            if (!data2) {
+              throw Error(data2)
+            }
+            return data2.json()
+          })
+        })
+        .catch((e) => {
+          console.log(e)
+        })
+        */
+    }
+    //fin de grabar coleccion
+
+    //inicio de filtro de insumos - coleccion
+    const [catSelected, setCatSelected] = useState(0)
+    const [needle, setNeedle] = useState('')
+
+    //.. childToParent es una funcion que es enviada porel padre para
+    //.. que desde el hijo se envien datos
+
+    //.. manejador de eventos de la caja de busqueda
+    const handleNeedle2 = (event: ChangeEvent<HTMLInputElement>) => {
+      const needle = event.target.value.trim()
+      //console.log('texto buscado' + needle)
+      setNeedle(needle)
+    }
+    const handlePredefinedFilters2 = (customFilter: number) => {
+      console.log('Clic en :' + customFilter)
+      setCatSelected(customFilter)
+    }
+    //Fin de Filtros insumos - coleccion
+
+    //Inicio de manejadores de Lista de insumos
+    const IngredientesMSelected2 = async (
+      pCatSelected: number,
+      pNeedle: string,
+    ) => {
+      //console.log('dato renovado')
+      //setNeedle(needle)
+      //setCatSelected(catSelected)
+      pCatSelected + 1
+      pNeedle + ''
+    }
+    //fin de manejadores de Lista de insumos
+    return (
+      <div className="flex">
+        <div className="flex-1 w-64 ...">
+          {/* Inicio de lista de ingredientes de receta */}
+          <Card hoverable style={gridStyle}>
+            <Form
+              form={form2}
+              labelCol={{ span: 6 }}
+              labelAlign="left"
+              labelWrap
+              wrapperCol={{ span: 14 }}
+              layout="horizontal"
+              style={{ maxWidth: 600 }}
+            >
+              <div className="grid grid-cols-12 gap-2 items-start">
+                <Form.Item
+                  className="col-span-8 mb-1"
+                  label="Compañía"
+                  name="company_id"
+                >
+                  <CompanySelectForm />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-4 mb-1"
+                  label="Fecha"
+                  name="fecha"
+                >
+                  <DatePicker />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Nombre de colección"
+                  name="recipe_name"
+                >
+                  <Input />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-8 mb-1"
+                  label="Basado en"
+                  name="based_on"
+                >
+                  <Select
+                    defaultValue="NNN"
+                    style={{ width: 120 }}
+                    onChange={handleChangeBasedOn}
+                    options={[
+                      { value: 'FLV', label: 'Sabor' },
+                      { value: 'SZE', label: 'Tamaño' },
+                      { value: 'NNN', label: 'Ninguno' },
+                    ]}
+                  />
+                </Form.Item>
+
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Etiquetar como"
+                  name="save_tag"
+                >
+                  <Input />
+                </Form.Item>
+                <Form.Item
+                  className="col-span-12 mb-1"
+                  label="Ingredientes"
+                ></Form.Item>
+              </div>
+            </Form>
+            <ListaIngredientes
+              ingredientesR={ingredientesR}
+              quitarIngrediente={handleQuitarIngrediente2}
+              pOnInputChange={onInputChange2}
+            />
+            <Button type="primary" onClick={handleGrabarReceta2}>
+              Guardar
+            </Button>
+          </Card>
+
+          {/* Fin de lista de ingredientes de receta  */}
+        </div>
+        <div className="flex-1 w-64 ...">
+          {/*Inicio de filtros de insumos*/}
+          {/* Caja de busqueda */}
+          <Input.Search
+            size="large"
+            value={needle}
+            allowClear
+            onSearch={() => IngredientesMSelected2(catSelected, needle)}
+            placeholder="buscar colección, ingredientes"
+            onChange={handleNeedle2}
+          />
+          <Space>
+            <Button
+              className={cn(
+                'bg-slate-200 px-2 py-0.5 text-sm text-slate-600 cursor-pointer select-none hover:bg-blue-300 hover:text-white w-20 text-center',
+                {
+                  'bg-blue-500 hover:bg-blue-500 text-white':
+                    22 === catSelected,
+                },
+              )}
+              onClick={() => handlePredefinedFilters2(22)}
+            >
+              Colección
+            </Button>
+            <Button
+              // color="default"
+              // variant="solid"
+              onClick={() => handlePredefinedFilters2(9)}
+            >
+              Quesos
+            </Button>
+            <Button onClick={() => handlePredefinedFilters2(2)}>Pizzas</Button>
+            <Button onClick={() => handlePredefinedFilters2(4)}>
+              Complementos
+            </Button>
+          </Space>
+          {/*Fin de filtros de insumos*/}
+
+          {/* Lista de insumos */}
+          <Card style={gridStyle}></Card>
+          {/* Fin de lista de insumos */}
+        </div>
+      </div>
+    )
   }
 
   //Items que contiene el Tab
@@ -674,11 +958,6 @@ export const NuevaRecetaTabs = () => {
       key: '2',
       label: 'Colección de ingredientes',
       children: <ColeccionIngredientes />,
-    },
-    {
-      key: '3',
-      label: 'Tab 3',
-      children: '',
     },
   ]
 
