@@ -173,8 +173,8 @@ export const NuevaRecetaTabs = () => {
         }
       } else {
         //validar que no este presente el ingrediente en la lista
-        //console.log('item single')
-        //console.table(record)
+        console.log('item single')
+        console.table(record)
         estaIngrediente = ingredientesR.some(
           (i: InvRecipeMix) => i.item_id == record.id,
         )
@@ -188,7 +188,7 @@ export const NuevaRecetaTabs = () => {
               recipe_group: undefined,
               recipe_base: undefined,
               item_name: (record as any).product,
-              item_id: (record as any).item_id,
+              item_id: (record as any).id,
               quantity: undefined,
               presentation_id: undefined,
               measure_id: undefined,
