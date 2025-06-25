@@ -1,16 +1,20 @@
-import { IItem } from '@types'
 import { Button, Input, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
+import { ChangeEventHandler } from 'react'
 import { umeds } from '../constants/constants'
+import { InvRecipeMix } from '../shared-types'
 
 export const ListaIngredientes = ({
   ingredientesR,
   quitarIngrediente,
   pOnInputChange,
 }: {
-  ingredientesR: IItem[]
+  ingredientesR: InvRecipeMix[]
   quitarIngrediente: (code: number) => void
-  pOnInputChange: (key: string, index: number) => void
+  pOnInputChange: (
+    key: string,
+    index: number,
+  ) => ChangeEventHandler<HTMLInputElement>
 }) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
@@ -40,10 +44,7 @@ export const ListaIngredientes = ({
       dataIndex: 'cantidad',
       className: '!p-1',
       render: (text, _, index) => (
-        <Input
-          value={text}
-          onChange={() => pOnInputChange('cantidad', index)}
-        />
+        <Input value={text} onChange={pOnInputChange('quantity', index)} />
       ),
     },
     {

@@ -22,12 +22,12 @@ export interface IngredienteDev {
 
 //inv_recollection_mix
 export interface invRecollectionMix {
-  id: number
-  recollection_id: number
+  id?: number
+  recollection_id?: number
   item_id: number
   quantity: number
-  presentation_id: number
-  measure_id: number
+  presentation_id?: number
+  measure_id?: number
 }
 
 export interface InvRecipe {
@@ -49,14 +49,16 @@ export interface InvRecipeFilter {
   status: number
 }
 export interface InvRecipeMix {
-  id: number
-  recipe_id: number
-  recipe_group: string
-  recipe_base: number
+  id?: number
+  item_name?: string
+  recipe_id?: number
+  recipe_group?: string
+  recipe_base?: number
   item_id: number
-  quantity: number
-  presentation_id: number
-  measure_idstatus: number
+  quantity?: number
+  presentation_id?: number
+  measure_id?: number
+  status: number
 }
 
 //tabla inv_recollection
@@ -156,7 +158,7 @@ export interface InsumoItem {
 }
 
 //para ser usado en la tabla de ingredientes de receta
-export interface IItem {
+export interface IItemR {
   code: number
   name: string
   collection: string

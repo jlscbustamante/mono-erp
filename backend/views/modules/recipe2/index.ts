@@ -1,6 +1,10 @@
 import { db } from "#app/database.ts";
 import { IItem, IListaInsumo } from "@scope/shared";
 import { Hono } from "hono";
+import {
+  inv_recipe,
+  inv_recipe_mix,
+} from "../../../pizzadb/schemas/recipe/recipe.ts";
 //import { IListaInsumo } from "./backend/shared/modules/recetas/index.ts";
 /*import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
@@ -74,13 +78,29 @@ where imi.product_id=${param1};`;
     return c.json({ data: result, message: "ok" });
   })
   .post("/nueva", async (c) => {
-    const param1 = c.req.query("item_id");
-    const queryUnion = `select ii.id, ii.item_name from inv_menu_items imi
-inner join inv_recipe irc
-on imi.id = irc.menu_item_id
-inner join inv_recipe_mix irm
-on irc.id = irm.recipe_id
-inner join inv_item ii
-on irm.item_id=ii.id
-where imi.product_id=${param1};`;
+    const param1 = 9; //c.req.query("item_id");
+    const data = await c.req.json();
+    console.log("nueva receta");
+    console.log("Data en post");
+    console.log(data);
+    //insert para nueva receta
+    //const insertR = `insert into inv_recipe(company_id,recipe,menu_item_id,save_tag) values(?,?,?,?)`;
+
+    const result = await db.insert(inv_recipe).values(data).$returningId();
+
+    console.log("res : ", result);
+    return c.json({ data: result, message: "ok" });
+  })
+  .post("/nueva_detalle", async (c) => {
+    const data = await c.req.json();
+    console.log("Detalle nueva receta");
+    console.log("Data en post");
+    console.log(data);
+    //insert para nueva receta
+    //const insertR = `insert into inv_recipe(company_id,recipe,menu_item_id,save_tag) values(?,?,?,?)`;
+
+    const result = await db.insert(inv_recipe_mix).values(data).$returningId();
+
+    console.log("res : ", result);
+    return c.json({ data: result, message: "ok" });
   });

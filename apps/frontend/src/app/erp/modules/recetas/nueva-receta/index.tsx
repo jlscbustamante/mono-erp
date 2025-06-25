@@ -12,6 +12,7 @@ import { IItem, IListaInsumo } from '@types'
 import { Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
 import { ProductSelectForm } from '../components/menu-product-select'
+import { InvRecipeMix } from '../shared-types'
 //fin de import de lista de insumos
 
 export const NuevaRecetaTabs = () => {
@@ -21,7 +22,7 @@ export const NuevaRecetaTabs = () => {
 
   const RecetaProdFinal = () => {
     //Para lista de ingredientes de receta
-    const [ingredientesR, setIngredientesR] = useState<IItem[]>([])
+    const [ingredientesR, setIngredientesR] = useState<InvRecipeMix[]>([])
 
     //ingredientes filtrados por la busqueda
     const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
@@ -96,8 +97,8 @@ export const NuevaRecetaTabs = () => {
     } //IngredientesMSelected
 
     const handleTransferIngredientesM = async (record: IItem) => {
-      //console.log('Código :')
-      //console.table(record)
+      console.log('Código :')
+      console.table(record)
 
       //validar que no este presente el ingrediente en la lista
       /*const estaIngrediente = ingredientesR.find(
@@ -125,7 +126,7 @@ export const NuevaRecetaTabs = () => {
       const tempItems2: IItem[] = listaInsumos.map((i: any) => {
         const j: IItem = {
           id: i.id,
-          item_name: record.item_name,
+          item_name: i.item_name,
           status: i.status,
         }
 
@@ -142,7 +143,7 @@ export const NuevaRecetaTabs = () => {
 
         for (let i = 0; i < ingredientesR.length; i++) {
           estaIngrediente = listaInsumos.some(
-            (i2: IItem) => i2.id === ingredientesR[i].id,
+            (i2: IItem) => i2.id === ingredientesR[i].item_id,
           )
           if (estaIngrediente) break
         }
@@ -150,22 +151,48 @@ export const NuevaRecetaTabs = () => {
         //Si en la lista de ingredientes (derecha) no esta ningun
         //item del item(con receta) por agregar
         //entonces se agrega a esa lista
+
+        const ingredienteInsumo: InvRecipeMix[] = tempItems2.map(
+          (insumo: IItem) => {
+            return {
+              id: undefined,
+              recipe_id: undefined,
+              recipe_group: undefined,
+              recipe_base: undefined,
+              item_name: insumo.item_name,
+              item_id: insumo.id,
+              quantity: undefined,
+              presentation_id: undefined,
+              measure_id: undefined,
+              status: 1,
+            }
+          },
+        )
         if (!estaIngrediente) {
-          setIngredientesR([...ingredientesR, ...listaInsumos])
+          setIngredientesR([...ingredientesR, ...ingredienteInsumo])
         }
       } else {
         //validar que no este presente el ingrediente en la lista
         //console.log('item single')
         //console.table(record)
-        estaIngrediente = ingredientesR.some((i: IItem) => i.id == record.id)
+        estaIngrediente = ingredientesR.some(
+          (i: InvRecipeMix) => i.item_id == record.id,
+        )
 
         if (!estaIngrediente) {
           setIngredientesR([
             ...ingredientesR,
             {
-              id: record.id,
+              id: undefined,
+              recipe_id: undefined,
+              recipe_group: undefined,
+              recipe_base: undefined,
               item_name: (record as any).product,
-              status: record.status,
+              item_id: (record as any).item_id,
+              quantity: undefined,
+              presentation_id: undefined,
+              measure_id: undefined,
+              status: 1,
             },
           ])
         }
@@ -219,13 +246,21 @@ export const NuevaRecetaTabs = () => {
     //Manejadores de lista de receta
     //..boton quitar elemento de lista de receta
     const handleQuitarIngrediente = (code: number) => {
-      setIngredientesR(ingredientesR.filter((item: IItem) => item.id != code))
+      setIngredientesR(
+        ingredientesR.filter((item: InvRecipeMix) => item.id != code),
+      )
     }
     //..boton quitar elemento de lista de receta
 
-    const onInputChange = (key: string, index: number) => {
-      console.log('cambio de cantidad' + key + index)
-    }
+    const onInputChange =
+      (key: string, index: number) =>
+      (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newData = [...ingredientesR]
+        newData[index][key] = Number(e.target.value)
+
+        console.log('cambio de cantidad key: ' + key + ' index : ' + index)
+        console.table(ingredientesR)
+      }
 
     //Fin de manejadores de lista de receta
 
@@ -355,20 +390,21 @@ export const NuevaRecetaTabs = () => {
     const handleGrabarReceta = () => {
       const fecha = form.getFieldValue('fecha')
       const company_id = form.getFieldValue('company_id')
-      const product_id = form.getFieldValue('product_id')
-      const recipe_name = form.getFieldValue('recipe_name')
+      const menu_item_id = form.getFieldValue('product_id')
+      const recipe = form.getFieldValue('recipe_name')
       const save_tag = form.getFieldValue('save_tag')
 
       //company_id recipe_name product_id save_tag
 
       console.log('Guardando receta ...' + fecha)
       console.log('Guardando receta ...' + company_id)
-      console.log('Guardando receta ...' + product_id)
-
+      console.log('Guardando receta ...' + menu_item_id)
+      console.log('ingredientesR')
+      console.table(ingredientesR)
       const nuevaReceta = {
         company_id: company_id,
-        product_id: product_id,
-        recipe_name: recipe_name,
+        menu_item_id: menu_item_id,
+        recipe: recipe,
         save_tag: save_tag,
       }
 
@@ -376,6 +412,7 @@ export const NuevaRecetaTabs = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
         },
         body: JSON.stringify(nuevaReceta),
       }
@@ -388,7 +425,46 @@ export const NuevaRecetaTabs = () => {
           return data.json()
         })
         .then((nuevaReceta) => {
+          console.log('creacion cabecera')
           console.log(nuevaReceta)
+          //guardando detalle
+          console.log('guardando detalle de receta')
+          //detalle de receta con items con id de receta recien creada
+          console.log('recipe_id : ' + nuevaReceta.data[0].id)
+
+          const data2 = ingredientesR.map((ingrediente) => {
+            return {
+              id: undefined,
+              item_name: ingrediente.item_name,
+              recipe_id: nuevaReceta.data[0].id,
+              recipe_group: undefined,
+              recipe_base: undefined,
+              item_id: ingrediente.item_id,
+              quantity: ingrediente.quantity,
+              presentation_id: undefined,
+              measure_id: undefined,
+              status: 1,
+            }
+          })
+
+          const options_det = {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+            },
+            body: JSON.stringify(data2),
+          }
+
+          fetch(
+            config.apiV2 + '/api/view/recipe/nueva_detalle',
+            options_det,
+          ).then((data2) => {
+            if (!data2) {
+              throw Error(data2)
+            }
+            return data2.json()
+          })
         })
         .catch((e) => {
           console.log(e)
