@@ -54,6 +54,7 @@ export interface InvRecipeMix {
   recipe_id?: number
   recipe_group?: string
   recipe_base?: number
+  recollection_id?: number
   item_id: number
   quantity?: number
   presentation_id?: number
@@ -63,7 +64,7 @@ export interface InvRecipeMix {
 
 //tabla inv_recollection
 export interface InvRecollection {
-  id: number
+  id?: number
   company_id: number
   collection: string
   based_on: string
