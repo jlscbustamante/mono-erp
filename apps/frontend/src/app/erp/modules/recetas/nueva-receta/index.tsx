@@ -173,9 +173,9 @@ export const NuevaRecetaTabs = () => {
           item_name: i.item_name,
           status: i.status,
         }*/
-        //console.table('convertion a InvREcipeMix')
-        //console.table('i any')
-        //console.table(i)
+        console.table('conversion a InvREcipeMix')
+        console.table('i any')
+        console.table(i)
         const j: InvRecipeMix = {
           id: undefined,
           product_id: i.product_id,
@@ -216,7 +216,7 @@ export const NuevaRecetaTabs = () => {
         //item del item(con receta) por agregar
         //entonces se agrega a esa lista
 
-        const ingredienteInsumo: InvRecipeMix[] = tempItems2.map(
+        const ingredientesInsumos: InvRecipeMix[] = tempItems2.map(
           (insumo: InvRecipeMix) => {
             const tmp: InvRecipeMix = {
               id: undefined,
@@ -242,14 +242,14 @@ export const NuevaRecetaTabs = () => {
         if (!estaIngrediente) {
           //console.log('Ingrediente insumo')
           //console.table(ingredienteInsumo)
-          setIngredientesR([...ingredientesR, ...ingredienteInsumo])
+          setIngredientesR([...ingredientesR, ...ingredientesInsumos])
         }
       } else {
         //validar que no este presente el ingrediente en la lista
         console.log('item single')
         console.table(record)
         estaIngrediente = ingredientesR.some(
-          (i: InvRecipeMix) => i.item_id == record.id,
+          (i: InvRecipeMix) => i.item_id == record.item_id,
         )
 
         if (!estaIngrediente) {
@@ -955,7 +955,7 @@ FROM `db_erpraul_v1`.`inv_recollection`;
       }
     }
 
-    const handleTransferIngredientesM2 = async (record: IItem) => {
+    const handleTransferIngredientesM2 = async (record: InvRecipeMix) => {
       console.log('Código :')
       console.table(record)
 
@@ -968,9 +968,41 @@ FROM `db_erpraul_v1`.`inv_recollection`;
       //validar si el item encontrado tiene receta
       //TODO : esto se reducira a la validacion de un solo campo
 
+      let recipe_req: number = 0
+      let product_id = undefined
+      let recollection_id = undefined
+
+      if (record.product_id === null || record.product_id === undefined) {
+        product_id = null
+        recipe_req = 0
+      } else {
+        product_id = record.product_id
+        recipe_req = 1
+      }
+
+      if (
+        record.recollection_id === null ||
+        record.recollection_id === undefined
+      )
+        recollection_id = null
+      else recollection_id = record.recollection_id
+
+      if (product_id === null && recollection_id === null) {
+        product_id = -1
+        recollection_id = -1
+      }
+      console.log(
+        'OKss' + product_id + '|' + recollection_id + '|' + recipe_req,
+      )
       //aqui va el fetch duplicado por mientras
       const response = await fetch(
-        config.apiV2 + '/api/view/recipe/items?item_id=' + record.id,
+        config.apiV2 +
+          '/api/view/recipe/items?product_id=' +
+          product_id +
+          '&recipe_req=' +
+          recipe_req +
+          '&recollection_id=' +
+          recollection_id,
         {
           method: 'GET',
           headers: {
@@ -1058,6 +1090,13 @@ FROM `db_erpraul_v1`.`inv_recollection`;
       }
     }
     //fin de manejadores de Lista de insumos
+
+    //Manejadores de DetalleInsumo
+    const handleDrawerClose2 = () => {
+      setIngredienteMMostrado2([])
+      setDrawerOpen2(false)
+    }
+    //Fin de manejadores de DetalleInsumo
 
     //columnas de la tabla de ingredientes disponibles
     const columnsIngredientesM2: ColumnsType = [
@@ -1290,7 +1329,15 @@ FROM `db_erpraul_v1`.`inv_recollection`;
               dataSource={ingredientesMFiltrados2}
             />
           </Card>
-          {/* Fin de lista de insumos */}
+          {/* Fin de lista de insumos de petaña colección*/}
+
+          {/* Drawer con detalle de insumo con receta */}
+          <DetalleInsumo
+            data={ingredienteMMostrado2}
+            drawerOpen={drawerOpen2}
+            drawerClose={handleDrawerClose2}
+            oper={4}
+          />
         </div>
       </div>
     )
