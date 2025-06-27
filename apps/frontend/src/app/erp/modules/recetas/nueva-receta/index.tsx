@@ -106,8 +106,8 @@ export const NuevaRecetaTabs = () => {
     } //IngredientesMSelected
 
     const handleTransferIngredientesM = async (record: InvRecipeMix) => {
-      console.log('Código :')
-      console.table(record)
+      //console.log('Código :')
+      //console.table(record)
 
       //validar que no este presente el ingrediente en la lista
       /*const estaIngrediente = ingredientesR.find(
@@ -144,9 +144,7 @@ export const NuevaRecetaTabs = () => {
         product_id = -1
         recollection_id = -1
       }
-      console.log(
-        'OKss' + product_id + '|' + recollection_id + '|' + recipe_req,
-      )
+      //console.log('OKss' + product_id + '|' + recollection_id + '|' + recipe_req )
 
       const response = await fetch(
         config.apiV2 +
@@ -173,9 +171,11 @@ export const NuevaRecetaTabs = () => {
           item_name: i.item_name,
           status: i.status,
         }*/
+        /*
         console.table('conversion a InvREcipeMix')
         console.table('i any')
         console.table(i)
+        */
         const j: InvRecipeMix = {
           id: undefined,
           product_id: i.product_id,
@@ -246,8 +246,8 @@ export const NuevaRecetaTabs = () => {
         }
       } else {
         //validar que no este presente el ingrediente en la lista
-        console.log('item single')
-        console.table(record)
+        //console.log('item single')
+        //console.table(record)
         estaIngrediente = ingredientesR.some(
           (i: InvRecipeMix) => i.item_id == record.item_id,
         )
@@ -358,7 +358,7 @@ export const NuevaRecetaTabs = () => {
     }
 
     const handlePredefinedFilters = (customFilter: number) => {
-      console.log('Clic en :' + customFilter)
+      //console.log('Clic en :' + customFilter)
       setCatSelected(customFilter)
     }
     //Fin de Filtros insumos
@@ -750,7 +750,7 @@ export const NuevaRecetaTabs = () => {
       [],
     )
     //los items que forman parte de un ingredienteM con receta o coleccion
-    const [, setIngredientesMItems2] = useState<IItem[]>([])
+    //const [, setIngredientesMItems2] = useState<IItem[]>([])
     const [drawerOpen2, setDrawerOpen2] = useState(false)
 
     //manejador de BasedOn
@@ -830,6 +830,7 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         body: JSON.stringify(nuevaColeccion),
       }
 
+      options + ''
       /*
       fetch(config.apiV2 + '/api/view/recipe/nueva-coleccion', options)
         .then((data) => {
@@ -903,7 +904,7 @@ FROM `db_erpraul_v1`.`inv_recollection`;
       setNeedle(needle)
     }
     const handlePredefinedFilters2 = (customFilter: number) => {
-      console.log('Clic en :' + customFilter)
+      //console.log('Clic en :' + customFilter)
       setCatSelected(customFilter)
     }
     //Fin de Filtros insumos - coleccion
@@ -956,8 +957,8 @@ FROM `db_erpraul_v1`.`inv_recollection`;
     }
 
     const handleTransferIngredientesM2 = async (record: InvRecipeMix) => {
-      console.log('Código :')
-      console.table(record)
+      //console.log('Código :')
+      //console.table(record)
 
       //validar que no este presente el ingrediente en la lista
       /*const estaIngrediente = ingredientesR.find(
@@ -991,9 +992,9 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         product_id = -1
         recollection_id = -1
       }
-      console.log(
+      /*console.log(
         'OKss' + product_id + '|' + recollection_id + '|' + recipe_req,
-      )
+      )*/
       //aqui va el fetch duplicado por mientras
       const response = await fetch(
         config.apiV2 +
@@ -1064,8 +1065,8 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         }
       } else {
         //validar que no este presente el ingrediente en la lista
-        console.log('item single')
-        console.table(record)
+        //console.log('item single')
+        //console.table(record)
         estaIngrediente = ingredientesR.some(
           (i: InvRecipeMix) => i.item_id == record.id,
         )
