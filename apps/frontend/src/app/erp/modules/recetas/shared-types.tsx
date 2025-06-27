@@ -50,12 +50,17 @@ export interface InvRecipeFilter {
 }
 export interface InvRecipeMix {
   id?: number
-  item_name?: string
+  product_id?: number
+  product?: string
+  category_id?: number
+  category?: string
   recipe_id?: number
   recipe_group?: string
   recipe_base?: number
   recollection_id?: number
+  collection?: string
   item_id: number
+  item_name: string
   quantity?: number
   presentation_id?: number
   measure_id?: number
@@ -158,14 +163,6 @@ export interface InsumoItem {
   status: number
 }
 
-//para ser usado en la tabla de ingredientes de receta
-export interface IItemR {
-  code: number
-  name: string
-  collection: string
-  quantity: number
-  measure_id: number
-}
 //para ser usado en la tabla de ingredientes de receta
 //solo para obtener la abreviatura
 export interface UMed {

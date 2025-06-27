@@ -41,10 +41,13 @@ export const ListaIngredientes = ({
     },
     {
       title: 'Cantidad',
-      dataIndex: 'cantidad',
+      dataIndex: 'quantity',
       className: '!p-1',
-      render: (text, _, index) => (
-        <Input value={text} onChange={pOnInputChange('quantity', index)} />
+      render: (text, record, index) => (
+        <Input
+          value={record.quantity}
+          onChange={pOnInputChange('quantity', index)}
+        />
       ),
     },
     {

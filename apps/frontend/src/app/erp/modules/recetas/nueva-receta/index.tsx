@@ -105,7 +105,7 @@ export const NuevaRecetaTabs = () => {
       //return respuesta.data
     } //IngredientesMSelected
 
-    const handleTransferIngredientesM = async (record: IItem) => {
+    const handleTransferIngredientesM = async (record: InvRecipeMix) => {
       console.log('Código :')
       console.table(record)
 
@@ -119,8 +119,43 @@ export const NuevaRecetaTabs = () => {
       //TODO : esto se reducira a la validacion de un solo campo
 
       //aqui va el fetch duplicado por mientras
+      //campos devueltos :
+      //ii.id, ii.item_name, imi.category_id,irm.measure_id
+      let recipe_req: number = 0
+      let product_id = undefined
+      let recollection_id = undefined
+
+      if (record.product_id === null || record.product_id === undefined) {
+        product_id = null
+        recipe_req = 0
+      } else {
+        product_id = record.product_id
+        recipe_req = 1
+      }
+
+      if (
+        record.recollection_id === null ||
+        record.recollection_id === undefined
+      )
+        recollection_id = null
+      else recollection_id = record.recollection_id
+
+      if (product_id === null && recollection_id === null) {
+        product_id = -1
+        recollection_id = -1
+      }
+      console.log(
+        'OKss' + product_id + '|' + recollection_id + '|' + recipe_req,
+      )
+
       const response = await fetch(
-        config.apiV2 + '/api/view/recipe/items?item_id=' + record.id,
+        config.apiV2 +
+          '/api/view/recipe/items?product_id=' +
+          product_id +
+          '&recipe_req=' +
+          recipe_req +
+          '&recollection_id=' +
+          recollection_id,
         {
           method: 'GET',
           headers: {
@@ -132,13 +167,33 @@ export const NuevaRecetaTabs = () => {
       const respuesta = await response.json()
       //Lista de insumo de producto con receta
       const listaInsumos = respuesta.data
-      const tempItems2: IItem[] = listaInsumos.map((i: any) => {
-        const j: IItem = {
+      const tempItems2: InvRecipeMix[] = listaInsumos.map((i: any) => {
+        /*const j: IItem = {
           id: i.id,
           item_name: i.item_name,
           status: i.status,
+        }*/
+        //console.table('convertion a InvREcipeMix')
+        //console.table('i any')
+        //console.table(i)
+        const j: InvRecipeMix = {
+          id: undefined,
+          product_id: i.product_id,
+          product: i.product,
+          category_id: i.category_id,
+          category: (i as any).category,
+          recipe_id: i.recipe_id,
+          recipe_group: undefined,
+          recipe_base: undefined,
+          recollection_id: i.recollection_id,
+          collection: i.collection,
+          item_id: i.item_id,
+          item_name: i.item_name,
+          quantity: i.quantity,
+          presentation_id: undefined,
+          measure_id: i.measure_id,
+          status: 1,
         }
-
         return j
       })
 
@@ -152,7 +207,7 @@ export const NuevaRecetaTabs = () => {
 
         for (let i = 0; i < ingredientesR.length; i++) {
           estaIngrediente = listaInsumos.some(
-            (i2: IItem) => i2.id === ingredientesR[i].item_id,
+            (i2: InvRecipeMix) => i2.item_id === ingredientesR[i].item_id,
           )
           if (estaIngrediente) break
         }
@@ -162,22 +217,31 @@ export const NuevaRecetaTabs = () => {
         //entonces se agrega a esa lista
 
         const ingredienteInsumo: InvRecipeMix[] = tempItems2.map(
-          (insumo: IItem) => {
-            return {
+          (insumo: InvRecipeMix) => {
+            const tmp: InvRecipeMix = {
               id: undefined,
-              recipe_id: undefined,
+              product_id: insumo.product_id,
+              product: insumo.product,
+              category_id: insumo.category_id,
+              category: insumo.category,
+              recipe_id: insumo.recipe_id,
               recipe_group: undefined,
               recipe_base: undefined,
+              recollection_id: insumo.recollection_id,
+              collection: insumo.collection,
+              item_id: insumo.item_id,
               item_name: insumo.item_name,
-              item_id: insumo.id,
-              quantity: undefined,
+              quantity: insumo.quantity,
               presentation_id: undefined,
-              measure_id: undefined,
+              measure_id: insumo.measure_id,
               status: 1,
             }
+            return tmp
           },
         )
         if (!estaIngrediente) {
+          //console.log('Ingrediente insumo')
+          //console.table(ingredienteInsumo)
           setIngredientesR([...ingredientesR, ...ingredienteInsumo])
         }
       } else {
@@ -193,14 +257,20 @@ export const NuevaRecetaTabs = () => {
             ...ingredientesR,
             {
               id: undefined,
-              recipe_id: undefined,
+              product_id: record.product_id,
+              product: record.product,
+              category_id: record.category_id,
+              category: record.category,
+              recipe_id: record.recipe_id,
               recipe_group: undefined,
               recipe_base: undefined,
-              item_name: (record as any).product,
-              item_id: (record as any).id,
-              quantity: undefined,
+              recollection_id: record.recollection_id,
+              collection: record.collection,
+              item_id: record.item_id,
+              item_name: record.item_name,
+              quantity: record.quantity,
               presentation_id: undefined,
-              measure_id: undefined,
+              measure_id: record.measure_id,
               status: 1,
             },
           ])
@@ -314,11 +384,21 @@ export const NuevaRecetaTabs = () => {
           <Button
             onClick={() =>
               handleTransferIngredientesM({
-                id: record.item_id,
-                product: (record as any).item_name,
+                id: undefined,
+                product_id: record.product_id,
+                product: record.product_name,
                 category_id: record.category_id,
-                unit_price: 1.0,
-                measure_id: record.measure_id,
+                category: record.category_name,
+                recipe_id: undefined,
+                recipe_group: undefined,
+                recipe_base: undefined,
+                recollection_id: record.recollect_id,
+                collection: record.collection_name,
+                item_id: record.item_id,
+                item_name: record.item_name,
+                quantity: undefined,
+                presentation_id: undefined,
+                measure_id: undefined,
                 status: 1,
               } as any)
             }
@@ -981,6 +1061,13 @@ FROM `db_erpraul_v1`.`inv_recollection`;
 
     //columnas de la tabla de ingredientes disponibles
     const columnsIngredientesM2: ColumnsType = [
+      {
+        title: 'Id',
+        dataIndex: 'id',
+        className: '!p-1',
+        hidden: true,
+        render: (_, __, index) => index + 1,
+      },
       {
         title: 'Categoria',
         dataIndex: 'category',
