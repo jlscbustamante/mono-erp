@@ -220,3 +220,39 @@ export const inv_recipe_mix = mysqlTable("inv_recipe_mix", {
     .notNull()
     .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
 });
+
+export const inv_recollection = mysqlTable("inv_recollection", {
+  id: int("id").primaryKey().autoincrement(),
+  company_id: int("company_id").notNull(),
+  collection: varchar("collection", { length: 150 }).notNull(),
+  based_on: varchar("based_on", { length: 5 }).notNull(),
+  is_base: smallint("is_base").notNull(),
+  factor: decimalNumber("factor", { precision: 12, scale: 2 })
+    .notNull()
+    .default(0.0),
+  status: smallint("status").notNull().default(1),
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
+
+export const inv_recollection_mix = mysqlTable("inv_recollection_mix", {
+  id: int("id").primaryKey().autoincrement(),
+  recollection_id: int("recollection_id").notNull(),
+  item_id: int("item_id").notNull(),
+  quantity: decimalNumber("quantity", { precision: 16, scale: 3 })
+    .notNull()
+    .default(0.0),
+  presentation_id: int("presentation_id"), // puede ser null
+  measure_id: int("measure_id"), // puede ser null
+
+  created_at: datetime({ mode: "string", fsp: 2 }).$defaultFn(() =>
+    dayjs().format("YYYY-MM-DD HH:mm:ss")
+  ),
+  updated_at: timestamp({ mode: "string", fsp: 2 })
+    .notNull()
+    .$onUpdate(() => dayjs().format("YYYY-MM-DD HH:mm:ss")),
+});
