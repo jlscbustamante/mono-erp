@@ -44,7 +44,7 @@ export interface AdmPaymentOrder {
   required_at: Date | null;
   required_by: string;
   /**
-   * I: Ingresado; A: Autorizado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado 
+   * I: Ingresado; A: Autorizado; N: Enviado Banco;  R: Rechazado; P: Pagado X: Anulado
    */
   status: string;
   updated_at: Generated<Date>;
@@ -494,7 +494,7 @@ export interface FinJournalentry {
   move_at: Date;
   move_id: number;
   /**
-   * C (Compra) 
+   * C (Compra)
    */
   move_type: string | null;
   num_doc: string | null;
@@ -639,7 +639,7 @@ export interface InvBrand {
 export interface InvCarrier {
   carrier_name: string;
   /**
-   * transportista nro de doc 
+   * transportista nro de doc
    */
   carrier_nro_doc: string | null;
   /**
@@ -748,7 +748,7 @@ export interface InvDispatch {
   tax_value: Generated<Decimal>;
   total_value: Generated<Decimal>;
   /**
-   * transportista nro de doc 
+   * transportista nro de doc
    */
   transporte_nro_doc: string | null;
   /**
@@ -1137,7 +1137,7 @@ export interface InvStock {
    */
   total_last: Generated<Decimal>;
   /**
-   * stock valorizado del dia 
+   * stock valorizado del dia
    */
   total_value: Generated<Decimal>;
   /**

@@ -11,7 +11,14 @@ import {
   Space,
   Tabs,
 } from 'antd'
-import { ChangeEvent, useEffect, useState } from 'react'
+import {
+  ChangeEvent,
+  ChangeEventHandler,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useState,
+} from 'react'
 import { DetalleInsumo } from './DetalleInsumo'
 import { ListaIngredientes } from './ListaIngredientes'
 import { gridStyle } from './styles'
@@ -29,230 +36,206 @@ export const NuevaRecetaTabs = () => {
     //console.log('change :' + key)
   }
 
-  const RecetaProdFinal = () => {
-    //Para lista de ingredientes de receta
-    const [ingredientesR, setIngredientesR] = useState<InvRecipeMix[]>([])
+  //Inicio de Filtros insumos
 
-    //ingredientes filtrados por la busqueda
-    const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
-      IListaInsumo[] | undefined
-    >([])
+  //.. manejador de eventos de la caja de busqueda
+  const handleNeedle = (
+    event: ChangeEvent<HTMLInputElement>,
+    pSetNeedle: Dispatch<SetStateAction<string>>,
+  ): ChangeEventHandler<HTMLInputElement> => {
+    const needle = event.target.value.trim()
+    //console.log('texto buscado' + needle)
+    pSetNeedle(needle)
+  }
 
-    const [ingredienteMMostrado, setIngredienteMMostrado] = useState<IItem[]>(
-      [],
-    )
+  const handlePredefinedFilters = (
+    customFilter: number,
+    pSetCatSelected: Dispatch<SetStateAction<number>>,
+  ) => {
+    //console.log('Clic en :' + customFilter)
+    pSetCatSelected(customFilter)
+  }
+  //Fin de Filtros insumos
 
-    //los items que forman parte de un ingredienteM con receta o coleccion
-    const [, setIngredientesMItems] = useState<IItem[]>([])
-    const [drawerOpen, setDrawerOpen] = useState(false)
+  const handleTransferIngredientesM = async (
+    record: InvRecipeMix,
+    urlApi: string = '/api/view/recipe/items',
+    pListaDestino: InvRecipeMix[],
+    pSetListaDestino: Dispatch<SetStateAction<InvRecipeMix[]>>,
+  ) => {
+    console.log('Código :')
+    console.table('Api : ' + urlApi)
+    console.table(record)
 
-    //Inicio de manejadores de Lista de insumos
-    const IngredientesMSelected = async (
-      pCatSelected: number,
-      pNeedle: string,
-    ) => {
-      //console.log('dato renovado')
-      //setNeedle(needle)
-      //setCatSelected(catSelected)
-
-      const response = await fetch(
-        config.apiV2 +
-          '/api/view/recipe/filter/insumos?cat_selected=' +
-          pCatSelected +
-          '&needle=' +
-          pNeedle,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
-          },
-        },
-      )
-      const respuesta = await response.json()
-      /*
-      const query: IListaInsumo[] = ingredientesM
-      console.log('lucanas')
-      console.table(query)
-      const dataFiltered: IListaInsumo[] =
-        query?.filter((el: IListaInsumo) => {
-          //console.log('el.id : ' + el.id)
-          // console.log('el.category_id : ' + el.category_id)
-          console.log('el.item_name : ' + el.item_name)
-          let out: IListaInsumo | undefined
-          if (!pCatSelected) {
-            if (el.item_name.toLowerCase().includes(pNeedle.toLowerCase()))
-              out = el
-          } else {
-            if (
-              el.category_id === catSelected &&
-              el.item_name.toLowerCase().includes(needle.toLowerCase())
-            ) {
-              out = el
-            }
-          }
-          if (out) {
-            return true
-          }
-          return false
-        }) ?? []
-*/
-      //console.table(dataFiltered)
-
-      //return dataFiltered
-
-      setIngredientesMFiltrados(respuesta.data)
-      //return respuesta.data
-    } //IngredientesMSelected
-
-    const handleTransferIngredientesM = async (record: InvRecipeMix) => {
-      //console.log('Código :')
-      //console.table(record)
-
-      //validar que no este presente el ingrediente en la lista
-      /*const estaIngrediente = ingredientesR.find(
+    //validar que no este presente el ingrediente en la lista
+    /*const estaIngrediente = ingredientesR.find(
         (i: IItem) => i.id == record.id,
       )*/
-      let estaIngrediente: boolean = false
+    let estaIngrediente: boolean = false
 
-      //validar si el item encontrado tiene receta
-      //TODO : esto se reducira a la validacion de un solo campo
+    //validar si el item encontrado tiene receta
+    //TODO : esto se reducira a la validacion de un solo campo
 
-      //aqui va el fetch duplicado por mientras
-      //campos devueltos :
-      //ii.id, ii.item_name, imi.category_id,irm.measure_id
-      let recipe_req: number = 0
-      let product_id = undefined
-      let recollection_id = undefined
+    //aqui va el fetch duplicado por mientras
+    //campos devueltos :
+    //ii.id, ii.item_name, imi.category_id,irm.measure_id
+    let recipe_req: number = 0
+    let product_id = undefined
+    let recollection_id = undefined
 
-      if (record.product_id === null || record.product_id === undefined) {
-        product_id = null
-        recipe_req = 0
-      } else {
-        product_id = record.product_id
-        recipe_req = 1
-      }
+    if (record.product_id === null || record.product_id === undefined) {
+      product_id = null
+      recipe_req = 0
+    } else {
+      product_id = record.product_id
+      recipe_req = 1
+    }
 
-      if (
-        record.recollection_id === null ||
-        record.recollection_id === undefined
-      )
-        recollection_id = null
-      else recollection_id = record.recollection_id
+    if (record.recollection_id === null || record.recollection_id === undefined)
+      recollection_id = null
+    else recollection_id = record.recollection_id
 
-      if (product_id === null && recollection_id === null) {
-        product_id = -1
-        recollection_id = -1
-      }
-      //console.log('OKss' + product_id + '|' + recollection_id + '|' + recipe_req )
+    if (product_id === null && recollection_id === null) {
+      product_id = -1
+      recollection_id = -1
+    }
+    //console.log('OKss' + product_id + '|' + recollection_id + '|' + recipe_req )
 
-      const response = await fetch(
-        config.apiV2 +
-          '/api/view/recipe/items?product_id=' +
-          product_id +
-          '&recipe_req=' +
-          recipe_req +
-          '&recollection_id=' +
-          recollection_id,
-        {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
-          },
+    //urlApi: es la urls de donde se obtienen los items de un elemento con receta
+    const response = await fetch(
+      config.apiV2 +
+        urlApi +
+        '?product_id=' +
+        product_id +
+        '&recipe_req=' +
+        recipe_req +
+        '&recollection_id=' +
+        recollection_id,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
         },
-      )
-      const respuesta = await response.json()
-      //Lista de insumo de producto con receta
-      const listaInsumos = respuesta.data
-      const tempItems2: InvRecipeMix[] = listaInsumos.map((i: any) => {
-        /*const j: IItem = {
+      },
+    )
+    const respuesta = await response.json()
+    //Lista de insumo de producto con receta
+    const listaInsumos = respuesta.data
+    const tempItems2: InvRecipeMix[] = listaInsumos.map((i: any) => {
+      /*const j: IItem = {
           id: i.id,
           item_name: i.item_name,
           status: i.status,
         }*/
-        /*
+      /*
         console.table('conversion a InvREcipeMix')
         console.table('i any')
         console.table(i)
         */
-        const j: InvRecipeMix = {
-          id: undefined,
-          product_id: i.product_id,
-          product: i.product,
-          category_id: i.category_id,
-          category: (i as any).category,
-          recipe_id: i.recipe_id,
-          recipe_group: undefined,
-          recipe_base: undefined,
-          recollection_id: i.recollection_id,
-          collection: i.collection,
-          item_id: i.item_id,
-          item_name: i.item_name,
-          quantity: i.quantity,
-          presentation_id: undefined,
-          measure_id: i.measure_id,
-          status: 1,
-        }
-        return j
-      })
+      const j: InvRecipeMix = {
+        id: undefined,
+        product_id: i.product_id,
+        product: i.product,
+        category_id: i.category_id,
+        category: (i as any).category,
+        recipe_id: i.recipe_id,
+        recipe_group: undefined,
+        recipe_base: undefined,
+        recollection_id: i.recollection_id,
+        collection: i.collection,
+        item_id: i.item_id,
+        item_name: i.item_name,
+        quantity: i.quantity,
+        presentation_id: undefined,
+        measure_id: i.measure_id,
+        status: 1,
+      }
+      return j
+    })
 
-      //console.log('Lista insumos')
-      //console.log(tempItems2.length)
-      //console.table(tempItems2)
-      //Fin TODO
-      //validar el flag que indica que el item tiene receta
-      if (tempItems2.length >= 1) {
-        //agregar varios items
+    //console.log('Lista insumos')
+    //console.log(tempItems2.length)
+    //console.table(tempItems2)
+    //Fin TODO
+    //validar el flag que indica que el item tiene receta
+    if (tempItems2.length >= 1) {
+      //agregar varios items
 
-        for (let i = 0; i < ingredientesR.length; i++) {
-          estaIngrediente = listaInsumos.some(
-            (i2: InvRecipeMix) => i2.item_id === ingredientesR[i].item_id,
-          )
-          if (estaIngrediente) break
-        }
+      for (let i = 0; i < pListaDestino.length; i++) {
+        estaIngrediente = listaInsumos.some(
+          (i2: InvRecipeMix) => i2.item_id === pListaDestino[i].item_id,
+        )
+        if (estaIngrediente) break
+      }
 
-        //Si en la lista de ingredientes (derecha) no esta ningun
-        //item del item(con receta) por agregar
-        //entonces se agrega a esa lista
+      //Si en la lista de ingredientes (derecha) no esta ningun
+      //item del item(con receta) por agregar
+      //entonces se agrega a esa lista
 
-        const ingredientesInsumos: InvRecipeMix[] = tempItems2.map(
-          (insumo: InvRecipeMix) => {
-            const tmp: InvRecipeMix = {
-              id: undefined,
-              product_id: insumo.product_id,
-              product: insumo.product,
-              category_id: insumo.category_id,
-              category: insumo.category,
-              recipe_id: insumo.recipe_id,
-              recipe_group: undefined,
-              recipe_base: undefined,
-              recollection_id: insumo.recollection_id,
-              collection: insumo.collection,
-              item_id: insumo.item_id,
-              item_name: insumo.item_name,
-              quantity: insumo.quantity,
-              presentation_id: undefined,
-              measure_id: insumo.measure_id,
-              status: 1,
-            }
-            return tmp
+      const ingredientesInsumos: InvRecipeMix[] = tempItems2.map(
+        (insumo: InvRecipeMix) => {
+          const tmp: InvRecipeMix = {
+            id: undefined,
+            product_id: insumo.product_id,
+            product: insumo.product,
+            category_id: insumo.category_id,
+            category: insumo.category,
+            recipe_id: insumo.recipe_id,
+            recipe_group: undefined,
+            recipe_base: undefined,
+            recollection_id: insumo.recollection_id,
+            collection: insumo.collection,
+            item_id: insumo.item_id,
+            item_name: insumo.item_name,
+            quantity: insumo.quantity,
+            presentation_id: undefined,
+            measure_id: insumo.measure_id,
+            status: 1,
+          }
+          return tmp
+        },
+      )
+      if (!estaIngrediente) {
+        //console.log('Ingrediente insumo')
+        //console.table(ingredienteInsumo)
+
+        //metodo reusable
+        //setIngredientesR([...ingredientesR, ...ingredientesInsumos])
+        pSetListaDestino([...pListaDestino, ...ingredientesInsumos])
+      }
+    } else {
+      //validar que no este presente el ingrediente en la lista
+      //console.log('item single')
+      //console.table(record)
+      estaIngrediente = pListaDestino.some(
+        (i: InvRecipeMix) => i.item_id == record.item_id,
+      )
+
+      if (!estaIngrediente) {
+        //llamada reusable
+        pSetListaDestino([
+          ...pListaDestino,
+          {
+            id: undefined,
+            product_id: record.product_id,
+            product: record.product,
+            category_id: record.category_id,
+            category: record.category,
+            recipe_id: record.recipe_id,
+            recipe_group: undefined,
+            recipe_base: undefined,
+            recollection_id: record.recollection_id,
+            collection: record.collection,
+            item_id: record.item_id,
+            item_name: record.item_name,
+            quantity: record.quantity,
+            presentation_id: undefined,
+            measure_id: record.measure_id,
+            status: 1,
           },
-        )
-        if (!estaIngrediente) {
-          //console.log('Ingrediente insumo')
-          //console.table(ingredienteInsumo)
-          setIngredientesR([...ingredientesR, ...ingredientesInsumos])
-        }
-      } else {
-        //validar que no este presente el ingrediente en la lista
-        //console.log('item single')
-        //console.table(record)
-        estaIngrediente = ingredientesR.some(
-          (i: InvRecipeMix) => i.item_id == record.item_id,
-        )
-
-        if (!estaIngrediente) {
+        ])
+        /*
           setIngredientesR([
             ...ingredientesR,
             {
@@ -274,23 +257,144 @@ export const NuevaRecetaTabs = () => {
               status: 1,
             },
           ])
-        }
+            */
       }
     }
+  }
 
+  //Inicio de manejadores de Lista de insumos
+  const handleShowItems = async (
+    id: number,
+    oper: number,
+    urlApi: string = '/api/view/recipe/items',
+    pSetIngredienteMMostrado: Dispatch<SetStateAction<IItem[]>>,
+    pSetDrawerOpen: Dispatch<SetStateAction<boolean>>,
+  ) => {
+    //console.log('Id mostrado :' + id)
+    //console.table(ingredientesMItems)
+    ///items", async (c) => {
+    //const param1 = c.req.query("item_id
+
+    if (oper == 1) {
+      const response = await fetch(config.apiV2 + urlApi + '?item_id=' + id, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+        },
+      })
+      const respuesta = await response.json()
+
+      if (respuesta.data.length >= 1) {
+        //
+        //setIngredienteMMostrado(estaIngredienteM)
+        pSetIngredienteMMostrado(respuesta.data)
+        pSetDrawerOpen(true)
+      }
+    }
+  }
+  //Fin de manejadores de Lista de insumos
+
+  //Manejadores de DetalleInsumo
+  const handleDrawerClose = (
+    pSetIngredienteMMostrado: Dispatch<SetStateAction<IItem[]>>,
+    pSetDrawerOpen: Dispatch<SetStateAction<boolean>>,
+  ) => {
+    pSetIngredienteMMostrado([])
+    pSetDrawerOpen(false)
+  }
+  //Fin de manejadores de DetalleInsumo
+
+  //Manejadores de lista de receta
+  //..boton quitar elemento de lista de receta
+  const handleQuitarIngrediente = (
+    code: number,
+    pIngredientesR: InvRecipeMix[],
+    pSetIngredientesR: Dispatch<SetStateAction<InvRecipeMix[]>>,
+  ) => {
+    pSetIngredientesR(
+      pIngredientesR.filter((item: InvRecipeMix) => item.item_id != code),
+    )
+  }
+  //..boton quitar elemento de lista de receta
+
+  const onInputChange =
+    (
+      key: string,
+      index: number,
+      pIngredientesR: InvRecipeMix[],
+      pSetIngredientesR: Dispatch<SetStateAction<InvRecipeMix[]>>,
+    ) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newData = [...pIngredientesR]
+      ;(newData[index] as any)[key] = Number(e.target.value)
+
+      console.log('cambio de cantidad key: ' + key + ' index : ' + index)
+      console.table(pIngredientesR)
+      pSetIngredientesR(pIngredientesR)
+    }
+
+  //Fin de manejadores de lista de receta
+
+  //consulta el API urlApi para obtener los insumos y los asigna a pIngredientesMFiltrados
+  const IngredientesMSelected = async (
+    pCatSelected: number,
+    pNeedle: string,
+    urlApi: string = '/api/view/recipe/filter/insumos',
+    pSetIngredientesMFiltrados: Dispatch<
+      SetStateAction<IListaInsumo[] | undefined>
+    >,
+  ) => {
+    //console.log('dato renovado')
+    //setNeedle(needle)
+    //setCatSelected(catSelected)
+
+    const response = await fetch(
+      config.apiV2 +
+        urlApi +
+        '?cat_selected=' +
+        pCatSelected +
+        '&needle=' +
+        pNeedle,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('tk_admin')}`,
+        },
+      },
+    )
+    const respuesta = await response.json()
+
+    //console.table(dataFiltered)
+
+    //setIngredientesMFiltrados(respuesta.data)
+    pSetIngredientesMFiltrados(respuesta.data)
+  } //IngredientesMSelected
+
+  const RecetaProdFinal = () => {
+    //Para lista de ingredientes de receta
+    const [ingredientesR, setIngredientesR] = useState<InvRecipeMix[]>([])
+
+    //ingredientes filtrados por la busqueda
+    const [ingredientesMFiltrados, setIngredientesMFiltrados] = useState<
+      IListaInsumo[] | undefined
+    >([])
+
+    const [ingredienteMMostrado, setIngredienteMMostrado] = useState<IItem[]>(
+      [],
+    )
+
+    //los items que forman parte de un ingredienteM con receta o coleccion
+    const [, setIngredientesMItems] = useState<IItem[]>([])
+    const [drawerOpen, setDrawerOpen] = useState(false)
+
+    /*
     const handleShowItems = async (id: number, oper: number) => {
       //console.log('Id mostrado :' + id)
       //console.table(ingredientesMItems)
       ///items", async (c) => {
       //const param1 = c.req.query("item_id
-
-      /*const estaIngredienteM = ingredientesMItems.filter(
-        (i: InsumoItem) => i.product_id == id,
-      )
-      console.log('Items encontrados :' + id)
-      //console.table(estaIngredienteM)
-      console.log('drawerOpen:' + drawerOpen)
-      */
 
       if (oper == 1) {
         const response = await fetch(
@@ -315,13 +419,17 @@ export const NuevaRecetaTabs = () => {
     }
     //Fin de manejadores de Lista de insumos
 
+    */
+    /*
     //Manejadores de DetalleInsumo
     const handleDrawerClose = () => {
       setIngredienteMMostrado([])
       setDrawerOpen(false)
     }
     //Fin de manejadores de DetalleInsumo
+    */
 
+    /*
     //Manejadores de lista de receta
     //..boton quitar elemento de lista de receta
     const handleQuitarIngrediente = (code: number) => {
@@ -342,26 +450,11 @@ export const NuevaRecetaTabs = () => {
       }
 
     //Fin de manejadores de lista de receta
+    */
 
     //Inicio de Filtros insumos
     const [catSelected, setCatSelected] = useState(0)
-    const [needle, setNeedle] = useState('')
-
-    //.. childToParent es una funcion que es enviada porel padre para
-    //.. que desde el hijo se envien datos
-
-    //.. manejador de eventos de la caja de busqueda
-    const handleNeedle = (event: ChangeEvent<HTMLInputElement>) => {
-      const needle = event.target.value.trim()
-      //console.log('texto buscado' + needle)
-      setNeedle(needle)
-    }
-
-    const handlePredefinedFilters = (customFilter: number) => {
-      //console.log('Clic en :' + customFilter)
-      setCatSelected(customFilter)
-    }
-    //Fin de Filtros insumos
+    const [needleR, setNeedleR] = useState('')
 
     //Inicio de lista de insumos
     //columnas de la tabla de ingredientes disponibles
@@ -383,24 +476,29 @@ export const NuevaRecetaTabs = () => {
         render: (_, record) => (
           <Button
             onClick={() =>
-              handleTransferIngredientesM({
-                id: undefined,
-                product_id: record.product_id,
-                product: record.product_name,
-                category_id: record.category_id,
-                category: record.category_name,
-                recipe_id: undefined,
-                recipe_group: undefined,
-                recipe_base: undefined,
-                recollection_id: record.recollect_id,
-                collection: record.collection_name,
-                item_id: record.item_id,
-                item_name: record.item_name,
-                quantity: undefined,
-                presentation_id: undefined,
-                measure_id: undefined,
-                status: 1,
-              } as any)
+              handleTransferIngredientesM(
+                {
+                  id: undefined,
+                  product_id: record.product_id,
+                  product: record.product_name,
+                  category_id: record.category_id,
+                  category: record.category_name,
+                  recipe_id: undefined,
+                  recipe_group: undefined,
+                  recipe_base: undefined,
+                  recollection_id: record.recollect_id,
+                  collection: record.collection_name,
+                  item_id: record.item_id,
+                  item_name: record.item_name,
+                  quantity: undefined,
+                  presentation_id: undefined,
+                  measure_id: undefined,
+                  status: 1,
+                } as any,
+                undefined,
+                ingredientesR,
+                setIngredientesR,
+              )
             }
           >
             +
@@ -650,9 +748,10 @@ export const NuevaRecetaTabs = () => {
               </div>
             </Form>
             <ListaIngredientes
-              ingredientesR={ingredientesR}
-              quitarIngrediente={handleQuitarIngrediente}
+              pIngredientesR={ingredientesR}
+              pQuitarIngrediente={handleQuitarIngrediente}
               pOnInputChange={onInputChange}
+              pSetIngredientesR={setIngredientesR}
             />
             <Button type="primary" onClick={handleGrabarReceta}>
               Guardar
@@ -666,11 +765,18 @@ export const NuevaRecetaTabs = () => {
           {/* Caja de busqueda */}
           <Input.Search
             size="large"
-            value={needle}
+            value={needleR}
             allowClear
-            onSearch={() => IngredientesMSelected(catSelected, needle)}
+            onSearch={() =>
+              IngredientesMSelected(
+                catSelected,
+                needleR,
+                undefined,
+                setIngredientesMFiltrados,
+              )
+            }
             placeholder="buscar colección, ingredientes"
-            onChange={handleNeedle}
+            onChange={(e) => handleNeedle(e, setNeedleR)}
           />
           <Space>
             <Button
@@ -681,19 +787,21 @@ export const NuevaRecetaTabs = () => {
                     22 === catSelected,
                 },
               )}
-              onClick={() => handlePredefinedFilters(22)}
+              onClick={() => handlePredefinedFilters(22, setCatSelected)}
             >
               Colección
             </Button>
             <Button
               // color="default"
               // variant="solid"
-              onClick={() => handlePredefinedFilters(9)}
+              onClick={() => handlePredefinedFilters(9, setCatSelected)}
             >
               Quesos
             </Button>
-            <Button onClick={() => handlePredefinedFilters(2)}>Pizzas</Button>
-            <Button onClick={() => handlePredefinedFilters(4)}>
+            <Button onClick={() => handlePredefinedFilters(2, setCatSelected)}>
+              Pizzas
+            </Button>
+            <Button onClick={() => handlePredefinedFilters(4, setCatSelected)}>
               Complementos
             </Button>
           </Space>
@@ -709,9 +817,21 @@ export const NuevaRecetaTabs = () => {
                     //console.log('Record:')
                     //console.table(record)
                     if (record.product_id !== null && record.recipe_req == 1)
-                      handleShowItems(record.product_id, 1)
+                      handleShowItems(
+                        record.product_id,
+                        1,
+                        undefined,
+                        setIngredienteMMostrado,
+                        setDrawerOpen,
+                      )
                     if (record.recollect_id !== null)
-                      handleShowItems(record.product_id, 2)
+                      handleShowItems(
+                        record.product_id,
+                        2,
+                        undefined,
+                        setIngredienteMMostrado,
+                        setDrawerOpen,
+                      )
                     /*
                   if (record.product_id!==null && record.recipe_req==1)
                     handleShowItems(record.product_id,1)
@@ -734,7 +854,9 @@ export const NuevaRecetaTabs = () => {
           <DetalleInsumo
             data={ingredienteMMostrado}
             drawerOpen={drawerOpen}
-            drawerClose={handleDrawerClose}
+            drawerClose={() =>
+              handleDrawerClose(setIngredienteMMostrado, setDrawerOpen)
+            }
             oper={4}
           />
         </div>
@@ -746,12 +868,12 @@ export const NuevaRecetaTabs = () => {
     //constantes para el formulario de Coleccion
     const [form2] = Form.useForm()
 
-    const [ingredienteMMostrado2, setIngredienteMMostrado2] = useState<IItem[]>(
+    const [ingredienteMMostradoC, setIngredienteMMostradoC] = useState<IItem[]>(
       [],
     )
     //los items que forman parte de un ingredienteM con receta o coleccion
     //const [, setIngredientesMItems2] = useState<IItem[]>([])
-    const [drawerOpen2, setDrawerOpen2] = useState(false)
+    const [drawerOpenC, setDrawerOpenC] = useState(false)
 
     //manejador de BasedOn
     const handleChangeBasedOn = (value: string) => {
@@ -759,7 +881,7 @@ export const NuevaRecetaTabs = () => {
     }
 
     //Para lista de ingredientes de receta
-    const [ingredientesR, setIngredientesR] = useState<InvRecipeMix[]>([])
+    const [ingredientesC, setIngredientesC] = useState<InvRecipeMix[]>([])
 
     //Manejadores de lista de receta
     //..boton quitar elemento de lista de receta
@@ -890,7 +1012,7 @@ FROM `db_erpraul_v1`.`inv_recollection`;
     const [needle, setNeedle] = useState('')
 
     //ingredientes filtrados por la busqueda
-    const [ingredientesMFiltrados2, setIngredientesMFiltrados2] = useState<
+    const [ingredientesMFiltradosC, setIngredientesMFiltradosC] = useState<
       IListaInsumo[] | undefined
     >([])
 
@@ -898,17 +1020,10 @@ FROM `db_erpraul_v1`.`inv_recollection`;
     //.. que desde el hijo se envien datos
 
     //.. manejador de eventos de la caja de busqueda
-    const handleNeedle2 = (event: ChangeEvent<HTMLInputElement>) => {
-      const needle = event.target.value.trim()
-      //console.log('texto buscado' + needle)
-      setNeedle(needle)
-    }
-    const handlePredefinedFilters2 = (customFilter: number) => {
-      //console.log('Clic en :' + customFilter)
-      setCatSelected(customFilter)
-    }
+
     //Fin de Filtros insumos - coleccion
 
+    /*
     //Inicio de manejadores de Lista de insumos
     const IngredientesMSelected2 = async (
       pCatSelected: number,
@@ -932,7 +1047,8 @@ FROM `db_erpraul_v1`.`inv_recollection`;
 
       setIngredientesMFiltrados2(respuesta.data)
     }
-
+    */
+    /*
     const handleShowItems2 = async (id: number, oper: number) => {
       if (oper == 1) {
         const response = await fetch(
@@ -955,15 +1071,15 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         }
       }
     }
+    */
 
+    /*
     const handleTransferIngredientesM2 = async (record: InvRecipeMix) => {
       //console.log('Código :')
       //console.table(record)
 
       //validar que no este presente el ingrediente en la lista
-      /*const estaIngrediente = ingredientesR.find(
-        (i: IItem) => i.id == record.id,
-      )*/
+      
       let estaIngrediente: boolean = false
 
       //validar si el item encontrado tiene receta
@@ -992,9 +1108,7 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         product_id = -1
         recollection_id = -1
       }
-      /*console.log(
-        'OKss' + product_id + '|' + recollection_id + '|' + recipe_req,
-      )*/
+      
       //aqui va el fetch duplicado por mientras
       const response = await fetch(
         config.apiV2 +
@@ -1090,14 +1204,18 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         }
       }
     }
+    */
+
     //fin de manejadores de Lista de insumos
 
+    /*
     //Manejadores de DetalleInsumo
     const handleDrawerClose2 = () => {
       setIngredienteMMostrado2([])
       setDrawerOpen2(false)
     }
     //Fin de manejadores de DetalleInsumo
+    */
 
     //columnas de la tabla de ingredientes disponibles
     const columnsIngredientesM2: ColumnsType = [
@@ -1125,14 +1243,29 @@ FROM `db_erpraul_v1`.`inv_recollection`;
         render: (_, record) => (
           <Button
             onClick={() =>
-              handleTransferIngredientesM2({
-                id: record.item_id,
-                product: (record as any).item_name,
-                category_id: record.category_id,
-                unit_price: 1.0,
-                measure_id: record.measure_id,
-                status: 1,
-              } as any)
+              handleTransferIngredientesM(
+                {
+                  id: undefined,
+                  product_id: record.product_id,
+                  product: record.product_name,
+                  category_id: record.category_id,
+                  category: record.category_name,
+                  recipe_id: undefined,
+                  recipe_group: undefined,
+                  recipe_base: undefined,
+                  recollection_id: record.recollect_id,
+                  collection: record.collection_name,
+                  item_id: record.item_id,
+                  item_name: record.item_name,
+                  quantity: undefined,
+                  presentation_id: undefined,
+                  measure_id: undefined,
+                  status: 1,
+                } as any,
+                undefined,
+                ingredientesC,
+                setIngredientesC,
+              )
             }
           >
             +
@@ -1252,9 +1385,10 @@ FROM `db_erpraul_v1`.`inv_recollection`;
               </div>
             </Form>
             <ListaIngredientes
-              ingredientesR={ingredientesR}
-              quitarIngrediente={handleQuitarIngrediente2}
-              pOnInputChange={onInputChange2}
+              pIngredientesR={ingredientesC}
+              pQuitarIngrediente={handleQuitarIngrediente}
+              pOnInputChange={onInputChange}
+              pSetIngredientesR={setIngredientesC}
             />
             <Button type="primary" onClick={handleGrabarReceta2}>
               Guardar
@@ -1270,9 +1404,16 @@ FROM `db_erpraul_v1`.`inv_recollection`;
             size="large"
             value={needle}
             allowClear
-            onSearch={() => IngredientesMSelected2(catSelected, needle)}
+            onSearch={() =>
+              IngredientesMSelected(
+                catSelected,
+                needle,
+                undefined,
+                setIngredientesMFiltradosC,
+              )
+            }
             placeholder="buscar colección, ingredientes"
-            onChange={handleNeedle2}
+            onChange={(e) => handleNeedle(e, setNeedle)}
           />
           <Space>
             <Button
@@ -1283,19 +1424,21 @@ FROM `db_erpraul_v1`.`inv_recollection`;
                     22 === catSelected,
                 },
               )}
-              onClick={() => handlePredefinedFilters2(22)}
+              onClick={() => handlePredefinedFilters(22, setCatSelected)}
             >
               Colección
             </Button>
             <Button
               // color="default"
               // variant="solid"
-              onClick={() => handlePredefinedFilters2(9)}
+              onClick={() => handlePredefinedFilters(9, setCatSelected)}
             >
               Quesos
             </Button>
-            <Button onClick={() => handlePredefinedFilters2(2)}>Pizzas</Button>
-            <Button onClick={() => handlePredefinedFilters2(4)}>
+            <Button onClick={() => handlePredefinedFilters(2, setCatSelected)}>
+              Pizzas
+            </Button>
+            <Button onClick={() => handlePredefinedFilters(4, setCatSelected)}>
               Complementos
             </Button>
           </Space>
@@ -1311,9 +1454,21 @@ FROM `db_erpraul_v1`.`inv_recollection`;
                     //console.log('Record:')
                     //console.table(record)
                     if (record.product_id !== null && record.recipe_req == 1)
-                      handleShowItems2(record.product_id, 1)
+                      handleShowItems(
+                        record.product_id,
+                        1,
+                        undefined,
+                        setIngredienteMMostradoC,
+                        setDrawerOpenC,
+                      )
                     if (record.recollect_id !== null)
-                      handleShowItems2(record.product_id, 2)
+                      handleShowItems(
+                        record.product_id,
+                        2,
+                        undefined,
+                        setIngredienteMMostradoC,
+                        setDrawerOpenC,
+                      )
                     /*
                   if (record.product_id!==null && record.recipe_req==1)
                     handleShowItems(record.product_id,1)
@@ -1327,16 +1482,18 @@ FROM `db_erpraul_v1`.`inv_recollection`;
               bordered={true}
               pagination={false}
               columns={columnsIngredientesM2}
-              dataSource={ingredientesMFiltrados2}
+              dataSource={ingredientesMFiltradosC}
             />
           </Card>
           {/* Fin de lista de insumos de petaña colección*/}
 
           {/* Drawer con detalle de insumo con receta */}
           <DetalleInsumo
-            data={ingredienteMMostrado2}
-            drawerOpen={drawerOpen2}
-            drawerClose={handleDrawerClose2}
+            data={ingredienteMMostradoC}
+            drawerOpen={drawerOpenC}
+            drawerClose={() =>
+              handleDrawerClose(setIngredienteMMostradoC, setDrawerOpenC)
+            }
             oper={4}
           />
         </div>

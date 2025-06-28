@@ -1,4 +1,5 @@
 import { PATHS } from '@/const/paths'
+import { AdmReqNondocsViewDto } from '@types'
 import { Table } from 'antd'
 import { format } from 'date-fns'
 import { useNavigate } from 'react-router'
@@ -19,7 +20,7 @@ export function DataView() {
           {
             title: 'Nro',
             dataIndex: 'request_code',
-            render: (val, record) => {
+            render: (val, record: AdmReqNondocsViewDto) => {
               return (
                 <span
                   className="text-blue-600 hover:cursor-pointer hover:underline"

@@ -1,20 +1,28 @@
 import { Button, Input, Table } from 'antd'
 import { ColumnsType } from 'antd/es/table'
-import { ChangeEventHandler } from 'react'
+import { ChangeEventHandler, Dispatch, SetStateAction } from 'react'
 import { umeds } from '../constants/constants'
 import { InvRecipeMix } from '../shared-types'
 
 export const ListaIngredientes = ({
-  ingredientesR,
-  quitarIngrediente,
+  pIngredientesR,
+  pQuitarIngrediente,
   pOnInputChange,
+  pSetIngredientesR,
 }: {
-  ingredientesR: InvRecipeMix[]
-  quitarIngrediente: (code: number) => void
+  pIngredientesR: InvRecipeMix[]
+  pQuitarIngrediente: (
+    pcode: number,
+    pIngredientesR: InvRecipeMix[],
+    pSetIngredientesR: Dispatch<SetStateAction<InvRecipeMix[]>>,
+  ) => void
   pOnInputChange: (
     key: string,
     index: number,
+    pIngredientesR: InvRecipeMix[],
+    pSetIngredientesR: Dispatch<SetStateAction<InvRecipeMix[]>>,
   ) => ChangeEventHandler<HTMLInputElement>
+  pSetIngredientesR: Dispatch<SetStateAction<InvRecipeMix[]>>
 }) => {
   //columnas de la tabla de ingredientes de receta
   const columnsIngredientesR: ColumnsType = [
@@ -46,7 +54,12 @@ export const ListaIngredientes = ({
       render: (_, record, index) => (
         <Input
           value={record.quantity}
-          onChange={pOnInputChange('quantity', index)}
+          onChange={pOnInputChange(
+            'quantity',
+            index,
+            pIngredientesR,
+            pSetIngredientesR,
+          )}
         />
       ),
     },
@@ -60,7 +73,17 @@ export const ListaIngredientes = ({
     {
       className: '!p-1',
       render: (_, record) => (
-        <Button onClick={() => quitarIngrediente(record.id)}>-</Button>
+        <Button
+          onClick={() =>
+            pQuitarIngrediente(
+              record.item_id,
+              pIngredientesR,
+              pSetIngredientesR,
+            )
+          }
+        >
+          -
+        </Button>
       ),
     },
   ]
@@ -73,7 +96,7 @@ export const ListaIngredientes = ({
       bordered={true}
       pagination={false}
       columns={columnsIngredientesR}
-      dataSource={ingredientesR}
+      dataSource={pIngredientesR}
     ></Table>
   )
 }
